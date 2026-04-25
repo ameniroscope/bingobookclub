@@ -276,20 +276,31 @@ button:disabled {
     top: 50%;
     transform: translateY(-50%);
 
-    width: 300px;
-    height: 150px;
-    padding: 10px;
+    display: flex;              /* 🔥 important */
+    align-items: center;
+    gap: 16px;
+
+    width: 360px;
+    padding: 18px;
 
     background: rgba(26, 15, 31, 0.9);
     border: 1px solid #c9a84c33;
-    border-radius: 10px;
+    border-radius: 12px;
     box-shadow: 0 0 18px rgba(201,168,76,0.15);
 
     color: #f5ecd9;
-    text-align: center;
-    z-index: 100;
 }
+    
+.journey-cover {
+    width: 80px;
+    height: 120px;
+    object-fit: cover;
 
+    border-radius: 6px;
+    border: 1px solid #c9a84c55;
+    box-shadow: 0 0 12px rgba(201,168,76,0.2);
+}
+    
 .journey-box h2 {
     font-family: 'Cinzel', serif;
     font-size: 1rem;
@@ -376,8 +387,16 @@ button:disabled {
     .journey-box {
         position: static;
         transform: none;
+
+        flex-direction: column;   /* 🔥 stack vertically */
+        text-align: center;
+
         width: min(90vw, 320px);
-        margin: 0 auto;
+    }
+
+    .journey-cover {
+        width: 100px;
+        height: auto;
     }
 
     /* BINGO */
@@ -428,20 +447,26 @@ button:disabled {
 
 <!-- Slider -->
 <div class="journey-box">
-    <h2>How's the journey going?</h2>
 
-    <div class="chapter-display">
-        Chapter <span id="chapterValue">0</span> / 41
+    <img src="current_cover.jpg" alt="Book cover" class="journey-cover">
+
+    <div class="journey-content">
+        <h2>How's the journey going?</h2>
+
+        <div class="chapter-display">
+            Chapter <span id="chapterValue">0</span> / 41
+        </div>
+
+        <input
+            type="range"
+            id="chapterSlider"
+            min="0"
+            max="41"
+            value="0"
+        >
     </div>
 
-    <input
-        type="range"
-        id="chapterSlider"
-        min="0"
-        max="41"
-        value="0"
-    >
-</div>    
+</div> 
     
 <!-- Bingo Card Container -->
 <div class="container">
