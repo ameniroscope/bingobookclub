@@ -443,7 +443,7 @@ for (let i = 0; i < 80; i++) {
     starsContainer.appendChild(star);
 }
 
-// Firebase and Bingo Logic
+// Firebase config
 const PROJECT_ID = 'bingobookclub-2144e';
 
 const FIRESTORE_BASE =
@@ -451,15 +451,17 @@ const FIRESTORE_BASE =
   PROJECT_ID +
   '/databases/(default)/documents/first_bingo/';
 
-// Change this for each player page
+// Player
 const playerId = 'Marine';
 
+// State
 const GRID_SIZE = 25;
 let cells = Array(GRID_SIZE).fill('');
 let marked = Array(GRID_SIZE).fill(false);
 let isEditMode = true;
 let chapterProgress = 0;
 
+// Elements
 const grid = document.getElementById('bingoGrid');
 const statusEl = document.getElementById('status');
 const saveBtn = document.getElementById('saveBtn');
@@ -468,13 +470,15 @@ const loadBtn = document.getElementById('loadBtn');
 const chapterSlider = document.getElementById('chapterSlider');
 const chapterValue = document.getElementById('chapterValue');
 
+document.getElementById('playerHeaderName').textContent = playerId;
+
+// Slider logic
 chapterSlider.oninput = e => {
     chapterProgress = Number(e.target.value);
     chapterValue.textContent = chapterProgress;
 };
 
-document.getElementById('playerHeaderName').textContent = playerId;
-
+// Firestore helpers
 function toFV(val) {
     if (typeof val === 'boolean') return { booleanValue: val };
     if (Array.isArray(val)) return { arrayValue: { values: val.map(toFV) } };
@@ -487,10 +491,12 @@ function fromFV(fv) {
     return fv.stringValue || '';
 }
 
+// UI helpers
 function restoreStatus() {
     statusEl.textContent = isEditMode ? 'Edit Mode' : 'Play Mode';
 }
 
+// Grid
 function initGrid() {
     grid.innerHTML = '';
 
@@ -525,6 +531,7 @@ function initGrid() {
     }
 }
 
+// SAVE
 async function saveCard() {
     saveBtn.disabled = true;
     statusEl.textContent = 'Saving...';
@@ -533,9 +540,10 @@ async function saveCard() {
         fields: {
             cells: toFV(cells),
             marked: toFV(marked),
-            chapterProgress: { integerValue: chapterProgress },
+            chapterProgress: { integerValue: String(chapterProgress) },
             savedAt: { stringValue: new Date().toISOString() }
-        };
+        }
+    };
 
     try {
         const resp = await fetch(FIRESTORE_BASE + encodeURIComponent(playerId), {
@@ -545,10 +553,10 @@ async function saveCard() {
         });
 
         if (!resp.ok) {
-        const errorText = await resp.text();
-        console.error('Firebase error:', resp.status, errorText);
-        throw new Error('HTTP ' + resp.status);
-}
+            const errorText = await resp.text();
+            console.error('Firebase error:', resp.status, errorText);
+            throw new Error('HTTP ' + resp.status);
+        }
 
         statusEl.textContent = 'Saved to Firebase!';
     } catch (e) {
@@ -560,6 +568,7 @@ async function saveCard() {
     }
 }
 
+// LOAD
 async function loadCard() {
     loadBtn.disabled = true;
     statusEl.textContent = 'Loading...';
@@ -603,6 +612,7 @@ async function loadCard() {
     }
 }
 
+// Buttons
 document.getElementById('toggleMode').onclick = () => {
     isEditMode = !isEditMode;
     restoreStatus();
@@ -615,6 +625,10 @@ document.getElementById('resetBtn').onclick = () => {
     cells = Array(GRID_SIZE).fill('');
     marked = Array(GRID_SIZE).fill(false);
     marked[12] = true;
+    chapterProgress = 0;
+
+    chapterSlider.value = 0;
+    chapterValue.textContent = 0;
 
     initGrid();
     statusEl.textContent = 'Card reset';
@@ -624,6 +638,7 @@ document.getElementById('resetBtn').onclick = () => {
 saveBtn.onclick = saveCard;
 loadBtn.onclick = loadCard;
 
+// Init
 initGrid();
 loadCard();
 </script>
