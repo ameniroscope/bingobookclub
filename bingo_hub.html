@@ -114,12 +114,10 @@ body {
 
 .players-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, auto); /* key change */
+    gap: 40px 60px; /* vertical / horizontal spacing */
 
-    justify-items: center;   /* centers each item horizontally */
-    align-items: center;     /* centers each item vertically */
-
-    gap: 30px;               /* SAME horizontal + vertical spacing */
+    justify-content: center; /* centers the whole grid */
 }
 
 .player-card {
