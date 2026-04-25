@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Bingo Book Club</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    min-height: 100vh;
+    width: 100%;
+    background: #0d0a0e;
+    font-family: 'Crimson Text', Georgia, serif;
+    overflow-x: hidden;
+}
+
+/* Stars */
+.stars {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.star {
+    position: absolute;
+    background: #c9a84c;
+    border-radius: 50%;
+    animation: twinkle var(--d) ease-in-out infinite;
+    animation-delay: var(--delay);
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.1; }
+    50% { opacity: 0.8; }
+}
+
+body {
+    position: relative;
+    z-index: 1;
+    color: #f0e6c8;
+}
+
+/* Main layout */
+.home-layout {
+    position: relative;
+    z-index: 2;
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 60px;
+    align-items: center;
+    padding: 60px;
+}
+
+/* Book card */
+.book-card {
+    text-align: center;
+}
+
+.book-card img {
+    width: min(320px, 80vw);
+    border-radius: 10px;
+    border: 2px solid #c9a84c55;
+    box-shadow: 0 0 30px rgba(201, 168, 76, 0.25);
+}
+
+.book-card h1 {
+    margin-top: 22px;
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    letter-spacing: 2px;
+    color: #c9a84c;
+    text-transform: uppercase;
+}
+
+.book-card h2 {
+    margin-top: 8px;
+    font-family: 'Cinzel', serif;
+    font-size: 2.2rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-shadow: 0 0 20px rgba(201, 168, 76, 0.25);
+}
+
+.book-card p {
+    margin-top: 6px;
+    font-size: 1.25rem;
+    opacity: 0.8;
+}
+
+/* Players */
+.players-section {
+    text-align: center;
+}
+
+.players-title {
+    font-family: 'Cinzel', serif;
+    font-size: 2rem;
+    letter-spacing: 2px;
+    margin-bottom: 35px;
+    color: #f0e6c8;
+    text-shadow: 0 0 20px rgba(201, 168, 76, 0.25);
+}
+
+.players-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 34px;
+    justify-items: center;
+}
+
+.player-card {
+    text-decoration: none;
+    color: #f0e6c8;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 1px;
+    transition: transform 0.3s ease;
+}
+
+.player-img-frame {
+    position: relative;
+    width: 170px;
+    height: 170px;
+    margin: 0 auto;
+}
+
+.player-img-frame::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    background: conic-gradient(
+        from 0deg,
+        transparent 0%,
+        #c9a84c33 20%,
+        #c9a84c88 50%,
+        #c9a84c33 80%,
+        transparent 100%
+    );
+    animation: spin 12s linear infinite;
+    z-index: 0;
+}
+
+.player-img-frame::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    background: #0d0a0e;
+    z-index: 1;
+}
+
+.player-img-frame img {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #c9a84c55;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.player-card span {
+    display: block;
+    margin-top: 16px;
+    font-size: 1.15rem;
+}
+
+.player-card:hover {
+    transform: translateY(-5px);
+}
+
+.player-card:hover .player-img-frame img {
+    border-color: #c9a84c;
+    box-shadow: 0 0 25px rgba(201, 168, 76, 0.4);
+}
+
+/* Mobile */
+@media (max-width: 800px) {
+    .home-layout {
+        grid-template-columns: 1fr;
+        gap: 45px;
+        padding: 35px 20px;
+    }
+
+    .book-card img {
+        width: min(260px, 75vw);
+    }
+
+    .book-card h2 {
+        font-size: 1.6rem;
+    }
+
+    .players-title {
+        font-size: 1.5rem;
+        margin-bottom: 28px;
+    }
+
+    .players-grid {
+        gap: 28px 18px;
+    }
+
+    .player-img-frame {
+        width: 120px;
+        height: 120px;
+    }
+
+    .player-card span {
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 420px) {
+    .players-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .player-img-frame {
+        width: 105px;
+        height: 105px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="stars" id="stars"></div>
+
+<main class="home-layout">
+
+    <!-- Left: Book -->
+    <section class="book-card">
+        <img src="book-cover.png" alt="Current book cover">
+
+        <h1>Currently Reading</h1>
+        <h2>Book Title Here</h2>
+        <p>Author Name</p>
+    </section>
+
+    <!-- Right: Players -->
+    <section class="players-section">
+        <h1 class="players-title">Choose Your Bingo Board</h1>
+
+        <div class="players-grid">
+
+            <a class="player-card" href="marine_bingo.html">
+                <div class="player-img-frame">
+                    <img src="Marine.png" alt="Marine">
+                </div>
+                <span>Marine</span>
+            </a>
+
+            <a class="player-card" href="player2_bingo.html">
+                <div class="player-img-frame">
+                    <img src="player2.png" alt="Player 2">
+                </div>
+                <span>Player 2</span>
+            </a>
+
+            <a class="player-card" href="player3_bingo.html">
+                <div class="player-img-frame">
+                    <img src="player3.png" alt="Player 3">
+                </div>
+                <span>Player 3</span>
+            </a>
+
+            <a class="player-card" href="player4_bingo.html">
+                <div class="player-img-frame">
+                    <img src="player4.png" alt="Player 4">
+                </div>
+                <span>Player 4</span>
+            </a>
+
+        </div>
+    </section>
+
+</main>
+
+<script>
+const starsContainer = document.getElementById('stars');
+
+for (let i = 0; i < 80; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+
+    const size = Math.random() > 0.8 ? 3 : 2;
+
+    star.style.cssText = `
+        left: ${Math.random() * 100}%;
+        top: ${Math.random() * 100}%;
+        width: ${size}px;
+        height: ${size}px;
+        --d: ${2 + Math.random() * 4}s;
+        --delay: ${Math.random() * 4}s;
+    `;
+
+    starsContainer.appendChild(star);
+}
+</script>
+
+</body>
+</html>
