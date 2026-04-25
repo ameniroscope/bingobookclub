@@ -115,8 +115,11 @@ body {
 .players-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 25px;
-    justify-items: center;
+
+    justify-items: center;   /* centers each item horizontally */
+    align-items: center;     /* centers each item vertically */
+
+    gap: 30px;               /* SAME horizontal + vertical spacing */
 }
 
 .player-card {
