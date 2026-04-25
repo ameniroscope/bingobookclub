@@ -269,86 +269,85 @@ button:disabled {
     font-style: italic;
 }
 
-/* Home Button */
+    .journey-box {
+    position: fixed;
+    left: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    width: 220px;
+    padding: 18px;
+
+    background: rgba(26, 15, 31, 0.9);
+    border: 1px solid #c9a84c33;
+    border-radius: 10px;
+    box-shadow: 0 0 18px rgba(201,168,76,0.15);
+
+    color: #f5ecd9;
+    text-align: center;
+    z-index: 100;
+}
+
+.journey-box h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+    color: #c9a84c;
+    text-transform: uppercase;
+}
+
+.chapter-display {
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.2rem;
+    margin-bottom: 14px;
+}
+
+#chapterSlider {
+    width: 100%;
+    cursor: pointer;
+}
+    
+/* ── Home Button ── */
 .home-btn {
     position: fixed;
     bottom: 1.2rem;
     left: 1.2rem;
     z-index: 1000;
-    display: flex;
+
+    display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 0.45rem;
-    padding: 0.7rem 1.1rem;
+
+    width: 100px;
+    height: 40px;
+
     font-size: 0.65rem;
     font-family: 'Cinzel', serif;
     letter-spacing: 1.5px;
     text-transform: uppercase;
     text-decoration: none;
     border-radius: 6px;
-    background: rgba(31, 58, 54, 0.85);
-    border: 1px solid #c9a84c55;
+
+    background: #1a0f1f;
+    border: 1px solid #c9a84c33;
     color: #f5ecd9;
-    backdrop-filter: blur(6px);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+    box-shadow: 0 0 12px rgba(201,168,76,0.12);
+
     transition: all 0.3s ease;
-    box-shadow: 0 0 12px rgba(201, 168, 76, 0.15);
 }
 
 .home-btn:hover {
-    border-color: #c9a84c;
-    background: rgba(44, 79, 73, 0.95);
-    box-shadow: 0 0 20px rgba(201, 168, 76, 0.25);
+    background: #24152b;
+    border-color: #c9a84c88;
+    box-shadow: 0 0 20px rgba(201,168,76,0.25);
     transform: translateY(-2px);
-}
-
-.home-btn-icon {
-    font-size: 1rem;
 }
 
 /* Responsive adjustments */
 @media (max-width: 1200px) {
-    body {
-        padding: 15px;
-        gap: 15px;
-    }
-
-    .player-header {
-        position: static;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-
-        width: 100%;
-        margin: 0 auto 15px auto;
-        text-align: center;
-    }
-
-    .player-name {
-        width: 100%;
-        text-align: center;
-    }
-
-    .img-frame {
-        width: 100px;
-        height: 100px;
-    }
-
-    .controls {
-        gap: 8px;
-    }
-
-    button {
-        padding: 8px 16px;
-        font-size: 12px;
-    }
-
-    .home-btn {
-        bottom: 1rem;
-        left: 1rem;
-        padding: 0.6rem 0.9rem;
-        font-size: 0.55rem;
-    }
-
     .controls {
         position: static;
         width: 100%;
@@ -357,13 +356,27 @@ button:disabled {
         justify-content: center;
         flex-wrap: wrap;
         gap: 8px;
+
+        margin-top: 20px;
+        margin-bottom: 20px;
+        z-index: 10;
     }
 
     .controls button {
         padding: 8px 16px;
         font-size: 12px;
     }
+    
+    .journey-box {
+        position: static;
+        transform: none;
+
+        width: min(90vw, 320px);
+        margin: 0 auto 15px auto;
+    }
 }
+
+    
 </style>
 </head>
 
@@ -380,6 +393,23 @@ button:disabled {
     <div class="player-id" id="playerId"></div>
 </div>
 
+<!-- Slider -->
+<div class="journey-box">
+    <h2>How's the journey going?</h2>
+
+    <div class="chapter-display">
+        Chapter <span id="chapterValue">0</span> / 41
+    </div>
+
+    <input
+        type="range"
+        id="chapterSlider"
+        min="0"
+        max="41"
+        value="0"
+    >
+</div>    
+    
 <!-- Bingo Card Container -->
 <div class="container">
     <div class="bingo-grid" id="bingoGrid"></div>
@@ -428,11 +458,20 @@ const GRID_SIZE = 25;
 let cells = Array(GRID_SIZE).fill('');
 let marked = Array(GRID_SIZE).fill(false);
 let isEditMode = true;
+let chapterProgress = 0;
 
 const grid = document.getElementById('bingoGrid');
 const statusEl = document.getElementById('status');
 const saveBtn = document.getElementById('saveBtn');
 const loadBtn = document.getElementById('loadBtn');
+
+const chapterSlider = document.getElementById('chapterSlider');
+const chapterValue = document.getElementById('chapterValue');
+
+chapterSlider.oninput = e => {
+    chapterProgress = Number(e.target.value);
+    chapterValue.textContent = chapterProgress;
+};
 
 document.getElementById('playerHeaderName').textContent = playerId;
 
@@ -494,9 +533,9 @@ async function saveCard() {
         fields: {
             cells: toFV(cells),
             marked: toFV(marked),
+            chapterProgress: { integerValue: chapterProgress },
             savedAt: { stringValue: new Date().toISOString() }
-        }
-    };
+        };
 
     try {
         const resp = await fetch(FIRESTORE_BASE + encodeURIComponent(playerId), {
@@ -545,6 +584,12 @@ async function loadCard() {
         if (fields.marked) {
             marked = fromFV(fields.marked);
             marked[12] = true;
+        }
+
+        if (fields.chapterProgress) {
+            chapterProgress = Number(fields.chapterProgress.integerValue || 0);
+            chapterSlider.value = chapterProgress;
+            chapterValue.textContent = chapterProgress;
         }
 
         initGrid();
