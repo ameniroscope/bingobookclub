@@ -271,34 +271,35 @@ button:disabled {
     
 /* ── Chapter slider ── */
 .journey-box {
-    position: fixed;
-    left: 200px;
-    top: 50%;
-    transform: translateY(-50%);
+    margin-top: 70px; /* space for overlap */
 
-    display: flex;              /* 🔥 important */
-    align-items: center;
-    gap: 16px;
-
-    width: 360px;
-    padding: 18px;
+    padding: 20px;
+    padding-top: 70px; /* push content down */
 
     background: rgba(26, 15, 31, 0.9);
     border: 1px solid #c9a84c33;
     border-radius: 12px;
     box-shadow: 0 0 18px rgba(201,168,76,0.15);
 
+    text-align: center;
     color: #f5ecd9;
 }
     
 .journey-cover {
-    width: 80px;
-    height: 120px;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -40%); /* 🔥 overlap control */
+
+    width: 90px;
+    height: 130px;
     object-fit: cover;
 
     border-radius: 6px;
-    border: 1px solid #c9a84c55;
-    box-shadow: 0 0 12px rgba(201,168,76,0.2);
+    border: 2px solid #c9a84c55;
+    box-shadow: 0 0 15px rgba(201,168,76,0.3);
+
+    z-index: 2;
 }
     
 .journey-box h2 {
@@ -319,6 +320,15 @@ button:disabled {
 #chapterSlider {
     width: 90%;
     cursor: pointer;
+}
+
+.journey-wrapper {
+    position: fixed;
+    left: 200px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    width: 300px;
 }
     
 /* ── Home Button ── */
