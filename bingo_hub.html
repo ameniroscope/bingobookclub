@@ -218,18 +218,15 @@ body {
 
 /* ── Home Button ── */
 .home-btn {
-    position: fixed;
-    bottom: 1.2rem;
-    left: 1.2rem;
-    z-index: 1000;
-
     display: flex;
-    align-items: center;
+    align-items: left;
     justify-content: center;
     gap: 6px;
 
     width: 100px;          /* FIXED width */
     height: 40px;          /* FIXED height */
+
+    margin: 40px auto 20px auto; /* centers + spacing */
 
     font-size: 0.65rem;
     font-family: 'Cinzel', serif;
@@ -238,7 +235,7 @@ body {
     text-decoration: none;
 
     background: #2c4f49;
-    border: 1px, #c9a84c;
+    border: 1px solid #c9a84c;
     box-shadow: 0 0 20px rgba(201,168,76,0.25);
     transform: translateY(-2px);
     border-radius: 6px;
