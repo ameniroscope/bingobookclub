@@ -552,10 +552,44 @@ body {
   }
 }
 
-  /* ── Home Button ── */
-  .home-btn{position:fixed;bottom:1.2rem;left:1.2rem;z-index:1000;display:flex;align-items:center;gap:0.45rem;padding:0.55rem 0.9rem;font-family:'Cinzel',serif;font-size:0.55rem;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;border-radius:6px;background:rgba(13,10,14,0.85);border:1px solid #c9a84c55;color:#c9a84ccc;backdrop-filter:blur(6px);transition:all 0.25s;}
-  .home-btn:hover{border-color:#c9a84c;color:#f0e6c8;background:rgba(13,10,14,0.95);box-shadow:0 0 16px rgba(201,168,76,0.2);}
-  .home-btn-icon{font-size:0.85rem;}
+/* ── Home Button ── */
+.home-btn {
+    position: fixed;
+    bottom: 1.2rem;
+    left: 1.2rem;
+    z-index: 1000;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+
+    width: 100px;
+    height: 40px;
+
+    font-size: 0.65rem;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 6px;
+
+    background: #1a0f1f;
+    border: 1px solid #c9a84c33;
+    color: #f5ecd9;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+    box-shadow: 0 0 12px rgba(201,168,76,0.12);
+
+    transition: all 0.3s ease;
+}
+
+.home-btn:hover {
+    background: #24152b;
+    border-color: #c9a84c88;
+    box-shadow: 0 0 20px rgba(201,168,76,0.25);
+    transform: translateY(-2px);
+}
+  
 </style>
 </head>
 <body>
