@@ -349,32 +349,63 @@ button:disabled {
 }
 
 /* Responsive adjustments */
-@media (max-width: 1200px) {
-    .controls {
-        position: static;
-        width: 100%;
+@media (max-width: 1000px) {
+
+    body {
+        padding: 15px;
+        gap: 15px;
+    }
+
+    .page-layout {
         display: flex;
-        flex-direction: row;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 8px;
-
-        margin-top: 20px;
-        margin-bottom: 20px;
-        z-index: 10;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
     }
 
-    .controls button {
-        padding: 8px 16px;
-        font-size: 12px;
+    /* HEADER */
+    .player-header {
+        position: static;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        margin-bottom: 10px;
     }
-    
+
+    /* JOURNEY BOX */
     .journey-box {
         position: static;
         transform: none;
-
         width: min(90vw, 320px);
-        margin: 0 auto 15px auto;
+        margin: 0 auto;
+    }
+
+    /* BINGO */
+    .container {
+        width: min(90vw, 560px);
+    }
+
+    /* BUTTONS */
+    .controls {
+        position: static;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    /* STATUS */
+    .status {
+        text-align: center;
+    }
+
+    /* HOME BUTTON */
+    .home-btn {
+        position: static;
+        align-self: flex-start;
+        margin-top: 20px;
     }
 }
 
