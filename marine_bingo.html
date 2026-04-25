@@ -270,26 +270,21 @@ button:disabled {
 }
     
 /* ── Chapter slider ── */
-.journey-box {
-    margin-top: 70px; /* space for overlap */
+.journey-wrapper {
+    position: fixed;
+    left: 200px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 320px;
 
-    padding: 20px;
-    padding-top: 70px; /* push content down */
-
-    background: rgba(26, 15, 31, 0.9);
-    border: 1px solid #c9a84c33;
-    border-radius: 12px;
-    box-shadow: 0 0 18px rgba(201,168,76,0.15);
-
-    text-align: center;
-    color: #f5ecd9;
+    padding-top: 70px; /* creates space for the cover */
 }
-    
+
 .journey-cover {
     position: absolute;
     top: 0;
     left: 50%;
-    transform: translate(-50%, -40%); /* 🔥 overlap control */
+    transform: translateX(-50%);
 
     width: 90px;
     height: 130px;
@@ -300,6 +295,17 @@ button:disabled {
     box-shadow: 0 0 15px rgba(201,168,76,0.3);
 
     z-index: 2;
+}
+
+.journey-box {
+    padding: 90px 20px 24px 20px; /* top padding makes room inside box */
+    background: rgba(26, 15, 31, 0.9);
+    border: 1px solid #c9a84c33;
+    border-radius: 12px;
+    box-shadow: 0 0 18px rgba(201,168,76,0.15);
+
+    text-align: center;
+    color: #f5ecd9;
 }
     
 .journey-box h2 {
@@ -322,14 +328,6 @@ button:disabled {
     cursor: pointer;
 }
 
-.journey-wrapper {
-    position: fixed;
-    left: 200px;
-    top: 50%;
-    transform: translateY(-50%);
-
-    width: 300px;
-}
     
 /* ── Home Button ── */
 .home-btn {
@@ -456,27 +454,19 @@ button:disabled {
 </div>
 
 <!-- Slider -->
-<div class="journey-box">
+<div class="journey-wrapper">
+    <img src="book-cover.png" alt="Book cover" class="journey-cover">
 
-    <img src="current_cover.jpg" alt="Book cover" class="journey-cover">
-
-    <div class="journey-content">
+    <div class="journey-box">
         <h2>How's the journey going?</h2>
 
         <div class="chapter-display">
             Chapter <span id="chapterValue">0</span> / 41
         </div>
 
-        <input
-            type="range"
-            id="chapterSlider"
-            min="0"
-            max="41"
-            value="0"
-        >
+        <input type="range" id="chapterSlider" min="0" max="41" value="0">
     </div>
-
-</div> 
+</div>
     
 <!-- Bingo Card Container -->
 <div class="container">
