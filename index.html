@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Bingo Book Club</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{background:#0d0a0e;font-family:'Crimson Text',Georgia,serif;min-height:100vh;width:100%;overflow-x:hidden;}
+
+  .stars{position:fixed;inset:0;pointer-events:none;z-index:0;}
+  .star{position:absolute;background:#c9a84c;border-radius:50%;animation:twinkle var(--d) ease-in-out infinite;animation-delay:var(--delay);}
+  @keyframes twinkle{0%,100%{opacity:0.1;}50%{opacity:0.8;}}
+
+  .page{
+    position:relative;z-index:1;
+    display:grid;
+    grid-template-columns:1fr;
+    align-items:start;
+    min-height:100vh;
+    padding:3rem 2rem 3rem;
+    max-width:1200px;
+    margin:0 auto;
+  }
+
+  /* ── Desktop: two-column layout ── */
+  @media(min-width:760px){
+    .page{
+      grid-template-columns:1fr 1fr;
+      grid-template-rows:auto;
+      column-gap:4rem;
+      align-items:center;
+    }
+    .left-col{
+      grid-column:1;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+    }
+    .right-col{
+      grid-column:2;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      text-align:center;
+    }
+    .footer{grid-column:1/3;}
+  }
+
+  /* ── Mobile: single column, centred ── */
+  @media(max-width:759px){
+    .page{padding:2.2rem 1.3rem 2.7rem;}
+    .left-col,.right-col{display:flex;flex-direction:column;align-items:center;}
+    .right-col{align-items:center;text-align:center;}
+    .welcome-box p {text-align: center;}
+    .buttons{align-items:center;}
+  }
+
+  /* ── Left column ── */
+  .top-ornament{font-family:'Cinzel',serif;font-size:0.55rem;letter-spacing:4px;color:#c9a84cbb;text-transform:uppercase;margin-bottom:1.6rem;display:flex;align-items:center;gap:0.6rem;width:100%;max-width:22rem;}
+  .top-ornament::before,.top-ornament::after{content:'';flex:1;height:1px;}
+  .top-ornament::before{background:linear-gradient(to right,transparent,#c9a84c44);}
+  .top-ornament::after{background:linear-gradient(to left,transparent,#c9a84c44);}
+
+  .img-frame {
+  position: relative;
+  width: min(22rem, 100%);
+  height: auto;
+  aspect-ratio: 1 / 1;
+  margin-bottom: 1.8rem;
+  flex-shrink: 1;
+}
+  .img-frame::before{content:'';position:absolute;inset:-8px;border-radius:50%;background:conic-gradient(from 0deg,transparent 0%,#c9a84c33 20%,#c9a84c88 50%,#c9a84c33 80%,transparent 100%);animation:spin 12s linear infinite;z-index:0;}
+  @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+  .img-frame::after{content:'';position:absolute;inset:-4px;border-radius:50%;background:#0d0a0e;z-index:1;}
+  .img-frame img{position:relative;z-index:2;width:100%;height:100%;object-fit:cover;border-radius:50%;border:2px solid #c9a84c55;}
+
+/* ── Right column ── */
+.right-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.club-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.72rem;
+  letter-spacing: 6px;
+  color: #c9a84c88;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+
+.main-title {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 700;
+  color: #f0e6c8;
+  line-height: 1;
+  letter-spacing: 2px;
+  text-align: center;
+  text-shadow: 0 0 40px rgba(201,168,76,0.25);
+}
+
+.title-rule {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0.8rem 0 1.4rem;
+  width: 100%;
+  max-width: 26rem;
+}
+
+.title-rule .line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #c9a84c55, transparent);
+}
+
+.title-rule .gem {
+  color: #c9a84c;
+  font-size: 0.6rem;
+}
+
+.welcome-box {
+  max-width: 26rem;
+  margin-bottom: 2rem;
+}
+
+.welcome-box p {
+  font-size: 1rem;
+  color: #c8b89a;
+  line-height: 1.9;
+  text-align: justify;
+}
+
+.welcome-box p + p {
+  margin-top: 0.65rem;
+}
+
+.welcome-box em {
+  color: #f0e6c8;
+  font-style: normal;
+}
+
+.section-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 26rem;
+  margin-bottom: 1.6rem;
+}
+
+.section-divider .line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #c9a84c55, transparent);
+}
+
+.section-divider .dot {
+  color: #c9a84c;
+  font-size: 0.6rem;
+}
+
+/* ── Buttons ── */
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  align-items: center;
+}
+
+.btn {
+  width: 260px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  gap: 0.7rem;
+  padding: 0 1.2rem;
+  font-family: 'Cinzel', serif;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background: #1f3a36;
+  border: 1px solid #c9a84c55;
+  color: #f5ecd9;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+  box-shadow: 0 0 12px rgba(201,168,76,0.15);
+}
+
+.btn-primary:hover {
+  background: #2c4f49;
+  border-color: #c9a84c;
+  box-shadow: 0 0 20px rgba(201,168,76,0.25);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background: #1a0f1f;
+  border: 1px solid #c9a84c33;
+  color: #f5ecd9;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+  box-shadow: 0 0 12px rgba(201,168,76,0.12);
+}
+
+.btn-secondary:hover {
+  background: #24152b;
+  border-color: #c9a84c88;
+  box-shadow: 0 0 20px rgba(201,168,76,0.25);
+  transform: translateY(-2px);
+}
+
+.btn-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.btn-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1rem;
+}
+
+.btn-label {
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+}
+
+.btn-sub {
+  font-family: 'Crimson Text', serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.5px;
+  opacity: 0.75;
+  text-transform: none;
+  font-style: italic;
+}
+
+  .footer{margin-top:2.5rem;font-family:'Cinzel',serif;font-size:0.45rem;letter-spacing:2px;color:#c9a84cbb;text-transform:uppercase;text-align:center;width:100%;}
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div class="page">
+
+  <!-- LEFT: ornament + image -->
+  <div class="left-col">
+    <div class="top-ornament">✦ &nbsp; Est. 2026 &nbsp; ✦</div>
+    <div class="img-frame">
+      <img src="https://bingobookclub.neocities.org/BingoPicture.png" alt="The Bingo Book Club">
+    </div>
+  </div>
+
+  <!-- RIGHT: title + text + buttons -->
+  <div class="right-col">
+    <div class="club-title">Welcome to</div>
+    <div class="main-title">The Bingo<br>Book Club</div>
+    <div class="title-rule"><div class="line"></div><div class="gem">◆</div><div class="line"></div></div>
+
+    <div class="welcome-box">
+      <p>Welcome to our <em>book club</em> — where fantasy worlds are serious business, and everything else is up for debate.</p>
+      <p>For each book, you fill out your own <em>bingo card</em> before you start reading. Try to predict the tropes, plot twists, and moments that will make you gasp, laugh or roll your eyes… As you read, mark your squares, question your choices and realize you probably should have trusted your gut and not <em>common sense.</em></p>
+      <p>Every so often, we will meet. Expect deep dives into world-building, chaotic predictions and very strong opinions about whether something truly deserves a bingo square.</p>
+      <p>Read, react, mark your <em>card</em> and come ready to discuss <em>everything</em>.</p>
+    </div>
+
+    <div class="section-divider"><div class="line"></div><div class="dot">✦</div><div class="line"></div></div>
+
+    <div class="buttons">
+      <a class="btn btn-primary" href="current_book_pick.html" target="_blank">
+        <span class="btn-icon">📚</span>
+        <div class="btn-text">
+          <span class="btn-label">Explore the books</span>
+          <span class="btn-sub">This month's reading list</span>
+        </div>
+      </a>
+      <a class="btn btn-secondary" href="https://form.typeform.com/to/W8YpzGgb" target="_blank">
+        <span class="btn-icon">🗳️</span>
+        <div class="btn-text">
+          <span class="btn-label">Next read vote</span>
+          <span class="btn-sub">Make your voice heard</span>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <div class="footer">✦ &nbsp; Good books · Great company &nbsp; ✦</div>
+</div>
+
+<script>
+  const c = document.getElementById('stars');
+  for(let i=0;i<80;i++){
+    const s=document.createElement('div');
+    s.className='star';
+    const sz=Math.random()>0.8?3:2;
+    s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--d:${2+Math.random()*4}s;--delay:${Math.random()*4}s;`;
+    c.appendChild(s);
+  }
+</script>
+
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyAIQTe-QGQmwqTVmIyJZZ_qlDNsD6GUskY",
+    authDomain: "bingobookclub-2144e.firebaseapp.com",
+    projectId: "bingobookclub-2144e",
+    storageBucket: "bingobookclub-2144e.firebasestorage.app",
+    messagingSenderId: "294177836341",
+    appId: "1:294177836341:web:6d5f11e64737fbe3aad07c"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+</script>
+
+</body>
+</html>

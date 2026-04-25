@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Updated CSP to allow Firebase domains -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://firestore.googleapis.com https://*.googleapis.com;">
+
+<title>Interactive Bingo Card - Marine</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    background: #0d0a0e;
+    font-family: 'Crimson Text', Georgia, serif;
+    min-height: 100vh;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.stars {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.star {
+    position: absolute;
+    background: #c9a84c;
+    border-radius: 50%;
+    animation: twinkle var(--d) ease-in-out infinite;
+    animation-delay: var(--delay);
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.1; }
+    50% { opacity: 0.8; }
+}
+
+body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    gap: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+button, input {
+    font-family: 'Crimson Text', Georgia, 'Times New Roman', serif;
+}
+
+/* Player Header with Ring Animation */
+.player-header {
+    position: fixed;
+    top: 24px;
+    left: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    z-index: 100;
+}
+
+.img-frame {
+    position: relative;
+    width: 90px;
+    height: 90px;
+}
+
+.player-name {
+    font-family: 'Cinzel', serif;
+    font-size: 2.8rem;
+    font-weight: 600;
+    color: #f0e6c8;
+    text-shadow: 0 0 20px rgba(201, 168, 76, 0.3);
+    letter-spacing: 2px;
+    white-space: nowrap;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.img-frame::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    background: #0d0a0e;
+    z-index: 1;
+}
+
+.img-frame img {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #c9a84c55;
+}
+
+/* Container and Grid */
+.container {
+    position: relative;
+    width: min(90vw, 560px);
+    aspect-ratio: 1024 / 1536;
+    background-image: url('background.png');
+    background-size: 100% 100%;
+}
+
+.bingo-grid {
+    position: absolute;
+    left: 50%;
+    top: 34.5%;
+    width: 73%;
+    aspect-ratio: 1 / 1;
+    transform: translateX(-50%);
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+}
+
+.bingo-cell {
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: clamp(7px, 1.4vw, 13px);
+    line-height: 1.2;
+    text-align: center;
+    padding: 4px;
+
+    overflow: hidden;
+}
+
+.bingo-cell.marked {
+    background: rgba(212, 175, 55, 0.6);
+    font-weight: bold;
+}
+
+.bingo-cell.free {
+    font-weight: bold;
+    color: #d4af37;
+}
+
+.cell-text {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: inherit;
+    line-height: 1.2;
+    color: #2a1a0a;
+
+    padding: 4px;
+
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+textarea {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: transparent;
+    outline: none;
+    resize: none;
+
+    display: flex;
+    text-align: center;
+
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: inherit;
+    line-height: inherit;
+    color: #2a1a0a;
+
+    padding: 4px;
+    margin: 0;
+
+    overflow: hidden;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    text-align: center;
+    background: transparent;
+    outline: none;
+    color: #2a1a0a;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* Controls */
+.controls {
+    position: fixed;
+    right: 200px;
+    top: 50%;
+    transform: translateY(-50%); /* THIS centers it vertically */
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+button {
+    background: rgba(31, 58, 54, 0.9);
+    color: #f5ecd9;
+    border: 1px solid #c9a84c55;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 12px rgba(201, 168, 76, 0.15);
+}
+
+button:hover {
+    background: rgba(44, 79, 73, 0.9);
+    border-color: #c9a84c;
+    box-shadow: 0 0 20px rgba(201, 168, 76, 0.25);
+    transform: translateY(-2px);
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.status {
+    text-align: center;
+    font-size: 1rem;
+    color: #c9a84c;
+    font-style: normal;
+    opacity: 0.8;
+    margin-top: 5px;
+}
+
+.player-id {
+    font-size: 12px;
+    color: #c9a84c99;
+    text-align: center;
+    font-style: italic;
+}
+
+/* Home Button */
+.home-btn {
+    position: fixed;
+    bottom: 1.2rem;
+    left: 1.2rem;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.7rem 1.1rem;
+    font-size: 0.65rem;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 6px;
+    background: rgba(31, 58, 54, 0.85);
+    border: 1px solid #c9a84c55;
+    color: #f5ecd9;
+    backdrop-filter: blur(6px);
+    transition: all 0.3s ease;
+    box-shadow: 0 0 12px rgba(201, 168, 76, 0.15);
+}
+
+.home-btn:hover {
+    border-color: #c9a84c;
+    background: rgba(44, 79, 73, 0.95);
+    box-shadow: 0 0 20px rgba(201, 168, 76, 0.25);
+    transform: translateY(-2px);
+}
+
+.home-btn-icon {
+    font-size: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    body {
+        padding: 15px;
+        gap: 15px;
+    }
+
+    .player-header {
+        position: static;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        width: 100%;
+        margin: 0 auto 15px auto;
+        text-align: center;
+    }
+
+    .player-name {
+        width: 100%;
+        text-align: center;
+    }
+
+    .img-frame {
+        width: 100px;
+        height: 100px;
+    }
+
+    .controls {
+        gap: 8px;
+    }
+
+    button {
+        padding: 8px 16px;
+        font-size: 12px;
+    }
+
+    .home-btn {
+        bottom: 1rem;
+        left: 1rem;
+        padding: 0.6rem 0.9rem;
+        font-size: 0.55rem;
+    }
+
+    .controls {
+        position: static;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .controls button {
+        padding: 8px 16px;
+        font-size: 12px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="stars" id="stars"></div>
+
+<!-- Player Header with animated ring -->
+<div class="player-header">
+    <div class="img-frame">
+        <img id="playerPhoto" src="Marine.png" alt="Player Photo">
+    </div>
+    <div class="player-name" id="playerHeaderName"></div>
+    <div class="player-id" id="playerId"></div>
+</div>
+
+<!-- Bingo Card Container -->
+<div class="container">
+    <div class="bingo-grid" id="bingoGrid"></div>
+</div>
+
+<!-- Controls -->
+<div class="controls">
+    <button id="toggleMode">Switch Mode</button>
+    <button id="resetBtn">Reset Card</button>
+    <button id="saveBtn">Save</button>
+    <button id="loadBtn">Load</button>
+</div>
+
+<div class="status" id="status">Edit Mode</div>
+
+<script>
+// Star generation
+const starsContainer = document.getElementById('stars');
+for (let i = 0; i < 80; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    const size = Math.random() > 0.8 ? 3 : 2;
+    star.style.cssText = `
+        left: ${Math.random() * 100}%;
+        top: ${Math.random() * 100}%;
+        width: ${size}px;
+        height: ${size}px;
+        --d: ${2 + Math.random() * 4}s;
+        --delay: ${Math.random() * 4}s;
+    `;
+    starsContainer.appendChild(star);
+}
+
+// Firebase and Bingo Logic
+const PROJECT_ID = 'bingobookclub-2144e';
+
+const FIRESTORE_BASE =
+  'https://firestore.googleapis.com/v1/projects/' +
+  PROJECT_ID +
+  '/databases/(default)/documents/first_bingo/';
+
+// Change this for each player page
+const playerId = 'Marine';
+
+const GRID_SIZE = 25;
+let cells = Array(GRID_SIZE).fill('');
+let marked = Array(GRID_SIZE).fill(false);
+let isEditMode = true;
+
+const grid = document.getElementById('bingoGrid');
+const statusEl = document.getElementById('status');
+const saveBtn = document.getElementById('saveBtn');
+const loadBtn = document.getElementById('loadBtn');
+
+document.getElementById('playerHeaderName').textContent = playerId;
+
+function toFV(val) {
+    if (typeof val === 'boolean') return { booleanValue: val };
+    if (Array.isArray(val)) return { arrayValue: { values: val.map(toFV) } };
+    return { stringValue: String(val) };
+}
+
+function fromFV(fv) {
+    if (fv.booleanValue !== undefined) return fv.booleanValue;
+    if (fv.arrayValue) return (fv.arrayValue.values || []).map(fromFV);
+    return fv.stringValue || '';
+}
+
+function restoreStatus() {
+    statusEl.textContent = isEditMode ? 'Edit Mode' : 'Play Mode';
+}
+
+function initGrid() {
+    grid.innerHTML = '';
+
+    for (let i = 0; i < GRID_SIZE; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'bingo-cell';
+
+        if (i === 12) {
+            cell.textContent = '';
+            cell.classList.add('free');
+            marked[i] = true;
+        } else if (isEditMode) {
+            const input = document.createElement('textarea');
+            input.value = cells[i];
+            input.oninput = e => cells[i] = e.target.value;
+            cell.appendChild(input);
+        } else {
+            const text = document.createElement('div');
+            text.className = 'cell-text';
+            text.textContent = cells[i];
+            cell.appendChild(text);
+
+            if (marked[i]) cell.classList.add('marked');
+
+            cell.onclick = () => {
+                marked[i] = !marked[i];
+                initGrid();
+            };
+        }
+
+        grid.appendChild(cell);
+    }
+}
+
+async function saveCard() {
+    saveBtn.disabled = true;
+    statusEl.textContent = 'Saving...';
+
+    const body = {
+        fields: {
+            cells: toFV(cells),
+            marked: toFV(marked),
+            savedAt: { stringValue: new Date().toISOString() }
+        }
+    };
+
+    try {
+        const resp = await fetch(FIRESTORE_BASE + encodeURIComponent(playerId), {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+
+        if (!resp.ok) {
+        const errorText = await resp.text();
+        console.error('Firebase error:', resp.status, errorText);
+        throw new Error('HTTP ' + resp.status);
+}
+
+        statusEl.textContent = 'Saved to Firebase!';
+    } catch (e) {
+        console.error(e);
+        statusEl.textContent = 'Firebase save failed';
+    } finally {
+        saveBtn.disabled = false;
+        setTimeout(restoreStatus, 2500);
+    }
+}
+
+async function loadCard() {
+    loadBtn.disabled = true;
+    statusEl.textContent = 'Loading...';
+
+    try {
+        const resp = await fetch(FIRESTORE_BASE + encodeURIComponent(playerId));
+
+        if (resp.status === 404) {
+            statusEl.textContent = 'No saved card found';
+            loadBtn.disabled = false;
+            setTimeout(restoreStatus, 2500);
+            return;
+        }
+
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+
+        const data = await resp.json();
+        const fields = data.fields || {};
+
+        if (fields.cells) cells = fromFV(fields.cells);
+
+        if (fields.marked) {
+            marked = fromFV(fields.marked);
+            marked[12] = true;
+        }
+
+        initGrid();
+        statusEl.textContent = 'Loaded from Firebase!';
+    } catch (e) {
+        console.error(e);
+        statusEl.textContent = 'Firebase load failed';
+    } finally {
+        loadBtn.disabled = false;
+        setTimeout(restoreStatus, 2500);
+    }
+}
+
+document.getElementById('toggleMode').onclick = () => {
+    isEditMode = !isEditMode;
+    restoreStatus();
+    initGrid();
+};
+
+document.getElementById('resetBtn').onclick = () => {
+    if (!confirm('Reset this bingo card?')) return;
+
+    cells = Array(GRID_SIZE).fill('');
+    marked = Array(GRID_SIZE).fill(false);
+    marked[12] = true;
+
+    initGrid();
+    statusEl.textContent = 'Card reset';
+    setTimeout(restoreStatus, 1500);
+};
+
+saveBtn.onclick = saveCard;
+loadBtn.onclick = loadCard;
+
+initGrid();
+loadCard();
+</script>
+
+<a class="home-btn" href="index.html">
+    <span class="home-btn-icon">🏠</span> Home
+</a>
+
+</body>
+</html>
