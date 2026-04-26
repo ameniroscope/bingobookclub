@@ -4,17 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Bingo Book Club - Explore the Books</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
 
+<!-- Link to shared styles -->
+<link rel="stylesheet" href="style.css">
+
+<!-- Page-specific styles -->
+<style>
 :root {
   --base: 20px;
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
 html {
@@ -23,10 +20,7 @@ html {
 }
 
 body {
-  background: #0d0a0e;
-  font-family: 'Crimson Text', Georgia, serif;
   height: 100%;
-  width: 100%;
   overflow: hidden;
 }
 
@@ -551,45 +545,6 @@ body {
     height: 9.3rem;
   }
 }
-
-/* ── Home Button ── */
-.home-btn {
-    position: fixed;
-    bottom: 1.2rem;
-    left: 1.2rem;
-    z-index: 1000;
-
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.45rem;
-
-    width: 100px;
-    height: 40px;
-
-    font-size: 0.65rem;
-    font-family: 'Cinzel', serif;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    text-decoration: none;
-    border-radius: 6px;
-
-    background: #1a0f1f;
-    border: 1px solid #c9a84c33;
-    color: #f5ecd9;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.6);
-    box-shadow: 0 0 12px rgba(201,168,76,0.12);
-
-    transition: all 0.3s ease;
-}
-
-.home-btn:hover {
-    background: #24152b;
-    border-color: #c9a84c88;
-    box-shadow: 0 0 20px rgba(201,168,76,0.25);
-    transform: translateY(-2px);
-}
-  
 </style>
 </head>
 <body>
@@ -891,6 +846,10 @@ body {
   }, {passive:true});
 </script>
 
-<a class="home-btn" href="index.html"><span class="home-btn-icon">🏠</span> Home</a>
+<!-- Home Button -->
+<a class="home-btn" href="index.html">
+    <span class="home-btn-icon">🏠</span> Home
+</a>
+
 </body>
 </html>
