@@ -223,6 +223,12 @@ input {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    align-items: stretch;
+}
+
+.secondary-buttons {
+    display: flex;
+    gap: 8px;
 }
 
 button {
@@ -251,6 +257,28 @@ button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
     transform: none;
+}
+
+.primary-btn {
+    font-size: 18px;
+    padding: 16px 24px;
+    font-weight: 600;
+    background: rgba(201, 168, 76, 0.2);
+    border: 2px solid #c9a84c;
+    box-shadow: 0 0 20px rgba(201, 168, 76, 0.3);
+}
+
+.primary-btn:hover {
+    background: rgba(201, 168, 76, 0.3);
+    border-color: #d4af37;
+    box-shadow: 0 0 30px rgba(201, 168, 76, 0.5);
+    transform: translateY(-3px);
+}
+
+.small-btn {
+    font-size: 11px;
+    padding: 8px 12px;
+    flex: 1;
 }
 
 .status {
@@ -550,13 +578,15 @@ button:disabled {
 
 <!-- Controls -->
 <div class="controls">
-    <button id="toggleMode">Switch Mode</button>
-    <button id="resetBtn">Reset Card</button>
-    <button id="saveBtn">Save</button>
-    <button id="loadBtn">Load</button>
+    <button id="saveBtn" class="primary-btn">💾 Save Progress</button>
+    <div class="secondary-buttons">
+        <button id="toggleMode" class="small-btn">✏️ Edit</button>
+        <button id="resetBtn" class="small-btn">🔄 Reset</button>
+    </div>
+    <button id="loadBtn" class="small-btn">📥 Load</button>
 </div>
 
-<div class="status" id="status">Edit Mode</div>
+<div class="status" id="status">Play Mode</div>
 
 <script>
 // Star generation
@@ -591,7 +621,7 @@ const playerId = 'Marine';
 const GRID_SIZE = 25;
 let cells = Array(GRID_SIZE).fill('');
 let marked = Array(GRID_SIZE).fill(false);
-let isEditMode = true;
+let isEditMode = false;
 let chapterProgress = 0;
 let readingFormat = 'physical';
 let emotions = [];
@@ -822,6 +852,8 @@ async function loadCard() {
 // Buttons
 document.getElementById('toggleMode').onclick = () => {
     isEditMode = !isEditMode;
+    const toggleBtn = document.getElementById('toggleMode');
+    toggleBtn.textContent = isEditMode ? '👁️ Play' : '✏️ Edit';
     restoreStatus();
     initGrid();
 };
