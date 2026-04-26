@@ -529,6 +529,12 @@ body {
   background: #c9a84c;
 }
 
+/* Footer section at bottom of each slide */
+.slide-footer {
+  padding: 1rem;
+  text-align: center;
+}
+
 /* MOBILE */
 @media (max-width: 480px) {
   :root {
@@ -545,9 +551,24 @@ body {
     height: 9.3rem;
   }
 }
+
+/* Override for mobile - make home button visible */
+@media (max-width: 767px) {
+  .home-btn {
+    position: fixed !important;
+    bottom: 4.5rem !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    margin: 0 !important;
+    z-index: 1000;
+  }
+}
 </style>
 </head>
 <body>
+
+<!-- Stars background -->
+<div class="stars" id="stars"></div>
 
 <div class="top-nav" id="topNav">
   <button class="nav-btn active">One Dark Window</button>
@@ -605,6 +626,12 @@ body {
         <a class="store-btn" href="https://www.orellfuessli.ch/shop/home/artikeldetails/A1063020651" target="_blank"><span class="store-btn-icon">🏪</span>OrellFüsseli</a>
         <a class="store-btn" href="https://www.amazon.com/s?k=one+dark+window+rachel+gillig" target="_blank"><span class="store-btn-icon">📦</span>Amazon</a>
       </div>
+      
+      <!-- Footer for this slide -->
+      <div class="slide-footer">
+        <div class="ornament"><div class="line"></div><div class="gem">◆</div><div class="line"></div></div>
+        <div class="footer">✦ &nbsp; The Bingo Book Club &nbsp; ✦</div>
+      </div>
     </div></div>
 
     <!-- SLIDE 2 -->
@@ -646,8 +673,14 @@ body {
         <a class="store-btn" href="https://www.orellfuessli.ch/suche?sq=the+shadows+between+us" target="_blank"><span class="store-btn-icon">🏪</span>OrellFüsseli</a>
         <a class="store-btn" href="https://www.amazon.com/s?k=the+shadows+between+us+levenseller" target="_blank"><span class="store-btn-icon">📦</span>Amazon</a>
       </div>
+      
+      <!-- Footer for this slide -->
+      <div class="slide-footer">
+        <div class="ornament"><div class="line"></div><div class="gem">◆</div><div class="line"></div></div>
+        <div class="footer">✦ &nbsp; The Bingo Book Club &nbsp; ✦</div>
+      </div>
     </div></div>
-
+    
     <!-- SLIDE 3 -->
     <div class="slide"><div class="card-scroll">
       <div class="card">
@@ -687,9 +720,15 @@ body {
         <a class="store-btn" href="https://www.orellfuessli.ch/suche?sq=daughter+of+no+worlds" target="_blank"><span class="store-btn-icon">🏪</span>OrellFüsseli</a>
         <a class="store-btn" href="https://www.amazon.com/s?k=daughter+of+no+worlds+broadbent" target="_blank"><span class="store-btn-icon">📦</span>Amazon</a>
       </div>
+    </div>
+            <!-- Footer for this slide -->
+      <div class="slide-footer">
+        <div class="ornament"><div class="line"></div><div class="gem">◆</div><div class="line"></div></div>
+        <div class="footer">✦ &nbsp; The Bingo Book Club &nbsp; ✦</div>
+      </div>
     </div></div>
 
-    <!-- SLIDE 4 -->
+        <!-- SLIDE 4 -->
     <div class="slide"><div class="card-scroll">
       <div class="card">
         <div class="corner-bl"></div><div class="corner-br"></div>
@@ -727,6 +766,12 @@ body {
         <a class="store-btn" href="https://www.goodreads.com/book/show/16069030-the-winner-s-curse" target="_blank"><span class="store-btn-icon">📚</span>Goodreads</a>
         <a class="store-btn" href="https://www.orellfuessli.ch/suche?sq=the+winner%27s+curse" target="_blank"><span class="store-btn-icon">🏪</span>OrellFüsseli</a>
         <a class="store-btn" href="https://www.amazon.com/s?k=the+winner%27s+curse+rutkoski" target="_blank"><span class="store-btn-icon">📦</span>Amazon</a>
+      </div>
+    </div>
+          <!-- Footer for this slide -->
+      <div class="slide-footer">
+        <div class="ornament"><div class="line"></div><div class="gem">◆</div><div class="line"></div></div>
+        <div class="footer">✦ &nbsp; The Bingo Book Club &nbsp; ✦</div>
       </div>
     </div></div>
 
@@ -769,6 +814,12 @@ body {
         <a class="store-btn" href="https://www.orellfuessli.ch/suche?sq=the+bridge+kingdom" target="_blank"><span class="store-btn-icon">🏪</span>OrellFüsseli</a>
         <a class="store-btn" href="https://www.amazon.com/s?k=the+bridge+kingdom+jensen" target="_blank"><span class="store-btn-icon">📦</span>Amazon</a>
       </div>
+    </div>
+            <!-- Footer for this slide -->
+      <div class="slide-footer">
+        <div class="ornament"><div class="line"></div><div class="gem">◆</div><div class="line"></div></div>
+        <div class="footer">✦ &nbsp; The Bingo Book Club &nbsp; ✦</div>
+      </div>
     </div></div>
 
     <!-- SLIDE 6 -->
@@ -810,46 +861,71 @@ body {
         <a class="store-btn" href="https://www.orellfuessli.ch/suche?sq=a+touch+of+darkness" target="_blank"><span class="store-btn-icon">🏪</span>OrellFüsseli</a>
         <a class="store-btn" href="https://www.amazon.com/s?k=a+touch+of+darkness+st+clair" target="_blank"><span class="store-btn-icon">📦</span>Amazon</a>
       </div>
+    </div>
+            <!-- Footer for this slide -->
+      <div class="slide-footer">
+        <div class="ornament"><div class="line"></div><div class="gem">◆</div><div class="line"></div></div>
+        <div class="footer">✦ &nbsp; The Bingo Book Club &nbsp; ✦</div>
+      </div>
     </div></div>
+    <!-- Continue with slides 4, 5, 6 - I'm truncating for space but add the same footer pattern -->
 
   </div>
 </div>
-
-<script>
-  const TOTAL = 6;
-  let current = 0;
-  const track = document.getElementById('sliderTrack');
-  const navBtns = document.querySelectorAll('.nav-btn');
-  const dots = document.querySelectorAll('.dot');
-
-  function goTo(n) {
-    if(n < 0 || n >= TOTAL) return;
-    current = n;
-    track.style.transform = `translateX(-${100 / TOTAL * n}%)`;
-    navBtns.forEach((b,i) => b.classList.toggle('active', i === n));
-    dots.forEach((d,i) => d.classList.toggle('active', i === n));
-    navBtns[n].scrollIntoView({behavior:'smooth', block:'nearest', inline:'center'});
-  }
-
-  navBtns.forEach((btn, i) => btn.addEventListener('click', () => goTo(i)));
-
-  let tx = 0, ty = 0, tt = 0, dragging = false;
-  const outer = document.getElementById('sliderOuter');
-
-  outer.addEventListener('touchstart', e => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; tt = Date.now(); dragging = true; }, {passive:true});
-  outer.addEventListener('touchmove', e => { if(!dragging) return; const dx = e.touches[0].clientX-tx, dy = e.touches[0].clientY-ty; if(Math.abs(dy)>Math.abs(dx)){dragging=false;} }, {passive:true});
-  outer.addEventListener('touchend', e => {
-    if(!dragging) return; dragging = false;
-    const dx = e.changedTouches[0].clientX-tx, dy = e.changedTouches[0].clientY-ty, dt = Date.now()-tt;
-    if(dt>500||Math.abs(dy)>Math.abs(dx)||Math.abs(dx)<40) return;
-    dx < 0 ? goTo(current+1) : goTo(current-1);
-  }, {passive:true});
-</script>
 
 <!-- Home Button -->
 <a class="home-btn" href="index.html">
     <span class="home-btn-icon">🏠</span> Home
 </a>
+
+<script>
+// Star generation
+const starsContainer = document.getElementById('stars');
+for (let i = 0; i < 80; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    const size = Math.random() > 0.8 ? 3 : 2;
+    star.style.cssText = `
+        left: ${Math.random() * 100}%;
+        top: ${Math.random() * 100}%;
+        width: ${size}px;
+        height: ${size}px;
+        --d: ${2 + Math.random() * 4}s;
+        --delay: ${Math.random() * 4}s;
+    `;
+    starsContainer.appendChild(star);
+}
+
+// Slider logic
+const TOTAL = 6;
+let current = 0;
+const track = document.getElementById('sliderTrack');
+const navBtns = document.querySelectorAll('.nav-btn');
+const dots = document.querySelectorAll('.dot');
+
+function goTo(n) {
+  if(n < 0 || n >= TOTAL) return;
+  current = n;
+  track.style.transform = `translateX(-${100 / TOTAL * n}%)`;
+  navBtns.forEach((b,i) => b.classList.toggle('active', i === n));
+  dots.forEach((d,i) => d.classList.toggle('active', i === n));
+  navBtns[n].scrollIntoView({behavior:'smooth', block:'nearest', inline:'center'});
+}
+
+navBtns.forEach((btn, i) => btn.addEventListener('click', () => goTo(i)));
+
+let tx = 0, ty = 0, tt = 0, dragging = false;
+const outer = document.getElementById('sliderOuter');
+
+outer.addEventListener('touchstart', e => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; tt = Date.now(); dragging = true; }, {passive:true});
+outer.addEventListener('touchmove', e => { if(!dragging) return; const dx = e.touches[0].clientX-tx, dy = e.touches[0].clientY-ty; if(Math.abs(dy)>Math.abs(dx)){dragging=false;} }, {passive:true});
+outer.addEventListener('touchend', e => {
+  if(!dragging) return; dragging = false;
+  const dx = e.changedTouches[0].clientX-tx, dy = e.changedTouches[0].clientY-ty, dt = Date.now()-tt;
+  if(dt>500||Math.abs(dy)>Math.abs(dx)||Math.abs(dx)<40) return;
+  dx < 0 ? goTo(current+1) : goTo(current-1);
+}, {passive:true});
+</script>
 
 </body>
 </html>
