@@ -6,50 +6,11 @@
 
 <title>Bingo Book Club</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<!-- Link to shared styles -->
+<link rel="stylesheet" href="style.css">
 
+<!-- Page-specific styles -->
 <style>
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-html, body {
-    min-height: 100vh;
-    width: 100%;
-    background: #0d0a0e;
-    font-family: 'Crimson Text', Georgia, serif;
-    overflow-x: hidden;
-}
-
-/* Stars */
-.stars {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-}
-
-.star {
-    position: absolute;
-    background: #c9a84c;
-    border-radius: 50%;
-    animation: twinkle var(--d) ease-in-out infinite;
-    animation-delay: var(--delay);
-}
-
-@keyframes twinkle {
-    0%, 100% { opacity: 0.1; }
-    50% { opacity: 0.8; }
-}
-
-body {
-    position: relative;
-    z-index: 1;
-    color: #f0e6c8;
-}
-
 /* Main layout */
 .home-layout {
     position: relative;
@@ -68,10 +29,9 @@ body {
 }
 
 .book-card img {
-    height: 80vh;          /* 80% of window height */
-    width: auto;           /* keep aspect ratio */
-    max-width: 100%;       /* prevent overflow */
-    left: 500px;
+    height: 80vh;
+    width: auto;
+    max-width: 100%;
     border-radius: 10px;
     border: 2px solid #c9a84c55;
     box-shadow: 0 0 30px rgba(201, 168, 76, 0.25);
@@ -93,10 +53,9 @@ body {
 
 .players-grid {
     display: grid;
-    grid-template-columns: repeat(2, auto); /* key change */
-    gap: 40px 60px; /* vertical / horizontal spacing */
-
-    justify-content: center; /* centers the whole grid */
+    grid-template-columns: repeat(2, auto);
+    gap: 40px 60px;
+    justify-content: center;
 }
 
 .player-card {
@@ -170,6 +129,14 @@ body {
     box-shadow: 0 0 25px rgba(201, 168, 76, 0.4);
 }
 
+/* Footer section */
+.footer-section {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 2rem 1rem 3rem;
+}
+
 /* Mobile */  
 @media (max-width: 800px) {
     .home-layout {
@@ -180,10 +147,6 @@ body {
 
     .book-card img {
         height: 50vh;
-    }
-
-    .book-card h2 {
-        font-size: 1.6rem;
     }
 
     .players-title {
@@ -215,70 +178,12 @@ body {
         height: 105px;
     }
 }
-
-@media (max-width: 1200px) {
-    .home-btn {
-        position: static;
-        align-self: flex-start;
-        margin: 30px 0 10px 0;
-
-        width: 100px;
-        height: 40px;
-
-        font-size: 0.65rem;
-    }
-}
-
-/* ── Home Button ── */
-.home-btn {
-    position: fixed;
-    bottom: 1.2rem;
-    left: 1.2rem;
-    z-index: 1000;
-
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.45rem;
-
-    width: 100px;
-    height: 40px;
-
-    font-size: 0.65rem;
-    font-family: 'Cinzel', serif;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    text-decoration: none;
-    border-radius: 6px;
-
-    background: #1a0f1f;
-    border: 1px solid #c9a84c33;
-    color: #f5ecd9;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.6);
-    box-shadow: 0 0 12px rgba(201,168,76,0.12);
-
-    transition: all 0.3s ease;
-}
-
-.home-btn:hover {
-    background: #24152b;
-    border-color: #c9a84c88;
-    box-shadow: 0 0 20px rgba(201,168,76,0.25);
-    transform: translateY(-2px);
-}
-
-.home-btn:hover {
-    background: #24152b;
-    border-color: #c9a84c88;
-    box-shadow: 0 0 20px rgba(201,168,76,0.25);
-    transform: translateY(-2px);
-}
-
 </style>
 </head>
 
 <body>
 
+<!-- Stars background -->
 <div class="stars" id="stars"></div>
 
 <main class="home-layout">
@@ -327,7 +232,23 @@ body {
 
 </main>
 
+<!-- Footer Section -->
+<section class="footer-section">
+    <div class="ornament">
+        <div class="line"></div>
+        <div class="gem">◆</div>
+        <div class="line"></div>
+    </div>
+
+    <a class="home-btn" href="index.html">
+        <span class="home-btn-icon">🏠</span> Home
+    </a>
+
+    <div class="footer">✦ &nbsp; The Bingo Book Club &nbsp; ✦</div>
+</section>
+
 <script>
+// Star generation
 const starsContainer = document.getElementById('stars');
 
 for (let i = 0; i < 80; i++) {
@@ -349,6 +270,5 @@ for (let i = 0; i < 80; i++) {
 }
 </script>
 
-<a class="home-btn" href="index.html"><span class="home-btn-icon">🏠</span> Home</a>
 </body>
 </html>
