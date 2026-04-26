@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Updated CSP to allow Firebase domains -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://firestore.googleapis.com https://*.googleapis.com;">
+
+<title>Bingo Card - Lena</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    background: #0d0a0e;
+    font-family: 'Crimson Text', Georgia, serif;
+    min-height: 100vh;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.stars {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.star {
+    position: absolute;
+    background: #c9a84c;
+    border-radius: 50%;
+    animation: twinkle var(--d) ease-in-out infinite;
+    animation-delay: var(--delay);
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.1; }
+    50% { opacity: 0.8; }
+}
+
+body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    gap: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+button, input {
+    font-family: 'Crimson Text', Georgia, 'Times New Roman', serif;
+}
+
+/* Player Header with Ring Animation */
+.player-header {
+    position: fixed;
+    top: 24px;
+    left: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    z-index: 100;
+}
+
+.img-frame {
+    position: relative;
+    width: 90px;
+    height: 90px;
+}
+
+.player-name {
+    font-family: 'Cinzel', serif;
+    font-size: 2.8rem;
+    font-weight: 600;
+    color: #f0e6c8;
+    text-shadow: 0 0 20px rgba(201, 168, 76, 0.3);
+    letter-spacing: 2px;
+    white-space: nowrap;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.img-frame::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    background: #0d0a0e;
+    z-index: 1;
+}
+
+.img-frame img {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #c9a84c55;
+}
+
+/* Container and Grid */
+.container {
+    position: relative;
+    width: min(90vw, 560px);
+    aspect-ratio: 1024 / 1536;
+    background-image: url('current_bingo.png');
+    background-size: 100% 100%;
+}
+
+.bingo-grid {
+    position: absolute;
+    left: 50%;
+    top: 34.5%;
+    width: 73%;
+    aspect-ratio: 1 / 1;
+    transform: translateX(-50%);
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+}
+
+.bingo-cell {
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: clamp(7px, 1.4vw, 13px);
+    line-height: 1.2;
+    text-align: center;
+    padding: 4px;
+
+    overflow: hidden;
+}
+
+.bingo-cell.marked {
+    background: rgba(212, 175, 55, 0.6);
+    font-weight: bold;
+}
+
+.bingo-cell.free {
+    font-weight: bold;
+    color: #d4af37;
+}
+
+.cell-text {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: inherit;
+    line-height: 1.2;
+    color: #2a1a0a;
+
+    padding: 4px;
+
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+textarea {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: transparent;
+    outline: none;
+    resize: none;
+
+    display: flex;
+    text-align: center;
+
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: inherit;
+    line-height: inherit;
+    color: #2a1a0a;
+
+    padding: 4px;
+    margin: 0;
+
+    overflow: hidden;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    text-align: center;
+    background: transparent;
+    outline: none;
+    color: #2a1a0a;
+    font-family: 'Crimson Text', Georgia, serif;
+}
+
+/* Controls */
+.controls {
+    position: fixed;
+    right: 200px;
+    top: 50%;
+    transform: translateY(-50%); /* THIS centers it vertically */
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+}
+
+.secondary-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+button {
+    background: rgba(31, 58, 54, 0.9);
+    color: #f5ecd9;
+    border: 1px solid #c9a84c55;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 12px rgba(201, 168, 76, 0.15);
+}
+
+button:hover {
+    background: rgba(44, 79, 73, 0.9);
+    border-color: #c9a84c;
+    box-shadow: 0 0 20px rgba(201, 168, 76, 0.25);
+    transform: translateY(-2px);
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.primary-btn {
+    font-size: 18px;
+    padding: 16px 24px;
+    font-weight: 600;
+    background: rgba(201, 168, 76, 0.2);
+    border: 2px solid #c9a84c;
+    box-shadow: 0 0 20px rgba(201, 168, 76, 0.3);
+}
+
+.primary-btn:hover {
+    background: rgba(201, 168, 76, 0.3);
+    border-color: #d4af37;
+    box-shadow: 0 0 30px rgba(201, 168, 76, 0.5);
+    transform: translateY(-3px);
+}
+
+.small-btn {
+    font-size: 11px;
+    padding: 8px 12px;
+    flex: 1;
+}
+
+.status {
+    text-align: center;
+    font-size: 1rem;
+    color: #c9a84c;
+    font-style: normal;
+    opacity: 0.8;
+    margin-top: 5px;
+}
+
+.player-id {
+    font-size: 12px;
+    color: #c9a84c99;
+    text-align: center;
+    font-style: italic;
+}
+
+.reading-format {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.reading-format label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.reading-format label:hover {
+    opacity: 0.8;
+}
+
+.reading-format input[type="radio"] {
+    width: auto;
+    height: auto;
+    cursor: pointer;
+}
+
+.emotions {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.emotion-btn {
+    width: 44px;
+    height: 44px;
+    font-size: 1.5rem;
+    padding: 4px;
+    background: rgba(31, 58, 54, 0.6);
+    border: 1px solid #c9a84c33;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.emotion-btn:hover {
+    background: rgba(44, 79, 73, 0.8);
+    border-color: #c9a84c;
+    transform: scale(1.1);
+}
+
+.emotion-btn.active {
+    background: rgba(201, 168, 76, 0.4);
+    border-color: #c9a84c;
+    box-shadow: 0 0 12px rgba(201, 168, 76, 0.3);
+}
+    
+/* ── Chapter slider ── */
+.journey-wrapper {
+    position: fixed;
+    left: 200px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 320px;
+
+    padding-top: 70px; /* creates space for the cover */
+}
+
+.journey-cover {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 90px;
+    height: 130px;
+    object-fit: cover;
+
+    border-radius: 6px;
+    border: 2px solid #c9a84c55;
+    box-shadow: 0 0 15px rgba(201,168,76,0.3);
+
+    z-index: 2;
+}
+
+.journey-box {
+    padding: 90px 20px 24px 20px; /* top padding makes room inside box */
+    background: rgba(26, 15, 31, 0.9);
+    border: 1px solid #c9a84c33;
+    border-radius: 12px;
+    box-shadow: 0 0 18px rgba(201,168,76,0.15);
+
+    text-align: center;
+    color: #f5ecd9;
+}
+    
+.journey-box h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+    color: #c9a84c;
+    text-transform: uppercase;
+}
+
+.chapter-display {
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1rem;
+    margin-bottom: 6px;
+}
+
+#chapterSlider {
+    width: 90%;
+    cursor: pointer;
+}
+
+    
+/* ── Home Button ── */
+.home-btn {
+    position: fixed;
+    bottom: 1.2rem;
+    left: 1.2rem;
+    z-index: 1000;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+
+    width: 100px;
+    height: 40px;
+
+    font-size: 0.65rem;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 6px;
+
+    background: #1a0f1f;
+    border: 1px solid #c9a84c33;
+    color: #f5ecd9;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+    box-shadow: 0 0 12px rgba(201,168,76,0.12);
+
+    transition: all 0.3s ease;
+}
+
+.home-btn:hover {
+    background: #24152b;
+    border-color: #c9a84c88;
+    box-shadow: 0 0 20px rgba(201,168,76,0.25);
+    transform: translateY(-2px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1000px) {
+
+    body {
+        padding: 15px;
+        gap: 20px;
+        padding-top: 20px;
+    }
+
+    /* HEADER */
+    .player-header {
+        position: static;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        margin-bottom: 0;
+        order: 1;
+        z-index: 10;
+    }
+
+    .player-name {
+        font-size: 2rem;
+    }
+
+    /* JOURNEY BOX */
+    .journey-wrapper {
+        position: static;
+        transform: none;
+        width: min(90vw, 400px);
+        padding-top: 0;
+        order: 2;
+        margin-top: 20px;
+    }
+
+    .journey-cover {
+        position: static;
+        transform: none;
+        width: 80px;
+        height: 115px;
+        margin: 0 auto 15px auto;
+        display: block;
+    }
+
+    .journey-box {
+        padding: 20px;
+        width: 100%;
+    }
+
+    /* BINGO */
+    .container {
+        width: min(90vw, 560px);
+        order: 3;
+    }
+
+    /* BUTTONS */
+    .controls {
+        position: static;
+        transform: none;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        width: min(90vw, 400px);
+        margin-top: 0;
+        order: 4;
+    }
+
+    .secondary-buttons {
+        width: 100%;
+    }
+
+    /* STATUS */
+    .status {
+        text-align: center;
+        order: 5;
+    }
+
+    /* HOME BUTTON */
+    .home-btn {
+        position: static;
+        align-self: center;
+        margin-top: 20px;
+        order: 6;
+    }
+}
+
+    
+</style>
+</head>
+
+<body>
+
+<div class="stars" id="stars"></div>
+
+<!-- Player Header with animated ring -->
+<div class="player-header">
+    <div class="img-frame">
+        <img id="playerPhoto" src="lena.png" alt="Player Photo">
+    </div>
+    <div class="player-name" id="playerHeaderName"></div>
+    <div class="player-id" id="playerId"></div>
+</div>
+
+<!-- Slider -->
+<div class="journey-wrapper">
+    <img src="current_cover.jpg" alt="Book cover" class="journey-cover">
+
+    <div class="journey-box">
+        <h2>How's the journey going?</h2>
+
+        <div class="chapter-display">
+            Chapter <span id="chapterValue">0</span> / 41
+        </div>
+
+        <input type="range" id="chapterSlider" min="0" max="41" value="0">
+
+        <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #c9a84c33;">
+            <div style="font-size: 0.9rem; margin-bottom: 8px; color: #c9a84c;">Reading format:</div>
+            <div class="reading-format">
+                <label><input type="radio" name="format" value="audio"> 🎧 Audio</label>
+                <label><input type="radio" name="format" value="ebook"> 📱 eBook</label>
+                <label><input type="radio" name="format" value="physical" checked> 📖 Physical</label>
+            </div>
+        </div>
+
+        <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #c9a84c33;">
+            <div style="font-size: 0.9rem; margin-bottom: 8px; color: #c9a84c;">Emotions so far:</div>
+            <div class="emotions">
+                <button class="emotion-btn" data-emotion="joy">😊</button>
+                <button class="emotion-btn" data-emotion="sad">😢</button>
+                <button class="emotion-btn" data-emotion="excited">🤩</button>
+                <button class="emotion-btn" data-emotion="scared">😨</button>
+            </div>
+        </div>
+    </div>
+</div>
+    
+<!-- Bingo Card Container -->
+<div class="container">
+    <div class="bingo-grid" id="bingoGrid"></div>
+</div>
+
+<!-- Controls -->
+<div class="controls">
+    <button id="saveBtn" class="primary-btn">💾 Save Progress</button>
+    <div class="secondary-buttons">
+        <button id="toggleMode" class="small-btn">✏️ Edit</button>
+        <button id="resetBtn" class="small-btn">🔄 Reset</button>
+    </div>
+</div>
+
+<div class="status" id="status">Play Mode</div>
+
+<script>
+// Star generation
+const starsContainer = document.getElementById('stars');
+for (let i = 0; i < 80; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    const size = Math.random() > 0.8 ? 3 : 2;
+    star.style.cssText = `
+        left: ${Math.random() * 100}%;
+        top: ${Math.random() * 100}%;
+        width: ${size}px;
+        height: ${size}px;
+        --d: ${2 + Math.random() * 4}s;
+        --delay: ${Math.random() * 4}s;
+    `;
+    starsContainer.appendChild(star);
+}
+
+// Firebase config
+const PROJECT_ID = 'bingobookclub-2144e';
+
+const FIRESTORE_BASE =
+  'https://firestore.googleapis.com/v1/projects/' +
+  PROJECT_ID +
+  '/databases/(default)/documents/first_bingo/';
+
+// Player
+const playerId = 'lena';
+
+// State
+const GRID_SIZE = 25;
+let cells = Array(GRID_SIZE).fill('');
+let marked = Array(GRID_SIZE).fill(false);
+let isEditMode = false;
+let chapterProgress = 0;
+let readingFormat = 'physical';
+let emotions = [];
+
+// Elements
+const grid = document.getElementById('bingoGrid');
+const statusEl = document.getElementById('status');
+const saveBtn = document.getElementById('saveBtn');
+
+const chapterSlider = document.getElementById('chapterSlider');
+const chapterValue = document.getElementById('chapterValue');
+
+document.getElementById('playerHeaderName').textContent = playerId;
+
+// Slider logic
+chapterSlider.oninput = e => {
+    chapterProgress = Number(e.target.value);
+    chapterValue.textContent = chapterProgress;
+};
+
+// Reading format
+document.querySelectorAll('input[name="format"]').forEach(radio => {
+    radio.addEventListener('change', e => {
+        readingFormat = e.target.value;
+    });
+});
+
+// Emotions
+document.querySelectorAll('.emotion-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const emotion = btn.dataset.emotion;
+        const index = emotions.indexOf(emotion);
+        
+        if (index > -1) {
+            emotions.splice(index, 1);
+            btn.classList.remove('active');
+        } else {
+            emotions.push(emotion);
+            btn.classList.add('active');
+        }
+    });
+});
+
+// Firestore helpers
+function toFV(val) {
+    if (typeof val === 'boolean') return { booleanValue: val };
+    if (typeof val === 'number') return { integerValue: String(val) };
+    if (Array.isArray(val)) {
+        return { arrayValue: { values: val.map(toFV) } };
+    }
+    return { stringValue: String(val) };
+}
+
+function fromFV(fv) {
+    if (!fv) return null;
+    if (fv.booleanValue !== undefined) return fv.booleanValue;
+    if (fv.integerValue !== undefined) return Number(fv.integerValue);
+    if (fv.stringValue !== undefined) return fv.stringValue;
+    if (fv.arrayValue) {
+        return (fv.arrayValue.values || []).map(fromFV);
+    }
+    return null;
+}
+
+// UI helpers
+function restoreStatus() {
+    statusEl.textContent = isEditMode ? 'Edit Mode' : 'Play Mode';
+}
+
+// Grid
+function initGrid() {
+    grid.innerHTML = '';
+
+    for (let i = 0; i < GRID_SIZE; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'bingo-cell';
+
+        if (i === 12) {
+            cell.textContent = '';
+            cell.classList.add('free');
+            marked[i] = true;
+        } else if (isEditMode) {
+            const input = document.createElement('textarea');
+            input.value = cells[i];
+            input.oninput = e => cells[i] = e.target.value;
+            cell.appendChild(input);
+        } else {
+            const text = document.createElement('div');
+            text.className = 'cell-text';
+            text.textContent = cells[i];
+            cell.appendChild(text);
+
+            if (marked[i]) cell.classList.add('marked');
+
+            cell.onclick = () => {
+                marked[i] = !marked[i];
+                initGrid();
+            };
+        }
+
+        grid.appendChild(cell);
+    }
+}
+
+// SAVE
+async function saveCard() {
+    saveBtn.disabled = true;
+    statusEl.textContent = 'Saving...';
+
+    const body = {
+        fields: {
+            cells: toFV(cells),
+            marked: toFV(marked),
+            chapterProgress: { integerValue: String(chapterProgress) },
+            readingFormat: { stringValue: readingFormat },
+            emotions: toFV(emotions),
+            savedAt: { stringValue: new Date().toISOString() }
+        }
+    };
+
+    console.log('Saving data:', {
+        cells: cells.length,
+        marked: marked.filter(Boolean).length,
+        chapterProgress,
+        readingFormat,
+        emotions
+    });
+
+    try {
+        const resp = await fetch(FIRESTORE_BASE + encodeURIComponent(playerId), {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+
+        if (!resp.ok) {
+            const errorText = await resp.text();
+            console.error('Firebase error:', resp.status, errorText);
+            throw new Error('HTTP ' + resp.status);
+        }
+
+        const result = await resp.json();
+        console.log('Save successful:', result);
+        statusEl.textContent = 'Saved to Firebase!';
+    } catch (e) {
+        console.error('Save error:', e);
+        statusEl.textContent = 'Firebase save failed';
+    } finally {
+        saveBtn.disabled = false;
+        setTimeout(restoreStatus, 2500);
+    }
+}
+
+// LOAD
+async function loadCard() {
+    statusEl.textContent = 'Loading...';
+
+    try {
+        const resp = await fetch(FIRESTORE_BASE + encodeURIComponent(playerId));
+
+        if (resp.status === 404) {
+            statusEl.textContent = 'No saved data found';
+            setTimeout(restoreStatus, 2500);
+            return;
+        }
+
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+
+        const data = await resp.json();
+        const fields = data.fields || {};
+
+        console.log('Loaded fields:', fields);
+
+        if (fields.cells) {
+            cells = fromFV(fields.cells) || Array(GRID_SIZE).fill('');
+        }
+
+        if (fields.marked) {
+            marked = fromFV(fields.marked) || Array(GRID_SIZE).fill(false);
+            marked[12] = true;
+        }
+
+        if (fields.chapterProgress) {
+            chapterProgress = Number(fields.chapterProgress.integerValue || 0);
+            chapterSlider.value = chapterProgress;
+            chapterValue.textContent = chapterProgress;
+        }
+
+        if (fields.readingFormat) {
+            readingFormat = fields.readingFormat.stringValue || 'physical';
+            const formatRadio = document.querySelector(`input[name="format"][value="${readingFormat}"]`);
+            if (formatRadio) formatRadio.checked = true;
+        }
+
+        if (fields.emotions) {
+            emotions = fromFV(fields.emotions) || [];
+            document.querySelectorAll('.emotion-btn').forEach(btn => {
+                if (emotions.includes(btn.dataset.emotion)) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        console.log('Loaded data:', {
+            cells: cells.length,
+            marked: marked.filter(Boolean).length,
+            chapterProgress,
+            readingFormat,
+            emotions
+        });
+
+        initGrid();
+        statusEl.textContent = 'Data loaded!';
+        setTimeout(restoreStatus, 2000);
+    } catch (e) {
+        console.error('Load error:', e);
+        statusEl.textContent = 'No saved data';
+        setTimeout(restoreStatus, 2000);
+    }
+}
+
+// Buttons
+document.getElementById('toggleMode').onclick = () => {
+    isEditMode = !isEditMode;
+    const toggleBtn = document.getElementById('toggleMode');
+    toggleBtn.textContent = isEditMode ? '👁️ Play' : '✏️ Edit';
+    restoreStatus();
+    initGrid();
+};
+
+document.getElementById('resetBtn').onclick = () => {
+    if (!confirm('Reset this bingo card?')) return;
+
+    cells = Array(GRID_SIZE).fill('');
+    marked = Array(GRID_SIZE).fill(false);
+    marked[12] = true;
+    chapterProgress = 0;
+    readingFormat = 'physical';
+    emotions = [];
+
+    chapterSlider.value = 0;
+    chapterValue.textContent = 0;
+
+    document.querySelector('input[name="format"][value="physical"]').checked = true;
+    document.querySelectorAll('.emotion-btn').forEach(btn => btn.classList.remove('active'));
+
+    initGrid();
+    statusEl.textContent = 'Card reset';
+    setTimeout(restoreStatus, 1500);
+};
+
+saveBtn.onclick = saveCard;
+
+// Init
+initGrid();
+loadCard();
+</script>
+
+<a class="home-btn" href="index.html">
+    <span class="home-btn-icon">🏠</span> Home
+</a>
+
+</body>
+</html>
