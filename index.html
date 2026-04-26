@@ -235,14 +235,19 @@
 
   /* ── Huge Bingo Button ── */
   .btn-bingo {
-    grid-column: 1 / -1;
-    max-width: none !important;
     height: 120px !important;
     justify-content: center;
     background: rgba(201, 168, 76, 0.2) !important;
     border: 2px solid #c9a84c !important;
     box-shadow: 0 0 30px rgba(201, 168, 76, 0.3) !important;
     color: #f5ecd9;
+  }
+
+  @media(min-width:560px){
+    .btn-bingo {
+      grid-column: 1 / -1;
+      max-width: none !important;
+    }
   }
 
   .btn-bingo:hover {
