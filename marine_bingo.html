@@ -456,14 +456,8 @@ button:disabled {
 
     body {
         padding: 15px;
-        gap: 15px;
-    }
-
-    .page-layout {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
         gap: 20px;
+        padding-top: 20px;
     }
 
     /* HEADER */
@@ -472,51 +466,68 @@ button:disabled {
         flex-direction: column;
         align-items: center;
         text-align: center;
-        margin-bottom: 10px;
+        margin-bottom: 0;
+        order: 1;
+    }
+
+    .player-name {
+        font-size: 2rem;
     }
 
     /* JOURNEY BOX */
-    .journey-box {
+    .journey-wrapper {
         position: static;
         transform: none;
-
-        flex-direction: column;   /* 🔥 stack vertically */
-        text-align: center;
-
-        width: min(90vw, 320px);
+        width: min(90vw, 400px);
+        padding-top: 70px;
+        order: 2;
     }
 
     .journey-cover {
-        width: 100px;
-        height: auto;
+        width: 80px;
+        height: 115px;
+    }
+
+    .journey-box {
+        padding: 80px 20px 20px 20px;
+        width: 100%;
     }
 
     /* BINGO */
     .container {
         width: min(90vw, 560px);
+        order: 3;
     }
 
     /* BUTTONS */
     .controls {
         position: static;
+        transform: none;
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
+        flex-direction: column;
+        align-items: stretch;
         gap: 10px;
+        width: min(90vw, 400px);
+        margin-top: 0;
+        order: 4;
+    }
+
+    .secondary-buttons {
         width: 100%;
-        margin-top: 10px;
     }
 
     /* STATUS */
     .status {
         text-align: center;
+        order: 5;
     }
 
     /* HOME BUTTON */
     .home-btn {
         position: static;
-        align-self: flex-start;
+        align-self: center;
         margin-top: 20px;
+        order: 6;
     }
 }
 
@@ -583,7 +594,6 @@ button:disabled {
         <button id="toggleMode" class="small-btn">✏️ Edit</button>
         <button id="resetBtn" class="small-btn">🔄 Reset</button>
     </div>
-    <button id="loadBtn" class="small-btn">📥 Load</button>
 </div>
 
 <div class="status" id="status">Play Mode</div>
@@ -630,7 +640,6 @@ let emotions = [];
 const grid = document.getElementById('bingoGrid');
 const statusEl = document.getElementById('status');
 const saveBtn = document.getElementById('saveBtn');
-const loadBtn = document.getElementById('loadBtn');
 
 const chapterSlider = document.getElementById('chapterSlider');
 const chapterValue = document.getElementById('chapterValue');
@@ -778,15 +787,13 @@ async function saveCard() {
 
 // LOAD
 async function loadCard() {
-    loadBtn.disabled = true;
     statusEl.textContent = 'Loading...';
 
     try {
         const resp = await fetch(FIRESTORE_BASE + encodeURIComponent(playerId));
 
         if (resp.status === 404) {
-            statusEl.textContent = 'No saved card found';
-            loadBtn.disabled = false;
+            statusEl.textContent = 'No saved data found';
             setTimeout(restoreStatus, 2500);
             return;
         }
@@ -839,13 +846,12 @@ async function loadCard() {
         });
 
         initGrid();
-        statusEl.textContent = 'Loaded from Firebase!';
+        statusEl.textContent = 'Data loaded!';
+        setTimeout(restoreStatus, 2000);
     } catch (e) {
         console.error('Load error:', e);
-        statusEl.textContent = 'Firebase load failed';
-    } finally {
-        loadBtn.disabled = false;
-        setTimeout(restoreStatus, 2500);
+        statusEl.textContent = 'No saved data';
+        setTimeout(restoreStatus, 2000);
     }
 }
 
@@ -880,7 +886,6 @@ document.getElementById('resetBtn').onclick = () => {
 };
 
 saveBtn.onclick = saveCard;
-loadBtn.onclick = loadCard;
 
 // Init
 initGrid();
