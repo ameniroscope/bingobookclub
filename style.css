@@ -1,0 +1,147 @@
+/* ══════════════════════════════════════════════════════════════
+   BINGO BOOK CLUB - SHARED STYLES
+   ══════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+/* ── Base Styles ── */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 20px;
+}
+
+html, body {
+    background: #0d0a0e;
+    font-family: 'Crimson Text', Georgia, serif;
+    min-height: 100vh;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+/* ── Stars Animation ── */
+.stars {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.star {
+    position: absolute;
+    background: #c9a84c;
+    border-radius: 50%;
+    animation: twinkle var(--d) ease-in-out infinite;
+    animation-delay: var(--delay);
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.1; }
+    50% { opacity: 0.8; }
+}
+
+/* ── Floating Books Animation ── */
+.floating-books {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.book {
+    position: absolute;
+    font-size: var(--size);
+    animation: float var(--fd) ease-in-out infinite;
+    animation-delay: var(--fdelay);
+    opacity: 0.07;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0) rotate(var(--r)); }
+    50% { transform: translateY(-20px) rotate(calc(var(--r) + 5deg)); }
+}
+
+/* ── Ornament Divider ── */
+.ornament {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    width: 100%;
+    max-width: 18rem;
+    margin: 1rem auto;
+}
+
+.ornament .line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #c9a84c55, transparent);
+}
+
+.ornament .gem {
+    color: #c9a84c;
+    font-size: 0.6rem;
+}
+
+/* ── Footer ── */
+.footer {
+    margin-top: 2.2rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.45rem;
+    letter-spacing: 2px;
+    color: #c9a84cbb;
+    text-transform: uppercase;
+}
+
+/* ── Home Button ── */
+.home-btn {
+    position: fixed;
+    bottom: 1.2rem;
+    left: 1.2rem;
+    z-index: 1000;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+
+    width: 100px;
+    height: 40px;
+
+    font-size: 0.65rem;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 6px;
+
+    background: #1a0f1f;
+    border: 1px solid #c9a84c33;
+    color: #f5ecd9;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+    box-shadow: 0 0 12px rgba(201,168,76,0.12);
+
+    transition: all 0.3s ease;
+}
+
+.home-btn:hover {
+    background: #24152b;
+    border-color: #c9a84c88;
+    box-shadow: 0 0 20px rgba(201,168,76,0.25);
+    transform: translateY(-2px);
+}
+
+.home-btn-icon {
+    font-size: 1rem;
+}
+
+/* Mobile: Home button in flow */
+@media (max-width: 767px) {
+    .home-btn {
+        position: static;
+        margin: 20px auto 0;
+    }
+}
