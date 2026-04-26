@@ -203,6 +203,31 @@
     transition: all 0.3s ease;
   }
 
+  /* ── Huge Bingo Button ── */
+  .btn-bingo {
+    grid-column: 1 / -1;
+    max-width: none;
+    height: 120px;
+    justify-content: center;
+    font-size: 1.3rem;
+    letter-spacing: 3px;
+    box-shadow: 0 0 30px rgba(201,168,76,0.3);
+  }
+
+  .btn-bingo .btn-icon {
+    font-size: 2rem;
+  }
+
+  .btn-bingo .btn-label {
+    font-size: 1.3rem;
+    letter-spacing: 3px;
+  }
+
+  .btn-bingo:hover {
+    box-shadow: 0 0 40px rgba(201,168,76,0.5);
+    transform: translateY(-3px);
+  }
+
   .btn-primary {
     background: #1f3a36;
     border: 1px solid #c9a84c55;
@@ -306,7 +331,7 @@
           <span class="btn-sub">Make your voice heard</span>
         </div>
       </a>
-      <a class="btn btn-primary" href="bingo_hub.html">
+      <a class="btn btn-primary btn-bingo" href="bingo_hub.html">
         <span class="btn-icon">🎯</span>
         <div class="btn-text">
           <span class="btn-label">To the Bingo Boards !</span>
