@@ -17,7 +17,903 @@
 html {
   font-size: var(--base);
   height: 100%;
+}<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Bingo Book Club - Explore the Books</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+:root {
+  --base: 20px;
 }
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: var(--base);
+  height: 100%;
+}
+
+body {
+  background: #0d0a0e;
+  font-family: 'Crimson Text', Georgia, serif;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* TOP NAV */
+.top-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: #0f0b12;
+  border-bottom: 1px solid #c9a84c22;
+  padding: 0.75rem 1rem;
+  overflow-x: auto;
+  display: flex;
+  gap: 0.5rem;
+  scrollbar-width: none;
+}
+
+.top-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.nav-btn {
+  flex-shrink: 0;
+  padding: 0.4375rem 0.75rem;
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.0625rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: 1px solid #c9a84c33;
+  border-radius: 4px;
+  background: transparent;
+  color: #c9a84ccc;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.nav-btn.active {
+  border-color: #c9a84c;
+  color: #c9a84c;
+  background: rgba(201,168,76,0.08);
+}
+
+/* SLIDER */
+.slider-outer {
+  position: fixed;
+  top: 53px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+
+.slider-track {
+  display: flex;
+  height: 100%;
+  width: 600%;
+  transition: transform 0.35s ease;
+}
+
+.slide {
+  width: calc(100% / 6);
+  height: 100%;
+  flex-shrink: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* SCROLL AREA */
+.card-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 1rem 1rem 5rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* DESKTOP CENTERING */
+@media (min-width: 760px) {
+  .card-scroll {
+    padding: 2rem 1rem 5rem;
+  }
+
+  .card,
+  .store-bar {
+    width: 100%;
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* CARD */
+.card {
+  background: linear-gradient(170deg,#1a1020 0%,#110d14 50%,#0f0a10 100%);
+  border: 1px solid #c9a84c55;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.card::before,
+.card::after {
+  content: '';
+  position: absolute;
+  width: 1.875rem;
+  height: 1.875rem;
+  border-color: #c9a84c55;
+  border-style: solid;
+  border-width: 0;
+}
+
+.card::before {
+  top: 0.5rem;
+  left: 0.5rem;
+  border-top-width: 1px;
+  border-left-width: 1px;
+}
+
+.card::after {
+  top: 0.5rem;
+  right: 0.5rem;
+  border-top-width: 1px;
+  border-right-width: 1px;
+}
+
+.corner-bl,
+.corner-br {
+  position: absolute;
+  width: 1.875rem;
+  height: 1.875rem;
+  border-color: #c9a84c55;
+  border-style: solid;
+  border-width: 0;
+}
+
+.corner-bl {
+  bottom: 0.5rem;
+  left: 0.5rem;
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+}
+
+.corner-br {
+  bottom: 0.5rem;
+  right: 0.5rem;
+  border-bottom-width: 1px;
+  border-right-width: 1px;
+}
+
+.accent-bar {
+  height: 0.25rem;
+}
+
+.header {
+  padding: 1.125rem 1.25rem 0.75rem;
+  text-align: center;
+}
+
+.crown {
+  font-size: 1.25rem;
+  color: #c9a84c;
+  margin-bottom: 0.25rem;
+  display: block;
+}
+
+.book-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: #f0e6c8;
+  line-height: 1.2;
+  letter-spacing: 0.0625rem;
+}
+
+.author-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.author-line .rule {
+  flex: 1;
+  height: 1px;
+  max-width: 3.125rem;
+}
+
+.author-line .rule.l {
+  background: linear-gradient(to right,transparent,#c9a84c66);
+}
+
+.author-line .rule.r {
+  background: linear-gradient(to left,transparent,#c9a84c66);
+}
+
+.author {
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.15625rem;
+  color: #c9a84c;
+  text-transform: uppercase;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 1.25rem;
+  margin: 0.25rem 0;
+}
+
+.divider .line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right,transparent,#c9a84c33,transparent);
+}
+
+.divider .dot {
+  color: #c9a84c;
+  font-size: 0.5rem;
+}
+
+/* COVER + STATS */
+.mid {
+  display: flex;
+  gap: 0.875rem;
+  padding: 0.75rem 1rem 0.5rem;
+  align-items: flex-start;
+}
+
+.cover {
+  width: 6.875rem;
+  min-width: 6.875rem;
+  height: 10.3125rem;
+  border-radius: 0.375rem;
+  border: 1px solid #c9a84c22;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* STATS */
+.mid-right {
+  flex: 1;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 1px;
+  background: #c9a84c11;
+  border: 1px solid #c9a84c11;
+  border-radius: 0.375rem;
+  overflow: hidden;
+}
+
+.stat-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0.5rem 0.25rem;
+  background: #0f0b12;
+}
+
+.stat-icon {
+  font-size: 0.9375rem;
+  margin-bottom: 0.1875rem;
+}
+
+.stat-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.4375rem;
+  letter-spacing: 0.0625rem;
+  color: #c9a84c88;
+  text-transform: uppercase;
+  margin-bottom: 0.125rem;
+}
+
+.stat-val {
+  font-size: 0.625rem;
+  color: #f0e6c8;
+  line-height: 1.3;
+}
+
+.stat-sub {
+  font-size: 0.5625rem;
+  color: #8a7060;
+  font-style: italic;
+  line-height: 1.3;
+  margin-top: 0.0625rem;
+}
+
+/* IF LIKED */
+.if-liked-full {
+  margin: 0 1rem 0.5rem;
+  padding: 0.375rem 0.625rem;
+  border: 1px solid #c9a84c22;
+  border-radius: 0.3125rem;
+  background: rgba(201,168,76,0.03);
+}
+
+.if-liked-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.4375rem;
+  letter-spacing: 0.0625rem;
+  color: #c9a84c88;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 0.1875rem;
+}
+
+.if-liked-val {
+  font-size: 0.6875rem;
+  color: #c8b89a;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+/* SUMMARY */
+.summary {
+  padding: 0.625rem 1rem;
+}
+
+.summary p {
+  font-size: 0.8125rem;
+  color: #c8b89a;
+  line-height: 1.8;
+  text-align: justify;
+}
+
+/* BARS */
+.bars-section {
+  padding: 0.625rem 1rem;
+  border-bottom: 1px solid #c9a84c22;
+}
+
+.bars-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.5625rem;
+  letter-spacing: 0.125rem;
+  color: #c9a84c;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-bottom: 0.625rem;
+}
+
+.bars-title::before,
+.bars-title::after {
+  content: '✦';
+  font-size: 0.4375rem;
+  opacity: 0.6;
+}
+
+.bar-row {
+  margin-bottom: 0.375rem;
+}
+
+.bar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.1875rem;
+}
+
+.bar-label {
+  font-size: 0.6875rem;
+  color: #a89070;
+}
+
+.bar-val {
+  font-size: 0.5625rem;
+  color: #c9784c;
+  font-weight: 600;
+}
+
+.bar-track {
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(201,168,76,0.1);
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 2px;
+}
+
+/* TROPES */
+.tropes {
+  display: flex;
+  border-top: 1px solid #c9a84c22;
+}
+
+.trope {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0.625rem 0.375rem;
+  border-right: 1px solid #c9a84c22;
+}
+
+.trope:last-child {
+  border-right: none;
+}
+
+.trope-icon {
+  font-size: 1.125rem;
+  margin-bottom: 0.25rem;
+}
+
+.trope-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.4375rem;
+  letter-spacing: 0.0625rem;
+  color: #c9a84c;
+  text-transform: uppercase;
+  margin-bottom: 0.1875rem;
+}
+
+.trope-desc {
+  font-size: 0.59375rem;
+  color: #c8b89a;
+  line-height: 1.4;
+}
+
+/* STORE BUTTONS */
+.store-bar {
+  padding: 0.75rem 1rem 1.5rem;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.store-btn {
+  flex: 1;
+  max-width: 7.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.625rem 0.375rem;
+  font-family: 'Cinzel', serif;
+  font-size: 0.46875rem;
+  letter-spacing: 0.0625rem;
+  text-transform: uppercase;
+  border: 1px solid #c9a84c44;
+  border-radius: 0.375rem;
+  background: transparent;
+  color: #c9a84c88;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.store-btn:active,
+.store-btn:hover {
+  border-color: #c9a84c;
+  color: #c9a84c;
+  background: rgba(201,168,76,0.08);
+}
+
+.store-btn-icon {
+  font-size: 1.125rem;
+}
+
+/* DOTS */
+.dots {
+  position: fixed;
+  bottom: 1rem;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 0.375rem;
+  z-index: 50;
+  pointer-events: none;
+}
+
+.dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #c9a84c33;
+  transition: background 0.3s;
+}
+
+.dot.active {
+  background: #c9a84c;
+}
+
+/* MOBILE */
+@media (max-width: 480px) {
+  :root {
+    --base: 18px;
+  }
+
+  .mid {
+    gap: 0.65rem;
+  }
+
+  .cover {
+    width: 6.2rem;
+    min-width: 6.2rem;
+    height: 9.3rem;
+  }
+}
+
+/* ── Home Button ── */
+.home-btn {
+    position: fixed;
+    bottom: 1.2rem;
+    left: 1.2rem;
+    z-index: 1000;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+
+    width: 100px;
+    height: 40px;
+
+    font-size: 0.65rem;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 6px;
+
+    background: #1a0f1f;
+    border: 1px solid #c9a84c33;
+    color: #f5ecd9;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+    box-shadow: 0 0 12px rgba(201,168,76,0.12);
+
+    transition: all 0.3s ease;
+}
+
+.home-btn:hover {
+    background: #24152b;
+    border-color: #c9a84c88;
+    box-shadow: 0 0 20px rgba(201,168,76,0.25);
+    transform: translateY(-2px);
+}
+  
+</style>
+</head>
+<body>
+
+<div class="top-nav" id="topNav">
+  <button class="nav-btn active">One Dark Window</button>
+  <button class="nav-btn">Shadows Between Us</button>
+  <button class="nav-btn">Daughter of No Worlds</button>
+  <button class="nav-btn">The Winner's Curse</button>
+  <button class="nav-btn">The Bridge Kingdom</button>
+  <button class="nav-btn">A Touch of Darkness</button>
+</div>
+
+<div class="dots" id="dots">
+  <div class="dot active"></div><div class="dot"></div><div class="dot"></div>
+  <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+</div>
+
+<div class="slider-outer" id="sliderOuter">
+  <div class="slider-track" id="sliderTrack">
+
+    <!-- SLIDE 1 -->
+    <div class="slide"><div class="card-scroll">
+      <div class="card">
+        <div class="corner-bl"></div><div class="corner-br"></div>
+        <div class="accent-bar" style="background:linear-gradient(to right,#1a4a3a,#2d7a5a,#1a4a3a);"></div>
+        <div class="header"><span class="crown">🕯️</span><div class="book-title">One Dark Window</div><div class="author-line"><div class="rule l"></div><span style="color:#c9a84c;font-size:0.625rem;">✦</span><span class="author">Rachel Gillig</span><span style="color:#c9a84c;font-size:0.625rem;">✦</span><div class="rule r"></div></div></div>
+        <div class="mid">
+          <div class="cover"><img src="https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1734440714i/58340706.jpg" alt="cover"></div>
+          <div class="mid-right">
+            <div class="stats-grid">
+              <div class="stat-row"><span class="stat-icon">🌑</span><span class="stat-label">Genre</span><span class="stat-val">Gothic dark fantasy</span></div>
+              <div class="stat-row"><span class="stat-icon">⏱️</span><span class="stat-label">Length</span><span class="stat-val">~430 pages</span><span class="stat-sub">~13h audio</span></div>
+              <div class="stat-row"><span class="stat-icon">📖</span><span class="stat-label">Series</span><span class="stat-val">Duology</span><span class="stat-sub">Finished</span></div>
+              <div class="stat-row"><span class="stat-icon">🌶️</span><span class="stat-label">Spice</span><span class="stat-val">Low</span><span class="stat-sub">No explicit content</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="if-liked-full"><span class="if-liked-label">Perfect if you liked</span><span class="if-liked-val">Uprooted · For the Wolf · The Ten Thousand Doors of January</span></div>
+        <div class="divider"><div class="line"></div><div class="dot">◆</div><div class="line"></div></div>
+        <div class="summary"><p>Elspeth Spindle has a secret — she shares her mind with an ancient, mercurial demon she calls the Nightmare. In the kingdom of Blunder, magic is punishable by death, and Elspeth has spent her whole life hiding. But when a mysterious captain pulls her into a dangerous quest to reunite a scattered deck of magical Providence Cards — the only hope of lifting a killer mist that plagues the land — she has no choice but to follow. The deeper she goes, the harder it becomes to tell where she ends and the Nightmare begins.</p></div>
+        <div class="divider"><div class="line"></div><div class="dot">◆</div><div class="line"></div></div>
+        <div class="bars-section">
+          <div class="bars-title">Vibes</div>
+          <div class="bar-row"><div class="bar-header"><span class="bar-label">Political intrigue</span><span class="bar-val">med-high</span></div><div class="bar-track"><div class="bar-fill" style="width:60%;background:linear-gradient(to right,#1a4a3a,#2d7a5a);"></div></div></div>
+          <div class="bar-row"><div class="bar-header"><span class="bar-label">Plot twists</span><span class="bar-val">high</span></div><div class="bar-track"><div class="bar-fill" style="width:78%;background:linear-gradient(to right,#1a4a3a,#2d7a5a);"></div></div></div>
+          <div class="bar-row"><div class="bar-header"><span class="bar-label">Character</span><span class="bar-val">high</span></div><div class="bar-track"><div class="bar-fill" style="width:78%;background:linear-gradient(to right,#1a4a3a,#2d7a5a);"></div></div></div>
+          <div class="bar-row"><div class="bar-header"><span class="bar-label">Magic</span><span class="bar-val">very high</span></div><div class="bar-track"><div class="bar-fill" style="width:92%;background:linear-gradient(to right,#1a4a3a,#2d7a5a);"></div></div></div>
+        </div>
+        <div class="tropes">
+          <div class="trope"><span class="trope-icon">🃏</span><span class="trope-label">Magic system</span><span class="trope-desc">Unique card-based magic</span></div>
+          <div class="trope"><span class="trope-icon">🖤</span><span class="trope-label">Slow burn</span><span class="trope-desc">Romance with a monster in her head</span></div>
+          <div class="trope"><span class="trope-icon">🌫️</span><span class="trope-label">Atmosphere</span><span class="trope-desc">Gothic, eerie and haunting</span></div>
+        </div>
+      </div>
+      <div class="store-bar">
+        <a class="store-btn" href="https://www.goodreads.com/book/show/58340706-one-dark-window" target="_blank"><span class="store-btn-icon">📚</span>Goodreads</a>
+        <a class="store-btn" href="https://www.orellfuessli.ch/shop/home/artikeldetails/A1063020651" target="_blank"><span class="store-btn-icon">🏪</span>OrellFüsseli</a>
+        <a class="store-btn" href="https://www.amazon.com/s?k=one+dark+window+rachel+gillig" target="_blank"><span class="store-btn-icon">📦</span>Amazon</a>
+      </div>
+    </div></div>
+
+    <!-- SLIDE 2 -->
+    <div class="slide"><div class="card-scroll">
+      <div class="card">
+        <div class="corner-bl"></div><div class="corner-br"></div>
+        <div class="accent-bar" style="background:linear-gradient(to right,#6b1515,#c9784c,#6b1515);"></div>
+        <div class="header"><span class="crown">🗡️</span><div class="book-title">The Shadows Between Us</div><div class="author-line"><div class="rule l"></div><span style="color:#c9a84c;font-size:0.625rem;">✦</span><span class="author">Tricia Levenseller</span><span style="color:#c9a84c;font-size:0.625rem;">✦</span><div class="rule r"></div></div></div>
+        <div class="mid">
+          <div class="cover"><img src="https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1558027905i/35702241.jpg" alt="cover"></div>
+          <div class="mid-right">
+            <div class="stats-grid">
+              <div class="stat-row"><span class="stat-icon">🗡️</span><span class="stat-label">Genre</span><span class="stat-val">Dark fantasy romance</span></div>
+              <div class="stat-row"><span class="stat-icon">⏱️</span><span class="stat-label">Length</span><span class="stat-val">336 pages</span><span class="stat-sub">~10h audio</span></div>
+              <div class="stat-row"><span class="stat-icon">📖</span><span class="stat-label">Series</span><span class="stat-val">Standalone</span><span class="stat-sub">+ optional companion</span></div>
+              <div class="stat-row"><span class="stat-icon">🌶️🌶️</span><span class="stat-label">Spice</span><span class="stat-val">Medium</span><span class="stat-sub">Some explicit scenes</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="if-liked-full"><span class="if-liked-label">Perfect if you liked</span><span class="if-liked-val">The Cruel Prince · Caraval · Fourth Wing</span></div>
+        <div class="divider"><div class="line"></div><div class="dot">◆</div><div class="line"></div></div>
+        <div class="summary"><p>Alessandra has a plan: seduce the newly crowned Shadow King, marry him, then kill him and take his throne. She has done it before — no one has ever found the body. But the king is nothing like she expected. He can command shadows and read the whispers of his enemies. And as assassination attempts mount from other quarters, Alessandra finds herself in the impossible position of keeping him alive long enough to be her victim — all while trying not to lose her heart.</p></div>
+        <div class="divider"><div class="line"></div><div class="dot">◆</div><div class="line"></div></div>
+        <div class="bars-section">
+          <div class="bars-title">Vibes</div>
+          <div class="bar-row"><div class="bar-header"><span class="bar-label">Political intrigue</span><span class="bar-val">high</span></div><div class="bar-track"><div class="bar-fill" style="width:80%;background:linear-gradient(to right,#6b1515,#c9784c);"></div></div></div>
+          <div class="bar-row"><div class="bar-header"><span class="bar-label">Plot twists</span><span class="bar-val">high</span></div><div class="bar-track"><div class="bar-fill" style="width:78%;background:linear-gradient(to right,#6b1515,#c9784c);"></div></div></div>
+          <div class="bar-row"><div class="bar-header"><span class="bar-label">Character</span><span class="bar-val">very high</span></div><div class="bar-track"><div class="bar-fill" style="width:92%;background:linear-gradient(to right,#6b1515,#c9784c);"></div></div></div>
+          <div class="bar-row"><div class="bar-header"><span class="bar-label">Magic</span><span class="bar-val">medium</span></div><div class="bar-track"><div class="bar-fill" style="width:50%;background:linear-gradient(to right,#6b1515,#c9784c);"></div></div></div>
+        </div>
+        <div class="tropes">
+          <div class="trope"><span class="trope-icon">😈</span><span class="trope-label">Villain heroine</span><span class="trope-desc">Morally grey with a murder plan</span></div>
+          <div class="trope"><span class="trope-icon">👑</span><span class="trope-label">Court intrigue</span><span class="trope-desc">Schemes and power plays</span></div>
+          <div class="trope"><span class="trope-icon">🔥</span><span class="trope-label">Enemies to lovers</span><span class="trope-desc">Unhinged slow burn tension</span></div>
+        </div>
+      </div>
+      <div class="store-bar">
+        <a class="store-btn" href="https://www.goodreads.com/book/show/35702241-the-shadows-between-us" target="_blank"><span class="store-btn-icon">📚</span>Goodreads</a>
+        <a class="store-btn" href="https://www.orellfuessli.ch/suche?sq=the+shadows+between+us" target="_blank"><span class="store-btn-icon">🏪</span>OrellFüsseli</a>
+        <a class="store-btn" href="https://www.amazon.com/s?k=the+shadows+between+us+levenseller" target="_blank"><span class="store-btn-icon">📦</span>Amazon</a>
+      </div>
+    </div></div>
+
+    <!-- SLIDE 3 -->
+    <div class="slide"><div class="card-scroll">
+      <div class="card">
+        <div class="corner-bl"></div><div class="corner-br"></div>
+        <div class="accent-bar" style="background:linear-gradient(to right,#3a1a5a,#8a4ab0,#3a1a5a);"></div>
+        <div class="header"><span class="crown">⚔️</span><div class="book-title">Daughter of No Worlds</div><div class="author-line"><div class="rule l"></div><span style="color:#c9a84c;font-size:0.625rem;">✦</span><span class="author">Carissa Broadbent</span><span style="color:#c9a84c;font-size:0.625rem;">✦</span><div class="rule r"></div></div></div>
+        <div class="mid">
+          <div class="cover"><img src="https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1577198904i/49826643.jpg" alt="cover"></div>
+          <div class="mid-right">
+            <div class="stats-grid">
+              <div class="stat-row"><span class="stat-icon">⚔️</span><span class="stat-label">Genre</span><span class="stat-val">Epic high fantasy</span></div>
+              <div class="stat-row"><span class="stat-icon">⏱️</span><span class="stat-label">Length</span><span class="stat-val">~450 pages</span><span class="stat-sub">~15h30 audio</span></div>
+              <div class="stat-row"><span class="stat-icon">📖</span><span class="stat-label">Series</span><span class="stat-val">Trilogy</span><span class="stat-sub">Finished</span></div>
+              <div class="stat-row"><span class="stat-icon">🌶️🌶️</span><span class="stat-label">Spice</span><span class="stat-val">Medium</span><span class="stat-sub">Open door scenes</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="if-liked-full"><span class="if-liked-label">Perfect if you liked</span><span class="if-liked-val">Fourth Wing · The Serpent & the Wings of Night · An Ember in the Ashes</span></div>
+        <div class="divider"><div class="line"></div><div class="dot">◆</div><div class="line"></div></div>
+        <div class="summary"><p>Tisaanah was ripped from her homeland as a child and has survived on nothing but wit and a touch of forbidden magic. When she finally buys her freedom, she loses it again almost immediately — this time, to the Orders, the world's most powerful magic wielders. To join their ranks and save the friend she left behind, she must apprentice under Maxantarius Farlione, a reclusive fire wielder with a brutal past and a deep distrust of everything the Orders stand for. Looming war, dark magic, and feelings neither of them can afford.</p></div>
+        <div class="divider"><div class="line"></div><div class="dot">◆</div><div class="line"></div></div>
+        <div class="bars-section">
+          <div class="bars-title">Vibes</div>
+          <div class="bar-row"><div class="bar-header"><span class="bar-label">Political intrigue</span><span class="bar-val">high</span></div><div class="bar-track"><div class="bar-fill" style="width:75%;background:linear-gradient(to right,#3a1a5a,#8a4ab0);"></div></div></div>
+          <div class="bar-row"><div class="bar-header"><span class="bar-label">Plot twists</span><span class="bar-val">high</span></div><div class="bar-track"><div class="bar-fill" style="width:80%;background:linear-gradient(to right,#3a1a5a,#8a4ab0);"></div></div></div>
+          <div class="bar-row"><div class="bar-header"><span class="bar-label">Character</span><span class="bar-val">very high</span></div><div class="bar-track"><div class="bar-fill" style="width:90%;background:linear-gradient(to right,#3a1a5a,#8a4ab0);"></div></div></div>
+          <div class="bar-row"><div class="bar-header"><span class="bar-label">Magic</span><span class="bar-val">very high</span></div><div class="bar-track"><div class="bar-fill" style="width:92%;background:linear-gradient(to right,#3a1a5a,#8a4ab0);"></div></div></div>
+        </div>
+        <div class="tropes">
+          <div class="trope"><span class="trope-icon">🤝</span><span class="trope-label">Slow burn</span><span class="trope-desc">Mentor-student to lovers</span></div>
+          <div class="trope"><span class="trope-icon">👥</span><span class="trope-label">Found family</span><span class="trope-desc">Will absolutely wreck you</span></div>
+          <div class="trope"><span class="trope-icon">🎭</span><span class="trope-label">Morally grey</span><span class="trope-desc">Real, lasting consequences</span></div>
+        </div>
+      </div>
+      <div class="store-bar">
+        <a class="store-btn" href="https://www.goodreads.com/book/show/49826643-daughter-of-no-worlds" target="_blank"><span class="store-btn-icon">📚</span>Goodreads</a>
+        <a class="store-btn" href="https://www.orellfuessli.ch/suche?sq=daughter+of+no+worlds" target="_blank"><span class="store-btn-icon">🏪</span>OrellFüsseli</a>
+        <a class="store-btn" href="https://www.amazon.com/s?k=daughter+of+no+worlds+broadbent" target="_blank"><span class="store-btn-icon">📦</span>Amazon</a>
+      </div>
+    </div></div>
+
+    <!-- SLIDE 4 -->
+    <div class="slide"><div class="card-scroll">
+      <div class="card">
+        <div class="corner-bl"></div><div class="corner-br"></div>
+        <div class="accent-bar" style="background:linear-gradient(to right,#5a1a1a,#c94c4c,#5a1a1a);"></div>
+        <div class="header"><span class="crown">♟️</span><div class="book-title">The Winner's Curse</div><div class="author-line"><div class="rule l"></div><span style="color:#c9a84c;font-size:0.625rem;">✦</span><span class="author">Marie Rutkoski</span><span style="color:#c9a84c;font-size:0.625rem;">✦</span><div class="rule r"></div></div></div>
+        <div class="mid">
+          <div class="cover"><img src="https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1377023523i/16069030.jpg" alt="cover"></div>
+          <div class="mid-right">
+            <div class="stats-grid">
+              <div class="stat-row"><span class="stat-icon">♟️</span><span class="stat-label">Genre</span><span class="stat-val">YA political fantasy</span></div>
+              <div class="stat-row"><span class="stat-icon">⏱️</span><span class="stat-label">Length</span><span class="stat-val">~355 pages</span><span class="stat-sub">~9h30 audio</span></div>
+              <div class="stat-row"><span class="stat-icon">📖</span><span class="stat-label">Series</span><span class="stat-val">Trilogy</span><span class="stat-sub">Finished</span></div>
+              <div class="stat-row"><span class="stat-icon">🌶️</span><span class="stat-label">Spice</span><span class="stat-val">Low</span><span class="stat-sub">No explicit content</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="if-liked-full"><span class="if-liked-label">Perfect if you liked</span><span class="if-liked-val">An Ember in the Ashes · Graceling · The Bridge Kingdom</span></div>
+        <div class="divider"><div class="line"></div><div class="dot">◆</div><div class="line"></div></div>
+        <div class="summary"><p>Kestrel is a general's daughter in an empire built on conquest and slavery. When she buys a slave named Arin on a reckless impulse, she has no idea what she's set in motion. He is not what he seems. She is not as safe as she thinks. Their growing feelings for each other are a liability neither can afford — and a secret that could unravel everything. A story of strategy, rebellion and forbidden love where every move has a price, and loyalty to your heart may cost you everything else.</p></div>
+        <div class="divider"><div class="line"></div><div class="dot">◆</div><div class="line"></div></div>
+        <div class="bars-section">
+          <div class="bars-title">Vibes</div>
+          <div class="bar-row"><div class="bar-header"><span class="bar-label">Political intrigue</span><span class="bar-val">very high</span></div><div class="bar-track"><div class="bar-fill" style="width:95%;background:linear-gradient(to right,#5a1a1a,#c94c4c);"></div></div></div>
+          <div class="bar-row"><div class="bar-header"><span class="bar-label">Plot twists</span><span class="bar-val">high</span></div><div class="bar-track"><div class="bar-fill" style="width:80%;background:linear-gradient(to right,#5a1a1a,#c94c4c);"></div></div></div>
+          <div class="bar-row"><div class="bar-header"><span class="bar-label">Character</span><span class="bar-val">very high</span></div><div class="bar-track"><div class="bar-fill" style="width:90%;background:linear-gradient(to right,#5a1a1a,#c94c4c);"></div></div></div>
+          <div class="bar-row"><div class="bar-header"><span class="bar-label">Magic</span><span class="bar-val">none</span></div><div class="bar-track"><div class="bar-fill" style="width:5%;background:linear-gradient(to right,#5a1a1a,#c94c4c);"></div></div></div>
+        </div>
+        <div class="tropes">
+          <div class="trope"><span class="trope-icon">🌹</span><span class="trope-label">Forbidden love</span><span class="trope-desc">Built on secrets and loyalty</span></div>
+          <div class="trope"><span class="trope-icon">♟️</span><span class="trope-label">Power plays</span><span class="trope-desc">Political chess at its finest</span></div>
+          <div class="trope"><span class="trope-icon">💔</span><span class="trope-label">Betrayal</span><span class="trope-desc">Twists that will break you</span></div>
+        </div>
+      </div>
+      <div class="store-bar">
+        <a class="store-btn" href="https://www.goodreads.com/book/show/16069030-the-winner-s-curse" target="_blank"><span class="store-btn-icon">📚</span>Goodreads</a>
+        <a class="store-btn" href="https://www.orellfuessli.ch/suche?sq=the+winner%27s+curse" target="_blank"><span class="store-btn-icon">🏪</span>OrellFüsseli</a>
+        <a class="store-btn" href="https://www.amazon.com/s?k=the+winner%27s+curse+rutkoski" target="_blank"><span class="store-btn-icon">📦</span>Amazon</a>
+      </div>
+    </div></div>
+
+    <!-- SLIDE 5 -->
+    <div class="slide"><div class="card-scroll">
+      <div class="card">
+        <div class="corner-bl"></div><div class="corner-br"></div>
+        <div class="accent-bar" style="background:linear-gradient(to right,#1a3a5a,#4a8ab0,#1a3a5a);"></div>
+        <div class="header"><span class="crown">🗝️</span><div class="book-title">The Bridge Kingdom</div><div class="author-line"><div class="rule l"></div><span style="color:#c9a84c;font-size:0.625rem;">✦</span><span class="author">Danielle L. Jensen</span><span style="color:#c9a84c;font-size:0.625rem;">✦</span><div class="rule r"></div></div></div>
+        <div class="mid">
+          <div class="cover"><img src="https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1719851662i/211081101.jpg" alt="cover"></div>
+          <div class="mid-right">
+            <div class="stats-grid">
+              <div class="stat-row"><span class="stat-icon">🏰</span><span class="stat-label">Genre</span><span class="stat-val">Fantasy romance</span></div>
+              <div class="stat-row"><span class="stat-icon">⏱️</span><span class="stat-label">Length</span><span class="stat-val">~400 pages</span><span class="stat-sub">~12h audio</span></div>
+              <div class="stat-row"><span class="stat-icon">📖</span><span class="stat-label">Series</span><span class="stat-val">Duology</span><span class="stat-sub">Finished</span></div>
+              <div class="stat-row"><span class="stat-icon">🌶️🌶️</span><span class="stat-label">Spice</span><span class="stat-val">Medium</span><span class="stat-sub">Some explicit scenes</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="if-liked-full"><span class="if-liked-label">Perfect if you liked</span><span class="if-liked-val">Fourth Wing · The Winner's Curse · An Ember in the Ashes</span></div>
+        <div class="divider"><div class="line"></div><div class="dot">◆</div><div class="line"></div></div>
+        <div class="summary"><p>Lara has one thought as she walks down the aisle on her wedding day: I will bring your kingdom to its knees. Trained from childhood to be a lethal spy, she is sent to infiltrate the Bridge Kingdom — the most strategically powerful place in the world — as its new queen. Her husband Aren is the enemy. Her mission is to destroy him. But the kingdom is not what she was told, and neither is the man she married. And the secrets she uncovers may change everything she thought she knew about loyalty, truth and love.</p></div>
+        <div class="divider"><div class="line"></div><div class="dot">◆</div><div class="line"></div></div>
+        <div class="bars-section">
+          <div class="bars-title">Vibes</div>
+          <div class="bar-row"><div class="bar-header"><span class="bar-label">Political intrigue</span><span class="bar-val">very high</span></div><div class="bar-track"><div class="bar-fill" style="width:92%;background:linear-gradient(to right,#1a3a5a,#4a8ab0);"></div></div></div>
+          <div class="bar-row"><div class="bar-header"><span class="bar-label">Plot twists</span><span class="bar-val">very high</span></div><div class="bar-track"><div class="bar-fill" style="width:90%;background:linear-gradient(to right,#1a3a5a,#4a8ab0);"></div></div></div>
+          <div class="bar-row"><div class="bar-header"><span class="bar-label">Character</span><span class="bar-val">high</span></div><div class="bar-track"><div class="bar-fill" style="width:80%;background:linear-gradient(to right,#1a3a5a,#4a8ab0);"></div></div></div>
+          <div class="bar-row"><div class="bar-header"><span class="bar-label">Magic</span><span class="bar-val">low</span></div><div class="bar-track"><div class="bar-fill" style="width:20%;background:linear-gradient(to right,#1a3a5a,#4a8ab0);"></div></div></div>
+        </div>
+        <div class="tropes">
+          <div class="trope"><span class="trope-icon">🕵️</span><span class="trope-label">Spies & secrets</span><span class="trope-desc">Both sent to destroy each other</span></div>
+          <div class="trope"><span class="trope-icon">💞</span><span class="trope-label">Enemies to lovers</span><span class="trope-desc">So slow it physically hurts</span></div>
+          <div class="trope"><span class="trope-icon">⚡</span><span class="trope-label">Betrayal</span><span class="trope-desc">Throw-the-book twists</span></div>
+        </div>
+      </div>
+      <div class="store-bar">
+        <a class="store-btn" href="https://www.goodreads.com/book/show/211081101-the-bridge-kingdom" target="_blank"><span class="store-btn-icon">📚</span>Goodreads</a>
+        <a class="store-btn" href="https://www.orellfuessli.ch/suche?sq=the+bridge+kingdom" target="_blank"><span class="store-btn-icon">🏪</span>OrellFüsseli</a>
+        <a class="store-btn" href="https://www.amazon.com/s?k=the+bridge+kingdom+jensen" target="_blank"><span class="store-btn-icon">📦</span>Amazon</a>
+      </div>
+    </div></div>
+
+    <!-- SLIDE 6 -->
+    <div class="slide"><div class="card-scroll">
+      <div class="card">
+        <div class="corner-bl"></div><div class="corner-br"></div>
+        <div class="accent-bar" style="background:linear-gradient(to right,#2a1a4a,#7a4aa0,#2a1a4a);"></div>
+        <div class="header"><span class="crown">🌙</span><div class="book-title">A Touch of Darkness</div><div class="author-line"><div class="rule l"></div><span style="color:#c9a84c;font-size:0.625rem;">✦</span><span class="author">Scarlett St. Clair</span><span style="color:#c9a84c;font-size:0.625rem;">✦</span><div class="rule r"></div></div></div>
+        <div class="mid">
+          <div class="cover"><img src="https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1630956636i/58750487.jpg" alt="cover"></div>
+          <div class="mid-right">
+            <div class="stats-grid">
+              <div class="stat-row"><span class="stat-icon">🌑</span><span class="stat-label">Genre</span><span class="stat-val">Mythology romantasy</span></div>
+              <div class="stat-row"><span class="stat-icon">⏱️</span><span class="stat-label">Length</span><span class="stat-val">~350 pages</span><span class="stat-sub">~11h audio</span></div>
+              <div class="stat-row"><span class="stat-icon">📖</span><span class="stat-label">Series</span><span class="stat-val">4 + 3 Hades POV</span><span class="stat-sub">All finished</span></div>
+              <div class="stat-row"><span class="stat-icon">🌶️🌶️🌶️</span><span class="stat-label">Spice</span><span class="stat-val">High</span><span class="stat-sub">Explicit content</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="if-liked-full"><span class="if-liked-label">Perfect if you liked</span><span class="if-liked-val">ACOTAR · Neon Gods · From Blood and Ash</span></div>
+        <div class="divider"><div class="line"></div><div class="dot">◆</div><div class="line"></div></div>
+        <div class="summary"><p>Persephone is the Goddess of Spring in title only — flowers shrivel at her touch. Living undercover as a mortal journalist in New Athens, she makes a reckless bet at a nightclub with Hades, God of the Dead. The terms are impossible: grow something living in the Underworld or lose her freedom forever. But as she descends into his world, she begins to wonder if the real danger isn't the bet — it's the god himself, and the feelings neither of them can afford to have.</p></div>
+        <div class="divider"><div class="line"></div><div class="dot">◆</div><div class="line"></div></div>
+        <div class="bars-section">
+          <div class="bars-title">Vibes</div>
+          <div class="bar-row"><div class="bar-header"><span class="bar-label">Political intrigue</span><span class="bar-val">medium</span></div><div class="bar-track"><div class="bar-fill" style="width:45%;background:linear-gradient(to right,#2a1a4a,#7a4aa0);"></div></div></div>
+          <div class="bar-row"><div class="bar-header"><span class="bar-label">Plot twists</span><span class="bar-val">medium</span></div><div class="bar-track"><div class="bar-fill" style="width:50%;background:linear-gradient(to right,#2a1a4a,#7a4aa0);"></div></div></div>
+          <div class="bar-row"><div class="bar-header"><span class="bar-label">Character</span><span class="bar-val">high</span></div><div class="bar-track"><div class="bar-fill" style="width:78%;background:linear-gradient(to right,#2a1a4a,#7a4aa0);"></div></div></div>
+          <div class="bar-row"><div class="bar-header"><span class="bar-label">Magic</span><span class="bar-val">high</span></div><div class="bar-track"><div class="bar-fill" style="width:80%;background:linear-gradient(to right,#2a1a4a,#7a4aa0);"></div></div></div>
+        </div>
+        <div class="tropes">
+          <div class="trope"><span class="trope-icon">🌑</span><span class="trope-label">Villain romance</span><span class="trope-desc">Hades is everything</span></div>
+          <div class="trope"><span class="trope-icon">🌸</span><span class="trope-label">Forbidden love</span><span class="trope-desc">A bet with a god</span></div>
+          <div class="trope"><span class="trope-icon">🔮</span><span class="trope-label">Mythology</span><span class="trope-desc">Greek gods, modern world</span></div>
+        </div>
+      </div>
+      <div class="store-bar">
+        <a class="store-btn" href="https://www.goodreads.com/book/show/58750487-a-touch-of-darkness" target="_blank"><span class="store-btn-icon">📚</span>Goodreads</a>
+        <a class="store-btn" href="https://www.orellfuessli.ch/suche?sq=a+touch+of+darkness" target="_blank"><span class="store-btn-icon">🏪</span>OrellFüsseli</a>
+        <a class="store-btn" href="https://www.amazon.com/s?k=a+touch+of+darkness+st+clair" target="_blank"><span class="store-btn-icon">📦</span>Amazon</a>
+      </div>
+    </div></div>
+
+  </div>
+</div>
+
+<script>
+  const TOTAL = 6;
+  let current = 0;
+  const track = document.getElementById('sliderTrack');
+  const navBtns = document.querySelectorAll('.nav-btn');
+  const dots = document.querySelectorAll('.dot');
+
+  function goTo(n) {
+    if(n < 0 || n >= TOTAL) return;
+    current = n;
+    track.style.transform = `translateX(-${100 / TOTAL * n}%)`;
+    navBtns.forEach((b,i) => b.classList.toggle('active', i === n));
+    dots.forEach((d,i) => d.classList.toggle('active', i === n));
+    navBtns[n].scrollIntoView({behavior:'smooth', block:'nearest', inline:'center'});
+  }
+
+  navBtns.forEach((btn, i) => btn.addEventListener('click', () => goTo(i)));
+
+  let tx = 0, ty = 0, tt = 0, dragging = false;
+  const outer = document.getElementById('sliderOuter');
+
+  outer.addEventListener('touchstart', e => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; tt = Date.now(); dragging = true; }, {passive:true});
+  outer.addEventListener('touchmove', e => { if(!dragging) return; const dx = e.touches[0].clientX-tx, dy = e.touches[0].clientY-ty; if(Math.abs(dy)>Math.abs(dx)){dragging=false;} }, {passive:true});
+  outer.addEventListener('touchend', e => {
+    if(!dragging) return; dragging = false;
+    const dx = e.changedTouches[0].clientX-tx, dy = e.changedTouches[0].clientY-ty, dt = Date.now()-tt;
+    if(dt>500||Math.abs(dy)>Math.abs(dx)||Math.abs(dx)<40) return;
+    dx < 0 ? goTo(current+1) : goTo(current-1);
+  }, {passive:true});
+</script>
+
+<a class="home-btn" href="index.html"><span class="home-btn-icon">🏠</span> Home</a>
+</body>
+</html>
+
 
 body {
   height: 100%;
