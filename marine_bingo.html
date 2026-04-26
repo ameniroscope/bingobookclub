@@ -268,6 +268,62 @@ button:disabled {
     text-align: center;
     font-style: italic;
 }
+
+.reading-format {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.reading-format label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.reading-format label:hover {
+    opacity: 0.8;
+}
+
+.reading-format input[type="radio"] {
+    width: auto;
+    height: auto;
+    cursor: pointer;
+}
+
+.emotions {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.emotion-btn {
+    width: 44px;
+    height: 44px;
+    font-size: 1.5rem;
+    padding: 4px;
+    background: rgba(31, 58, 54, 0.6);
+    border: 1px solid #c9a84c33;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.emotion-btn:hover {
+    background: rgba(44, 79, 73, 0.8);
+    border-color: #c9a84c;
+    transform: scale(1.1);
+}
+
+.emotion-btn.active {
+    background: rgba(201, 168, 76, 0.4);
+    border-color: #c9a84c;
+    box-shadow: 0 0 12px rgba(201, 168, 76, 0.3);
+}
     
 /* ── Chapter slider ── */
 .journey-wrapper {
@@ -465,6 +521,25 @@ button:disabled {
         </div>
 
         <input type="range" id="chapterSlider" min="0" max="41" value="0">
+
+        <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #c9a84c33;">
+            <div style="font-size: 0.9rem; margin-bottom: 8px; color: #c9a84c;">Reading format:</div>
+            <div class="reading-format">
+                <label><input type="radio" name="format" value="audio"> 🎧 Audio</label>
+                <label><input type="radio" name="format" value="ebook"> 📱 eBook</label>
+                <label><input type="radio" name="format" value="physical" checked> 📖 Physical</label>
+            </div>
+        </div>
+
+        <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #c9a84c33;">
+            <div style="font-size: 0.9rem; margin-bottom: 8px; color: #c9a84c;">Emotions so far:</div>
+            <div class="emotions">
+                <button class="emotion-btn" data-emotion="joy">😊</button>
+                <button class="emotion-btn" data-emotion="sad">😢</button>
+                <button class="emotion-btn" data-emotion="excited">🤩</button>
+                <button class="emotion-btn" data-emotion="scared">😨</button>
+            </div>
+        </div>
     </div>
 </div>
     
@@ -518,6 +593,8 @@ let cells = Array(GRID_SIZE).fill('');
 let marked = Array(GRID_SIZE).fill(false);
 let isEditMode = true;
 let chapterProgress = 0;
+let readingFormat = 'physical';
+let emotions = [];
 
 // Elements
 const grid = document.getElementById('bingoGrid');
@@ -536,17 +613,48 @@ chapterSlider.oninput = e => {
     chapterValue.textContent = chapterProgress;
 };
 
+// Reading format
+document.querySelectorAll('input[name="format"]').forEach(radio => {
+    radio.addEventListener('change', e => {
+        readingFormat = e.target.value;
+    });
+});
+
+// Emotions
+document.querySelectorAll('.emotion-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const emotion = btn.dataset.emotion;
+        const index = emotions.indexOf(emotion);
+        
+        if (index > -1) {
+            emotions.splice(index, 1);
+            btn.classList.remove('active');
+        } else {
+            emotions.push(emotion);
+            btn.classList.add('active');
+        }
+    });
+});
+
 // Firestore helpers
 function toFV(val) {
     if (typeof val === 'boolean') return { booleanValue: val };
-    if (Array.isArray(val)) return { arrayValue: { values: val.map(toFV) } };
+    if (typeof val === 'number') return { integerValue: String(val) };
+    if (Array.isArray(val)) {
+        return { arrayValue: { values: val.map(toFV) } };
+    }
     return { stringValue: String(val) };
 }
 
 function fromFV(fv) {
+    if (!fv) return null;
     if (fv.booleanValue !== undefined) return fv.booleanValue;
-    if (fv.arrayValue) return (fv.arrayValue.values || []).map(fromFV);
-    return fv.stringValue || '';
+    if (fv.integerValue !== undefined) return Number(fv.integerValue);
+    if (fv.stringValue !== undefined) return fv.stringValue;
+    if (fv.arrayValue) {
+        return (fv.arrayValue.values || []).map(fromFV);
+    }
+    return null;
 }
 
 // UI helpers
@@ -599,9 +707,19 @@ async function saveCard() {
             cells: toFV(cells),
             marked: toFV(marked),
             chapterProgress: { integerValue: String(chapterProgress) },
+            readingFormat: { stringValue: readingFormat },
+            emotions: toFV(emotions),
             savedAt: { stringValue: new Date().toISOString() }
         }
     };
+
+    console.log('Saving data:', {
+        cells: cells.length,
+        marked: marked.filter(Boolean).length,
+        chapterProgress,
+        readingFormat,
+        emotions
+    });
 
     try {
         const resp = await fetch(FIRESTORE_BASE + encodeURIComponent(playerId), {
@@ -616,9 +734,11 @@ async function saveCard() {
             throw new Error('HTTP ' + resp.status);
         }
 
+        const result = await resp.json();
+        console.log('Save successful:', result);
         statusEl.textContent = 'Saved to Firebase!';
     } catch (e) {
-        console.error(e);
+        console.error('Save error:', e);
         statusEl.textContent = 'Firebase save failed';
     } finally {
         saveBtn.disabled = false;
@@ -646,10 +766,14 @@ async function loadCard() {
         const data = await resp.json();
         const fields = data.fields || {};
 
-        if (fields.cells) cells = fromFV(fields.cells);
+        console.log('Loaded fields:', fields);
+
+        if (fields.cells) {
+            cells = fromFV(fields.cells) || Array(GRID_SIZE).fill('');
+        }
 
         if (fields.marked) {
-            marked = fromFV(fields.marked);
+            marked = fromFV(fields.marked) || Array(GRID_SIZE).fill(false);
             marked[12] = true;
         }
 
@@ -659,10 +783,35 @@ async function loadCard() {
             chapterValue.textContent = chapterProgress;
         }
 
+        if (fields.readingFormat) {
+            readingFormat = fields.readingFormat.stringValue || 'physical';
+            const formatRadio = document.querySelector(`input[name="format"][value="${readingFormat}"]`);
+            if (formatRadio) formatRadio.checked = true;
+        }
+
+        if (fields.emotions) {
+            emotions = fromFV(fields.emotions) || [];
+            document.querySelectorAll('.emotion-btn').forEach(btn => {
+                if (emotions.includes(btn.dataset.emotion)) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        console.log('Loaded data:', {
+            cells: cells.length,
+            marked: marked.filter(Boolean).length,
+            chapterProgress,
+            readingFormat,
+            emotions
+        });
+
         initGrid();
         statusEl.textContent = 'Loaded from Firebase!';
     } catch (e) {
-        console.error(e);
+        console.error('Load error:', e);
         statusEl.textContent = 'Firebase load failed';
     } finally {
         loadBtn.disabled = false;
@@ -684,9 +833,14 @@ document.getElementById('resetBtn').onclick = () => {
     marked = Array(GRID_SIZE).fill(false);
     marked[12] = true;
     chapterProgress = 0;
+    readingFormat = 'physical';
+    emotions = [];
 
     chapterSlider.value = 0;
     chapterValue.textContent = 0;
+
+    document.querySelector('input[name="format"][value="physical"]').checked = true;
+    document.querySelectorAll('.emotion-btn').forEach(btn => btn.classList.remove('active'));
 
     initGrid();
     statusEl.textContent = 'Card reset';
