@@ -203,32 +203,6 @@
     transition: all 0.3s ease;
   }
 
-  /* ── Huge Bingo Button ── */
-.btn-bingo {
-    font-size: 18px;
-    padding: 16px 24px;
-    font-weight: 600;
-    background: rgba(201, 168, 76, 0.2);
-    border: 2px solid #c9a84c;
-    box-shadow: 0 0 20px rgba(201, 168, 76, 0.3);
-}
-
-.btn-bingo:hover {
-    background: rgba(201, 168, 76, 0.3);
-    border-color: #d4af37;
-    box-shadow: 0 0 30px rgba(201, 168, 76, 0.5);
-    transform: translateY(-3px);
-}
-
-  .btn-bingo .btn-icon {
-    font-size: 2rem;
-  }
-
-  .btn-bingo .btn-label {
-    font-size: 1.3rem;
-    letter-spacing: 3px;
-  }
-
   .btn-primary {
     background: #1f3a36;
     border: 1px solid #c9a84c55;
@@ -257,6 +231,34 @@
     border-color: #c9a84c88;
     box-shadow: 0 0 20px rgba(201,168,76,0.25);
     transform: translateY(-2px);
+  }
+
+  /* ── Huge Bingo Button ── */
+  .btn-bingo {
+    grid-column: 1 / -1;
+    max-width: none !important;
+    height: 120px !important;
+    justify-content: center;
+    background: rgba(201, 168, 76, 0.2) !important;
+    border: 2px solid #c9a84c !important;
+    box-shadow: 0 0 30px rgba(201, 168, 76, 0.3) !important;
+    color: #f5ecd9;
+  }
+
+  .btn-bingo:hover {
+    background: rgba(201, 168, 76, 0.3) !important;
+    border-color: #d4af37 !important;
+    box-shadow: 0 0 40px rgba(201, 168, 76, 0.5) !important;
+    transform: translateY(-3px) !important;
+  }
+
+  .btn-bingo .btn-icon {
+    font-size: 2rem;
+  }
+
+  .btn-bingo .btn-label {
+    font-size: 1.3rem;
+    letter-spacing: 3px;
   }
 
   .btn-icon {
