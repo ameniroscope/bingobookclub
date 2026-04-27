@@ -4,15 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- Updated CSP to allow Firebase domains -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://firestore.googleapis.com https://*.googleapis.com;">
 
 <title>Bingo Card - Lena</title>
 
-<!-- Link to shared styles -->
 <link rel="stylesheet" href="style.css">
 
-<!-- Page-specific styles -->
 <style>
 body {
     padding: 20px;
@@ -29,7 +26,7 @@ button, input {
     font-family: 'Crimson Text', Georgia, 'Times New Roman', serif;
 }
 
-/* Player Header with Ring Animation */
+/* Player Header */
 .player-header {
     position: fixed;
     top: 24px;
@@ -225,7 +222,7 @@ button:disabled {
     box-shadow: 0 0 20px rgba(201, 168, 76, 0.3);
 }
 
-.primary-btn:hover {
+.primary-btn:hover:not(:disabled) {
     background: rgba(201, 168, 76, 0.3);
     border-color: #d4af37;
     box-shadow: 0 0 30px rgba(201, 168, 76, 0.5);
@@ -270,9 +267,7 @@ button:disabled {
     transition: opacity 0.2s;
 }
 
-.reading-format label:hover {
-    opacity: 0.8;
-}
+.reading-format label:hover { opacity: 0.8; }
 
 .reading-format input[type="radio"] {
     width: auto;
@@ -296,14 +291,12 @@ button:disabled {
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
-    
-    /* Add these lines to center the emoji */
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.emotion-btn:hover {
+.emotion-btn:hover:not(:disabled) {
     background: rgba(44, 79, 73, 0.8);
     border-color: #c9a84c;
     transform: scale(1.1);
@@ -314,8 +307,8 @@ button:disabled {
     border-color: #c9a84c;
     box-shadow: 0 0 12px rgba(201, 168, 76, 0.3);
 }
-    
-/* ── Chapter slider ── */
+
+/* Chapter slider */
 .journey-wrapper {
     position: fixed;
     left: 150px;
@@ -348,7 +341,7 @@ button:disabled {
     text-align: center;
     color: #f5ecd9;
 }
-    
+
 .journey-box h2 {
     font-family: 'Cinzel', serif;
     font-size: 0.8rem;
@@ -369,7 +362,104 @@ button:disabled {
     cursor: pointer;
 }
 
-/* Responsive adjustments */
+/* Lock button */
+.lock-btn {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 200;
+    background: rgba(31, 58, 54, 0.9);
+    border: 1px solid #c9a84c55;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    font-size: 1.4rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 12px rgba(201, 168, 76, 0.15);
+    padding: 0;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+.lock-btn:hover {
+    border-color: #c9a84c;
+    box-shadow: 0 0 20px rgba(201, 168, 76, 0.35);
+    transform: scale(1.1);
+}
+
+.lock-btn.unlocked {
+    border-color: #c9a84c;
+    background: rgba(201, 168, 76, 0.25);
+}
+
+/* Password modal */
+.lock-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 300;
+    align-items: center;
+    justify-content: center;
+}
+
+.lock-overlay.visible { display: flex; }
+
+.lock-modal {
+    background: rgba(26, 15, 31, 0.97);
+    border: 1px solid #c9a84c55;
+    border-radius: 12px;
+    padding: 32px;
+    text-align: center;
+    box-shadow: 0 0 30px rgba(201, 168, 76, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 260px;
+}
+
+.lock-modal h3 {
+    font-family: 'Cinzel', serif;
+    color: #c9a84c;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    margin: 0;
+}
+
+.lock-modal input[type="password"] {
+    width: 100%;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid #c9a84c55;
+    border-radius: 6px;
+    color: #f5ecd9;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.1rem;
+    padding: 10px 14px;
+    text-align: center;
+    outline: none;
+    box-sizing: border-box;
+    height: auto;
+}
+
+.lock-modal input[type="password"]:focus { border-color: #c9a84c; }
+
+.lock-error {
+    color: #e06c75;
+    font-size: 0.85rem;
+    min-height: 1em;
+}
+
+.lock-modal .modal-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+/* Responsive */
 @media (max-width: 1000px) {
     body {
         padding: 15px;
@@ -377,7 +467,6 @@ button:disabled {
         padding-top: 20px;
     }
 
-    /* HEADER */
     .player-header {
         position: static;
         flex-direction: column;
@@ -388,11 +477,8 @@ button:disabled {
         z-index: 10;
     }
 
-    .player-name {
-        font-size: 2rem;
-    }
+    .player-name { font-size: 2rem; }
 
-    /* JOURNEY BOX */
     .journey-wrapper {
         position: static;
         transform: none;
@@ -416,13 +502,11 @@ button:disabled {
         width: 100%;
     }
 
-    /* BINGO */
     .container {
         width: min(90vw, 560px);
         order: 3;
     }
 
-    /* BUTTONS */
     .controls {
         position: static;
         transform: none;
@@ -435,27 +519,15 @@ button:disabled {
         order: 4;
     }
 
-    .secondary-buttons {
-        width: 100%;
-    }
+    .secondary-buttons { width: 100%; }
+    .status { text-align: center; order: 5; }
+    .ornament { order: 6; }
+    .home-btn { order: 7; }
+    .footer { order: 8; }
 
-    /* STATUS */
-    .status {
-        text-align: center;
-        order: 5;
-    }
-
-    /* FOOTER */
-    .ornament {
-        order: 6;
-    }
-
-    .home-btn {
-        order: 7;
-    }
-
-    .footer {
-        order: 8;
+    .lock-btn {
+        top: 12px;
+        right: 12px;
     }
 }
 </style>
@@ -463,10 +535,25 @@ button:disabled {
 
 <body>
 
-<!-- Stars background -->
 <div class="stars" id="stars"></div>
 
-<!-- Player Header with animated ring -->
+<!-- Lock button -->
+<button class="lock-btn" id="lockBtn" title="Unlock card">🔒</button>
+
+<!-- Password modal -->
+<div class="lock-overlay" id="lockOverlay">
+    <div class="lock-modal">
+        <h3>🔐 Unlock Card</h3>
+        <input type="password" id="passwordInput" placeholder="Enter password" autocomplete="off">
+        <div class="lock-error" id="lockError"></div>
+        <div class="modal-buttons">
+            <button class="small-btn" id="unlockSubmit">Unlock</button>
+            <button class="small-btn" id="unlockCancel">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- Player Header -->
 <div class="player-header">
     <div class="img-frame">
         <img id="playerPhoto" src="lena.png" alt="Player Photo">
@@ -478,14 +565,11 @@ button:disabled {
 <!-- Slider -->
 <div class="journey-wrapper">
     <img src="current_cover.jpg" alt="Book cover" class="journey-cover">
-
     <div class="journey-box">
         <h2>How's the journey going?</h2>
-
         <div class="chapter-display">
             Chapter <span id="chapterValue">0</span> / 41
         </div>
-
         <input type="range" id="chapterSlider" min="0" max="41" value="0">
 
         <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #c9a84c33;">
@@ -508,24 +592,23 @@ button:disabled {
         </div>
     </div>
 </div>
-    
-<!-- Bingo Card Container -->
+
+<!-- Bingo Card -->
 <div class="container">
     <div class="bingo-grid" id="bingoGrid"></div>
 </div>
 
 <!-- Controls -->
 <div class="controls">
-    <button id="saveBtn" class="primary-btn">💾 Save Progress</button>
+    <button id="saveBtn" class="primary-btn" disabled>💾 Save Progress</button>
     <div class="secondary-buttons">
-        <button id="toggleMode" class="small-btn">✏️ Edit</button>
-        <button id="resetBtn" class="small-btn">🔄 Reset</button>
+        <button id="toggleMode" class="small-btn" disabled>✏️ Edit</button>
+        <button id="resetBtn" class="small-btn" disabled>🔄 Reset</button>
     </div>
 </div>
 
-<div class="status" id="status">Play Mode</div>
+<div class="status" id="status">🔒 Read Only</div>
 
-<!-- Footer Section -->
 <div class="ornament">
     <div class="line"></div>
     <div class="gem">◆</div>
@@ -539,7 +622,7 @@ button:disabled {
 <div class="footer">✦ &nbsp; The Bingo Book Club &nbsp; ✦</div>
 
 <script>
-// Star generation
+// ── STARS ─────────────────────────────────────────────────────
 const starsContainer = document.getElementById('stars');
 for (let i = 0; i < 80; i++) {
     const star = document.createElement('div');
@@ -556,57 +639,110 @@ for (let i = 0; i < 80; i++) {
     starsContainer.appendChild(star);
 }
 
-// Firebase config
+// ── CONFIG ────────────────────────────────────────────────────
+const CARD_PASSWORD = 'justguessing'; // 👈 Change this to your password
+
 const PROJECT_ID = 'bingobookclub-2144e';
-
 const FIRESTORE_BASE =
-  'https://firestore.googleapis.com/v1/projects/' +
-  PROJECT_ID +
-  '/databases/(default)/documents/first_bingo/';
+    'https://firestore.googleapis.com/v1/projects/' +
+    PROJECT_ID +
+    '/databases/(default)/documents/first_bingo/';
 
-// Player
 const playerId = 'lena';
 
-// State
+// ── STATE ─────────────────────────────────────────────────────
 const GRID_SIZE = 25;
 let cells = Array(GRID_SIZE).fill('');
 let marked = Array(GRID_SIZE).fill(false);
 let isEditMode = false;
+let isUnlocked = false;
 let chapterProgress = 0;
 let readingFormat = 'physical';
 let emotions = [];
 
-// Elements
-const grid = document.getElementById('bingoGrid');
-const statusEl = document.getElementById('status');
-const saveBtn = document.getElementById('saveBtn');
-
+// ── ELEMENTS ──────────────────────────────────────────────────
+const grid        = document.getElementById('bingoGrid');
+const statusEl    = document.getElementById('status');
+const saveBtn     = document.getElementById('saveBtn');
+const toggleBtn   = document.getElementById('toggleMode');
+const resetBtn    = document.getElementById('resetBtn');
+const lockBtn     = document.getElementById('lockBtn');
+const lockOverlay = document.getElementById('lockOverlay');
+const passwordInput = document.getElementById('passwordInput');
+const lockError   = document.getElementById('lockError');
 const chapterSlider = document.getElementById('chapterSlider');
-const chapterValue = document.getElementById('chapterValue');
+const chapterValue  = document.getElementById('chapterValue');
 
 document.getElementById('playerHeaderName').textContent = playerId;
 
-// Slider logic
+// ── LOCK / UNLOCK ─────────────────────────────────────────────
+function setLockState(unlocked) {
+    isUnlocked = unlocked;
+    lockBtn.textContent = unlocked ? '🔓' : '🔒';
+    lockBtn.classList.toggle('unlocked', unlocked);
+    lockBtn.title = unlocked ? 'Lock card' : 'Unlock card';
+
+    saveBtn.disabled   = !unlocked;
+    toggleBtn.disabled = !unlocked;
+    resetBtn.disabled  = !unlocked;
+    chapterSlider.disabled = !unlocked;
+
+    document.querySelectorAll('.emotion-btn').forEach(b => b.disabled = !unlocked);
+    document.querySelectorAll('input[name="format"]').forEach(r => r.disabled = !unlocked);
+
+    restoreStatus();
+    initGrid();
+}
+
+lockBtn.onclick = () => {
+    if (isUnlocked) {
+        setLockState(false);
+    } else {
+        passwordInput.value = '';
+        lockError.textContent = '';
+        lockOverlay.classList.add('visible');
+        setTimeout(() => passwordInput.focus(), 50);
+    }
+};
+
+document.getElementById('unlockSubmit').onclick = tryUnlock;
+document.getElementById('unlockCancel').onclick = () => lockOverlay.classList.remove('visible');
+
+passwordInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter')  tryUnlock();
+    if (e.key === 'Escape') lockOverlay.classList.remove('visible');
+});
+
+function tryUnlock() {
+    if (passwordInput.value === CARD_PASSWORD) {
+        lockOverlay.classList.remove('visible');
+        setLockState(true);
+    } else {
+        lockError.textContent = 'Wrong password, try again.';
+        passwordInput.value = '';
+        passwordInput.focus();
+    }
+}
+
+// ── SLIDER ────────────────────────────────────────────────────
 chapterSlider.oninput = e => {
     chapterProgress = Number(e.target.value);
     chapterValue.textContent = chapterProgress;
 };
 
-// Reading format
+// ── READING FORMAT ────────────────────────────────────────────
 document.querySelectorAll('input[name="format"]').forEach(radio => {
-    radio.addEventListener('change', e => {
-        readingFormat = e.target.value;
-    });
+    radio.addEventListener('change', e => { readingFormat = e.target.value; });
 });
 
-// Emotions
+// ── EMOTIONS ──────────────────────────────────────────────────
 document.querySelectorAll('.emotion-btn').forEach(btn => {
     btn.addEventListener('click', () => {
+        if (!isUnlocked) return;
         const emotion = btn.dataset.emotion;
-        const index = emotions.indexOf(emotion);
-        
-        if (index > -1) {
-            emotions.splice(index, 1);
+        const idx = emotions.indexOf(emotion);
+        if (idx > -1) {
+            emotions.splice(idx, 1);
             btn.classList.remove('active');
         } else {
             emotions.push(emotion);
@@ -615,13 +751,11 @@ document.querySelectorAll('.emotion-btn').forEach(btn => {
     });
 });
 
-// Firestore helpers
+// ── FIRESTORE HELPERS ─────────────────────────────────────────
 function toFV(val) {
     if (typeof val === 'boolean') return { booleanValue: val };
-    if (typeof val === 'number') return { integerValue: String(val) };
-    if (Array.isArray(val)) {
-        return { arrayValue: { values: val.map(toFV) } };
-    }
+    if (typeof val === 'number')  return { integerValue: String(val) };
+    if (Array.isArray(val))       return { arrayValue: { values: val.map(toFV) } };
     return { stringValue: String(val) };
 }
 
@@ -629,22 +763,21 @@ function fromFV(fv) {
     if (!fv) return null;
     if (fv.booleanValue !== undefined) return fv.booleanValue;
     if (fv.integerValue !== undefined) return Number(fv.integerValue);
-    if (fv.stringValue !== undefined) return fv.stringValue;
-    if (fv.arrayValue) {
-        return (fv.arrayValue.values || []).map(fromFV);
-    }
+    if (fv.stringValue  !== undefined) return fv.stringValue;
+    if (fv.arrayValue)                 return (fv.arrayValue.values || []).map(fromFV);
     return null;
 }
 
-// UI helpers
+// ── STATUS ────────────────────────────────────────────────────
 function restoreStatus() {
-    statusEl.textContent = isEditMode ? 'Edit Mode' : 'Play Mode';
+    if (!isUnlocked)      statusEl.textContent = '🔒 Read Only';
+    else if (isEditMode)  statusEl.textContent = 'Edit Mode';
+    else                  statusEl.textContent = 'Play Mode';
 }
 
-// Grid
+// ── GRID ──────────────────────────────────────────────────────
 function initGrid() {
     grid.innerHTML = '';
-
     for (let i = 0; i < GRID_SIZE; i++) {
         const cell = document.createElement('div');
         cell.className = 'bingo-cell';
@@ -653,52 +786,42 @@ function initGrid() {
             cell.textContent = '';
             cell.classList.add('free');
             marked[i] = true;
-        } else if (isEditMode) {
-            const input = document.createElement('textarea');
-            input.value = cells[i];
-            input.oninput = e => cells[i] = e.target.value;
-            cell.appendChild(input);
+        } else if (isUnlocked && isEditMode) {
+            const ta = document.createElement('textarea');
+            ta.value = cells[i];
+            ta.oninput = e => { cells[i] = e.target.value; };
+            cell.appendChild(ta);
         } else {
             const text = document.createElement('div');
             text.className = 'cell-text';
             text.textContent = cells[i];
             cell.appendChild(text);
-
             if (marked[i]) cell.classList.add('marked');
-
-            cell.onclick = () => {
-                marked[i] = !marked[i];
-                initGrid();
-            };
+            if (isUnlocked) {
+                cell.style.cursor = 'pointer';
+                cell.onclick = () => { marked[i] = !marked[i]; initGrid(); };
+            }
         }
-
         grid.appendChild(cell);
     }
 }
 
-// SAVE
+// ── SAVE ──────────────────────────────────────────────────────
 async function saveCard() {
+    if (!isUnlocked) return;
     saveBtn.disabled = true;
     statusEl.textContent = 'Saving...';
 
     const body = {
         fields: {
-            cells: toFV(cells),
-            marked: toFV(marked),
+            cells:           toFV(cells),
+            marked:          toFV(marked),
             chapterProgress: { integerValue: String(chapterProgress) },
-            readingFormat: { stringValue: readingFormat },
-            emotions: toFV(emotions),
-            savedAt: { stringValue: new Date().toISOString() }
+            readingFormat:   { stringValue: readingFormat },
+            emotions:        toFV(emotions),
+            savedAt:         { stringValue: new Date().toISOString() }
         }
     };
-
-    console.log('Saving data:', {
-        cells: cells.length,
-        marked: marked.filter(Boolean).length,
-        chapterProgress,
-        readingFormat,
-        emotions
-    });
 
     try {
         const resp = await fetch(FIRESTORE_BASE + encodeURIComponent(playerId), {
@@ -706,15 +829,7 @@ async function saveCard() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body)
         });
-
-        if (!resp.ok) {
-            const errorText = await resp.text();
-            console.error('Firebase error:', resp.status, errorText);
-            throw new Error('HTTP ' + resp.status);
-        }
-
-        const result = await resp.json();
-        console.log('Save successful:', result);
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
         statusEl.textContent = 'Saved to Firebase!';
     } catch (e) {
         console.error('Save error:', e);
@@ -725,10 +840,9 @@ async function saveCard() {
     }
 }
 
-// LOAD
+// ── LOAD ──────────────────────────────────────────────────────
 async function loadCard() {
     statusEl.textContent = 'Loading...';
-
     try {
         const resp = await fetch(FIRESTORE_BASE + encodeURIComponent(playerId));
 
@@ -737,53 +851,29 @@ async function loadCard() {
             setTimeout(restoreStatus, 2500);
             return;
         }
-
         if (!resp.ok) throw new Error('HTTP ' + resp.status);
 
         const data = await resp.json();
-        const fields = data.fields || {};
+        const f = data.fields || {};
 
-        console.log('Loaded fields:', fields);
-
-        if (fields.cells) {
-            cells = fromFV(fields.cells) || Array(GRID_SIZE).fill('');
-        }
-
-        if (fields.marked) {
-            marked = fromFV(fields.marked) || Array(GRID_SIZE).fill(false);
-            marked[12] = true;
-        }
-
-        if (fields.chapterProgress) {
-            chapterProgress = Number(fields.chapterProgress.integerValue || 0);
+        if (f.cells)           cells           = fromFV(f.cells)  || Array(GRID_SIZE).fill('');
+        if (f.marked)        { marked          = fromFV(f.marked) || Array(GRID_SIZE).fill(false); marked[12] = true; }
+        if (f.chapterProgress) {
+            chapterProgress = Number(f.chapterProgress.integerValue || 0);
             chapterSlider.value = chapterProgress;
             chapterValue.textContent = chapterProgress;
         }
-
-        if (fields.readingFormat) {
-            readingFormat = fields.readingFormat.stringValue || 'physical';
-            const formatRadio = document.querySelector(`input[name="format"][value="${readingFormat}"]`);
-            if (formatRadio) formatRadio.checked = true;
+        if (f.readingFormat) {
+            readingFormat = f.readingFormat.stringValue || 'physical';
+            const r = document.querySelector(`input[name="format"][value="${readingFormat}"]`);
+            if (r) r.checked = true;
         }
-
-        if (fields.emotions) {
-            emotions = fromFV(fields.emotions) || [];
+        if (f.emotions) {
+            emotions = fromFV(f.emotions) || [];
             document.querySelectorAll('.emotion-btn').forEach(btn => {
-                if (emotions.includes(btn.dataset.emotion)) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
+                btn.classList.toggle('active', emotions.includes(btn.dataset.emotion));
             });
         }
-
-        console.log('Loaded data:', {
-            cells: cells.length,
-            marked: marked.filter(Boolean).length,
-            chapterProgress,
-            readingFormat,
-            emotions
-        });
 
         initGrid();
         statusEl.textContent = 'Data loaded!';
@@ -795,31 +885,28 @@ async function loadCard() {
     }
 }
 
-// Buttons
-document.getElementById('toggleMode').onclick = () => {
+// ── BUTTON HANDLERS ───────────────────────────────────────────
+toggleBtn.onclick = () => {
+    if (!isUnlocked) return;
     isEditMode = !isEditMode;
-    const toggleBtn = document.getElementById('toggleMode');
     toggleBtn.textContent = isEditMode ? '👁️ Play' : '✏️ Edit';
     restoreStatus();
     initGrid();
 };
 
-document.getElementById('resetBtn').onclick = () => {
+resetBtn.onclick = () => {
+    if (!isUnlocked) return;
     if (!confirm('Reset this bingo card?')) return;
-
-    cells = Array(GRID_SIZE).fill('');
-    marked = Array(GRID_SIZE).fill(false);
-    marked[12] = true;
+    cells          = Array(GRID_SIZE).fill('');
+    marked         = Array(GRID_SIZE).fill(false);
+    marked[12]     = true;
     chapterProgress = 0;
-    readingFormat = 'physical';
-    emotions = [];
-
+    readingFormat  = 'physical';
+    emotions       = [];
     chapterSlider.value = 0;
     chapterValue.textContent = 0;
-
     document.querySelector('input[name="format"][value="physical"]').checked = true;
     document.querySelectorAll('.emotion-btn').forEach(btn => btn.classList.remove('active'));
-
     initGrid();
     statusEl.textContent = 'Card reset';
     setTimeout(restoreStatus, 1500);
@@ -827,8 +914,8 @@ document.getElementById('resetBtn').onclick = () => {
 
 saveBtn.onclick = saveCard;
 
-// Init
-initGrid();
+// ── INIT ──────────────────────────────────────────────────────
+setLockState(false); // start locked
 loadCard();
 </script>
 
