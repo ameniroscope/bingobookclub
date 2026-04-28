@@ -29,56 +29,12 @@
 }
 
 .book-card img {
-    margin-left: auto;
-    margin-right: 0;
-    display: block;
-}
-
-.book-card img {
     height: 80vh;
     width: auto;
     max-width: 100%;
     border-radius: 10px;
     border: 2px solid #c9a84c55;
     box-shadow: 0 0 30px rgba(201, 168, 76, 0.25);
-    cursor: zoom-in;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.book-card img:hover {
-    transform: scale(1.02);
-    box-shadow: 0 0 50px rgba(201, 168, 76, 0.45);
-}
-
-/* Lightbox */
-.lightbox {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: 1000;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(6px);
-    align-items: center;
-    justify-content: center;
-    cursor: zoom-out;
-}
-
-.lightbox.open {
-    display: flex;
-}
-
-.lightbox img {
-    max-height: 90vh;
-    max-width: 90vw;
-    border-radius: 12px;
-    border: 2px solid #c9a84c88;
-    box-shadow: 0 0 60px rgba(201, 168, 76, 0.4);
-    animation: popIn 0.25s ease;
-}
-
-@keyframes popIn {
-    from { transform: scale(0.85); opacity: 0; }
-    to   { transform: scale(1);    opacity: 1; }
 }
 
 /* Players */
@@ -110,14 +66,14 @@
     transition: transform 0.3s ease;
 }
 
-.player--frame {
+.player-img-frame {
     position: relative;
     width: 170px;
     height: 170px;
     margin: 0 auto;
 }
 
-.player--frame::before {
+.player-img-frame::before {
     content: '';
     position: absolute;
     inset: -8px;
@@ -134,7 +90,7 @@
     z-index: 0;
 }
 
-.player--frame::after {
+.player-img-frame::after {
     content: '';
     position: absolute;
     inset: -4px;
@@ -143,7 +99,7 @@
     z-index: 1;
 }
 
-.player--frame  {
+.player-img-frame img {
     position: relative;
     z-index: 2;
     width: 100%;
@@ -168,7 +124,7 @@
     transform: translateY(-5px);
 }
 
-.player-card:hover .player--frame  {
+.player-card:hover .player-img-frame img {
     border-color: #c9a84c;
     box-shadow: 0 0 25px rgba(201, 168, 76, 0.4);
 }
@@ -202,7 +158,7 @@
         gap: 28px 18px;
     }
 
-    .player--frame {
+    .player-img-frame {
         width: 120px;
         height: 120px;
     }
@@ -217,7 +173,7 @@
         grid-template-columns: 1fr 1fr;
     }
 
-    .player--frame {
+    .player-img-frame {
         width: 105px;
         height: 105px;
     }
@@ -234,13 +190,8 @@
 
     <!-- Left: Book -->
     <section class="book-card">
-        <img src="current_book.png" alt="Current book cover" id="bookCover">
+        <img src="current_book.png" alt="Current book cover">
     </section>
-
-<!-- Lightbox -->
-<div class="lightbox" id="lightbox">
-    <img src="current_book.png" alt="Current book cover enlarged">
-</div>
 
     <!-- Right: Players -->
     <section class="players-section">
@@ -297,14 +248,6 @@
 </section>
 
 <script>
-// Lightbox
-document.getElementById('bookCover').addEventListener('click', () => {
-    document.getElementById('lightbox').classList.add('open');
-});
-document.getElementById('lightbox').addEventListener('click', () => {
-    document.getElementById('lightbox').classList.remove('open');
-});
-
 // Star generation
 const starsContainer = document.getElementById('stars');
 
