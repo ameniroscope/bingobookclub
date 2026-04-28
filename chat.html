@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Book Club Chapter Chat</title>
+  <style>
+    body { font-family: Arial; max-width: 700px; margin: 40px auto; padding: 20px; }
+    input, textarea, select, button { width: 100%; padding: 10px; margin: 8px 0; }
+    .hidden { display: none; }
+    .bubble { background: #f1f1f1; padding: 12px; border-radius: 14px; margin: 10px 0; }
+    .name { font-weight: bold; }
+    .time { font-size: 12px; color: #666; }
+  </style>
+</head>
+<body>
+
+  <h1>Book Club Chat</h1>
+
+  <div id="loginBox">
+    <p>Enter your private code:</p>
+    <input id="codeInput" placeholder="Your code" />
+    <button id="loginBtn">Enter</button>
+    <p id="loginError"></p>
+  </div>
+
+  <div id="chatBox" class="hidden">
+    <h2 id="welcome"></h2>
+
+    <label>Choose chapter:</label>
+    <select id="chapterSelect">
+      <option value="chapter-1">Chapter 1</option>
+      <option value="chapter-2">Chapter 2</option>
+      <option value="chapter-3">Chapter 3</option>
+      <option value="chapter-4">Chapter 4</option>
+      <option value="chapter-5">Chapter 5</option>
+    </select>
+
+    <textarea id="messageInput" placeholder="Write your message..."></textarea>
+    <button id="sendBtn">Post</button>
+
+    <h3>Messages</h3>
+    <div id="messages"></div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      collection,
+      addDoc,
+      query,
+      where,
+      orderBy,
+      onSnapshot,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+
+    // 1. Replace this with your Firebase config
+    const firebaseConfig = {
+      apiKey: "PASTE_HERE",
+      authDomain: "PASTE_HERE",
+      projectId: "PASTE_HERE",
+      storageBucket: "PASTE_HERE",
+      messagingSenderId: "PASTE_HERE",
+      appId: "PASTE_HERE"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let currentName = "";
+    let unsubscribeMessages = null;
+
+    const loginBox = document.getElementById("loginBox");
+    const chatBox = document.getElementById("chatBox");
+    const codeInput = document.getElementById("codeInput");
+    const loginBtn = document.getElementById("loginBtn");
+    const loginError = document.getElementById("loginError");
+    const welcome = document.getElementById("welcome");
+    const chapterSelect = document.getElementById("chapterSelect");
+    const messageInput = document.getElementById("messageInput");
+    const sendBtn = document.getElementById("sendBtn");
+    const messages = document.getElementById("messages");
+
+    loginBtn.onclick = async () => {
+      const code = codeInput.value.trim();
+
+      if (!code) return;
+
+      const codeRef = doc(db, "accessCodes", code);
+      const codeSnap = await getDoc(codeRef);
+
+      if (!codeSnap.exists()) {
+        loginError.textContent = "Wrong code.";
+        return;
+      }
+
+      currentName = codeSnap.data().name;
+
+      sessionStorage.setItem("bookClubName", currentName);
+
+      loginBox.classList.add("hidden");
+      chatBox.classList.remove("hidden");
+      welcome.textContent = `Welcome, ${currentName}`;
+
+      loadMessages();
+    };
+
+    chapterSelect.onchange = () => {
+      loadMessages();
+    };
+
+    sendBtn.onclick = async () => {
+      const text = messageInput.value.trim();
+      const chapter = chapterSelect.value;
+
+      if (!text) return;
+
+      await addDoc(collection(db, "messages"), {
+        name: currentName,
+        text: text,
+        chapter: chapter,
+        createdAt: serverTimestamp()
+      });
+
+      messageInput.value = "";
+    };
+
+    function loadMessages() {
+      const chapter = chapterSelect.value;
+      messages.innerHTML = "";
+
+      if (unsubscribeMessages) {
+        unsubscribeMessages();
+      }
+
+      const q = query(
+        collection(db, "messages"),
+        where("chapter", "==", chapter),
+        orderBy("createdAt", "asc")
+      );
+
+      unsubscribeMessages = onSnapshot(q, (snapshot) => {
+        messages.innerHTML = "";
+
+        snapshot.forEach((doc) => {
+          const msg = doc.data();
+
+          const div = document.createElement("div");
+          div.className = "bubble";
+
+          div.innerHTML = `
+            <div class="name">${escapeHTML(msg.name)}</div>
+            <div>${escapeHTML(msg.text)}</div>
+          `;
+
+          messages.appendChild(div);
+        });
+      });
+    }
+
+    function escapeHTML(str) {
+      return String(str).replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      }[char]));
+    }
+  </script>
+</body>
+</html>
