@@ -15,13 +15,8 @@ html,body{
   font-family:'Crimson Text',Georgia,serif;
   min-height:100vh;
   width:100%;
-  overflow-x:hidden;
   color:#f0e6c8;
 }
-
-.stars{position:fixed;inset:0;pointer-events:none;z-index:0;}
-.star{position:absolute;background:#c9a84c;border-radius:50%;animation:twinkle var(--d) ease-in-out infinite;animation-delay:var(--delay);}
-@keyframes twinkle{0%,100%{opacity:0.1;}50%{opacity:0.8;}}
 
 .page{
   position:relative;
@@ -47,29 +42,7 @@ html,body{
   font-size:clamp(2rem,5vw,3.3rem);
   font-weight:700;
   color:#f0e6c8;
-  line-height:1;
   letter-spacing:2px;
-  text-shadow:0 0 40px rgba(201,168,76,0.25);
-}
-
-.title-rule{
-  display:flex;
-  align-items:center;
-  gap:0.6rem;
-  margin:1rem auto 2rem;
-  width:100%;
-  max-width:30rem;
-}
-
-.title-rule .line{
-  flex:1;
-  height:1px;
-  background:linear-gradient(to right,transparent,#c9a84c55,transparent);
-}
-
-.title-rule .gem{
-  color:#c9a84c;
-  font-size:0.65rem;
 }
 
 .card{
@@ -78,7 +51,7 @@ html,body{
   border-radius:10px;
   padding:1.5rem;
   box-shadow:0 0 30px rgba(201,168,76,0.12);
-  margin:0 auto 1.5rem;
+  margin:2rem auto 1.5rem;
   max-width:650px;
 }
 
@@ -118,38 +91,20 @@ button,.back-link{
   display:flex;
   align-items:center;
   justify-content:center;
-  gap:0.7rem;
-  padding:0 1.2rem;
   font-family:'Cinzel',serif;
   text-transform:uppercase;
   text-decoration:none;
   border-radius:6px;
-  transition:all 0.3s ease;
   cursor:pointer;
   background:#1f3a36;
   border:1px solid #c9a84c55;
   color:#f5ecd9;
-  box-shadow:0 0 12px rgba(201,168,76,0.15);
   letter-spacing:2px;
-}
-
-button:hover,.back-link:hover{
-  background:#2c4f49;
-  border-color:#c9a84c;
-  box-shadow:0 0 20px rgba(201,168,76,0.25);
-  transform:translateY(-2px);
-}
-
-button:disabled{
-  opacity:0.6;
-  cursor:not-allowed;
-  transform:none;
 }
 
 .error{
   color:#d9a1a1;
   margin-top:0.8rem;
-  line-height:1.5;
 }
 
 .welcome{
@@ -160,27 +115,24 @@ button:disabled{
 }
 
 .message-list{
-  margin-top:1.3rem;
+  margin-top:1.5rem;
   display:flex;
   flex-direction:column;
-  gap:0.9rem;
+  gap:1rem;
   text-align:left;
 }
 
 .bubble{
   background:#1a0f1f;
-  border:1px solid #c9a84c33;
+  border:1px solid #c9a84c55;
   border-radius:14px;
   padding:1rem;
-  box-shadow:0 0 12px rgba(201,168,76,0.08);
 }
 
 .bubble-name{
   font-family:'Cinzel',serif;
-  font-size:0.75rem;
-  letter-spacing:1.5px;
   color:#c9a84c;
-  margin-bottom:0.35rem;
+  margin-bottom:0.4rem;
   text-transform:uppercase;
 }
 
@@ -197,37 +149,72 @@ button:disabled{
   padding:1rem;
 }
 
-.footer{
-  margin-top:2rem;
-  font-family:'Cinzel',serif;
-  font-size:0.45rem;
-  letter-spacing:2px;
-  color:#c9a84cbb;
-  text-transform:uppercase;
-  text-align:center;
-}
-
 .back-link{
   max-width:260px;
   margin:1.5rem auto 0;
+}
+
+.footer{
+  margin-top:2rem;
+  font-family:'Cinzel',serif;
+  font-size:0.55rem;
+  letter-spacing:2px;
+  color:#c9a84cbb;
+  text-transform:uppercase;
 }
 </style>
 </head>
 
 <body>
+
+<div class="page">
+
+  <div class="club-title">Spoiler-Safe</div>
+  <div class="main-title">Chapter Chat</div>
+
+  <div id="loginBox" class="card">
+    <label for="codeInput">Enter your private code</label>
+    <input id="codeInput" type="password" placeholder="Your code">
+    <button id="loginBtn" type="button">Enter the Reading Room</button>
+    <p id="loginError" class="error"></p>
+  </div>
+
+  <div id="chatBox" class="card hidden">
+    <div id="welcome" class="welcome"></div>
+
+    <label for="chapterSelect">Choose your chapter</label>
+    <select id="chapterSelect">
+      <option value="chapter-1">Chapter 1</option>
+      <option value="chapter-2">Chapter 2</option>
+      <option value="chapter-3">Chapter 3</option>
+      <option value="chapter-4">Chapter 4</option>
+      <option value="chapter-5">Chapter 5</option>
+      <option value="chapter-6">Chapter 6</option>
+      <option value="chapter-7">Chapter 7</option>
+      <option value="chapter-8">Chapter 8</option>
+      <option value="chapter-9">Chapter 9</option>
+      <option value="chapter-10">Chapter 10</option>
+    </select>
+
+    <label for="messageInput">Write your thoughts</label>
+    <textarea id="messageInput" placeholder="Predictions, reactions, chaos..."></textarea>
+
+    <button id="sendBtn" type="button">Post Message</button>
+
+    <div id="messages" class="message-list"></div>
+  </div>
+
+  <a class="back-link" href="index.html">Back to Book Club</a>
+
+  <div class="footer">✦ Read · React · No Spoilers ✦</div>
+
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
 import {
-  getFirestore,
-  doc,
-  getDoc,
-  collection,
-  addDoc,
-  query,
-  where,
-  orderBy,
-  onSnapshot,
-  serverTimestamp
+  getFirestore, doc, getDoc, collection, addDoc,
+  query, where, orderBy, onSnapshot, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -256,137 +243,61 @@ const messageInput = document.getElementById("messageInput");
 const sendBtn = document.getElementById("sendBtn");
 const messages = document.getElementById("messages");
 
-const savedName = sessionStorage.getItem("bookClubName");
-
-if (savedName) {
-  currentName = savedName;
-  showChat();
-}
-
 loginBtn.addEventListener("click", login);
-
-codeInput.addEventListener("keydown", (event) => {
-  if (event.key === "Enter") {
-    login();
-  }
-});
-
-chapterSelect.addEventListener("change", loadMessages);
 sendBtn.addEventListener("click", sendMessage);
+chapterSelect.addEventListener("change", loadMessages);
 
-messageInput.addEventListener("keydown", (event) => {
-  if (event.key === "Enter" && !event.shiftKey) {
-    event.preventDefault();
-    sendMessage();
-  }
-});
-
-async function login() {
+async function login(){
+  const code = codeInput.value.trim();
   loginError.textContent = "";
 
-  const code = codeInput.value.trim();
-
-  if (!code) {
-    loginError.textContent = "Please enter your private code.";
+  if(!code){
+    loginError.textContent = "Please enter your code.";
     return;
   }
 
-  loginBtn.disabled = true;
-  loginBtn.textContent = "Checking...";
+  try{
+    const codeSnap = await getDoc(doc(db, "accessCodes", code));
 
-  try {
-    const codeRef = doc(db, "accessCodes", code);
-    const codeSnap = await getDoc(codeRef);
-
-    if (!codeSnap.exists()) {
-      loginError.textContent = "Wrong code. Check spelling and capital letters.";
+    if(!codeSnap.exists()){
+      loginError.textContent = "Wrong code.";
       return;
     }
 
-    const userData = codeSnap.data();
+    currentName = codeSnap.data().name;
 
-    if (!userData.name) {
-      loginError.textContent = "This code exists, but it has no name field in Firebase.";
-      return;
-    }
+    loginBox.classList.add("hidden");
+    chatBox.classList.remove("hidden");
+    welcome.textContent = "Welcome, " + currentName;
 
-    currentName = userData.name;
-    sessionStorage.setItem("bookClubName", currentName);
+    loadMessages();
 
-    showChat();
-
-  } catch (error) {
-    console.error("Login error:", error);
-
-    if (error.code === "permission-denied") {
-      loginError.textContent = "Firebase blocked this. Check your Firestore rules.";
-    } else {
-      loginError.textContent = "Login error: " + error.message;
-    }
-
-  } finally {
-    loginBtn.disabled = false;
-    loginBtn.textContent = "Enter the Reading Room";
+  }catch(error){
+    loginError.textContent = "Firebase error: " + error.message;
   }
 }
 
-function showChat() {
-  loginBox.classList.add("hidden");
-  chatBox.classList.remove("hidden");
-  welcome.textContent = `Welcome, ${currentName}`;
-  loadMessages();
-}
-
-async function sendMessage() {
+async function sendMessage(){
   const text = messageInput.value.trim();
   const chapter = chapterSelect.value;
 
-  if (!currentName) {
-    alert("Please enter your code first.");
-    return;
-  }
+  if(!text) return;
 
-  if (!text) {
-    return;
-  }
+  await addDoc(collection(db, "messages"), {
+    name: currentName,
+    text,
+    chapter,
+    createdAt: serverTimestamp()
+  });
 
-  sendBtn.disabled = true;
-  sendBtn.textContent = "Posting...";
-
-  try {
-    await addDoc(collection(db, "messages"), {
-      name: currentName,
-      text: text,
-      chapter: chapter,
-      createdAt: serverTimestamp()
-    });
-
-    messageInput.value = "";
-
-  } catch (error) {
-    console.error("Message error:", error);
-
-    if (error.code === "permission-denied") {
-      alert("Firebase blocked this message. Check your Firestore rules.");
-    } else {
-      alert("Could not post message: " + error.message);
-    }
-
-  } finally {
-    sendBtn.disabled = false;
-    sendBtn.textContent = "Post Message";
-  }
+  messageInput.value = "";
 }
 
-function loadMessages() {
+function loadMessages(){
   const chapter = chapterSelect.value;
+  messages.innerHTML = `<div class="empty-message">Loading...</div>`;
 
-  messages.innerHTML = `<div class="empty-message">Loading messages...</div>`;
-
-  if (unsubscribeMessages) {
-    unsubscribeMessages();
-    unsubscribeMessages = null;
-  }
+  if(unsubscribeMessages) unsubscribeMessages();
 
   const q = query(
     collection(db, "messages"),
@@ -394,60 +305,38 @@ function loadMessages() {
     orderBy("createdAt", "asc")
   );
 
-  unsubscribeMessages = onSnapshot(
-    q,
-    (snapshot) => {
-      messages.innerHTML = "";
+  unsubscribeMessages = onSnapshot(q, snapshot => {
+    messages.innerHTML = "";
 
-      if (snapshot.empty) {
-        messages.innerHTML = `<div class="empty-message">No messages for this chapter yet.</div>`;
-        return;
-      }
-
-      snapshot.forEach((documentSnapshot) => {
-        const msg = documentSnapshot.data();
-
-        const bubble = document.createElement("div");
-        bubble.className = "bubble";
-
-        const chapterLabel = chapter.replace("-", " ");
-
-        bubble.innerHTML = `
-          <div class="bubble-header">
-            <div class="bubble-name">${escapeHTML(msg.name || "Unknown Reader")}</div>
-            <div class="bubble-chapter">${escapeHTML(chapterLabel)}</div>
-          </div>
-          <div class="bubble-text">${escapeHTML(msg.text || "")}</div>
-        `;
-
-        messages.appendChild(bubble);
-      });
-    },
-    (error) => {
-      console.error("Message loading error:", error);
-
-      if (error.code === "permission-denied") {
-        messages.innerHTML = `<div class="error">Firebase blocked the messages. Check your Firestore rules.</div>`;
-      } else if (error.code === "failed-precondition") {
-        messages.innerHTML = `
-          <div class="error">
-            Firebase needs an index for this chat. Open the browser console, click the Firebase index link, then refresh this page once the index is enabled.
-          </div>
-        `;
-      } else {
-        messages.innerHTML = `<div class="error">Could not load messages: ${escapeHTML(error.message)}</div>`;
-      }
+    if(snapshot.empty){
+      messages.innerHTML = `<div class="empty-message">No messages yet.</div>`;
+      return;
     }
-  );
+
+    snapshot.forEach(docSnap => {
+      const msg = docSnap.data();
+
+      const bubble = document.createElement("div");
+      bubble.className = "bubble";
+      bubble.innerHTML = `
+        <div class="bubble-name">${escapeHTML(msg.name)}</div>
+        <div class="bubble-text">${escapeHTML(msg.text)}</div>
+      `;
+
+      messages.appendChild(bubble);
+    });
+  }, error => {
+    messages.innerHTML = `<div class="error">${escapeHTML(error.message)}</div>`;
+  });
 }
 
-function escapeHTML(str) {
-  return String(str).replace(/[&<>"']/g, (char) => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#039;"
+function escapeHTML(str){
+  return String(str || "").replace(/[&<>"']/g, char => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#039;"
   }[char]));
 }
 </script>
