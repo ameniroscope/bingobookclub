@@ -1,175 +1,408 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Book Club Chapter Chat</title>
-  <style>
-    body { font-family: Arial; max-width: 700px; margin: 40px auto; padding: 20px; }
-    input, textarea, select, button { width: 100%; padding: 10px; margin: 8px 0; }
-    .hidden { display: none; }
-    .bubble { background: #f1f1f1; padding: 12px; border-radius: 14px; margin: 10px 0; }
-    .name { font-weight: bold; }
-    .time { font-size: 12px; color: #666; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter Chat | The Bingo Book Club</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0;}
+
+html,body{
+  background:#0d0a0e;
+  font-family:'Crimson Text',Georgia,serif;
+  min-height:100vh;
+  width:100%;
+  overflow-x:hidden;
+  color:#f0e6c8;
+}
+
+.stars{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.star{position:absolute;background:#c9a84c;border-radius:50%;animation:twinkle var(--d) ease-in-out infinite;animation-delay:var(--delay);}
+@keyframes twinkle{0%,100%{opacity:0.1;}50%{opacity:0.8;}}
+
+.page{
+  position:relative;
+  z-index:1;
+  min-height:100vh;
+  padding:3rem 1.4rem;
+  max-width:900px;
+  margin:0 auto;
+  text-align:center;
+}
+
+.club-title{
+  font-family:'Cinzel',serif;
+  font-size:0.72rem;
+  letter-spacing:6px;
+  color:#c9a84c88;
+  text-transform:uppercase;
+  margin-bottom:0.35rem;
+}
+
+.main-title{
+  font-family:'Cinzel',serif;
+  font-size:clamp(2rem,5vw,3.3rem);
+  font-weight:700;
+  color:#f0e6c8;
+  line-height:1;
+  letter-spacing:2px;
+  text-shadow:0 0 40px rgba(201,168,76,0.25);
+}
+
+.title-rule{
+  display:flex;
+  align-items:center;
+  gap:0.6rem;
+  margin:1rem auto 2rem;
+  width:100%;
+  max-width:30rem;
+}
+
+.title-rule .line{
+  flex:1;
+  height:1px;
+  background:linear-gradient(to right,transparent,#c9a84c55,transparent);
+}
+
+.title-rule .gem{
+  color:#c9a84c;
+  font-size:0.65rem;
+}
+
+.card{
+  background:rgba(26,15,31,0.88);
+  border:1px solid #c9a84c44;
+  border-radius:10px;
+  padding:1.5rem;
+  box-shadow:0 0 30px rgba(201,168,76,0.12);
+  margin:0 auto 1.5rem;
+  max-width:650px;
+}
+
+.hidden{display:none;}
+
+label{
+  display:block;
+  font-family:'Cinzel',serif;
+  font-size:0.75rem;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:#c9a84c;
+  margin-bottom:0.5rem;
+  text-align:left;
+}
+
+input,select,textarea{
+  width:100%;
+  background:#0d0a0e;
+  color:#f0e6c8;
+  border:1px solid #c9a84c55;
+  border-radius:6px;
+  padding:0.85rem;
+  font-family:'Crimson Text',Georgia,serif;
+  font-size:1rem;
+  margin-bottom:1rem;
+}
+
+textarea{
+  min-height:110px;
+  resize:vertical;
+}
+
+button,.back-link{
+  width:100%;
+  min-height:55px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:0.7rem;
+  padding:0 1.2rem;
+  font-family:'Cinzel',serif;
+  text-transform:uppercase;
+  text-decoration:none;
+  border-radius:6px;
+  transition:all 0.3s ease;
+  cursor:pointer;
+  background:#1f3a36;
+  border:1px solid #c9a84c55;
+  color:#f5ecd9;
+  box-shadow:0 0 12px rgba(201,168,76,0.15);
+  letter-spacing:2px;
+}
+
+button:hover,.back-link:hover{
+  background:#2c4f49;
+  border-color:#c9a84c;
+  box-shadow:0 0 20px rgba(201,168,76,0.25);
+  transform:translateY(-2px);
+}
+
+.error{
+  color:#d9a1a1;
+  margin-top:0.8rem;
+}
+
+.welcome{
+  font-family:'Cinzel',serif;
+  color:#c9a84c;
+  letter-spacing:2px;
+  margin-bottom:1rem;
+}
+
+.message-list{
+  margin-top:1.3rem;
+  display:flex;
+  flex-direction:column;
+  gap:0.9rem;
+  text-align:left;
+}
+
+.bubble{
+  background:#1a0f1f;
+  border:1px solid #c9a84c33;
+  border-radius:14px;
+  padding:1rem;
+  box-shadow:0 0 12px rgba(201,168,76,0.08);
+}
+
+.bubble-name{
+  font-family:'Cinzel',serif;
+  font-size:0.75rem;
+  letter-spacing:1.5px;
+  color:#c9a84c;
+  margin-bottom:0.35rem;
+  text-transform:uppercase;
+}
+
+.bubble-text{
+  color:#c8b89a;
+  line-height:1.6;
+  white-space:pre-wrap;
+}
+
+.footer{
+  margin-top:2rem;
+  font-family:'Cinzel',serif;
+  font-size:0.45rem;
+  letter-spacing:2px;
+  color:#c9a84cbb;
+  text-transform:uppercase;
+  text-align:center;
+}
+
+.back-link{
+  max-width:260px;
+  margin:1.5rem auto 0;
+}
+</style>
 </head>
+
 <body>
 
-  <h1>Book Club Chat</h1>
+<div class="stars" id="stars"></div>
 
-  <div id="loginBox">
-    <p>Enter your private code:</p>
-    <input id="codeInput" placeholder="Your code" />
-    <button id="loginBtn">Enter</button>
-    <p id="loginError"></p>
+<div class="page">
+
+  <div class="club-title">Spoiler-Safe</div>
+  <div class="main-title">Chapter Chat</div>
+
+  <div class="title-rule">
+    <div class="line"></div>
+    <div class="gem">◆</div>
+    <div class="line"></div>
   </div>
 
-  <div id="chatBox" class="hidden">
-    <h2 id="welcome"></h2>
+  <div id="loginBox" class="card">
+    <label for="codeInput">Enter your private code</label>
+    <input id="codeInput" type="password" placeholder="Your code">
+    <button id="loginBtn">Enter the Reading Room</button>
+    <p id="loginError" class="error"></p>
+  </div>
 
-    <label>Choose chapter:</label>
+  <div id="chatBox" class="card hidden">
+    <div id="welcome" class="welcome"></div>
+
+    <label for="chapterSelect">Choose your chapter</label>
     <select id="chapterSelect">
       <option value="chapter-1">Chapter 1</option>
       <option value="chapter-2">Chapter 2</option>
       <option value="chapter-3">Chapter 3</option>
       <option value="chapter-4">Chapter 4</option>
       <option value="chapter-5">Chapter 5</option>
+      <option value="chapter-6">Chapter 6</option>
+      <option value="chapter-7">Chapter 7</option>
+      <option value="chapter-8">Chapter 8</option>
+      <option value="chapter-9">Chapter 9</option>
+      <option value="chapter-10">Chapter 10</option>
     </select>
 
-    <textarea id="messageInput" placeholder="Write your message..."></textarea>
-    <button id="sendBtn">Post</button>
+    <label for="messageInput">Write your thoughts</label>
+    <textarea id="messageInput" placeholder="Predictions, reactions, chaos..."></textarea>
 
-    <h3>Messages</h3>
-    <div id="messages"></div>
+    <button id="sendBtn">Post Message</button>
+
+    <div id="messages" class="message-list"></div>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-    import {
-      getFirestore,
-      doc,
-      getDoc,
-      collection,
-      addDoc,
-      query,
-      where,
-      orderBy,
-      onSnapshot,
-      serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+  <a class="back-link" href="index.html">Back to Book Club</a>
 
-    // 1. Replace this with your Firebase config
-    const firebaseConfig = {
-      apiKey: "PASTE_HERE",
-      authDomain: "PASTE_HERE",
-      projectId: "PASTE_HERE",
-      storageBucket: "PASTE_HERE",
-      messagingSenderId: "PASTE_HERE",
-      appId: "PASTE_HERE"
-    };
+  <div class="footer">✦ &nbsp; Read · React · No Spoilers &nbsp; ✦</div>
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+</div>
 
-    let currentName = "";
-    let unsubscribeMessages = null;
+<script>
+const c = document.getElementById('stars');
+for(let i=0;i<80;i++){
+  const s=document.createElement('div');
+  s.className='star';
+  const sz=Math.random()>0.8?3:2;
+  s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--d:${2+Math.random()*4}s;--delay:${Math.random()*4}s;`;
+  c.appendChild(s);
+}
+</script>
 
-    const loginBox = document.getElementById("loginBox");
-    const chatBox = document.getElementById("chatBox");
-    const codeInput = document.getElementById("codeInput");
-    const loginBtn = document.getElementById("loginBtn");
-    const loginError = document.getElementById("loginError");
-    const welcome = document.getElementById("welcome");
-    const chapterSelect = document.getElementById("chapterSelect");
-    const messageInput = document.getElementById("messageInput");
-    const sendBtn = document.getElementById("sendBtn");
-    const messages = document.getElementById("messages");
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  collection,
+  addDoc,
+  query,
+  where,
+  orderBy,
+  onSnapshot,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
-    loginBtn.onclick = async () => {
-      const code = codeInput.value.trim();
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyAIQTe-QGQmwqTVmIyJZZ_qlDNsD6GUskY",
+  authDomain: "bingobookclub-2144e.firebaseapp.com",
+  projectId: "bingobookclub-2144e",
+  storageBucket: "bingobookclub-2144e.firebasestorage.app",
+  messagingSenderId: "294177836341",
+  appId: "1:294177836341:web:6d5f11e64737fbe3aad07c"
+};
 
-      if (!code) return;
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-      const codeRef = doc(db, "accessCodes", code);
-      const codeSnap = await getDoc(codeRef);
+let currentName = "";
+let unsubscribeMessages = null;
 
-      if (!codeSnap.exists()) {
-        loginError.textContent = "Wrong code.";
-        return;
-      }
+const loginBox = document.getElementById("loginBox");
+const chatBox = document.getElementById("chatBox");
+const codeInput = document.getElementById("codeInput");
+const loginBtn = document.getElementById("loginBtn");
+const loginError = document.getElementById("loginError");
+const welcome = document.getElementById("welcome");
+const chapterSelect = document.getElementById("chapterSelect");
+const messageInput = document.getElementById("messageInput");
+const sendBtn = document.getElementById("sendBtn");
+const messages = document.getElementById("messages");
 
-      currentName = codeSnap.data().name;
+const savedName = sessionStorage.getItem("bookClubName");
 
-      sessionStorage.setItem("bookClubName", currentName);
+if(savedName){
+  currentName = savedName;
+  showChat();
+}
 
-      loginBox.classList.add("hidden");
-      chatBox.classList.remove("hidden");
-      welcome.textContent = `Welcome, ${currentName}`;
+loginBtn.onclick = async () => {
+  const code = codeInput.value.trim();
 
-      loadMessages();
-    };
+  if(!code){
+    loginError.textContent = "Please enter your code.";
+    return;
+  }
 
-    chapterSelect.onchange = () => {
-      loadMessages();
-    };
+  const codeRef = doc(db, "accessCodes", code);
+  const codeSnap = await getDoc(codeRef);
 
-    sendBtn.onclick = async () => {
-      const text = messageInput.value.trim();
-      const chapter = chapterSelect.value;
+  if(!codeSnap.exists()){
+    loginError.textContent = "Wrong code.";
+    return;
+  }
 
-      if (!text) return;
+  currentName = codeSnap.data().name;
+  sessionStorage.setItem("bookClubName", currentName);
 
-      await addDoc(collection(db, "messages"), {
-        name: currentName,
-        text: text,
-        chapter: chapter,
-        createdAt: serverTimestamp()
-      });
+  showChat();
+};
 
-      messageInput.value = "";
-    };
+function showChat(){
+  loginBox.classList.add("hidden");
+  chatBox.classList.remove("hidden");
+  welcome.textContent = `Welcome, ${currentName}`;
+  loadMessages();
+}
 
-    function loadMessages() {
-      const chapter = chapterSelect.value;
-      messages.innerHTML = "";
+chapterSelect.onchange = loadMessages;
 
-      if (unsubscribeMessages) {
-        unsubscribeMessages();
-      }
+sendBtn.onclick = async () => {
+  const text = messageInput.value.trim();
+  const chapter = chapterSelect.value;
 
-      const q = query(
-        collection(db, "messages"),
-        where("chapter", "==", chapter),
-        orderBy("createdAt", "asc")
-      );
+  if(!text) return;
 
-      unsubscribeMessages = onSnapshot(q, (snapshot) => {
-        messages.innerHTML = "";
+  await addDoc(collection(db, "messages"), {
+    name: currentName,
+    text: text,
+    chapter: chapter,
+    createdAt: serverTimestamp()
+  });
 
-        snapshot.forEach((doc) => {
-          const msg = doc.data();
+  messageInput.value = "";
+};
 
-          const div = document.createElement("div");
-          div.className = "bubble";
+function loadMessages(){
+  const chapter = chapterSelect.value;
+  messages.innerHTML = "";
 
-          div.innerHTML = `
-            <div class="name">${escapeHTML(msg.name)}</div>
-            <div>${escapeHTML(msg.text)}</div>
-          `;
+  if(unsubscribeMessages){
+    unsubscribeMessages();
+  }
 
-          messages.appendChild(div);
-        });
-      });
-    }
+  const q = query(
+    collection(db, "messages"),
+    where("chapter", "==", chapter),
+    orderBy("createdAt", "asc")
+  );
 
-    function escapeHTML(str) {
-      return String(str).replace(/[&<>"']/g, (char) => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#039;"
-      }[char]));
-    }
-  </script>
+  unsubscribeMessages = onSnapshot(q, snapshot => {
+    messages.innerHTML = "";
+
+    snapshot.forEach(documentSnapshot => {
+      const msg = documentSnapshot.data();
+
+      const bubble = document.createElement("div");
+      bubble.className = "bubble";
+
+      bubble.innerHTML = `
+        <div class="bubble-name">${escapeHTML(msg.name)}</div>
+        <div class="bubble-text">${escapeHTML(msg.text)}</div>
+      `;
+
+      messages.appendChild(bubble);
+    });
+  });
+}
+
+function escapeHTML(str){
+  return String(str).replace(/[&<>"']/g, char => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#039;"
+  }[char]));
+}
+</script>
+
 </body>
 </html>
