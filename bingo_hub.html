@@ -26,15 +26,6 @@
 /* Book card */
 .book-card {
     text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.book-card img {
-    margin-left: auto;
-    margin-right: 0;
-    display: block;
 }
 
 .book-card img {
@@ -113,14 +104,14 @@
     transition: transform 0.3s ease;
 }
 
-.player--frame {
+.player-img-frame {
     position: relative;
     width: 170px;
     height: 170px;
     margin: 0 auto;
 }
 
-.player--frame::before {
+.player-img-frame::before {
     content: '';
     position: absolute;
     inset: -8px;
@@ -137,7 +128,7 @@
     z-index: 0;
 }
 
-.player--frame::after {
+.player-img-frame::after {
     content: '';
     position: absolute;
     inset: -4px;
@@ -146,7 +137,7 @@
     z-index: 1;
 }
 
-.player--frame  {
+.player-img-frame img {
     position: relative;
     z-index: 2;
     width: 100%;
@@ -171,7 +162,7 @@
     transform: translateY(-5px);
 }
 
-.player-card:hover .player--frame  {
+.player-card:hover .player-img-frame img {
     border-color: #c9a84c;
     box-shadow: 0 0 25px rgba(201, 168, 76, 0.4);
 }
@@ -205,7 +196,7 @@
         gap: 28px 18px;
     }
 
-    .player--frame {
+    .player-img-frame {
         width: 120px;
         height: 120px;
     }
@@ -220,7 +211,7 @@
         grid-template-columns: 1fr 1fr;
     }
 
-    .player--frame {
+    .player-img-frame {
         width: 105px;
         height: 105px;
     }
@@ -239,11 +230,6 @@
     <section class="book-card">
         <img src="current_book.png" alt="Current book cover" id="bookCover">
     </section>
-
-<!-- Lightbox -->
-<div class="lightbox" id="lightbox">
-    <img src="current_book.png" alt="Current book cover enlarged">
-</div>
 
     <!-- Right: Players -->
     <section class="players-section">
@@ -283,6 +269,11 @@
     </section>
 
 </main>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+    <img src="current_book.png" alt="Current book cover enlarged">
+</div>
 
 <!-- Footer Section -->
 <section class="footer-section">
