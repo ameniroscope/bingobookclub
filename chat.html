@@ -253,6 +253,7 @@ button,.back-link{
   </div>
 
   <div class="links">
+    <button id="logoutBtn" class="back-link" type="button">Log out</button>
     <a class="back-link" href="chapter_hub.html">All Chapters</a>
     <a class="back-link" href="index.html">Home</a>
   </div>
@@ -289,6 +290,7 @@ const db = getFirestore(app);
 const urlParams = new URLSearchParams(window.location.search);
 const chapterNumber = urlParams.get("chapter") || "1";
 const chapterId = "chapter-" + chapterNumber;
+const logoutBtn = document.getElementById("logoutBtn");
 
 document.getElementById("chapterTitle").textContent = "Chapter " + chapterNumber;
 
@@ -486,6 +488,13 @@ function escapeHTML(str){
     }[char];
   });
 }
+logoutBtn.addEventListener("click", function(){
+  sessionStorage.removeItem("bookClubName");
+  sessionStorage.removeItem("bookClubAvatar");
+  sessionStorage.removeItem("bookClubColor");
+  window.location.href = "chat.html?chapter=" + chapterNumber;
+});
+
 </script>
 
 </body>
