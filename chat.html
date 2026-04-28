@@ -211,73 +211,6 @@ button:disabled{
   max-width:260px;
   margin:1.5rem auto 0;
 }
-</style>
-</head>
-
-<body>
-
-<div class="stars" id="stars"></div>
-
-<div class="page">
-
-  <div class="club-title">Spoiler-Safe</div>
-  <div class="main-title">Chapter Chat</div>
-
-  <div class="title-rule">
-    <div class="line"></div>
-    <div class="gem">◆</div>
-    <div class="line"></div>
-  </div>
-
-  <div id="loginBox" class="card">
-    <label for="codeInput">Enter your private code</label>
-    <input id="codeInput" type="password" placeholder="Your code">
-    <button id="loginBtn" type="button">Enter the Reading Room</button>
-    <p id="loginError" class="error"></p>
-  </div>
-
-  <div id="chatBox" class="card hidden">
-    <div id="welcome" class="welcome"></div>
-
-    <label for="chapterSelect">Choose your chapter</label>
-    <select id="chapterSelect">
-      <option value="chapter-1">Chapter 1</option>
-      <option value="chapter-2">Chapter 2</option>
-      <option value="chapter-3">Chapter 3</option>
-      <option value="chapter-4">Chapter 4</option>
-      <option value="chapter-5">Chapter 5</option>
-      <option value="chapter-6">Chapter 6</option>
-      <option value="chapter-7">Chapter 7</option>
-      <option value="chapter-8">Chapter 8</option>
-      <option value="chapter-9">Chapter 9</option>
-      <option value="chapter-10">Chapter 10</option>
-    </select>
-
-    <label for="messageInput">Write your thoughts</label>
-    <textarea id="messageInput" placeholder="Predictions, reactions, chaos..."></textarea>
-
-    <button id="sendBtn" type="button">Post Message</button>
-
-    <div id="messages" class="message-list"></div>
-  </div>
-
-  <a class="back-link" href="index.html">Back to Book Club</a>
-
-  <div class="footer">✦ &nbsp; Read · React · No Spoilers &nbsp; ✦</div>
-
-</div>
-
-<script>
-const c = document.getElementById('stars');
-for(let i=0;i<80;i++){
-  const s=document.createElement('div');
-  s.className='star';
-  const sz=Math.random()>0.8?3:2;
-  s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--d:${2+Math.random()*4}s;--delay:${Math.random()*4}s;`;
-  c.appendChild(s);
-}
-</script>
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
 import {
@@ -321,89 +254,102 @@ const messages = document.getElementById("messages");
 
 const savedName = sessionStorage.getItem("bookClubName");
 
-if(savedName){
+if (savedName) {
   currentName = savedName;
   showChat();
 }
 
 loginBtn.addEventListener("click", login);
 
-codeInput.addEventListener("keydown", function(event){
-  if(event.key === "Enter"){
+codeInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
     login();
   }
 });
 
-async function login(){
+chapterSelect.addEventListener("change", loadMessages);
+sendBtn.addEventListener("click", sendMessage);
+
+messageInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter" && !event.shiftKey) {
+    event.preventDefault();
+    sendMessage();
+  }
+});
+
+async function login() {
   loginError.textContent = "";
 
   const code = codeInput.value.trim();
 
-  if(!code){
-    loginError.textContent = "Please enter your code.";
+  if (!code) {
+    loginError.textContent = "Please enter your private code.";
     return;
   }
 
   loginBtn.disabled = true;
   loginBtn.textContent = "Checking...";
 
-  try{
+  try {
     const codeRef = doc(db, "accessCodes", code);
     const codeSnap = await getDoc(codeRef);
 
-    if(!codeSnap.exists()){
+    if (!codeSnap.exists()) {
       loginError.textContent = "Wrong code. Check spelling and capital letters.";
       return;
     }
 
-    const data = codeSnap.data();
+    const userData = codeSnap.data();
 
-    if(!data.name){
-      loginError.textContent = "This code exists, but it has no name field.";
+    if (!userData.name) {
+      loginError.textContent = "This code exists, but it has no name field in Firebase.";
       return;
     }
 
-    currentName = data.name;
+    currentName = userData.name;
     sessionStorage.setItem("bookClubName", currentName);
 
     showChat();
 
-  }catch(error){
-    console.error("Firebase login error:", error);
+  } catch (error) {
+    console.error("Login error:", error);
 
-    if(error.code === "permission-denied"){
-      loginError.textContent = "Firebase permissions blocked this. Check your Firestore rules.";
-    }else{
-      loginError.textContent = "Firebase error: " + error.message;
+    if (error.code === "permission-denied") {
+      loginError.textContent = "Firebase blocked this. Check your Firestore rules.";
+    } else {
+      loginError.textContent = "Login error: " + error.message;
     }
 
-  }finally{
+  } finally {
     loginBtn.disabled = false;
     loginBtn.textContent = "Enter the Reading Room";
   }
 }
 
-function showChat(){
+function showChat() {
   loginBox.classList.add("hidden");
   chatBox.classList.remove("hidden");
   welcome.textContent = `Welcome, ${currentName}`;
   loadMessages();
 }
 
-chapterSelect.addEventListener("change", loadMessages);
-
-sendBtn.addEventListener("click", sendMessage);
-
-async function sendMessage(){
+async function sendMessage() {
   const text = messageInput.value.trim();
   const chapter = chapterSelect.value;
 
-  if(!text) return;
+  if (!currentName) {
+    alert("Please enter your code first.");
+    return;
+  }
+
+  if (!text) {
+    return;
+  }
 
   sendBtn.disabled = true;
   sendBtn.textContent = "Posting...";
 
-  try{
+  try {
     await addDoc(collection(db, "messages"), {
       name: currentName,
       text: text,
@@ -413,78 +359,91 @@ async function sendMessage(){
 
     messageInput.value = "";
 
-  }catch(error){
-    console.error("Firebase message error:", error);
-    alert("Could not post message: " + error.message);
+  } catch (error) {
+    console.error("Message error:", error);
 
-  }finally{
+    if (error.code === "permission-denied") {
+      alert("Firebase blocked this message. Check your Firestore rules.");
+    } else {
+      alert("Could not post message: " + error.message);
+    }
+
+  } finally {
     sendBtn.disabled = false;
     sendBtn.textContent = "Post Message";
   }
 }
 
-function loadMessages(){
+function loadMessages() {
   const chapter = chapterSelect.value;
+
   messages.innerHTML = `<div class="empty-message">Loading messages...</div>`;
 
-  if(unsubscribeMessages){
+  if (unsubscribeMessages) {
     unsubscribeMessages();
+    unsubscribeMessages = null;
   }
 
-  try{
-    const q = query(
-      collection(db, "messages"),
-      where("chapter", "==", chapter),
-      orderBy("createdAt", "asc")
-    );
+  const q = query(
+    collection(db, "messages"),
+    where("chapter", "==", chapter),
+    orderBy("createdAt", "asc")
+  );
 
-    unsubscribeMessages = onSnapshot(q, snapshot => {
+  unsubscribeMessages = onSnapshot(
+    q,
+    (snapshot) => {
       messages.innerHTML = "";
 
-      if(snapshot.empty){
+      if (snapshot.empty) {
         messages.innerHTML = `<div class="empty-message">No messages for this chapter yet.</div>`;
         return;
       }
 
-      snapshot.forEach(documentSnapshot => {
+      snapshot.forEach((documentSnapshot) => {
         const msg = documentSnapshot.data();
 
         const bubble = document.createElement("div");
         bubble.className = "bubble";
 
+        const chapterLabel = chapter.replace("-", " ");
+
         bubble.innerHTML = `
-          <div class="bubble-name">${escapeHTML(msg.name || "Unknown Reader")}</div>
+          <div class="bubble-header">
+            <div class="bubble-name">${escapeHTML(msg.name || "Unknown Reader")}</div>
+            <div class="bubble-chapter">${escapeHTML(chapterLabel)}</div>
+          </div>
           <div class="bubble-text">${escapeHTML(msg.text || "")}</div>
         `;
 
         messages.appendChild(bubble);
       });
+    },
+    (error) => {
+      console.error("Message loading error:", error);
 
-    }, error => {
-      console.error("Firebase loading error:", error);
-
-      if(error.code === "permission-denied"){
-        messages.innerHTML = `<div class="error">Firebase permissions blocked the messages. Check your Firestore rules.</div>`;
-      }else if(error.code === "failed-precondition"){
-        messages.innerHTML = `<div class="error">Firebase needs an index for this chapter query. Check the browser console for the index link.</div>`;
-      }else{
+      if (error.code === "permission-denied") {
+        messages.innerHTML = `<div class="error">Firebase blocked the messages. Check your Firestore rules.</div>`;
+      } else if (error.code === "failed-precondition") {
+        messages.innerHTML = `
+          <div class="error">
+            Firebase needs an index for this chat. Open the browser console, click the Firebase index link, then refresh this page once the index is enabled.
+          </div>
+        `;
+      } else {
         messages.innerHTML = `<div class="error">Could not load messages: ${escapeHTML(error.message)}</div>`;
       }
-    });
-
-  }catch(error){
-    console.error("Query error:", error);
-    messages.innerHTML = `<div class="error">Could not start chat: ${escapeHTML(error.message)}</div>`;
-  }
+    }
+  );
 }
 
-function escapeHTML(str){
-  return String(str).replace(/[&<>"']/g, char => ({
-    "&":"&amp;",
-    "<":"&lt;",
-    ">":"&gt;",
-    '"':"&quot;",
-    "'":"&#039;"
+function escapeHTML(str) {
+  return String(str).replace(/[&<>"']/g, (char) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;"
   }[char]));
 }
 </script>
