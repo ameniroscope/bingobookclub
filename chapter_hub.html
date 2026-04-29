@@ -117,7 +117,7 @@ html,body{
 }
 
 .dot.normal{background:#1f3a36;}
-.dot.has-comments{background:#f0e6c8;}
+.dot.my-comments{background:#f0e6c8;}
 
 .buttons{
   display:grid;
@@ -146,13 +146,13 @@ html,body{
 
 .btn:hover{
   background:#2c4f49;
-  border-color:#c9a84c;
+  border-color:#c9a84c55;
   box-shadow:0 0 12px rgba(201,168,76,0.28);
   transform:translateY(-1px);
 }
 
 .btn.my-comment{
-  background:#5a337a;
+  background:#f0e6c8;
   border-color:#f0e6c8;
   box-shadow:0 0 14px rgba(90,51,122,0.55);
 }
@@ -236,7 +236,9 @@ html,body{
 
   <div class="buttons" id="chapterButtons"></div>
 
-  <a class="back-link" href="index.html">Back Home</a>
+     <a class="home-btn" href="index.html">
+        <span class="home-btn-icon">🏠</span> Home
+    </a>
 
   <div class="footer">✦ Choose wisely · Spoilers stay sealed ✦</div>
 
