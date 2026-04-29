@@ -47,6 +47,8 @@
 
     .player {
       position: absolute;
+      left: 90px;
+      top: 430px;
       width: 42px;
       height: 42px;
       background: crimson;
@@ -67,7 +69,7 @@
 
 <body>
   <h1>Book Progress Map</h1>
-  <p>Marine is at chapter : </p>
+  <p>Marine is at chapter: <strong id="marineChapter">Loading...</strong></p>
 
   <div class="map" id="map">
     <div class="path"></div>
@@ -102,6 +104,7 @@
     };
 
     const marineMarker = document.getElementById("marineMarker");
+    const marineChapter = document.getElementById("marineChapter");
 
     function moveMarineToChapter(chapter) {
       const position = chapterPositions[chapter];
@@ -115,6 +118,7 @@
       marineMarker.style.top = position.y + "px";
     }
 
+    <!-- Gets the data from Firebase -->
     const marineRef = doc(db, "firstbingo", "marine");
 
     onSnapshot(marineRef, (docSnap) => {
@@ -124,8 +128,10 @@
       }
 
       const data = docSnap.data();
-      const chapter = data.chapterProgress;
-
+      const chapter = Number(data.chapterProgress);
+      
+      marineChapter.textContent = chapter;
+      
       moveMarineToChapter(chapter);
     });
   </script>
