@@ -16,6 +16,10 @@ html,body{
   min-height:100vh;
   color:#f0e6c8;
 }
+.message{max-width:17rem;margin:0 auto 0.7rem;}
+.message p{font-size:0.88rem;color:#c8b89a;line-height:1.9;}
+.message p+p{margin-top:0.6rem;}
+.message em{color:#f0e6c8;font-style:italic;}
 
 .layout{
   min-height:100vh;
@@ -341,7 +345,10 @@ html,body{
     <div class="club-title">Spoiler-Safe</div>
     <div class="main-title">Chapter Rooms</div>
     <div class="ornament"><div class="line"></div><div class="gem">◆</div><div class="line"></div></div>
-    <div class="subtitle">Lost in the dark</div>
+    <div class="message">
+      <p>A room for every chapter and a space for every thought — big or small.</p>
+      <p>No need to scream into the void… we’re all here to listen.</p>
+    </div>
 
     <div class="user-panel">
       <div class="user-badge" id="loggedInText">Not logged in</div>
@@ -356,14 +363,14 @@ html,body{
 
     <div class="buttons" id="chapterButtons"></div>
 
-    <div class="footer">✦ Choose wisely · Spoilers stay sealed ✦</div>
+    <div class="footer">✦ Spoilers stay sealed ✦</div>
+    <div class="ornament"><div class="line"></div><div class="gem">◆</div><div class="line"></div>
+        <div class="footer">✦ &nbsp; The Bingo Book Club &nbsp; ✦</div>
+    </div>
 
   </main>
   
-  <div class="ornament"><div class="line"></div><div class="gem">◆</div><div class="line"></div>
 
-  <div class="footer">✦ &nbsp; The Bingo Book Club &nbsp; ✦</div>
-</div>
   
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
