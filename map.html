@@ -80,26 +80,23 @@ function move(chapter){
 const ref = doc(db, "firstbingo", "marine");
 
 onSnapshot(ref, snap=>{
+  console.log("EXISTS:", snap.exists());
+
   if(!snap.exists()){
-    status.textContent="No data → using home";
+    status.textContent="No document found";
     chapterText.textContent=0;
     move(0);
     return;
   }
 
   const data = snap.data();
-  const chapter = Number(data.chapterProgress ?? 0);
-
   console.log("DATA:", data);
+
+  const chapter = Number(data.chapterProgress ?? 0);
 
   chapterText.textContent = chapter;
   status.textContent = "Connected ✅";
   move(chapter);
-
-}, err=>{
-  console.error(err);
-  status.textContent="ERROR ❌ check console";
-  move(0);
 });
 
 </script>
