@@ -37,9 +37,8 @@ body{background:#0d0a0e;color:#c8b89a;font-family:Georgia,serif;text-align:cente
 
 <!-- 🔥 Firebase (ALL IN ONE FILE) -->
 <script type="module">
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 /* 🔴 PASTE YOUR REAL CONFIG HERE */
 const firebaseConfig = {
@@ -54,8 +53,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const marker = document.getElementById("marineMarker");
-const chapterText = document.getElementById("marineChapter");
 const status = document.getElementById("status");
 
 const positions = {
@@ -71,34 +68,58 @@ const positions = {
   9:{x:800,y:160}
 };
 
-function move(chapter){
-  const p = positions[chapter] || positions[0];
-  marker.style.left = p.x+"px";
-  marker.style.top = p.y+"px";
-}
+const playerEmojis = {
+  marine: "🧜‍♀️",
+  elana: "🐉",
+  kathi: "🍄",
+  lena: "🌙"
+};
 
-const ref = doc(db, "first_bingo", "marine");
+const map = document.querySelector(".map");
 
-onSnapshot(ref, snap=>{
-  console.log("EXISTS:", snap.exists());
+function getOrCreatePlayerMarker(playerId) {
+  let marker = document.getElementById("player-" + playerId);
 
-  if(!snap.exists()){
-    status.textContent="No document found";
-    chapterText.textContent=0;
-    move(0);
-    return;
+  if (!marker) {
+    marker = document.createElement("div");
+    marker.className = "player";
+    marker.id = "player-" + playerId;
+    marker.textContent = playerEmojis[playerId] || "✨";
+    map.appendChild(marker);
   }
 
-  const data = snap.data();
-  console.log("DATA:", data);
+  return marker;
+}
 
-  const chapter = Number(data.chapterProgress ?? 0);
+function movePlayer(playerId, chapter) {
+  const marker = getOrCreatePlayerMarker(playerId);
+  const p = positions[chapter] || positions[0];
 
-  chapterText.textContent = chapter;
-  status.textContent = "Connected ✅";
-  move(chapter);
-});
+  marker.style.left = p.x + "px";
+  marker.style.top = p.y + "px";
+  marker.title = playerId + " — chapter " + chapter;
+}
 
+const playersRef = collection(db, "first_bingo");
+
+onSnapshot(
+  playersRef,
+  (snapshot) => {
+    status.textContent = "Connected ✅";
+
+    snapshot.forEach((docSnap) => {
+      const playerId = docSnap.id;
+      const data = docSnap.data();
+      const chapter = Number(data.chapterProgress ?? 0);
+
+      movePlayer(playerId, chapter);
+    });
+  },
+  (error) => {
+    console.error(error);
+    status.textContent = "Firebase error ❌";
+  }
+);
 </script>
 
 </body>
