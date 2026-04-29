@@ -23,19 +23,23 @@ html,body{
   margin:0 auto;
   padding:3rem 1.4rem;
   display:grid;
-  grid-template-columns:330px 1fr;
+  grid-template-columns:420px 1fr;
   gap:2rem;
   align-items:start;
 }
 
 .map-column{
   position:sticky;
-  top:2rem;
+  top:50%;
+  transform:translateY(-50%);
+  display:flex;
+  justify-content:center;
 }
 
 .map{
   position:relative;
   width:100%;
+  max-width:420px;
   border:2px solid #c9a84c;
   border-radius:15px;
   overflow:hidden;
@@ -305,6 +309,19 @@ html,body{
     font-size:0.7rem;
   }
 }
+  .ornament{display:flex;align-items:center;gap:0.6rem;width:100%;max-width:18rem;margin:1rem auto;}
+  .ornament .line{flex:1;height:1px;background:linear-gradient(to right,transparent,#c9a84c55,transparent);}
+  .ornament .gem{color:#c9a84c;font-size:0.6rem;}
+
+  .subtitle{font-family:'Cinzel',serif;font-size:0.78rem;letter-spacing:3px;color:#c9a84c;text-transform:uppercase;margin-bottom:0.9rem;}
+
+    /* ── Home Button ── */
+  .home-btn{position:fixed;bottom:1.2rem;left:1.2rem;z-index:1000;display:flex;align-items:center;gap:0.45rem;padding:0.55rem 0.9rem;font-family:'Cinzel',serif;font-size:0.55rem;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;border-radius:6px;background:rgba(13,10,14,0.85);border:1px solid #c9a84c55;color:#c9a84ccc;backdrop-filter:blur(6px);transition:all 0.25s;}
+  .home-btn:hover{border-color:#c9a84c;color:#f0e6c8;background:rgba(13,10,14,0.95);box-shadow:0 0 16px rgba(201,168,76,0.2);}
+  .home-btn-icon{font-size:0.85rem;}
+
+  .footer{margin-top:2.2rem;font-family:'Cinzel',serif;font-size:0.45rem;letter-spacing:2px;color:#c9a84cbb;text-transform:uppercase;}
+  
 </style>
 </head>
 
@@ -324,12 +341,8 @@ html,body{
 
     <div class="club-title">Spoiler-Safe</div>
     <div class="main-title">Chapter Rooms</div>
-
-    <div class="title-rule">
-      <div class="line"></div>
-      <div class="gem">◆</div>
-      <div class="line"></div>
-    </div>
+    <div class="ornament"><div class="line"></div><div class="gem">◆</div><div class="line"></div></div>
+    <div class="subtitle">Lost in the dark</div>
 
     <div class="user-panel">
       <div class="user-badge" id="loggedInText">Not logged in</div>
@@ -359,7 +372,12 @@ html,body{
   </main>
 
 </div>
+  
+  <div class="ornament"><div class="line"></div><div class="gem">◆</div><div class="line"></div></div>
 
+  <div class="footer">✦ &nbsp; The Bingo Book Club &nbsp; ✦</div>
+</div>
+  
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
 import {
@@ -602,6 +620,8 @@ map.addEventListener("click", (e) => {
   console.log(`{ x: ${x}, y: ${y} }`);
 });
 </script>
+
+<a class="home-btn" href="index.html"><span class="home-btn-icon">🏠</span> Home</a>
 
 </body>
 </html>
