@@ -88,12 +88,29 @@ function getOrCreatePlayerMarker(playerId) {
   return marker;
 }
 
-function movePlayer(playerId, chapter) {
+function movePlayer(playerId, chapter, indexInChapter) {
   const marker = getOrCreatePlayerMarker(playerId);
   const p = positions[chapter] || positions[0];
 
-  marker.style.left = p.x + "px";
-  marker.style.top = p.y + "px";
+  const offsets = [
+    { x: 0, y: 0 },
+    { x: 28, y: 0 },
+    { x: -28, y: 0 },
+    { x: 0, y: 28 },
+    { x: 0, y: -28 },
+    { x: 28, y: 28 },
+    { x: -28, y: 28 },
+    { x: 28, y: -28 },
+    { x: -28, y: -28 }
+  ];
+
+  const offset = offsets[indexInChapter] || {
+    x: (indexInChapter % 3) * 28,
+    y: Math.floor(indexInChapter / 3) * 28
+  };
+
+  marker.style.left = (p.x + offset.x) + "px";
+  marker.style.top = (p.y + offset.y) + "px";
   marker.title = playerId + " — chapter " + chapter;
 }
 
@@ -104,12 +121,24 @@ onSnapshot(
   (snapshot) => {
     status.textContent = "Connected ✅";
 
+    const chapterGroups = {};
+
     snapshot.forEach((docSnap) => {
       const playerId = docSnap.id;
       const data = docSnap.data();
       const chapter = Number(data.chapterProgress ?? 0);
 
-      movePlayer(playerId, chapter);
+      if (!chapterGroups[chapter]) {
+        chapterGroups[chapter] = [];
+      }
+
+      chapterGroups[chapter].push(playerId);
+    });
+
+    Object.keys(chapterGroups).forEach((chapter) => {
+      chapterGroups[chapter].forEach((playerId, index) => {
+        movePlayer(playerId, Number(chapter), index);
+      });
     });
   },
   (error) => {
