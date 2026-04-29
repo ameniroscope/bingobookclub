@@ -333,27 +333,41 @@ for (let i = 1; i <= totalChapters; i++) {
   container.appendChild(link);
 }
 
-loadChapterHighlights();
-
 async function loadChapterHighlights() {
   if (!savedName) return;
 
   try {
     const snapshot = await getDocs(collection(db, "messages"));
 
+    const chaptersWithMyComments = new Set();
+    const chaptersWithOtherComments = new Set();
+
     snapshot.forEach((docSnap) => {
       const msg = docSnap.data();
 
       if (!msg.chapter) return;
-      if (msg.name !== savedName) return;
 
       const chapterNumber = String(msg.chapter).replace("chapter-", "");
-      const button = document.getElementById(`chapter-${chapterNumber}-btn`);
 
-      if (button) {
-        button.classList.add("my-comment");
+      if (msg.name === savedName) {
+        chaptersWithMyComments.add(chapterNumber);
+      } else {
+        chaptersWithOtherComments.add(chapterNumber);
       }
     });
+
+    // Apply styles
+    for (let i = 1; i <= totalChapters; i++) {
+      const button = document.getElementById(`chapter-${i}-btn`);
+      if (!button) continue;
+
+      if (chaptersWithMyComments.has(String(i))) {
+        button.classList.add("my-comment");
+      } else if (chaptersWithOtherComments.has(String(i))) {
+        button.classList.add("they-comment");
+      }
+    }
+
   } catch (error) {
     console.error("Could not load chapter highlights:", error);
   }
