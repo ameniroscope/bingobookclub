@@ -76,8 +76,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const status = document.getElementById("status");
-
 const positions = {
   0:{x:8,y:20},   // START
 
@@ -195,8 +193,7 @@ const playersRef = collection(db, "first_bingo");
 onSnapshot(
   playersRef,
   (snapshot) => {
-    status.textContent = "Connected ✅";
-
+   
     const chapterGroups = {};
 
     snapshot.forEach((docSnap) => {
@@ -219,15 +216,31 @@ onSnapshot(
   },
   (error) => {
     console.error(error);
-    status.textContent = "Firebase error ❌";
   }
 );
 
-  document.addEventListener("click", (e)=>{
-  const rect = document.querySelector(".map").getBoundingClientRect();
-  const x = ((e.clientX - rect.left)/rect.width*100).toFixed(1);
-  const y = ((e.clientY - rect.top)/rect.height*100).toFixed(1);
-  console.log(`x:${x}, y:${y}`);
+const mapElement = document.querySelector(".map");
+
+mapElement.addEventListener("click", (e) => {
+  const rect = mapElement.getBoundingClientRect();
+
+  const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(1);
+  const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
+
+  console.log(`{x:${x}, y:${y}}`);
+
+  const dot = document.createElement("div");
+  dot.style.position = "absolute";
+  dot.style.left = x + "%";
+  dot.style.top = y + "%";
+  dot.style.width = "10px";
+  dot.style.height = "10px";
+  dot.style.background = "red";
+  dot.style.borderRadius = "50%";
+  dot.style.transform = "translate(-50%, -50%)";
+  dot.style.zIndex = "9999";
+
+  mapElement.appendChild(dot);
 });
   
 </script>
