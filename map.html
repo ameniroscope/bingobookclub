@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Book Map</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    .map {
+      position: relative;
+      width: 900px;
+      height: 550px;
+      border: 3px solid #333;
+      border-radius: 20px;
+      background: #f3ead7;
+      margin-top: 20px;
+      overflow: hidden;
+    }
+
+    .path {
+      position: absolute;
+      width: 700px;
+      height: 300px;
+      left: 80px;
+      top: 120px;
+      border-top: 6px dashed #8b6f47;
+      transform: rotate(-8deg);
+      opacity: 0.5;
+    }
+
+    .chapter {
+      position: absolute;
+      width: 110px;
+      padding: 8px;
+      background: white;
+      border: 2px solid #444;
+      border-radius: 12px;
+      text-align: center;
+      font-weight: bold;
+      transform: translate(-50%, -50%);
+    }
+
+    .player {
+      position: absolute;
+      width: 42px;
+      height: 42px;
+      background: crimson;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      border: 3px solid white;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+      transform: translate(-50%, -120%);
+      transition: left 0.5s ease, top 0.5s ease;
+      z-index: 10;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Book Progress Map</h1>
+  <p>Marine’s marker moves based on Firebase: <strong>firstbingo → marine → chapterProgress</strong></p>
+
+  <div class="map" id="map">
+    <div class="path"></div>
+
+    <div class="chapter" style="left: 90px; top: 430px;">Chapter 1</div>
+    <div class="chapter" style="left: 180px; top: 370px;">Chapter 2</div>
+    <div class="chapter" style="left: 270px; top: 320px;">Chapter 3</div>
+    <div class="chapter" style="left: 360px; top: 270px;">Chapter 4</div>
+    <div class="chapter" style="left: 450px; top: 220px;">Chapter 5</div>
+    <div class="chapter" style="left: 540px; top: 250px;">Chapter 6</div>
+    <div class="chapter" style="left: 630px; top: 300px;">Chapter 7</div>
+    <div class="chapter" style="left: 720px; top: 230px;">Chapter 8</div>
+    <div class="chapter" style="left: 800px; top: 160px;">Chapter 9</div>
+
+    <div class="player" id="marineMarker">M</div>
+  </div>
+
+  <script type="module">
+    import { db } from "./firebase.js";
+    import { doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const chapterPositions = {
+      1: { x: 90, y: 430 },
+      2: { x: 180, y: 370 },
+      3: { x: 270, y: 320 },
+      4: { x: 360, y: 270 },
+      5: { x: 450, y: 220 },
+      6: { x: 540, y: 250 },
+      7: { x: 630, y: 300 },
+      8: { x: 720, y: 230 },
+      9: { x: 800, y: 160 }
+    };
+
+    const marineMarker = document.getElementById("marineMarker");
+
+    function moveMarineToChapter(chapter) {
+      const position = chapterPositions[chapter];
+
+      if (!position) {
+        console.warn("No map position for chapter:", chapter);
+        return;
+      }
+
+      marineMarker.style.left = position.x + "px";
+      marineMarker.style.top = position.y + "px";
+    }
+
+    const marineRef = doc(db, "firstbingo", "marine");
+
+    onSnapshot(marineRef, (docSnap) => {
+      if (!docSnap.exists()) {
+        console.log("Marine does not exist yet.");
+        return;
+      }
+
+      const data = docSnap.data();
+      const chapter = data.chapterProgress;
+
+      moveMarineToChapter(chapter);
+    });
+  </script>
+</body>
+</html>
