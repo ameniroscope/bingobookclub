@@ -7,7 +7,17 @@
 <title>Book Progress Map</title>
 
 <style>
-body{background:#0d0a0e;color:#c8b89a;font-family:Georgia,serif;text-align:center;}
+body{
+  background:#0d0a0e;
+  color:#c8b89a;
+  font-family:Georgia,serif;
+  text-align:center;
+}
+
+h1{
+  color:#c9a84c;
+}
+
 .map{
   position:relative;
   width:min(95vw, 900px);
@@ -21,31 +31,33 @@ body{background:#0d0a0e;color:#c8b89a;font-family:Georgia,serif;text-align:cente
   width:100%;
   display:block;
 }
-.chapter{position:absolute;background:#111;border:1px solid #c9a84c;padding:5px;border-radius:6px;color:#f0e6c8;transform:translate(-50%,-50%);}
-.player {
-  position: absolute;
-  width: 48px;
-  height: 48px;
 
-  /* ❌ remove circle background */
-  background: transparent;
+.player{
+  position:absolute;
+  width:48px;
+  height:48px;
+  background:transparent;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1.7rem;
+  filter:drop-shadow(0 0 6px rgba(201,168,76,0.7))
+         drop-shadow(0 0 12px rgba(201,168,76,0.45));
+  animation:glowPulse 3s ease-in-out infinite;
+  transform:translate(-50%, -120%);
+  transition:left 0.6s ease, top 0.6s ease;
+  z-index:10;
+}
 
-  /* emoji centered */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.6rem;
-
-  /* ✨ faint magical glow */
-  filter: drop-shadow(0 0 6px rgba(201,168,76,0.6))
-          drop-shadow(0 0 12px rgba(201,168,76,0.4));
-
-  /* optional soft pulse */
-  animation: glowPulse 3s ease-in-out infinite;
-
-  transform: translate(-50%, -120%);
-  transition: left 0.6s ease, top 0.6s ease;
-  z-index: 10;
+@keyframes glowPulse{
+  0%,100%{
+    filter:drop-shadow(0 0 6px rgba(201,168,76,0.7))
+           drop-shadow(0 0 12px rgba(201,168,76,0.45));
+  }
+  50%{
+    filter:drop-shadow(0 0 10px rgba(201,168,76,1))
+           drop-shadow(0 0 20px rgba(201,168,76,0.7));
+  }
 }
 </style>
 </head>
@@ -54,16 +66,16 @@ body{background:#0d0a0e;color:#c8b89a;font-family:Georgia,serif;text-align:cente
 
 <h1>Book Progress Map</h1>
 
+<div id="status" style="display:none;"></div>
+
 <div class="map">
-  <img src="map.png" class="map-image">
+  <img src="map.png" class="map-image" alt="Book map">
 </div>
 
-<!-- 🔥 Firebase (ALL IN ONE FILE) -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* 🔴 PASTE YOUR REAL CONFIG HERE */
 const firebaseConfig = {
   apiKey: "AIzaSyAIQTe-QGQmwqTVmIyJZZ_qlDNsD6GUskY",
   authDomain: "bingobookclub-2144e.firebaseapp.com",
@@ -76,8 +88,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+const map = document.querySelector(".map");
+const status = document.getElementById("status");
+
 const positions = {
-  0:{x:8,y:20},   // START
+  0:{x:8,y:20},
 
   1:{x:20,y:22},
   2:{x:35,y:22},
@@ -136,8 +151,6 @@ const playerEmojis = {
   lena: "🌙"
 };
 
-const map = document.querySelector(".map");
-
 function getOrCreatePlayerMarker(playerId) {
   let marker = document.getElementById("player-" + playerId);
 
@@ -178,22 +191,13 @@ function movePlayer(playerId, chapter, indexInChapter) {
   marker.title = playerId + " — chapter " + chapter;
 }
 
-  const offset = offsets[indexInChapter] || {
-    x: (indexInChapter % 3) * 28,
-    y: Math.floor(indexInChapter / 3) * 28
-  };
-
-  marker.style.left = finalX + "%";
-  marker.style.top = finalY + "%";
-  marker.title = playerId + " — chapter " + chapter;
-}
-
 const playersRef = collection(db, "first_bingo");
 
 onSnapshot(
   playersRef,
   (snapshot) => {
-   
+    status.textContent = "Connected";
+
     const chapterGroups = {};
 
     snapshot.forEach((docSnap) => {
@@ -215,14 +219,14 @@ onSnapshot(
     });
   },
   (error) => {
-    console.error(error);
+    console.error("Firebase error:", error);
+    status.textContent = "Firebase error";
   }
 );
 
-const mapElement = document.querySelector(".map");
-
-mapElement.addEventListener("click", (e) => {
-  const rect = mapElement.getBoundingClientRect();
+/* Click the map to get x/y coordinates in the console */
+map.addEventListener("click", (e) => {
+  const rect = map.getBoundingClientRect();
 
   const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(1);
   const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
@@ -240,9 +244,8 @@ mapElement.addEventListener("click", (e) => {
   dot.style.transform = "translate(-50%, -50%)";
   dot.style.zIndex = "9999";
 
-  mapElement.appendChild(dot);
+  map.appendChild(dot);
 });
-  
 </script>
 
 </body>
