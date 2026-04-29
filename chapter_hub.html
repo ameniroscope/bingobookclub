@@ -46,7 +46,7 @@ html,body{
   display:flex;
   align-items:center;
   gap:0.6rem;
-  margin:1rem auto 2rem;
+  margin:1rem auto 1.3rem;
   max-width:30rem;
 }
 
@@ -56,28 +56,79 @@ html,body{
   background:linear-gradient(to right,transparent,#c9a84c55,transparent);
 }
 
-.gem{
-  color:#c9a84c;
+.gem{color:#c9a84c;}
+
+.user-panel{
+  max-width:700px;
+  margin:0 auto 1.4rem;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:0.8rem;
+  padding:0.8rem;
+  border:1px solid #c9a84c44;
+  border-radius:10px;
+  background:rgba(26,15,31,0.88);
 }
+
+.user-badge{
+  font-family:'Cinzel',serif;
+  font-size:0.75rem;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  color:#f0e6c8;
+}
+
+.logout-btn{
+  min-height:40px;
+  padding:0 1rem;
+  font-family:'Cinzel',serif;
+  text-transform:uppercase;
+  border-radius:6px;
+  cursor:pointer;
+  background:#1a0f1f;
+  border:1px solid #c9a84c33;
+  color:#f5ecd9;
+  letter-spacing:2px;
+}
+
+.legend{
+  max-width:700px;
+  margin:0 auto 1rem;
+  display:flex;
+  justify-content:center;
+  gap:1rem;
+  flex-wrap:wrap;
+  color:#c8b89a;
+  font-size:0.9rem;
+}
+
+.legend span{
+  display:flex;
+  align-items:center;
+  gap:0.35rem;
+}
+
+.dot{
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  display:inline-block;
+}
+
+.dot.normal{background:#1f3a36;}
+.dot.has-comments{background:#5a337a;}
 
 .buttons{
   display:grid;
-  gap:0.9rem;
-  max-width:650px;
-  margin:0 auto;
-}
-
-@media(min-width:620px){
-  .buttons{
-  display:grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns:repeat(5,1fr);
   gap:0.6rem;
   max-width:700px;
   margin:0 auto;
 }
 
 .btn{
-  height:60px;
+  height:58px;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -90,48 +141,22 @@ html,body{
   font-size:0.75rem;
   letter-spacing:1.5px;
   transition:all 0.25s ease;
+  box-shadow:0 0 8px rgba(201,168,76,0.12);
 }
 
 .btn:hover{
   background:#2c4f49;
   border-color:#c9a84c;
-  box-shadow:0 0 10px rgba(201,168,76,0.25);
+  box-shadow:0 0 12px rgba(201,168,76,0.28);
   transform:translateY(-1px);
 }
 
-.btn-icon{
-  font-size:1.5rem;
+.btn.my-comment{
+  background:#5a337a;
+  border-color:#c9a84c;
+  box-shadow:0 0 14px rgba(90,51,122,0.55);
 }
 
-.btn-text{
-  display:flex;
-  flex-direction:column;
-  align-items:flex-start;
-}
-
-.btn-label{
-  font-family:'Cinzel',serif;
-  text-transform:uppercase;
-  font-size:0.9rem;
-  letter-spacing:2px;
-}
-
-.btn-sub{
-  font-size:0.75rem;
-  color:#c8b89a;
-  font-style:italic;
-}
-@media(max-width:700px){
-  .buttons{
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media(max-width:400px){
-  .buttons{
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
 .back-link{
   max-width:260px;
   margin:2rem auto 0;
@@ -157,6 +182,32 @@ html,body{
   color:#c9a84cbb;
   text-transform:uppercase;
 }
+
+@media(max-width:700px){
+  .buttons{
+    grid-template-columns:repeat(3,1fr);
+  }
+
+  .user-panel{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .logout-btn{
+    width:100%;
+  }
+}
+
+@media(max-width:400px){
+  .buttons{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .btn{
+    height:54px;
+    font-size:0.7rem;
+  }
+}
 </style>
 </head>
 
@@ -173,7 +224,17 @@ html,body{
     <div class="line"></div>
   </div>
 
-<div class="buttons" id="chapterButtons"></div>
+  <div class="user-panel">
+    <div class="user-badge" id="loggedInText">Not logged in</div>
+    <button class="logout-btn" id="logoutBtn" type="button">Log out</button>
+  </div>
+
+  <div class="legend">
+    <span><i class="dot normal"></i> Not commented</span>
+    <span><i class="dot my-comment"></i> You commented</span>
+  </div>
+
+  <div class="buttons" id="chapterButtons"></div>
 
   <a class="back-link" href="index.html">Back Home</a>
 
@@ -181,19 +242,83 @@ html,body{
 
 </div>
 
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAIQTe-QGQmwqTVmIyJZZ_qlDNsD6GUskY",
+  authDomain: "bingobookclub-2144e.firebaseapp.com",
+  projectId: "bingobookclub-2144e",
+  storageBucket: "bingobookclub-2144e.firebasestorage.app",
+  messagingSenderId: "294177836341",
+  appId: "1:294177836341:web:6d5f11e64737fbe3aad07c"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 const totalChapters = 41;
 const container = document.getElementById("chapterButtons");
+const loggedInText = document.getElementById("loggedInText");
+const logoutBtn = document.getElementById("logoutBtn");
+
+const savedName = sessionStorage.getItem("bookClubName");
+
+if(savedName){
+  loggedInText.textContent = "✦ Logged in as " + savedName;
+  logoutBtn.style.display = "block";
+}else{
+  loggedInText.textContent = "Not logged in yet";
+  logoutBtn.style.display = "none";
+}
+
+logoutBtn.addEventListener("click", function(){
+  sessionStorage.removeItem("bookClubName");
+  sessionStorage.removeItem("bookClubAvatar");
+  sessionStorage.removeItem("bookClubColor");
+  window.location.reload();
+});
 
 for(let i = 1; i <= totalChapters; i++){
   const link = document.createElement("a");
   link.className = "btn";
   link.href = `chat.html?chapter=${i}`;
   link.textContent = `Chap ${i}`;
-
+  link.id = `chapter-${i}-btn`;
   container.appendChild(link);
 }
+
+loadChapterHighlights();
+
+async function loadChapterHighlights(){
+  try{
+    const snapshot = await getDocs(collection(db, "messages"));
+
+    snapshot.forEach(function(docSnap){
+      const msg = docSnap.data();
+
+      if(!msg.chapter || !savedName) return;
+
+      if(msg.name !== savedName) return;
+
+      const chapterNumber = msg.chapter.replace("chapter-", "");
+      const button = document.getElementById(`chapter-${chapterNumber}-btn`);
+
+      if(!button) return;
+
+      button.classList.add("my-comment");
+    });
+
+  }catch(error){
+    console.error("Could not load chapter highlights:", error);
+  }
+}
 </script>
-  
+
 </body>
 </html>
