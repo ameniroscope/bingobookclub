@@ -35,9 +35,10 @@ body {
 
 .map-column {
   position: sticky;
-  top: 6.5rem;
+  top: 3rem;
   display: flex;
   justify-content: center;
+  padding-top: 10.4rem;
 }
 
 .map {
@@ -131,8 +132,8 @@ body {
 }
 
 .message {
-  max-width: 17rem;
-  margin: 0 auto 0.7rem;
+  max-width: 34rem;
+  margin: 0 auto 1.2rem;
 }
 
 .message p {
@@ -308,18 +309,29 @@ body {
   font-size: 0.85rem;
 }
 
+  .bottom-center {
+  width: 100%;
+  text-align: center;
+  margin: 0 auto 2.5rem;
+}
+
+.bottom-center .ornament {
+  margin: 1rem auto;
+}
+
 @media (max-width: 900px) {
   .layout {
     grid-template-columns: 1fr;
     max-width: 760px;
   }
 
-  .map-column {
-    position: static;
-    max-width: 430px;
-    width: 100%;
-    margin: 0 auto;
-  }
+.map-column {
+  position: static;
+  max-width: 430px;
+  width: 100%;
+  margin: 0 auto;
+  padding-top: 0;
+}
 }
 
 @media (max-width: 700px) {
@@ -402,18 +414,20 @@ body {
 
     <div class="buttons" id="chapterButtons"></div>
 
-    <div class="footer">✦ Spoilers stay sealed ✦</div>
-
-    <div class="ornament">
-      <div class="line"></div>
-      <div class="gem">◆</div>
-      <div class="line"></div>
-    </div>
-
-    <div class="footer">✦ &nbsp; The Bingo Book Club &nbsp; ✦</div>
-
   </main>
 
+</div>
+  
+  <div class="bottom-center">
+  <div class="footer">✦ Spoilers stay sealed ✦</div>
+
+  <div class="ornament">
+    <div class="line"></div>
+    <div class="gem">◆</div>
+    <div class="line"></div>
+  </div>
+
+  <div class="footer">✦ &nbsp; The Bingo Book Club &nbsp; ✦</div>
 </div>
 
 <a class="home-btn" href="index.html">
