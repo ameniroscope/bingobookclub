@@ -77,7 +77,7 @@ function move(chapter){
   marker.style.top = p.y+"px";
 }
 
-const ref = doc(db, "firstbingo", "marine");
+const ref = doc(db, "first_bingo", "marine");
 
 onSnapshot(ref, snap=>{
   console.log("EXISTS:", snap.exists());
