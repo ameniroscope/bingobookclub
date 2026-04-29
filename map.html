@@ -8,7 +8,19 @@
 
 <style>
 body{background:#0d0a0e;color:#c8b89a;font-family:Georgia,serif;text-align:center;}
-.map{position:relative;width:900px;height:550px;margin:20px auto;border:2px solid #c9a84c;border-radius:15px;}
+.map{
+  position:relative;
+  width:min(95vw, 900px);
+  margin:20px auto;
+  border:2px solid #c9a84c;
+  border-radius:15px;
+  overflow:hidden;
+}
+
+.map-image{
+  width:100%;
+  display:block;
+}
 .chapter{position:absolute;background:#111;border:1px solid #c9a84c;padding:5px;border-radius:6px;color:#f0e6c8;transform:translate(-50%,-50%);}
 .player {
   position: absolute;
@@ -148,15 +160,25 @@ function movePlayer(playerId, chapter, indexInChapter) {
 
   const offsets = [
     { x: 0, y: 0 },
-    { x: 28, y: 0 },
-    { x: -28, y: 0 },
-    { x: 0, y: 28 },
-    { x: 0, y: -28 },
-    { x: 28, y: 28 },
-    { x: -28, y: 28 },
-    { x: 28, y: -28 },
-    { x: -28, y: -28 }
+    { x: 2.2, y: 0 },
+    { x: -2.2, y: 0 },
+    { x: 0, y: 2.2 },
+    { x: 0, y: -2.2 },
+    { x: 2.2, y: 2.2 },
+    { x: -2.2, y: 2.2 },
+    { x: 2.2, y: -2.2 },
+    { x: -2.2, y: -2.2 }
   ];
+
+  const offset = offsets[indexInChapter] || { x: 0, y: 0 };
+
+  const finalX = p.x + offset.x;
+  const finalY = p.y + offset.y;
+
+  marker.style.left = finalX + "%";
+  marker.style.top = finalY + "%";
+  marker.title = playerId + " — chapter " + chapter;
+}
 
   const offset = offsets[indexInChapter] || {
     x: (indexInChapter % 3) * 28,
