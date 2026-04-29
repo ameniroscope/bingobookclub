@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://firestore.googleapis.com https://*.googleapis.com;">
+
   <title>Book Map</title>
 
   <style>
@@ -64,22 +67,22 @@
 
 <body>
   <h1>Book Progress Map</h1>
-  <p>Marine’s marker moves based on Firebase: <strong>firstbingo → marine → chapterProgress</strong></p>
+  <p>Marine is at chapter : </p>
 
   <div class="map" id="map">
     <div class="path"></div>
 
-    <div class="chapter" style="left: 90px; top: 430px;">Chapter 1</div>
-    <div class="chapter" style="left: 180px; top: 370px;">Chapter 2</div>
-    <div class="chapter" style="left: 270px; top: 320px;">Chapter 3</div>
-    <div class="chapter" style="left: 360px; top: 270px;">Chapter 4</div>
-    <div class="chapter" style="left: 450px; top: 220px;">Chapter 5</div>
-    <div class="chapter" style="left: 540px; top: 250px;">Chapter 6</div>
-    <div class="chapter" style="left: 630px; top: 300px;">Chapter 7</div>
-    <div class="chapter" style="left: 720px; top: 230px;">Chapter 8</div>
-    <div class="chapter" style="left: 800px; top: 160px;">Chapter 9</div>
+    <div class="chapter" style="left: 90px; top: 430px;">Chap 1</div>
+    <div class="chapter" style="left: 180px; top: 370px;">Chap 2</div>
+    <div class="chapter" style="left: 270px; top: 320px;">Chap 3</div>
+    <div class="chapter" style="left: 360px; top: 270px;">Chap 4</div>
+    <div class="chapter" style="left: 450px; top: 220px;">Chap 5</div>
+    <div class="chapter" style="left: 540px; top: 250px;">Chap 6</div>
+    <div class="chapter" style="left: 630px; top: 300px;">Chap 7</div>
+    <div class="chapter" style="left: 720px; top: 230px;">Chap 8</div>
+    <div class="chapter" style="left: 800px; top: 160px;">Chap 9</div>
 
-    <div class="player" id="marineMarker">M</div>
+    <div class="player" id="marineMarker">🦖</div>
   </div>
 
   <script type="module">
