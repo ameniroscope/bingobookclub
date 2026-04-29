@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://firestore.googleapis.com https://*.googleapis.com;">
 
   <title>Book Map</title>
@@ -45,10 +44,43 @@
       transform: translate(-50%, -50%);
     }
 
+    .house {
+      position: absolute;
+      left: 60px;
+      top: 480px;
+      width: 90px;
+      height: 60px;
+      background: #d2691e;
+      border: 3px solid #5a2d0c;
+      border-radius: 6px;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      font-weight: bold;
+      padding-top: 20px;
+    }
+
+    .house::before {
+      content: "";
+      position: absolute;
+      left: -10px;
+      top: -45px;
+      width: 0;
+      height: 0;
+      border-left: 55px solid transparent;
+      border-right: 55px solid transparent;
+      border-bottom: 45px solid #8b0000;
+    }
+
+    .house span {
+      position: relative;
+      z-index: 2;
+      color: white;
+    }
+
     .player {
       position: absolute;
-      left: 90px;
-      top: 430px;
+      left: 60px;
+      top: 480px;
       width: 42px;
       height: 42px;
       background: crimson;
@@ -64,15 +96,23 @@
       transition: left 0.5s ease, top 0.5s ease;
       z-index: 10;
     }
+
+    #status {
+      font-weight: bold;
+    }
   </style>
 </head>
 
 <body>
   <h1>Book Progress Map</h1>
-  <p>Marine is at chapter: <strong id="marineChapter">Loading...</strong></p>
+
+  <p>Marine is at chapter: <span id="marineChapter">Loading...</span></p>
+  <p id="status">Connecting to Firebase...</p>
 
   <div class="map" id="map">
     <div class="path"></div>
+
+    <div class="house"><span>Home</span></div>
 
     <div class="chapter" style="left: 90px; top: 430px;">Chap 1</div>
     <div class="chapter" style="left: 180px; top: 370px;">Chap 2</div>
@@ -91,7 +131,12 @@
     import { db } from "./firebase.js";
     import { doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+    const marineMarker = document.getElementById("marineMarker");
+    const marineChapter = document.getElementById("marineChapter");
+    const status = document.getElementById("status");
+
     const chapterPositions = {
+      0: { x: 60, y: 480 },
       1: { x: 90, y: 430 },
       2: { x: 180, y: 370 },
       3: { x: 270, y: 320 },
@@ -103,14 +148,11 @@
       9: { x: 800, y: 160 }
     };
 
-    const marineMarker = document.getElementById("marineMarker");
-    const marineChapter = document.getElementById("marineChapter");
-
     function moveMarineToChapter(chapter) {
       const position = chapterPositions[chapter];
 
       if (!position) {
-        console.warn("No map position for chapter:", chapter);
+        status.textContent = "No position for chapter " + chapter;
         return;
       }
 
@@ -118,22 +160,35 @@
       marineMarker.style.top = position.y + "px";
     }
 
-    <!-- Gets the data from Firebase -->
     const marineRef = doc(db, "firstbingo", "marine");
 
-    onSnapshot(marineRef, (docSnap) => {
-      if (!docSnap.exists()) {
-        console.log("Marine does not exist yet.");
-        return;
-      }
+    onSnapshot(
+      marineRef,
+      (docSnap) => {
+        if (!docSnap.exists()) {
+          marineChapter.textContent = "0";
+          status.textContent = "Marine not found in Firebase, showing Home.";
+          moveMarineToChapter(0);
+          return;
+        }
 
-      const data = docSnap.data();
-      const chapter = Number(data.chapterProgress);
-      
-      marineChapter.textContent = chapter;
-      
-      moveMarineToChapter(chapter);
-    });
+        const data = docSnap.data();
+        const chapter = Number(data.chapterProgress ?? 0);
+
+        console.log("Marine data:", data);
+        console.log("Chapter:", chapter);
+
+        marineChapter.textContent = chapter;
+        status.textContent = "Connected to Firebase.";
+        moveMarineToChapter(chapter);
+      },
+      (error) => {
+        console.error("Firebase error:", error);
+        marineChapter.textContent = "error";
+        status.textContent = "Firebase error. Check console.";
+        moveMarineToChapter(0);
+      }
+    );
   </script>
 </body>
 </html>
