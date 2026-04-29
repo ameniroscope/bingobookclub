@@ -302,22 +302,22 @@ const logoutBtn = document.getElementById("logoutBtn");
 
 const savedName = sessionStorage.getItem("bookClubName");
 
-if(savedName){
+if (savedName) {
   loggedInText.textContent = "✦ Logged in as " + savedName;
   logoutBtn.style.display = "block";
-}else{
+} else {
   loggedInText.textContent = "Not logged in yet";
   logoutBtn.style.display = "none";
 }
 
-logoutBtn.addEventListener("click", function(){
+logoutBtn.addEventListener("click", () => {
   sessionStorage.removeItem("bookClubName");
   sessionStorage.removeItem("bookClubAvatar");
   sessionStorage.removeItem("bookClubColor");
   window.location.reload();
 });
 
-for(let i = 1; i <= totalChapters; i++){
+for (let i = 1; i <= totalChapters; i++) {
   const link = document.createElement("a");
   link.className = "btn";
   link.href = `chat.html?chapter=${i}`;
@@ -328,26 +328,26 @@ for(let i = 1; i <= totalChapters; i++){
 
 loadChapterHighlights();
 
-async function loadChapterHighlights(){
-  try{
+async function loadChapterHighlights() {
+  if (!savedName) return;
+
+  try {
     const snapshot = await getDocs(collection(db, "messages"));
 
-    snapshot.forEach(function(docSnap){
+    snapshot.forEach((docSnap) => {
       const msg = docSnap.data();
 
-      if(!msg.chapter || !savedName) return;
+      if (!msg.chapter) return;
+      if (msg.name !== savedName) return;
 
-      if(msg.name !== savedName) return;
-
-      const chapterNumber = msg.chapter.replace("chapter-", "");
+      const chapterNumber = String(msg.chapter).replace("chapter-", "");
       const button = document.getElementById(`chapter-${chapterNumber}-btn`);
 
-      if(!button) return;
-
-      button.classList.add("my-comment");
+      if (button) {
+        button.classList.add("my-comment");
+      }
     });
-
-  }catch(error){
+  } catch (error) {
     console.error("Could not load chapter highlights:", error);
   }
 }
