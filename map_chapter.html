@@ -596,17 +596,13 @@ const playerEmojis = {
   lena: "🌙"
 };
 
-const offsets = [
-  { x: 0, y: 0 },
-  { x: 2.2, y: 0 },
-  { x: -2.2, y: 0 },
-  { x: 0, y: 2.2 },
-  { x: 0, y: -2.2 },
-  { x: 2.2, y: 2.2 },
-  { x: -2.2, y: 2.2 },
-  { x: 2.2, y: -2.2 },
-  { x: -2.2, y: -2.2 }
-];
+
+const playerOffsets = {
+  marine: { x: -2.5, y: -2.5 },
+  elana:  { x:  2.5, y: -2.5 },
+  kathi:  { x: -2.5, y:  2.5 },
+  lena:   { x:  2.5, y:  2.5 },
+};
 
 function getOrCreatePlayerMarker(playerId) {
   let marker = document.getElementById("player-" + playerId);
@@ -622,13 +618,14 @@ function getOrCreatePlayerMarker(playerId) {
   return marker;
 }
 
+
 function movePlayer(playerId, chapter, indexInChapter) {
   const marker = getOrCreatePlayerMarker(playerId);
   const position = positions[chapter] || positions[0];
-  const offset = offsets[indexInChapter] || { x: 0, y: 0 };
+  const offset = playerOffsets[playerId] || { x: 0, y: 0 };
 
   marker.style.left = position.x + offset.x + "%";
-  marker.style.top = position.y + offset.y + "%";
+  marker.style.top  = position.y + offset.y + "%";
   marker.title = playerId + " — chapter " + chapter;
 }
 
