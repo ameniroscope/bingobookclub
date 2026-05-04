@@ -82,7 +82,9 @@ button, input {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
+    justify-content: center;
     gap: 25px;
+    width: 100%;
 }
 
 /* Container and Grid */
@@ -176,13 +178,17 @@ input {
     font-family: 'Crimson Text', Georgia, serif;
 }
 
+/* ── SIDE PANEL (progress + controls, right of card) ────────── */
+.side-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex-shrink: 0;
+    width: 280px;
+}
+
 /* Controls */
 .controls {
-    position: fixed;
-    right: 200px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 100;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -323,10 +329,9 @@ button:disabled {
     box-shadow: 0 0 12px rgba(201, 168, 76, 0.3);
 }
 
-/* ── PROGRESS BOX (left of card, 25px gap) ─────────────────── */
+/* ── PROGRESS BOX ───────────────────────────────────────────── */
 .journey-wrapper {
-    width: 280px;
-    flex-shrink: 0;
+    width: 100%;
     padding-top: 70px;
     position: relative;
 }
@@ -499,6 +504,10 @@ button:disabled {
         width: min(90vw, 560px);
     }
 
+    .side-panel {
+        width: 100%;
+    }
+
     .journey-wrapper {
         width: 100%;
     }
@@ -594,8 +603,8 @@ button:disabled {
 
     <!-- Bingo Card -->
     <div class="container">
-        <div class="bingo-grid" id="bingoGrid"></div>
-    </div>
+        <div class="bingo-grid" id="bingoGrid">        </div>
+    </div><!-- end right side -->
 
     </div><!-- /.card-and-progress -->
 
