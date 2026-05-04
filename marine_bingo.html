@@ -6,7 +6,7 @@
 
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://firestore.googleapis.com https://*.googleapis.com;">
 
-<title>Bingo Card - marine</title>
+<title>Bingo Card - Elana</title>
 
 <link rel="stylesheet" href="style.css">
 
@@ -80,10 +80,9 @@ button, input {
 /* ── CARD + PROGRESS LAYOUT ───────────────────────────────── */
 .card-and-progress {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    width: min(90vw, 560px);
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 25px;
 }
 
 /* Container and Grid */
@@ -305,6 +304,12 @@ button:disabled {
     justify-content: center;
 }
 
+.emotion-btn.active {
+    background: rgba(201, 168, 76, 0.4);
+    border-color: #c9a84c;
+    box-shadow: 0 0 12px rgba(201, 168, 76, 0.3);
+}
+
 .emotion-btn:hover:not(:disabled) {
     background: rgba(44, 79, 73, 0.8);
     border-color: #c9a84c;
@@ -317,9 +322,10 @@ button:disabled {
     box-shadow: 0 0 12px rgba(201, 168, 76, 0.3);
 }
 
-/* ── PROGRESS BOX (now below the card, full card width) ────── */
+/* ── PROGRESS BOX (left of card, 25px gap) ─────────────────── */
 .journey-wrapper {
-    width: 100%;
+    width: 280px;
+    flex-shrink: 0;
     padding-top: 70px;
     position: relative;
 }
@@ -486,8 +492,14 @@ button:disabled {
     .player-name { font-size: 2rem; }
 
     .card-and-progress {
+        flex-direction: column;
+        align-items: center;
         order: 2;
         width: min(90vw, 560px);
+    }
+
+    .journey-wrapper {
+        width: 100%;
     }
 
     .controls {
@@ -539,7 +551,7 @@ button:disabled {
 <!-- Player Header -->
 <div class="player-header">
     <div class="img-frame">
-        <img id="playerPhoto" src="marine.png" alt="Player Photo">
+        <img id="playerPhoto" src="elana.png" alt="Player Photo">
     </div>
     <div class="player-name" id="playerHeaderName"></div>
     <div class="player-id" id="playerId"></div>
@@ -547,11 +559,6 @@ button:disabled {
 
 <!-- Bingo Card + Progress Box grouped together -->
 <div class="card-and-progress">
-
-    <!-- Bingo Card -->
-    <div class="container">
-        <div class="bingo-grid" id="bingoGrid"></div>
-    </div>
 
     <!-- Progress Box -->
     <div class="journey-wrapper">
@@ -584,7 +591,12 @@ button:disabled {
         </div>
     </div>
 
-</div><!-- /.card-and-progress -->
+    <!-- Bingo Card -->
+    <div class="container">
+        <div class="bingo-grid" id="bingoGrid"></div>
+    </div>
+
+    </div><!-- /.card-and-progress -->
 
 <!-- Controls -->
 <div class="controls">
@@ -628,7 +640,7 @@ for (let i = 0; i < 80; i++) {
 }
 
 // ── CONFIG ────────────────────────────────────────────────────
-const CARD_PASSWORD = 'marinara';
+const CARD_PASSWORD = 'elanalogy';
 
 const PROJECT_ID = 'bingobookclub-2144e';
 const FIRESTORE_BASE =
@@ -636,7 +648,7 @@ const FIRESTORE_BASE =
     PROJECT_ID +
     '/databases/(default)/documents/first_bingo/';
 
-const playerId = 'marine';
+const playerId = 'elana';
 
 // ── STATE ─────────────────────────────────────────────────────
 const GRID_SIZE = 25;
@@ -675,7 +687,8 @@ function setLockState(unlocked) {
     resetBtn.disabled  = !unlocked;
     chapterSlider.disabled = !unlocked;
 
-    document.querySelectorAll('.emotion-btn').forEach(b => b.disabled = !unlocked);
+    // Emotion buttons stay enabled so .active highlight is always visible;
+    // clicks are blocked in the handler when locked.
     document.querySelectorAll('input[name="format"]').forEach(r => r.disabled = !unlocked);
 
     restoreStatus();
