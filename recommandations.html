@@ -23,7 +23,6 @@ body {
   padding: 0 1.2rem;
 }
 
-/* ── PAGE HEADER ── */
 .page-header {
   text-align: center;
   padding: 2.5rem 1rem 1.5rem;
@@ -49,11 +48,8 @@ body {
   background: linear-gradient(to right, transparent, #c9a84c44, transparent);
 }
 .ornament .gem { color: #c9a84c; font-size: .55rem; }
-.page-sub {
-  font-size: .85rem; color: #7a6a58; font-style: italic;
-}
+.page-sub { font-size: .85rem; color: #7a6a58; font-style: italic; }
 
-/* ── ACTION BAR ── */
 .action-bar {
   display: flex; gap: .6rem; justify-content: center;
   flex-wrap: wrap; margin-bottom: 1.75rem;
@@ -70,7 +66,6 @@ body {
 .gold-btn:hover { background: rgba(201,168,76,.15); border-color: #c9a84c; }
 .gold-btn .icon { font-size: .9rem; }
 
-/* ── MODAL OVERLAY ── */
 .modal-bg {
   display: none; position: fixed; inset: 0; z-index: 200;
   background: rgba(0,0,0,.72);
@@ -138,7 +133,6 @@ body {
 }
 .modal-cancel:hover { color: #7a6a58; }
 
-/* ── ADD FORM inside modal ── */
 .field { margin-bottom: .85rem; }
 .field label {
   display: block; font-family: 'Cinzel', serif;
@@ -156,7 +150,6 @@ body {
 .field input:focus, .field textarea:focus { border-color: #c9a84c88; }
 .field textarea { resize: vertical; min-height: 65px; }
 
-/* ── LOGGED IN BADGE ── */
 .session-bar {
   display: none;
   align-items: center; justify-content: center; gap: .6rem;
@@ -178,7 +171,6 @@ body {
 }
 .session-out:hover { color: #7a6a58; }
 
-/* ── BOOK CARDS ── */
 .book-card {
   background: linear-gradient(170deg,#1a1020 0%,#110d14 50%,#0f0a10 100%);
   border: 1px solid #c9a84c44; border-radius: .5rem;
@@ -233,7 +225,6 @@ body {
   line-height: 1.5; margin: .35rem 0 .5rem;
 }
 
-/* ── VOTE BUTTONS ── */
 .votes-row { display: flex; flex-wrap: wrap; gap: .28rem; margin-top: .4rem; }
 .vote-btn {
   display: inline-flex; align-items: center; gap: .22rem;
@@ -259,7 +250,6 @@ body {
 }
 .vote-btn.mine .vote-count { background: #c9a84c33; color: #c9a84c; }
 
-/* ── VOTE PROMPT ── */
 .vote-prompt {
   margin-top: .45rem; font-size: .68rem; color: #4a3a2a;
   font-style: italic; cursor: pointer;
@@ -267,14 +257,12 @@ body {
 }
 .vote-prompt:hover { color: #c9a84c88; }
 
-/* ── EMPTY ── */
 .empty-state {
   text-align: center; padding: 3.5rem 1rem;
   border: 1px dashed #c9a84c1a; border-radius: .5rem;
   color: #3a2a1a; font-style: italic; font-size: .85rem;
 }
 
-/* ── LEGEND ── */
 .legend-wrap {
   margin: 1.5rem 0 2rem; padding: .85rem 1rem;
   border: 1px solid #c9a84c14; border-radius: .5rem;
@@ -292,14 +280,12 @@ body {
 .l-emoji { font-size: .85rem; }
 .l-text { font-size: .62rem; color: #4a3a2a; line-height: 1.4; }
 
-/* ── FOOTER ── */
 .page-footer {
   text-align: center; margin-top: 1rem;
   font-family: 'Cinzel', serif; font-size: .42rem;
   letter-spacing: .2em; color: #c9a84c66; text-transform: uppercase;
 }
 
-/* ── HOME BTN ── */
 .home-btn {
   position: fixed; bottom: 1.2rem; left: 1.2rem; z-index: 100;
   display: inline-flex; align-items: center; gap: .4rem;
@@ -323,9 +309,7 @@ body {
 </head>
 <body>
 
-<!-- ── MODALS ── -->
-
-<!-- Code modal (shared between vote + recommend actions) -->
+<!-- Code modal -->
 <div class="modal-bg" id="code-modal">
   <div class="modal">
     <div class="c-bl"></div><div class="c-br"></div>
@@ -359,7 +343,7 @@ body {
   </div>
 </div>
 
-<!-- ── PAGE ── -->
+<!-- PAGE -->
 <div class="layout">
   <div class="page-header">
     <div class="club-label">The Bingo Book Club</div>
@@ -404,13 +388,11 @@ body {
 
 <a class="home-btn" href="index.html">🏠 Home</a>
 
-<!-- ── FIREBASE ── -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// ── CONFIG ─────────────────────────────────────────────────
 const firebaseConfig = {
   apiKey: "AIzaSyAIQTe-QGQmwqTVmIyJZZ_qlDNsD6GUskY",
   authDomain: "bingobookclub-2144e.firebaseapp.com",
@@ -419,7 +401,6 @@ const firebaseConfig = {
   messagingSenderId: "294177836341",
   appId: "1:294177836341:web:6d5f11e64737fbe3aad07c"
 };
-// ───────────────────────────────────────────────────────────
 
 const PLAYERS = {
   marinara:   { name: "Marine", emoji: "🧜‍♀️" },
@@ -450,51 +431,51 @@ const app = initializeApp(firebaseConfig);
 const db  = getFirestore(app);
 const booksCol = collection(db, "books");
 
-// ── SESSION ─────────────────────────────────────────────────
 let currentPlayer = null;
+let allBooks = {};
+let pendingAction = null;
 
-// Restore session from sessionStorage
+// ── Expose all functions called from HTML onclick attrs ──
+window.requestAction = requestAction;
+window.closeModal    = id => document.getElementById(id).classList.remove('open');
+window.openModal     = id => document.getElementById(id).classList.add('open');
+window.logout        = logout;
+window.submitBook    = submitBook;
+window.castVote      = castVote;
+
+// ── Session restore ──
 const saved = sessionStorage.getItem("nextReadPlayer");
-if (saved) {
-  const p = PLAYERS[saved];
-  if (p) setPlayer(saved, p);
-}
+if (saved && PLAYERS[saved]) setPlayer(saved, PLAYERS[saved]);
 
 function setPlayer(code, player) {
   currentPlayer = { code, ...player };
   document.getElementById("session-name").textContent = player.emoji + " " + player.name;
   document.getElementById("session-bar").classList.add("visible");
   sessionStorage.setItem("nextReadPlayer", code);
-  renderBooks(); // re-render to show votes
+  renderBooks();
 }
 
-window.logout = function() {
+function logout() {
   currentPlayer = null;
   sessionStorage.removeItem("nextReadPlayer");
   document.getElementById("session-bar").classList.remove("visible");
   renderBooks();
-};
+}
 
-// ── ACTION GATE ──────────────────────────────────────────────
-let pendingAction = null; // 'vote' | 'recommend'
-
-window.requestAction = function(action) {
+// ── Action gate ──
+function requestAction(action) {
   if (currentPlayer) {
-    // Already logged in — go straight to action
-    if (action === 'recommend') openModal('add-modal');
-    // 'vote' just enables voting inline, already rendered
+    if (action === 'recommend') window.openModal('add-modal');
     return;
   }
   pendingAction = action;
-  const icon = action === 'vote' ? '🗳️' : '📖';
-  const title = action === 'vote' ? 'Who's voting?' : 'Who's recommending?';
-  document.getElementById('code-modal-icon').textContent = icon;
-  document.getElementById('code-modal-title').textContent = title;
+  document.getElementById('code-modal-icon').textContent  = action === 'vote' ? '🗳️' : '📖';
+  document.getElementById('code-modal-title').textContent = action === 'vote' ? "Who's voting?" : "Who's recommending?";
   document.getElementById('code-input').value = '';
   document.getElementById('login-error').textContent = '';
-  openModal('code-modal');
+  window.openModal('code-modal');
   setTimeout(() => document.getElementById('code-input').focus(), 80);
-};
+}
 
 document.getElementById('code-submit').addEventListener('click', submitCode);
 document.getElementById('code-input').addEventListener('keydown', e => {
@@ -505,25 +486,22 @@ function submitCode() {
   const code = document.getElementById('code-input').value.trim().toLowerCase();
   const player = PLAYERS[code];
   if (!player) {
-    document.getElementById('login-error').textContent = 'Hmm, that code doesn\'t ring a bell…';
+    document.getElementById('login-error').textContent = "Hmm, that code doesn't ring a bell…";
     return;
   }
   setPlayer(code, player);
-  closeModal('code-modal');
-  if (pendingAction === 'recommend') openModal('add-modal');
+  window.closeModal('code-modal');
+  if (pendingAction === 'recommend') window.openModal('add-modal');
   pendingAction = null;
 }
 
-// ── MODAL HELPERS ────────────────────────────────────────────
-window.openModal  = id => document.getElementById(id).classList.add('open');
-window.closeModal = id => document.getElementById(id).classList.remove('open');
-
+// Click outside to close modals
 document.querySelectorAll('.modal-bg').forEach(bg => {
   bg.addEventListener('click', e => { if (e.target === bg) bg.classList.remove('open'); });
 });
 
-// ── ADD BOOK ─────────────────────────────────────────────────
-window.submitBook = async function() {
+// ── Add book ──
+async function submitBook() {
   const title = document.getElementById('f-title').value.trim();
   if (!title || !currentPlayer) return;
   const note  = document.getElementById('f-note').value.trim();
@@ -538,26 +516,25 @@ window.submitBook = async function() {
   });
   document.getElementById('f-title').value = '';
   document.getElementById('f-note').value  = '';
-  closeModal('add-modal');
-};
+  window.closeModal('add-modal');
+}
 
-// ── VOTE ─────────────────────────────────────────────────────
-window.castVote = function(bookId, rating) {
+// ── Vote ──
+function castVote(bookId, rating) {
   if (!currentPlayer) { requestAction('vote'); return; }
   updateDoc(doc(db, 'books', bookId), {
     [`votes.${currentPlayer.code}`]: rating
   });
-};
+}
 
-// ── FIRESTORE LISTENER ───────────────────────────────────────
-let allBooks = {};
+// ── Firestore listener ──
 onSnapshot(booksCol, snap => {
   allBooks = {};
   snap.forEach(d => { allBooks[d.id] = d.data(); });
   renderBooks();
 });
 
-// ── RENDER ───────────────────────────────────────────────────
+// ── Render ──
 function avg(votes) {
   const vals = Object.values(votes || {});
   if (!vals.length) return null;
@@ -597,67 +574,62 @@ function renderBooks() {
         .filter(([,v]) => v === r.v)
         .map(([code]) => PLAYERS[code]?.emoji || '?')
         .join(' ');
-      return `
-        <button
-          class="vote-btn${isMine ? ' mine' : ''}${locked ? ' locked' : ''}"
-          onclick="castVote('${id}', ${r.v})"
-          title="${r.v} — ${r.label}${voters ? ' · ' + voters : ''}">
-          <span class="vote-emoji">${r.emoji}</span>
-          <span>${r.v}</span>
-          ${count ? `<span class="vote-count">${count}</span>` : ''}
-        </button>`;
+      return `<button
+        class="vote-btn${isMine ? ' mine' : ''}${locked ? ' locked' : ''}"
+        onclick="castVote('${id}', ${r.v})"
+        title="${r.v} — ${r.label}${voters ? ' · ' + voters : ''}">
+        <span class="vote-emoji">${r.emoji}</span>
+        <span>${r.v}</span>
+        ${count ? `<span class="vote-count">${count}</span>` : ''}
+      </button>`;
     }).join('');
 
     const votePrompt = locked
       ? `<div class="vote-prompt" onclick="requestAction('vote')">✦ enter your code to vote</div>`
       : '';
 
-    return `
-      <div class="book-card">
-        <div class="c-bl"></div><div class="c-br"></div>
-        <div class="accent-bar" style="background:${accent};"></div>
-        <div class="card-body">
-          <div class="cover-wrap">
-            ${book.cover ? `<img src="${book.cover}" alt="${book.title}" />` : '📖'}
-          </div>
-          <div class="card-main">
-            <div class="card-title-row">
-              <span class="card-title">${book.title}</span>
-              ${scorePill(score)}
-            </div>
-            <div class="rec-by">${book.recommenderEmoji} recommended by ${book.recommender}</div>
-            ${book.note ? `<div class="card-note">"${book.note}"</div>` : ''}
-            <div class="votes-row">${voteBtns}</div>
-            ${votePrompt}
-          </div>
+    return `<div class="book-card">
+      <div class="c-bl"></div><div class="c-br"></div>
+      <div class="accent-bar" style="background:${accent};"></div>
+      <div class="card-body">
+        <div class="cover-wrap">
+          ${book.cover ? `<img src="${book.cover}" alt="${book.title}" />` : '📖'}
         </div>
-      </div>`;
+        <div class="card-main">
+          <div class="card-title-row">
+            <span class="card-title">${book.title}</span>
+            ${scorePill(score)}
+          </div>
+          <div class="rec-by">${book.recommenderEmoji} recommended by ${book.recommender}</div>
+          ${book.note ? `<div class="card-note">"${book.note}"</div>` : ''}
+          <div class="votes-row">${voteBtns}</div>
+          ${votePrompt}
+        </div>
+      </div>
+    </div>`;
   }).join('');
 }
 
-// ── COVER ────────────────────────────────────────────────────
+// ── Cover fetch ──
 async function fetchCover(title) {
-  // 1. Try Google Books first — best quality, no key needed
   try {
     const r = await fetch(`https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(title)}&maxResults=1&fields=items(volumeInfo/imageLinks)`);
     const d = await r.json();
     const links = d?.items?.[0]?.volumeInfo?.imageLinks;
     if (links) {
-      // prefer large → medium → thumbnail, and upgrade to https
-      const url = (links.large || links.medium || links.thumbnail || links.smallThumbnail || '').replace('http://', 'https://');
-      // strip edge=curl zoom param for cleaner image
-      if (url) return url.replace('&edge=curl', '').replace('zoom=1', 'zoom=2');
+      const url = (links.large || links.medium || links.thumbnail || links.smallThumbnail || '')
+        .replace('http://', 'https://')
+        .replace('&edge=curl', '')
+        .replace('zoom=1', 'zoom=2');
+      if (url) return url;
     }
   } catch {}
-
-  // 2. Fallback to Open Library
   try {
     const r = await fetch(`https://openlibrary.org/search.json?title=${encodeURIComponent(title)}&limit=1`);
     const d = await r.json();
     const id = d?.docs?.[0]?.cover_i;
     if (id) return `https://covers.openlibrary.org/b/id/${id}-L.jpg`;
   } catch {}
-
   return null;
 }
 </script>
