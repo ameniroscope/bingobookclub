@@ -3,15 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Bingo Book Club</title>
-
-<!-- Link to shared styles -->
 <link rel="stylesheet" href="style.css">
 
-<!-- Page-specific styles -->
 <style>
-/* Main layout */
 .home-layout {
     position: relative;
     z-index: 2;
@@ -23,10 +18,7 @@
     padding: 60px;
 }
 
-/* Book card */
-.book-card {
-    text-align: center;
-}
+.book-card { text-align: center; }
 
 .book-card img {
     height: 80vh;
@@ -44,7 +36,6 @@
     box-shadow: 0 0 50px rgba(201, 168, 76, 0.45);
 }
 
-/* Lightbox */
 .lightbox {
     display: none;
     position: fixed;
@@ -56,11 +47,7 @@
     justify-content: center;
     cursor: zoom-out;
 }
-
-.lightbox.open {
-    display: flex;
-}
-
+.lightbox.open { display: flex; }
 .lightbox img {
     max-height: 120vh;
     max-width: 90vw;
@@ -69,16 +56,12 @@
     box-shadow: 0 0 60px rgba(201, 168, 76, 0.4);
     animation: popIn 0.25s ease;
 }
-
 @keyframes popIn {
     from { transform: scale(0.85); opacity: 0; }
-    to   { transform: scale(1.5);    opacity: 1; }
+    to   { transform: scale(1.5);  opacity: 1; }
 }
 
-/* Players */
-.players-section {
-    text-align: center;
-}
+.players-section { text-align: center; }
 
 .players-title {
     font-family: 'Cinzel', serif;
@@ -147,9 +130,28 @@
     border: 2px solid #c9a84c55;
 }
 
+/* Format emoji badge */
+.format-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    z-index: 10;
+    font-size: 1.35rem;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #0d0a0e;
+    border: 2px solid #c9a84c88;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 8px rgba(201, 168, 76, 0.35);
+    line-height: 1;
+}
+
 @keyframes spin {
     from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    to   { transform: rotate(360deg); }
 }
 
 .player-card span {
@@ -158,16 +160,13 @@
     font-size: 1.15rem;
 }
 
-.player-card:hover {
-    transform: translateY(-5px);
-}
+.player-card:hover { transform: translateY(-5px); }
 
 .player-card:hover .player-img-frame img {
     border-color: #c9a84c;
     box-shadow: 0 0 25px rgba(201, 168, 76, 0.4);
 }
 
-/* Footer section */
 .footer-section {
     position: relative;
     z-index: 2;
@@ -175,91 +174,65 @@
     padding: 2rem 1rem 3rem;
 }
 
-/* Mobile */  
 @media (max-width: 800px) {
     .home-layout {
         grid-template-columns: 1fr;
         gap: 45px;
         padding: 35px 20px;
     }
-
-    .book-card img {
-        height: 50vh;
-    }
-
-    .players-title {
-        font-size: 1.5rem;
-        margin-bottom: 28px;
-    }
-
-    .players-grid {
-        gap: 28px 18px;
-    }
-
-    .player-img-frame {
-        width: 120px;
-        height: 120px;
-    }
-
-    .player-card span {
-        font-size: 0.95rem;
-    }
+    .book-card img { height: 50vh; }
+    .players-title { font-size: 1.5rem; margin-bottom: 28px; }
+    .players-grid { gap: 28px 18px; }
+    .player-img-frame { width: 120px; height: 120px; }
+    .player-card span { font-size: 0.95rem; }
+    .format-badge { font-size: 1.1rem; width: 30px; height: 30px; }
 }
 
 @media (max-width: 420px) {
-    .players-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .player-img-frame {
-        width: 105px;
-        height: 105px;
-    }
+    .players-grid { grid-template-columns: 1fr 1fr; }
+    .player-img-frame { width: 105px; height: 105px; }
 }
 </style>
 </head>
 
 <body>
 
-<!-- Stars background -->
 <div class="stars" id="stars"></div>
 
 <main class="home-layout">
 
-    <!-- Left: Book -->
     <section class="book-card">
         <img src="current_book.png" alt="Current book cover" id="bookCover">
     </section>
 
-    <!-- Right: Players -->
     <section class="players-section">
         <h1 class="players-title">Choose Your Player</h1>
 
         <div class="players-grid">
 
             <a class="player-card" href="elana_bingo.html">
-                <div class="player-img-frame">
+                <div class="player-img-frame" id="frame-elana">
                     <img src="elana.png" alt="Elana">
                 </div>
                 <span>Elana</span>
             </a>
 
             <a class="player-card" href="lena_bingo.html">
-                <div class="player-img-frame">
+                <div class="player-img-frame" id="frame-lena">
                     <img src="lena.png" alt="Lena">
                 </div>
                 <span>Lena</span>
             </a>
 
             <a class="player-card" href="kathi_bingo.html">
-                <div class="player-img-frame">
+                <div class="player-img-frame" id="frame-kathi">
                     <img src="kathi.png" alt="Kathi">
                 </div>
                 <span>Kathi</span>
             </a>
 
             <a class="player-card" href="marine_bingo.html">
-                <div class="player-img-frame">
+                <div class="player-img-frame" id="frame-marine">
                     <img src="marine.png" alt="Marine">
                 </div>
                 <span>Marine</span>
@@ -270,25 +243,70 @@
 
 </main>
 
-<!-- Lightbox -->
 <div class="lightbox" id="lightbox">
     <img src="current_book.png" alt="Current book cover enlarged">
 </div>
 
-<!-- Footer Section -->
 <section class="footer-section">
     <div class="ornament">
         <div class="line"></div>
         <div class="gem">◆</div>
         <div class="line"></div>
     </div>
-
     <a class="home-btn" href="index.html">
         <span class="home-btn-icon">🏠</span> Home
     </a>
-
     <div class="footer">✦ &nbsp; The Bingo Book Club &nbsp; ✦</div>
 </section>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// 🔧 Replace with your Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyAIQTe-QGQmwqTVmIyJZZ_qlDNsD6GUskY",
+  authDomain: "bingobookclub-2144e.firebaseapp.com",
+  projectId: "bingobookclub-2144e",
+  storageBucket: "bingobookclub-2144e.firebasestorage.app",
+  messagingSenderId: "294177836341",
+  appId: "1:294177836341:web:6d5f11e64737fbe3aad07c"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+const FORMAT_EMOJI = {
+    "physical":   "📖",
+    "ebook":      "📱",
+    "audiobook":  "🎧",
+};
+
+const players = ["elana", "lena", "kathi", "marine"];
+
+async function loadFormatBadge(player) {
+    try {
+        const ref  = doc(db, "first_bingo", player);
+        const snap = await getDoc(ref);
+        if (!snap.exists()) return;
+
+        const fmt   = (snap.data().readingFormat || "").toLowerCase().trim();
+        const emoji = FORMAT_EMOJI[fmt];
+        if (!emoji) return;
+
+        const frame = document.getElementById(`frame-${player}`);
+        const badge = document.createElement("div");
+        badge.className   = "format-badge";
+        badge.textContent = emoji;
+        frame.appendChild(badge);
+    } catch (e) {
+        console.warn(`Could not load format for ${player}:`, e);
+    }
+}
+
+players.forEach(loadFormatBadge);
+</script>
 
 <script>
 // Lightbox
@@ -299,15 +317,12 @@ document.getElementById('lightbox').addEventListener('click', () => {
     document.getElementById('lightbox').classList.remove('open');
 });
 
-// Star generation
+// Stars
 const starsContainer = document.getElementById('stars');
-
 for (let i = 0; i < 80; i++) {
     const star = document.createElement('div');
     star.className = 'star';
-
     const size = Math.random() > 0.8 ? 3 : 2;
-
     star.style.cssText = `
         left: ${Math.random() * 100}%;
         top: ${Math.random() * 100}%;
@@ -316,7 +331,6 @@ for (let i = 0; i < 80; i++) {
         --d: ${2 + Math.random() * 4}s;
         --delay: ${Math.random() * 4}s;
     `;
-
     starsContainer.appendChild(star);
 }
 </script>
