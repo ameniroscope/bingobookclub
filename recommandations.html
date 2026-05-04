@@ -202,18 +202,18 @@
 <!-- Firebase -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getDatabase, ref, push, onValue, update } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+  import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   // ── CONFIG — replace with your own ──────────────────────────────
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyAIQTe-QGQmwqTVmIyJZZ_qlDNsD6GUskY",
-  authDomain: "bingobookclub-2144e.firebaseapp.com",
-  projectId: "bingobookclub-2144e",
-  storageBucket: "bingobookclub-2144e.firebasestorage.app",
-  messagingSenderId: "294177836341",
-  appId: "1:294177836341:web:6d5f11e64737fbe3aad07c"
-};
+  const firebaseConfig = {
+    apiKey: "REPLACE_WITH_YOUR_KEY",
+    authDomain: "REPLACE.firebaseapp.com",
+    databaseURL: "https://REPLACE-default-rtdb.firebaseio.com",
+    projectId: "REPLACE",
+    storageBucket: "REPLACE.appspot.com",
+    messagingSenderId: "REPLACE",
+    appId: "REPLACE"
+  };
   // ────────────────────────────────────────────────────────────────
 
   const PLAYERS = {
@@ -233,8 +233,8 @@ const firebaseConfig = {
   ];
 
   const app = initializeApp(firebaseConfig);
-  const db  = getDatabase(app);
-  const booksRef = ref(db, "books");
+  const db  = getFirestore(app);
+  const booksCol = collection(db, "books");
 
   let currentPlayer = null;
   let allBooks = {};
@@ -281,7 +281,7 @@ const firebaseConfig = {
     if (!title) { alert("Please enter a book title."); return; }
     const note  = document.getElementById("f-note").value.trim();
     const cover = await fetchCover(title);
-    await push(booksRef, {
+    await addDoc(booksCol, {
       title,
       note: note || "",
       recommender: currentPlayer.name,
@@ -295,19 +295,19 @@ const firebaseConfig = {
     toggleForm();
   };
 
-  // ── FIREBASE LISTENER ────────────────────────────────────────────
+  // ── FIRESTORE LISTENER ───────────────────────────────────────────
   function listenBooks() {
-    onValue(booksRef, snap => {
-      allBooks = snap.val() || {};
+    onSnapshot(booksCol, snap => {
+      allBooks = {};
+      snap.forEach(d => { allBooks[d.id] = d.data(); });
       renderBooks();
     });
   }
 
   // ── VOTE ─────────────────────────────────────────────────────────
-  window.castVote = function(bookId, rating) {
-    const updates = {};
-    updates[`books/${bookId}/votes/${currentPlayer.code}`] = rating;
-    update(ref(db), updates);
+  window.castVote = async function(bookId, rating) {
+    const bookDoc = doc(db, "books", bookId);
+    await updateDoc(bookDoc, { [`votes.${currentPlayer.code}`]: rating });
   };
 
   // ── RENDER ───────────────────────────────────────────────────────
