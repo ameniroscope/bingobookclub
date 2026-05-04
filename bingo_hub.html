@@ -133,20 +133,12 @@
 /* Format emoji badge */
 .format-badge {
     position: absolute;
-    top: 4px;
-    right: 4px;
+    top: 2px;
+    right: 2px;
     z-index: 10;
-    font-size: 1.35rem;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: #0d0a0e;
-    border: 2px solid #c9a84c88;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 0 8px rgba(201, 168, 76, 0.35);
+    font-size: 1.7rem;
     line-height: 1;
+    filter: drop-shadow(0 0 6px rgba(201, 168, 76, 0.7)) drop-shadow(0 0 12px rgba(201, 168, 76, 0.4));
 }
 
 @keyframes spin {
@@ -185,7 +177,7 @@
     .players-grid { gap: 28px 18px; }
     .player-img-frame { width: 120px; height: 120px; }
     .player-card span { font-size: 0.95rem; }
-    .format-badge { font-size: 1.1rem; width: 30px; height: 30px; }
+    .format-badge { font-size: 1.4rem; }
 }
 
 @media (max-width: 420px) {
@@ -280,7 +272,7 @@ const db  = getFirestore(app);
 const FORMAT_EMOJI = {
     "physical":   "📖",
     "ebook":      "📱",
-    "audiobook":  "🎧",
+    "audio":  "🎧",
 };
 
 const players = ["elana", "lena", "kathi", "marine"];
