@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Book Club</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #f5f3ee;
+    color: #1a1a1a;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  .page { max-width: 720px; margin: 0 auto; }
+
+  h1 { font-size: 1.5rem; font-weight: 600; margin-bottom: .25rem; }
+  .subtitle { font-size: .875rem; color: #666; margin-bottom: 1.75rem; }
+
+  /* Login */
+  #login-screen { max-width: 340px; margin: 6rem auto; text-align: center; }
+  #login-screen h1 { margin-bottom: .5rem; }
+  #login-screen p { font-size: .875rem; color: #666; margin-bottom: 1.5rem; }
+  #code-input {
+    width: 100%; padding: .65rem 1rem; border: 1px solid #ddd;
+    border-radius: 10px; font-size: 1rem; text-align: center;
+    background: #fff; outline: none; letter-spacing: .05em;
+    margin-bottom: .75rem;
+  }
+  #code-input:focus { border-color: #aaa; }
+  #login-error { font-size: .8rem; color: #c0392b; margin-top: -.25rem; margin-bottom: .75rem; min-height: 1.1rem; }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex; align-items: center; gap: .4rem;
+    padding: .55rem 1.1rem; border-radius: 8px; font-size: .875rem;
+    font-weight: 500; cursor: pointer; border: 1px solid #ccc;
+    background: #fff; color: #1a1a1a; transition: background .15s;
+  }
+  .btn:hover { background: #f0ede8; }
+  .btn-primary {
+    background: #1a1a1a; color: #fff; border-color: #1a1a1a; width: 100%;
+    justify-content: center; padding: .7rem;
+  }
+  .btn-primary:hover { background: #333; }
+  .btn-sm { padding: .35rem .75rem; font-size: .8rem; }
+
+  /* Header bar */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1.5rem; flex-wrap: wrap; gap: .75rem;
+  }
+  .player-badge {
+    display: flex; align-items: center; gap: .5rem;
+    font-size: .9rem; color: #444;
+  }
+  .player-badge .emoji { font-size: 1.3rem; }
+
+  /* Add book form */
+  #add-form-wrap {
+    background: #fff; border: 1px solid #e0ddd8;
+    border-radius: 14px; padding: 1.25rem; margin-bottom: 1.5rem;
+  }
+  #add-form-wrap h2 { font-size: 1rem; font-weight: 600; margin-bottom: 1rem; }
+  .field { margin-bottom: .85rem; }
+  .field label { display: block; font-size: .8rem; color: #666; margin-bottom: .3rem; }
+  .field input, .field textarea {
+    width: 100%; padding: .55rem .85rem; border: 1px solid #ddd;
+    border-radius: 8px; font-size: .9rem; background: #faf9f7;
+    font-family: inherit; outline: none; color: #1a1a1a;
+  }
+  .field input:focus, .field textarea:focus { border-color: #aaa; background: #fff; }
+  .field textarea { resize: vertical; min-height: 70px; }
+  .form-actions { display: flex; gap: .6rem; justify-content: flex-end; margin-top: 1rem; }
+
+  /* Book list */
+  .book-card {
+    background: #fff; border: 1px solid #e0ddd8; border-radius: 14px;
+    padding: 1.1rem 1.25rem; margin-bottom: .85rem;
+    display: grid; grid-template-columns: 60px 1fr; gap: 1rem;
+  }
+  .cover-wrap {
+    width: 60px; height: 88px; border-radius: 6px; overflow: hidden;
+    background: #ede9e2; border: 1px solid #ddd;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem; flex-shrink: 0;
+  }
+  .cover-wrap img { width: 100%; height: 100%; object-fit: cover; }
+
+  .book-meta { display: flex; flex-direction: column; gap: .4rem; }
+  .book-title-row {
+    display: flex; align-items: baseline; gap: .6rem; flex-wrap: wrap;
+  }
+  .book-title { font-size: 1rem; font-weight: 600; }
+  .rec-by { font-size: .78rem; color: #888; }
+  .book-note {
+    font-size: .83rem; color: #555; line-height: 1.5;
+    font-style: italic;
+  }
+
+  /* Votes */
+  .votes-row { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .3rem; }
+  .vote-btn {
+    display: inline-flex; align-items: center; gap: .3rem;
+    padding: .3rem .65rem; border-radius: 20px; font-size: .8rem;
+    cursor: pointer; border: 1px solid #ddd; background: #f5f3ee;
+    color: #444; transition: all .15s; user-select: none;
+  }
+  .vote-btn:hover { border-color: #aaa; background: #edeae4; }
+  .vote-btn.mine {
+    border-color: #5a7fc2; background: #eaf0fb; color: #2d5aad; font-weight: 600;
+  }
+  .vote-count {
+    background: #ddd; border-radius: 10px;
+    font-size: .7rem; padding: 0 5px; min-width: 16px; text-align: center;
+    color: #555;
+  }
+  .vote-btn.mine .vote-count { background: #b4c8f0; color: #1a3d8a; }
+
+  .score-badge {
+    display: inline-block; font-size: .75rem; font-weight: 600;
+    padding: 2px 8px; border-radius: 20px; margin-left: .3rem;
+  }
+  .score-high { background: #d4f0e3; color: #1a7a4a; }
+  .score-mid  { background: #fef3cd; color: #8a6200; }
+  .score-low  { background: #fde8e8; color: #a33; }
+  .score-none { background: #eeebe5; color: #888; font-weight: 400; }
+
+  .empty-state {
+    text-align: center; padding: 3.5rem 1rem;
+    border: 1px dashed #ccc; border-radius: 14px;
+    color: #999; font-size: .9rem;
+  }
+
+  .legend {
+    margin-top: 1.5rem; padding-top: 1rem;
+    border-top: 1px solid #e0ddd8;
+    font-size: .75rem; color: #999; line-height: 1.8;
+  }
+
+  @media (max-width: 500px) {
+    .book-card { grid-template-columns: 50px 1fr; gap: .75rem; }
+    .cover-wrap { width: 50px; height: 72px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div style="font-size:2.5rem;margin-bottom:.75rem;">📚</div>
+  <h1>Book Club</h1>
+  <p>Enter your secret code to join</p>
+  <input id="code-input" type="text" placeholder="your code…" autocomplete="off" />
+  <div id="login-error"></div>
+  <button class="btn btn-primary" onclick="login()">Enter</button>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" class="page" style="display:none;">
+  <div class="topbar">
+    <div>
+      <h1>Book Club 📚</h1>
+      <p class="subtitle">Vote on what we read next</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:.75rem;">
+      <div class="player-badge">
+        <span class="emoji" id="player-emoji"></span>
+        <span id="player-name"></span>
+      </div>
+      <button class="btn btn-sm" onclick="logout()">Switch</button>
+      <button class="btn btn-sm" onclick="toggleForm()" id="add-btn">+ Recommend</button>
+    </div>
+  </div>
+
+  <div id="add-form-wrap" style="display:none;">
+    <h2>Recommend a book</h2>
+    <div class="field">
+      <label>Book title *</label>
+      <input id="f-title" type="text" placeholder="e.g. The Little Prince" />
+    </div>
+    <div class="field">
+      <label>Why do you want to read it?</label>
+      <textarea id="f-note" placeholder="e.g. Because it looks super fun and cute!"></textarea>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-sm" onclick="toggleForm()">Cancel</button>
+      <button class="btn btn-sm btn-primary" style="width:auto;" onclick="addBook()">Add book</button>
+    </div>
+  </div>
+
+  <div id="book-list"></div>
+
+  <div class="legend">
+    ⭐ 5 — This is the one &nbsp;·&nbsp; 👍 4 — Speaking to me &nbsp;·&nbsp; 👀 3 — I see the vision &nbsp;·&nbsp; 😐 2 — I'll survive… I guess &nbsp;·&nbsp; 🚫 1 — Respectfully, no &nbsp;·&nbsp; 😈 0 — Hate-read only
+  </div>
+</div>
+
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, push, onValue, update } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  // ── CONFIG — replace with your own ──────────────────────────────
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyAIQTe-QGQmwqTVmIyJZZ_qlDNsD6GUskY",
+  authDomain: "bingobookclub-2144e.firebaseapp.com",
+  projectId: "bingobookclub-2144e",
+  storageBucket: "bingobookclub-2144e.firebasestorage.app",
+  messagingSenderId: "294177836341",
+  appId: "1:294177836341:web:6d5f11e64737fbe3aad07c"
+};
+  // ────────────────────────────────────────────────────────────────
+
+  const PLAYERS = {
+    marinara:   { name: "Marine", emoji: "🧜‍♀️" },
+    lenarrator: { name: "Lena",   emoji: "🌙" },
+    elanalogy:  { name: "Elana",  emoji: "🐉" },
+    kathistory: { name: "Kathi",  emoji: "🍄" },
+  };
+
+  const RATINGS = [
+    { v: 5, emoji: "⭐", label: "This is the one" },
+    { v: 4, emoji: "👍", label: "Speaking to me" },
+    { v: 3, emoji: "👀", label: "I see the vision" },
+    { v: 2, emoji: "😐", label: "I'll survive" },
+    { v: 1, emoji: "🚫", label: "Respectfully, no" },
+    { v: 0, emoji: "😈", label: "Hate-read only" },
+  ];
+
+  const app = initializeApp(firebaseConfig);
+  const db  = getDatabase(app);
+  const booksRef = ref(db, "books");
+
+  let currentPlayer = null;
+  let allBooks = {};
+
+  // ── AUTH ─────────────────────────────────────────────────────────
+  window.login = function() {
+    const code = document.getElementById("code-input").value.trim().toLowerCase();
+    const player = PLAYERS[code];
+    if (!player) {
+      document.getElementById("login-error").textContent = "Hmm, that code doesn't ring a bell…";
+      return;
+    }
+    currentPlayer = { code, ...player };
+    document.getElementById("login-screen").style.display = "none";
+    document.getElementById("app").style.display = "block";
+    document.getElementById("player-emoji").textContent = player.emoji;
+    document.getElementById("player-name").textContent = player.name;
+    listenBooks();
+  };
+
+  window.logout = function() {
+    currentPlayer = null;
+    document.getElementById("login-screen").style.display = "block";
+    document.getElementById("app").style.display = "none";
+    document.getElementById("code-input").value = "";
+    document.getElementById("login-error").textContent = "";
+  };
+
+  document.getElementById("code-input").addEventListener("keydown", e => {
+    if (e.key === "Enter") window.login();
+  });
+
+  // ── FORM ─────────────────────────────────────────────────────────
+  window.toggleForm = function() {
+    const wrap = document.getElementById("add-form-wrap");
+    const open = wrap.style.display === "none";
+    wrap.style.display = open ? "block" : "none";
+    document.getElementById("add-btn").textContent = open ? "✕ Cancel" : "+ Recommend";
+    if (open) document.getElementById("f-title").focus();
+  };
+
+  window.addBook = async function() {
+    const title = document.getElementById("f-title").value.trim();
+    if (!title) { alert("Please enter a book title."); return; }
+    const note  = document.getElementById("f-note").value.trim();
+    const cover = await fetchCover(title);
+    await push(booksRef, {
+      title,
+      note: note || "",
+      recommender: currentPlayer.name,
+      recommenderEmoji: currentPlayer.emoji,
+      cover: cover || "",
+      votes: {},
+      addedAt: Date.now(),
+    });
+    document.getElementById("f-title").value = "";
+    document.getElementById("f-note").value  = "";
+    toggleForm();
+  };
+
+  // ── FIREBASE LISTENER ────────────────────────────────────────────
+  function listenBooks() {
+    onValue(booksRef, snap => {
+      allBooks = snap.val() || {};
+      renderBooks();
+    });
+  }
+
+  // ── VOTE ─────────────────────────────────────────────────────────
+  window.castVote = function(bookId, rating) {
+    const updates = {};
+    updates[`books/${bookId}/votes/${currentPlayer.code}`] = rating;
+    update(ref(db), updates);
+  };
+
+  // ── RENDER ───────────────────────────────────────────────────────
+  function avg(votes) {
+    const vals = Object.values(votes || {});
+    if (!vals.length) return null;
+    return (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(1);
+  }
+
+  function scoreBadge(score) {
+    if (score === null) return `<span class="score-badge score-none">no votes yet</span>`;
+    const n = parseFloat(score);
+    const cls = n >= 4 ? "score-high" : n >= 2.5 ? "score-mid" : "score-low";
+    return `<span class="score-badge ${cls}">${score} / 5</span>`;
+  }
+
+  function renderBooks() {
+    const list = document.getElementById("book-list");
+    const sorted = Object.entries(allBooks).sort(([,a],[,b]) => {
+      const sa = parseFloat(avg(a.votes)) || -1;
+      const sb = parseFloat(avg(b.votes)) || -1;
+      return sb - sa;
+    });
+
+    if (!sorted.length) {
+      list.innerHTML = `<div class="empty-state">No books yet — be the first to recommend one! 🌱</div>`;
+      return;
+    }
+
+    list.innerHTML = sorted.map(([id, book]) => {
+      const myVote = book.votes?.[currentPlayer.code] ?? null;
+      const score  = avg(book.votes);
+
+      const voteBtns = RATINGS.map(r => {
+        const count   = Object.values(book.votes || {}).filter(v => v === r.v).length;
+        const isMine  = myVote === r.v;
+        const voters  = Object.entries(book.votes || {})
+          .filter(([,v]) => v === r.v)
+          .map(([code]) => PLAYERS[code]?.emoji || "?")
+          .join(" ");
+        return `
+          <button
+            class="vote-btn${isMine ? " mine" : ""}"
+            onclick="castVote('${id}', ${r.v})"
+            title="${r.v} — ${r.label}${voters ? " · " + voters : ""}"
+          >
+            <span>${r.emoji}</span>
+            <span>${r.v}</span>
+            ${count ? `<span class="vote-count">${count}</span>` : ""}
+          </button>`;
+      }).join("");
+
+      const coverHtml = book.cover
+        ? `<img src="${book.cover}" alt="${book.title}" />`
+        : "📖";
+
+      return `
+        <div class="book-card">
+          <div class="cover-wrap">${coverHtml}</div>
+          <div class="book-meta">
+            <div class="book-title-row">
+              <span class="book-title">${book.title}</span>
+              <span class="rec-by">${book.recommenderEmoji} ${book.recommender}</span>
+              ${scoreBadge(score)}
+            </div>
+            ${book.note ? `<div class="book-note">"${book.note}"</div>` : ""}
+            <div class="votes-row">${voteBtns}</div>
+          </div>
+        </div>`;
+    }).join("");
+  }
+
+  // ── COVER FETCH ──────────────────────────────────────────────────
+  async function fetchCover(title) {
+    try {
+      const r = await fetch(`https://openlibrary.org/search.json?title=${encodeURIComponent(title)}&limit=1`);
+      const d = await r.json();
+      const id = d?.docs?.[0]?.cover_i;
+      return id ? `https://covers.openlibrary.org/b/id/${id}-M.jpg` : null;
+    } catch { return null; }
+  }
+</script>
+</body>
+</html>
