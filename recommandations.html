@@ -255,7 +255,26 @@ body {
 }
 .vote-prompt:hover { color: #c9a84c88; }
 
-.empty-state {
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 1.25rem;
+  align-items: start;
+}
+.col-header {
+  font-family: 'Cinzel', serif; font-size: .52rem;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: #c9a84c88; margin-bottom: .75rem;
+  display: flex; align-items: center; gap: .35rem;
+}
+.col-header::before, .col-header::after { content: '✦'; font-size: .38rem; opacity: .4; }
+.col-title { grid-column: 1; }
+.col-title-right { grid-column: 2; }
+
+@media (max-width: 600px) {
+  .two-col { grid-template-columns: 1fr; }
+  .col-title-right { grid-column: 1; }
+}
   text-align: center; padding: 3.5rem 1rem;
   border: 1px dashed #c9a84c1a; border-radius: .5rem;
   color: #3a2a1a; font-style: italic; font-size: .85rem;
@@ -367,7 +386,7 @@ body {
     </button>
   </div>
 
-  <div id="book-list"></div>
+  <div class="two-col" id="book-list"></div>
 
   <div class="legend-wrap">
     <div class="legend-title">Voting guide</div>
@@ -549,24 +568,28 @@ function scorePill(score) {
 function renderBooks() {
   const list = document.getElementById('book-list');
   const TOTAL_PLAYERS = Object.keys(PLAYERS).length;
+  const entries = Object.entries(allBooks);
 
-  const sorted = Object.entries(allBooks).sort(([,a],[,b]) => {
-    const va = Object.keys(a.votes || {}).length;
-    const vb = Object.keys(b.votes || {}).length;
-    // fewer votes = higher up
-    if (va !== vb) return va - vb;
-    // tiebreak: lower avg score = higher up (least exciting first)
-    const sa = parseFloat(avg(a.votes)) ?? 0;
-    const sb = parseFloat(avg(b.votes)) ?? 0;
-    return sa - sb;
-  });
-
-  if (!sorted.length) {
-    list.innerHTML = `<div class="empty-state">No books yet — be the first to recommend one ✦</div>`;
+  if (!entries.length) {
+    list.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">No books yet — be the first to recommend one ✦</div>`;
     return;
   }
 
-  list.innerHTML = sorted.map(([id, book], idx) => {
+  const needsVotes = entries
+    .filter(([,b]) => Object.keys(b.votes || {}).length < TOTAL_PLAYERS)
+    .sort((a, b) => (a[1].addedAt || 0) - (b[1].addedAt || 0));
+
+  const allVoted = entries
+    .filter(([,b]) => Object.keys(b.votes || {}).length >= TOTAL_PLAYERS)
+    .sort(([,a],[,b]) => {
+      const sa = parseFloat(avg(a.votes)) ?? 0;
+      const sb = parseFloat(avg(b.votes)) ?? 0;
+      return sb - sa;
+    });
+
+  const allEntries = [...needsVotes, ...allVoted];
+
+  function cardHtml([id, book], idx) {
     const myVote = currentPlayer ? (book.votes?.[currentPlayer.code] ?? null) : null;
     const score  = avg(book.votes);
     const accent = ACCENTS[idx % ACCENTS.length];
@@ -582,7 +605,6 @@ function renderBooks() {
         onclick="castVote('${id}', ${r.v})"
         title="${r.v} — ${r.label}">
         <span class="vote-emoji">${r.emoji}</span>
-        <span>${r.v}</span>
         ${voterEmojis.map(e => `<span class="voter-emoji">${e}</span>`).join('')}
       </button>`;
     }).join('');
@@ -603,14 +625,21 @@ function renderBooks() {
             <span class="card-title">${book.title}</span>
             ${scorePill(score)}
           </div>
-          <div class="rec-by"> recommended by ${book.recommender}</div>
+          <div class="rec-by">${book.recommenderEmoji} recommended by ${book.recommender}</div>
           ${book.note ? `<div class="card-note">"${book.note}"</div>` : ''}
           <div class="votes-row">${voteBtns}</div>
           ${votePrompt}
         </div>
       </div>
     </div>`;
-  }).join('');
+  }
+
+  list.innerHTML = `
+    <div class="col-header col-title">Needs votes</div>
+    <div class="col-header col-title-right">Everyone voted</div>
+    <div>${needsVotes.length ? needsVotes.map((e,i) => cardHtml(e,i)).join('') : '<div class="empty-state">All caught up ✦</div>'}</div>
+    <div>${allVoted.length ? allVoted.map((e,i) => cardHtml(e,i)).join('') : '<div class="empty-state">No verdicts yet ✦</div>'}</div>
+  `;
 }
 
 // ── Cover fetch ──
