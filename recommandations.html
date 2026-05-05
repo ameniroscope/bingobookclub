@@ -244,19 +244,11 @@ body {
 .vote-btn.locked { cursor: default; opacity: .7; }
 .vote-btn.locked:hover { border-color: #c9a84c1a; color: #5a4a38; background: rgba(201,168,76,.03); }
 
-/* Circle around the rating emoji */
+/* Rating emoji — no circle, just the emoji */
 .vote-emoji {
   font-size: .85rem; line-height: 1;
-  width: 1.7rem; height: 1.7rem;
   display: inline-flex; align-items: center; justify-content: center;
-  border-radius: 50%;
-  border: 1px solid var(--accent-border, #c9a84c33);
-  background: var(--accent, rgba(201,168,76,.06));
   flex-shrink: 0;
-}
-.vote-btn.mine .vote-emoji {
-  border-color: var(--accent-border, #c9a84c77);
-  background: var(--accent-strong, rgba(201,168,76,.18));
 }
 
 /* Voter emojis — pill, same height as circle (1.7rem) */
