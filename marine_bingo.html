@@ -1,338 +1,68 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Replace the existing layout with a wrapper that anchors everything to the card -->
 
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://firestore.googleapis.com https://*.googleapis.com;">
+<!-- 1. Add a wrapper div around .journey-wrapper, .container, and .controls -->
+<!-- In your <body>, replace this block: -->
 
-<title>Bingo Card - Elana</title>
+<!--
+<div class="journey-wrapper">…</div>
+<div class="container">…</div>
+<div class="controls">…</div>
+-->
 
-<link rel="stylesheet" href="style.css">
+<!-- With this: -->
+<div class="card-layout">
+    <div class="journey-wrapper">
+        <!-- existing journey content unchanged -->
+    </div>
+
+    <div class="container">
+        <div class="bingo-grid" id="bingoGrid"></div>
+    </div>
+
+    <div class="controls">
+        <!-- existing controls unchanged -->
+    </div>
+</div>
+
+
+<!-- ─────────────────────────────────────────────────────────── -->
+<!-- 2. Replace ALL the CSS for .journey-wrapper, .container,   -->
+<!--    .controls, and add .card-layout                         -->
+<!-- ─────────────────────────────────────────────────────────── -->
 
 <style>
-body {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    gap: 20px;
-    position: relative;
-    z-index: 1;
-}
-
-button, input {
-    font-family: 'Crimson Text', Georgia, 'Times New Roman', serif;
-}
-
-/* Player Header */
-.player-header {
-    position: fixed;
-    top: 24px;
-    left: 24px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    z-index: 100;
-}
-
-.img-frame {
-    position: relative;
-    width: 90px;
-    height: 90px;
-}
-
-.player-name {
-    font-family: 'Cinzel', serif;
-    font-size: 2.8rem;
-    font-weight: 600;
-    color: #f0e6c8;
-    text-shadow: 0 0 20px rgba(201, 168, 76, 0.3);
-    letter-spacing: 2px;
-    white-space: nowrap;
-}
-
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-.img-frame::after {
-    content: '';
-    position: absolute;
-    inset: -4px;
-    border-radius: 50%;
-    background: #0d0a0e;
-    z-index: 1;
-}
-
-.img-frame img {
-    position: relative;
-    z-index: 2;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
-    border: 2px solid #c9a84c55;
-}
-
-/* ── CARD + PROGRESS LAYOUT ───────────────────────────────── */
-.card-and-progress {
+/* ── Card layout: row with three columns ── */
+.card-layout {
     display: flex;
     flex-direction: row;
-    align-items: flex-start;
-    gap: 25px;
-    margin: 0 auto;
+    align-items: center;        /* vertically centre all three columns */
+    justify-content: center;
+    gap: 24px;
+    width: 100%;
+    max-width: 1200px;
 }
 
-/* Container and Grid */
+/* ── Bingo card (centre column) ── */
 .container {
     position: relative;
-    width: min(90vw, 560px);
     flex-shrink: 0;
+    width: min(90vw, 560px);
     aspect-ratio: 1024 / 1536;
     background-image: url('current_bingo.png');
     background-size: 100% 100%;
 }
 
-.bingo-grid {
-    position: absolute;
-    left: 50%;
-    top: 34.5%;
-    width: 73%;
-    aspect-ratio: 1 / 1;
-    transform: translateX(-50%);
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(5, 1fr);
-}
-
-.bingo-cell {
-    aspect-ratio: 1 / 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: clamp(10px, 1.4vw, 13px);
-    line-height: 1.2;
-    text-align: center;
-    padding: 4px;
-    overflow: hidden;
-}
-
-.bingo-cell.marked {
-    background: rgba(212, 175, 55, 0.6);
-    font-weight: bold;
-}
-
-.bingo-cell.free {
-    font-weight: bold;
-    color: #d4af37;
-}
-
-.cell-text {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    font-family: 'Crimson Text', Georgia, serif;
-    font-size: inherit;
-    line-height: 1.2;
-    color: #2a1a0a;
-    padding: 4px;
-    overflow-wrap: break-word;
-    word-break: break-word;
-}
-
-textarea {
-    width: 100%;
-    height: 100%;
-    border: none;
-    background: transparent;
-    outline: none;
-    resize: none;
-    display: flex;
-    text-align: center;
-    font-family: 'Crimson Text', Georgia, serif;
-    font-size: inherit;
-    line-height: inherit;
-    color: #2a1a0a;
-    padding: 4px;
-    margin: 0;
-    overflow: hidden;
-    overflow-wrap: break-word;
-    word-break: break-word;
-}
-
-input {
-    width: 100%;
-    height: 100%;
-    border: none;
-    text-align: center;
-    background: transparent;
-    outline: none;
-    color: #2a1a0a;
-    font-family: 'Crimson Text', Georgia, serif;
-}
-
-/* ── SIDE PANEL (progress + controls, right of card) ────────── */
-.side-panel {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    flex-shrink: 0;
-    width: 280px;
-}
-
-/* Controls */
-.controls {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: stretch;
-}
-
-.secondary-buttons {
-    display: flex;
-    gap: 8px;
-}
-
-button {
-    background: rgba(31, 58, 54, 0.9);
-    color: #f5ecd9;
-    border: 1px solid #c9a84c55;
-    padding: 10px 20px;
-    font-size: 14px;
-    font-family: 'Cinzel', serif;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 12px rgba(201, 168, 76, 0.15);
-}
-
-button:hover {
-    background: rgba(44, 79, 73, 0.9);
-    border-color: #c9a84c;
-    box-shadow: 0 0 20px rgba(201, 168, 76, 0.25);
-    transform: translateY(-2px);
-}
-
-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-}
-
-.primary-btn {
-    font-size: 18px;
-    padding: 16px 24px;
-    font-weight: 600;
-    background: rgba(201, 168, 76, 0.2);
-    border: 2px solid #c9a84c;
-    box-shadow: 0 0 20px rgba(201, 168, 76, 0.3);
-}
-
-.primary-btn:hover:not(:disabled) {
-    background: rgba(201, 168, 76, 0.3);
-    border-color: #d4af37;
-    box-shadow: 0 0 30px rgba(201, 168, 76, 0.5);
-    transform: translateY(-3px);
-}
-
-.small-btn {
-    font-size: 11px;
-    padding: 8px 12px;
-    flex: 1;
-}
-
-.status {
-    text-align: center;
-    font-size: 1rem;
-    color: #c9a84c;
-    font-style: normal;
-    opacity: 0.8;
-    margin-top: 5px;
-}
-
-.player-id {
-    font-size: 12px;
-    color: #c9a84c99;
-    text-align: center;
-    font-style: italic;
-}
-
-.reading-format {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-
-.reading-format label {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: opacity 0.2s;
-}
-
-.reading-format label:hover { opacity: 0.8; }
-
-.reading-format input[type="radio"] {
-    width: auto;
-    height: auto;
-    cursor: pointer;
-}
-
-.emotions {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-}
-
-.emotion-btn {
-    width: 44px;
-    height: 44px;
-    font-size: 1.5rem;
-    padding: 4px;
-    background: rgba(31, 58, 54, 0.6);
-    border: 1px solid #c9a84c33;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.emotion-btn.active {
-    background: rgba(201, 168, 76, 0.4);
-    border-color: #c9a84c;
-    box-shadow: 0 0 12px rgba(201, 168, 76, 0.3);
-}
-
-.emotion-btn:hover:not(:disabled) {
-    background: rgba(44, 79, 73, 0.8);
-    border-color: #c9a84c;
-    transform: scale(1.1);
-}
-
-.emotion-btn.active {
-    background: rgba(201, 168, 76, 0.4);
-    border-color: #c9a84c;
-    box-shadow: 0 0 12px rgba(201, 168, 76, 0.3);
-}
-
-/* ── PROGRESS BOX ───────────────────────────────────────────── */
+/* ── Journey box (left column) ── */
 .journey-wrapper {
-    width: 100%;
-    padding-top: 70px;
-    position: relative;
+    /* Remove all fixed/absolute positioning */
+    position: static;
+    transform: none;
+    left: unset;
+    top: unset;
+
+    width: 280px;
+    flex-shrink: 0;
+    padding-top: 70px;          /* keep room for the cover image */
 }
 
 .journey-cover {
@@ -349,6 +79,11 @@ button:disabled {
     z-index: 2;
 }
 
+/* journey-wrapper must be relative so the cover image can be absolute inside it */
+.journey-wrapper {
+    position: relative;
+}
+
 .journey-box {
     padding: 90px 20px 24px 20px;
     background: rgba(26, 15, 31, 0.9);
@@ -359,575 +94,56 @@ button:disabled {
     color: #f5ecd9;
 }
 
-.journey-box h2 {
-    font-family: 'Cinzel', serif;
-    font-size: 0.8rem;
-    letter-spacing: 1px;
-    margin-bottom: 12px;
-    color: #c9a84c;
-    text-transform: uppercase;
-}
+/* ── Controls (right column) ── */
+.controls {
+    /* Remove all fixed/absolute positioning */
+    position: static;
+    transform: none;
+    right: unset;
+    top: unset;
 
-.chapter-display {
-    font-family: 'Crimson Text', Georgia, serif;
-    font-size: 0.8rem;
-    margin-bottom: 6px;
-}
-
-#chapterSlider {
-    width: 90%;
-    cursor: pointer;
-}
-
-/* Lock button */
-.lock-btn {
-    position: fixed;
-    top: 24px;
-    right: 24px;
-    z-index: 200;
-    background: rgba(31, 58, 54, 0.9);
-    border: 1px solid #c9a84c55;
-    border-radius: 50%;
-    width: 48px;
-    height: 48px;
-    font-size: 1.4rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 12px rgba(201, 168, 76, 0.15);
-    padding: 0;
-    text-transform: none;
-    letter-spacing: 0;
-}
-
-.lock-btn:hover {
-    border-color: #c9a84c;
-    box-shadow: 0 0 20px rgba(201, 168, 76, 0.35);
-    transform: scale(1.1);
-}
-
-.lock-btn.unlocked {
-    border-color: #c9a84c;
-    background: rgba(201, 168, 76, 0.25);
-}
-
-/* Password modal */
-.lock-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
-    z-index: 300;
-    align-items: center;
-    justify-content: center;
-}
-
-.lock-overlay.visible { display: flex; }
-
-.lock-modal {
-    background: rgba(26, 15, 31, 0.97);
-    border: 1px solid #c9a84c55;
-    border-radius: 12px;
-    padding: 32px;
-    text-align: center;
-    box-shadow: 0 0 30px rgba(201, 168, 76, 0.2);
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    min-width: 260px;
-}
-
-.lock-modal h3 {
-    font-family: 'Cinzel', serif;
-    color: #c9a84c;
-    font-size: 1rem;
-    letter-spacing: 1px;
-    margin: 0;
-}
-
-.lock-modal input[type="password"] {
-    width: 100%;
-    background: rgba(255,255,255,0.07);
-    border: 1px solid #c9a84c55;
-    border-radius: 6px;
-    color: #f5ecd9;
-    font-family: 'Crimson Text', Georgia, serif;
-    font-size: 1.1rem;
-    padding: 10px 14px;
-    text-align: center;
-    outline: none;
-    box-sizing: border-box;
-    height: auto;
-}
-
-.lock-modal input[type="password"]:focus { border-color: #c9a84c; }
-
-.lock-error {
-    color: #e06c75;
-    font-size: 0.85rem;
-    min-height: 1em;
-}
-
-.lock-modal .modal-buttons {
-    display: flex;
     gap: 10px;
-    justify-content: center;
+    align-items: stretch;
+    width: 160px;
+    flex-shrink: 0;
 }
 
-/* Responsive */
+/* ── Responsive: stack vertically on narrow screens ── */
 @media (max-width: 1000px) {
-    body {
-        padding: 15px;
-        gap: 20px;
-        padding-top: 20px;
-    }
-
-    .player-header {
-        position: static;
+    .card-layout {
         flex-direction: column;
         align-items: center;
-        text-align: center;
-        margin-bottom: 0;
-        order: 1;
-        z-index: 10;
-    }
-
-    .player-name { font-size: 2rem; }
-
-    .card-and-progress {
-        flex-direction: column;
-        align-items: center;
-        order: 2;
-        width: min(90vw, 560px);
-    }
-
-    .side-panel {
-        width: 100%;
     }
 
     .journey-wrapper {
+        width: min(90vw, 400px);
+        padding-top: 0;
+    }
+
+    .journey-cover {
+        position: static;
+        transform: none;
+        width: 80px;
+        height: 115px;
+        margin: 0 auto 15px auto;
+        display: block;
+    }
+
+    .journey-box {
+        padding: 20px;
         width: 100%;
     }
 
+    .container {
+        width: min(90vw, 560px);
+    }
+
     .controls {
-        position: static;
-        transform: none;
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 10px;
         width: min(90vw, 400px);
-        margin-top: 0;
-        order: 3;
     }
 
     .secondary-buttons { width: 100%; }
-    .status { text-align: center; order: 4; }
-    .ornament { order: 5; }
-    .home-btn { order: 6; }
-    .footer { order: 7; }
-
-    .lock-btn {
-        top: 12px;
-        right: 12px;
-    }
 }
 </style>
-</head>
-
-<body>
-
-<div class="stars" id="stars"></div>
-
-<!-- Lock button -->
-<button class="lock-btn" id="lockBtn" title="Unlock card">🔒</button>
-
-<!-- Password modal -->
-<div class="lock-overlay" id="lockOverlay">
-    <div class="lock-modal">
-        <h3>🔐 Unlock Card</h3>
-        <input type="password" id="passwordInput" placeholder="Enter password" autocomplete="off">
-        <div class="lock-error" id="lockError"></div>
-        <div class="modal-buttons">
-            <button class="small-btn" id="unlockSubmit">Unlock</button>
-            <button class="small-btn" id="unlockCancel">Cancel</button>
-        </div>
-    </div>
-</div>
-
-<!-- Player Header -->
-<div class="player-header">
-    <div class="img-frame">
-        <img id="playerPhoto" src="elana.png" alt="Player Photo">
-    </div>
-    <div class="player-name" id="playerHeaderName"></div>
-    <div class="player-id" id="playerId"></div>
-</div>
-
-<!-- Bingo Card + Progress Box grouped together -->
-<div class="card-and-progress">
-
-    <!-- Progress Box -->
-    <div class="journey-wrapper">
-        <img src="current_cover.jpg" alt="Book cover" class="journey-cover">
-        <div class="journey-box">
-            <h2>How's the journey going?</h2>
-            <div class="chapter-display">
-                Chapter <span id="chapterValue">0</span> / 41
-            </div>
-            <input type="range" id="chapterSlider" min="0" max="41" value="0">
-
-            <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #c9a84c33;">
-                <div style="font-size: 0.9rem; margin-bottom: 8px; color: #c9a84c;">Reading format:</div>
-                <div class="reading-format">
-                    <label><input type="radio" name="format" value="audio"> 🎧 Audio</label>
-                    <label><input type="radio" name="format" value="ebook"> 📱 eBook</label>
-                    <label><input type="radio" name="format" value="physical" checked> 📖 Physical</label>
-                </div>
-            </div>
-
-            <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #c9a84c33;">
-                <div style="font-size: 0.9rem; margin-bottom: 8px; color: #c9a84c;">Emotions so far:</div>
-                <div class="emotions">
-                    <button class="emotion-btn" data-emotion="joy">😊</button>
-                    <button class="emotion-btn" data-emotion="sad">😢</button>
-                    <button class="emotion-btn" data-emotion="excited">🤩</button>
-                    <button class="emotion-btn" data-emotion="scared">😨</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Bingo Card -->
-    <div class="container">
-        <div class="bingo-grid" id="bingoGrid">        </div>
-    </div><!-- end right side -->
-
-    </div><!-- /.card-and-progress -->
-
-<!-- Controls -->
-<div class="controls">
-    <button id="saveBtn" class="primary-btn" disabled>💾 Save Progress</button>
-    <div class="secondary-buttons">
-        <button id="toggleMode" class="small-btn" disabled>✏️ Edit</button>
-        <button id="resetBtn" class="small-btn" disabled>🔄 Reset</button>
-    </div>
-</div>
-
-<div class="status" id="status">🔒 Read Only</div>
-
-<div class="ornament">
-    <div class="line"></div>
-    <div class="gem">◆</div>
-    <div class="line"></div>
-</div>
-
-<a class="home-btn" href="index.html">
-    <span class="home-btn-icon">🏠</span> Home
-</a>
-
-<div class="footer">✦ &nbsp; The Bingo Book Club &nbsp; ✦</div>
-
-<script>
-// ── STARS ─────────────────────────────────────────────────────
-const starsContainer = document.getElementById('stars');
-for (let i = 0; i < 80; i++) {
-    const star = document.createElement('div');
-    star.className = 'star';
-    const size = Math.random() > 0.8 ? 3 : 2;
-    star.style.cssText = `
-        left: ${Math.random() * 100}%;
-        top: ${Math.random() * 100}%;
-        width: ${size}px;
-        height: ${size}px;
-        --d: ${2 + Math.random() * 4}s;
-        --delay: ${Math.random() * 4}s;
-    `;
-    starsContainer.appendChild(star);
-}
-
-// ── CONFIG ────────────────────────────────────────────────────
-const CARD_PASSWORD = 'elanalogy';
-
-const PROJECT_ID = 'bingobookclub-2144e';
-const FIRESTORE_BASE =
-    'https://firestore.googleapis.com/v1/projects/' +
-    PROJECT_ID +
-    '/databases/(default)/documents/first_bingo/';
-
-const playerId = 'elana';
-
-// ── STATE ─────────────────────────────────────────────────────
-const GRID_SIZE = 25;
-let cells = Array(GRID_SIZE).fill('');
-let marked = Array(GRID_SIZE).fill(false);
-let isEditMode = false;
-let isUnlocked = false;
-let chapterProgress = 0;
-let readingFormat = 'physical';
-let emotions = [];
-
-// ── ELEMENTS ──────────────────────────────────────────────────
-const grid        = document.getElementById('bingoGrid');
-const statusEl    = document.getElementById('status');
-const saveBtn     = document.getElementById('saveBtn');
-const toggleBtn   = document.getElementById('toggleMode');
-const resetBtn    = document.getElementById('resetBtn');
-const lockBtn     = document.getElementById('lockBtn');
-const lockOverlay = document.getElementById('lockOverlay');
-const passwordInput = document.getElementById('passwordInput');
-const lockError   = document.getElementById('lockError');
-const chapterSlider = document.getElementById('chapterSlider');
-const chapterValue  = document.getElementById('chapterValue');
-
-document.getElementById('playerHeaderName').textContent = playerId;
-
-// ── LOCK / UNLOCK ─────────────────────────────────────────────
-function setLockState(unlocked) {
-    isUnlocked = unlocked;
-    lockBtn.textContent = unlocked ? '🔓' : '🔒';
-    lockBtn.classList.toggle('unlocked', unlocked);
-    lockBtn.title = unlocked ? 'Lock card' : 'Unlock card';
-
-    saveBtn.disabled   = !unlocked;
-    toggleBtn.disabled = !unlocked;
-    resetBtn.disabled  = !unlocked;
-    chapterSlider.disabled = !unlocked;
-
-    // Emotion buttons stay enabled so .active highlight is always visible;
-    // clicks are blocked in the handler when locked.
-    document.querySelectorAll('input[name="format"]').forEach(r => r.disabled = !unlocked);
-
-    restoreStatus();
-    initGrid();
-}
-
-lockBtn.onclick = () => {
-    if (isUnlocked) {
-        setLockState(false);
-    } else {
-        passwordInput.value = '';
-        lockError.textContent = '';
-        lockOverlay.classList.add('visible');
-        setTimeout(() => passwordInput.focus(), 50);
-    }
-};
-
-document.getElementById('unlockSubmit').onclick = tryUnlock;
-document.getElementById('unlockCancel').onclick = () => lockOverlay.classList.remove('visible');
-
-passwordInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter')  tryUnlock();
-    if (e.key === 'Escape') lockOverlay.classList.remove('visible');
-});
-
-function tryUnlock() {
-    if (passwordInput.value === CARD_PASSWORD) {
-        lockOverlay.classList.remove('visible');
-        setLockState(true);
-    } else {
-        lockError.textContent = 'Wrong password, try again.';
-        passwordInput.value = '';
-        passwordInput.focus();
-    }
-}
-
-// ── SLIDER ────────────────────────────────────────────────────
-chapterSlider.oninput = e => {
-    chapterProgress = Number(e.target.value);
-    chapterValue.textContent = chapterProgress;
-};
-
-// ── READING FORMAT ────────────────────────────────────────────
-document.querySelectorAll('input[name="format"]').forEach(radio => {
-    radio.addEventListener('change', e => { readingFormat = e.target.value; });
-});
-
-// ── EMOTIONS ──────────────────────────────────────────────────
-document.querySelectorAll('.emotion-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        if (!isUnlocked) return;
-        const emotion = btn.dataset.emotion;
-        const idx = emotions.indexOf(emotion);
-        if (idx > -1) {
-            emotions.splice(idx, 1);
-            btn.classList.remove('active');
-        } else {
-            emotions.push(emotion);
-            btn.classList.add('active');
-        }
-    });
-});
-
-// ── FIRESTORE HELPERS ─────────────────────────────────────────
-function toFV(val) {
-    if (typeof val === 'boolean') return { booleanValue: val };
-    if (typeof val === 'number')  return { integerValue: String(val) };
-    if (Array.isArray(val))       return { arrayValue: { values: val.map(toFV) } };
-    return { stringValue: String(val) };
-}
-
-function fromFV(fv) {
-    if (!fv) return null;
-    if (fv.booleanValue !== undefined) return fv.booleanValue;
-    if (fv.integerValue !== undefined) return Number(fv.integerValue);
-    if (fv.stringValue  !== undefined) return fv.stringValue;
-    if (fv.arrayValue)                 return (fv.arrayValue.values || []).map(fromFV);
-    return null;
-}
-
-// ── STATUS ────────────────────────────────────────────────────
-function restoreStatus() {
-    if (!isUnlocked)      statusEl.textContent = '🔒 Read Only';
-    else if (isEditMode)  statusEl.textContent = 'Edit Mode';
-    else                  statusEl.textContent = 'Play Mode';
-}
-
-// ── GRID ──────────────────────────────────────────────────────
-function initGrid() {
-    grid.innerHTML = '';
-    for (let i = 0; i < GRID_SIZE; i++) {
-        const cell = document.createElement('div');
-        cell.className = 'bingo-cell';
-
-        if (i === 12) {
-            cell.textContent = '';
-            cell.classList.add('free');
-            marked[i] = true;
-        } else if (isUnlocked && isEditMode) {
-            const ta = document.createElement('textarea');
-            ta.value = cells[i];
-            ta.oninput = e => { cells[i] = e.target.value; };
-            cell.appendChild(ta);
-        } else {
-            const text = document.createElement('div');
-            text.className = 'cell-text';
-            text.textContent = cells[i];
-            cell.appendChild(text);
-            if (marked[i]) cell.classList.add('marked');
-            if (isUnlocked) {
-                cell.style.cursor = 'pointer';
-                cell.onclick = () => { marked[i] = !marked[i]; initGrid(); };
-            }
-        }
-        grid.appendChild(cell);
-    }
-}
-
-// ── SAVE ──────────────────────────────────────────────────────
-async function saveCard() {
-    if (!isUnlocked) return;
-    saveBtn.disabled = true;
-    statusEl.textContent = 'Saving...';
-
-    const body = {
-        fields: {
-            cells:           toFV(cells),
-            marked:          toFV(marked),
-            chapterProgress: { integerValue: String(chapterProgress) },
-            readingFormat:   { stringValue: readingFormat },
-            emotions:        toFV(emotions),
-            savedAt:         { stringValue: new Date().toISOString() }
-        }
-    };
-
-    try {
-        const resp = await fetch(FIRESTORE_BASE + encodeURIComponent(playerId), {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body)
-        });
-        if (!resp.ok) throw new Error('HTTP ' + resp.status);
-        statusEl.textContent = 'Saved to Firebase!';
-    } catch (e) {
-        console.error('Save error:', e);
-        statusEl.textContent = 'Firebase save failed';
-    } finally {
-        saveBtn.disabled = false;
-        setTimeout(restoreStatus, 2500);
-    }
-}
-
-// ── LOAD ──────────────────────────────────────────────────────
-async function loadCard() {
-    statusEl.textContent = 'Loading...';
-    try {
-        const resp = await fetch(FIRESTORE_BASE + encodeURIComponent(playerId));
-
-        if (resp.status === 404) {
-            statusEl.textContent = 'No saved data found';
-            setTimeout(restoreStatus, 2500);
-            return;
-        }
-        if (!resp.ok) throw new Error('HTTP ' + resp.status);
-
-        const data = await resp.json();
-        const f = data.fields || {};
-
-        if (f.cells)           cells           = fromFV(f.cells)  || Array(GRID_SIZE).fill('');
-        if (f.marked)        { marked          = fromFV(f.marked) || Array(GRID_SIZE).fill(false); marked[12] = true; }
-        if (f.chapterProgress) {
-            chapterProgress = Number(f.chapterProgress.integerValue || 0);
-            chapterSlider.value = chapterProgress;
-            chapterValue.textContent = chapterProgress;
-        }
-        if (f.readingFormat) {
-            readingFormat = f.readingFormat.stringValue || 'physical';
-            const r = document.querySelector(`input[name="format"][value="${readingFormat}"]`);
-            if (r) r.checked = true;
-        }
-        if (f.emotions) {
-            emotions = fromFV(f.emotions) || [];
-            document.querySelectorAll('.emotion-btn').forEach(btn => {
-                btn.classList.toggle('active', emotions.includes(btn.dataset.emotion));
-            });
-        }
-
-        initGrid();
-        statusEl.textContent = 'Data loaded!';
-        setTimeout(restoreStatus, 2000);
-    } catch (e) {
-        console.error('Load error:', e);
-        statusEl.textContent = 'No saved data';
-        setTimeout(restoreStatus, 2000);
-    }
-}
-
-// ── BUTTON HANDLERS ───────────────────────────────────────────
-toggleBtn.onclick = () => {
-    if (!isUnlocked) return;
-    isEditMode = !isEditMode;
-    toggleBtn.textContent = isEditMode ? '👁️ Play' : '✏️ Edit';
-    restoreStatus();
-    initGrid();
-};
-
-resetBtn.onclick = () => {
-    if (!isUnlocked) return;
-    if (!confirm('Reset this bingo card?')) return;
-    cells          = Array(GRID_SIZE).fill('');
-    marked         = Array(GRID_SIZE).fill(false);
-    marked[12]     = true;
-    chapterProgress = 0;
-    readingFormat  = 'physical';
-    emotions       = [];
-    chapterSlider.value = 0;
-    chapterValue.textContent = 0;
-    document.querySelector('input[name="format"][value="physical"]').checked = true;
-    document.querySelectorAll('.emotion-btn').forEach(btn => btn.classList.remove('active'));
-    initGrid();
-    statusEl.textContent = 'Card reset';
-    setTimeout(restoreStatus, 1500);
-};
-
-saveBtn.onclick = saveCard;
-
-// ── INIT ──────────────────────────────────────────────────────
-setLockState(false);
-loadCard();
-</script>
-
-</body>
-</html>
