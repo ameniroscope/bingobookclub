@@ -66,6 +66,7 @@ body {
 .gold-btn:hover { background: rgba(201,168,76,.15); border-color: #c9a84c; }
 .gold-btn .icon { font-size: .9rem; }
 
+/* ── MODALS ── */
 .modal-bg {
   display: none; position: fixed; inset: 0; z-index: 200;
   background: rgba(0,0,0,.72);
@@ -73,7 +74,6 @@ body {
   padding: 1.5rem;
 }
 .modal-bg.open { display: flex; }
-
 .modal {
   background: linear-gradient(170deg,#1a1020 0%,#110d14 60%,#0f0a10 100%);
   border: 1px solid #c9a84c55; border-radius: .5rem;
@@ -90,7 +90,6 @@ body {
 .modal::after  { top:.45rem; right:.45rem; border-top-width:1px; border-right-width:1px; }
 .modal .c-bl   { bottom:.45rem; left:.45rem; border-bottom-width:1px; border-left-width:1px; }
 .modal .c-br   { bottom:.45rem; right:.45rem; border-bottom-width:1px; border-right-width:1px; }
-
 .modal-icon { font-size: 1.6rem; text-align: center; margin-bottom: .5rem; }
 .modal-title {
   font-family: 'Cinzel', serif; font-size: .95rem; font-weight: 700;
@@ -132,7 +131,6 @@ body {
   cursor: pointer; padding: .4rem; transition: color .2s;
 }
 .modal-cancel:hover { color: #7a6a58; }
-
 .field { margin-bottom: .85rem; }
 .field label {
   display: block; font-family: 'Cinzel', serif;
@@ -150,6 +148,7 @@ body {
 .field input:focus, .field textarea:focus { border-color: #c9a84c88; }
 .field textarea { resize: vertical; min-height: 65px; }
 
+/* ── SESSION BAR ── */
 .session-bar {
   display: none;
   align-items: center; justify-content: center; gap: .6rem;
@@ -171,6 +170,7 @@ body {
 }
 .session-out:hover { color: #7a6a58; }
 
+/* ── BOOK CARD ── */
 .book-card {
   background: linear-gradient(170deg,#1a1020 0%,#110d14 50%,#0f0a10 100%);
   border: 1px solid #c9a84c44; border-radius: .5rem;
@@ -186,10 +186,8 @@ body {
 .book-card::after  { top:.45rem; right:.45rem; border-top-width:1px; border-right-width:1px; }
 .book-card .c-bl   { bottom:.45rem; left:.45rem; border-bottom-width:1px; border-left-width:1px; }
 .book-card .c-br   { bottom:.45rem; right:.45rem; border-bottom-width:1px; border-right-width:1px; }
-
 .accent-bar { height: .2rem; }
 .card-body { padding: .9rem 1rem; display: flex; gap: .9rem; align-items: flex-start; }
-
 .cover-wrap {
   width: 60px; min-width: 60px; height: 88px;
   border-radius: .3rem; overflow: hidden;
@@ -198,7 +196,6 @@ body {
   font-size: 1.4rem; flex-shrink: 0;
 }
 .cover-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
-
 .card-main { flex: 1; min-width: 0; }
 .card-title-row {
   display: flex; align-items: baseline; gap: .5rem;
@@ -209,7 +206,6 @@ body {
   color: #f0e6c8; letter-spacing: .04em;
 }
 .rec-by { font-size: .7rem; color: #5a4a38; font-style: italic; }
-
 .score-pill {
   font-family: 'Cinzel', serif; font-size: .5rem;
   letter-spacing: .05em; text-transform: uppercase;
@@ -219,60 +215,60 @@ body {
 .score-mid  { background: rgba(201,120,76,.18); color: #c9784c; border: 1px solid #c9784c33; }
 .score-low  { background: rgba(180,50,50,.18); color: #c96060; border: 1px solid #b4323244; }
 .score-none { background: rgba(201,168,76,.05); color: #5a4a38; border: 1px solid #c9a84c18; }
-
 .card-note {
   font-size: .78rem; color: #6a5a48; font-style: italic;
   line-height: 1.5; margin: .35rem 0 .5rem;
 }
 
-.votes-row { display: flex; flex-wrap: wrap; gap: .28rem; margin-top: .4rem; }
+/* ── VOTE BUTTONS ── */
+.votes-row { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .6rem; align-items: center; }
+
+/* Outer button — no visible styling, just a flex container */
 .vote-btn {
-  display: inline-flex; align-items: center; gap: .3rem;
-  padding: .22rem .22rem .22rem .22rem;
-  border-radius: 20px;
-  font-family: 'Cinzel', serif; font-size: .52rem;
-  letter-spacing: .04em; text-transform: uppercase;
-  cursor: pointer; border: 1px solid #c9a84c1a;
-  background: rgba(201,168,76,.03); color: #5a4a38;
-  transition: all .15s; user-select: none;
+  display: inline-flex; align-items: center;
+  gap: 0; cursor: pointer;
+  border: none; background: none; padding: 0;
+  transition: opacity .15s; user-select: none; flex-shrink: 0;
 }
-.vote-btn:hover { border-color: #c9a84c55; color: #c9a84c99; background: rgba(201,168,76,.08); }
-.vote-btn.mine {
-  border-color: #c9a84c77; background: rgba(201,168,76,.13);
-  color: #c9a84c; font-weight: 600;
-}
-.vote-btn.locked { cursor: default; opacity: .7; }
-.vote-btn.locked:hover { border-color: #c9a84c1a; color: #5a4a38; background: rgba(201,168,76,.03); }
+.vote-btn.locked { cursor: default; opacity: .55; }
+.vote-btn:not(.locked):hover { opacity: .8; }
 
-/* Rating emoji — no circle, just the emoji */
-.vote-emoji {
-  font-size: .85rem; line-height: 1;
+/* Circle around the rating emoji */
+.vote-emoji-circle {
   display: inline-flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
+  width: 2.8rem; height: 2.8rem;
+  border-radius: 50%;
+  font-size: 1.35rem; line-height: 1;
+  border: 1.5px solid var(--accent-border, #c9a84c55);
+  background: var(--accent-bg, rgba(201,168,76,.08));
+  flex-shrink: 0; z-index: 1;
+  transition: background .15s, box-shadow .15s;
+}
+.vote-btn.mine .vote-emoji-circle {
+  background: var(--accent-strong, rgba(201,168,76,.25));
+  box-shadow: 0 0 10px var(--accent-border, #c9a84c55);
 }
 
-/* Voter emojis — pill, same height as circle (1.7rem) */
-.voter-emoji {
-  font-size: .78rem; line-height: 1;
-  display: inline-flex; align-items: center; justify-content: center;
-  height: 1.7rem;
-  background: rgba(201,168,76,.08);
-  border: 1px solid #c9a84c22;
-  border-radius: 20px;
-  padding: 0 .35rem;
+/* Pill for voter emojis — attaches to the right of the circle */
+.voters-pill {
+  display: inline-flex; align-items: center;
+  gap: .1rem;
+  height: 2.8rem;
+  padding: 0 .7rem 0 .9rem;
+  margin-left: -.55rem;
+  border-radius: 0 2rem 2rem 0;
+  background: rgba(13,10,14,.9);
+  border: 1.5px solid var(--accent-border, #c9a84c33);
+  border-left: none;
+  font-size: 1.2rem;
 }
-.vote-btn.mine .voter-emoji {
-  background: var(--accent, rgba(201,168,76,.18));
-  border-color: var(--accent-border, #c9a84c44);
+.vote-btn.mine .voters-pill {
+  background: rgba(30,15,40,.95);
 }
+/* Hide pill when empty */
+.voters-pill:empty { display: none; }
 
-.vote-prompt {
-  margin-top: .45rem; font-size: .68rem; color: #4a3a2a;
-  font-style: italic; cursor: pointer;
-  transition: color .2s; display: inline-block;
-}
-.vote-prompt:hover { color: #c9a84c88; }
-
+/* ── TWO COLUMN LAYOUT ── */
 .two-col {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -289,15 +285,13 @@ body {
 .col-title { grid-column: 1; }
 .col-title-right { grid-column: 2; }
 
-@media (max-width: 600px) {
-  .two-col { grid-template-columns: 1fr; }
-  .col-title-right { grid-column: 1; }
-}
+.empty-state {
   text-align: center; padding: 3.5rem 1rem;
   border: 1px dashed #c9a84c1a; border-radius: .5rem;
   color: #3a2a1a; font-style: italic; font-size: .85rem;
 }
 
+/* ── LEGEND ── */
 .legend-wrap {
   margin: 1.5rem 0 2rem; padding: .85rem 1rem;
   border: 1px solid #c9a84c14; border-radius: .5rem;
@@ -314,6 +308,13 @@ body {
 .legend-item { display: flex; align-items: center; gap: .3rem; }
 .l-emoji { font-size: .85rem; }
 .l-text { font-size: .62rem; color: #4a3a2a; line-height: 1.4; }
+
+.vote-prompt {
+  font-size: .75rem; color: #4a3a2a;
+  font-style: italic; cursor: pointer;
+  transition: color .2s; display: inline-block;
+}
+.vote-prompt:hover { color: #c9a84c88; }
 
 .page-footer {
   text-align: center; margin-top: 1rem;
@@ -337,6 +338,10 @@ body {
   box-shadow: 0 0 16px rgba(201,168,76,.18);
 }
 
+@media (max-width: 600px) {
+  .two-col { grid-template-columns: 1fr; }
+  .col-title-right { grid-column: 1; }
+}
 @media (max-width: 480px) {
   .legend-grid { grid-template-columns: repeat(2,1fr); }
 }
@@ -366,11 +371,11 @@ body {
     <div class="modal-title">Recommend a Book</div>
     <div class="modal-sub">What should we read next?</div>
     <div class="field">
-      <label>Book title *</label>
+      <label for="f-title">Book title *</label>
       <input id="f-title" type="text" placeholder="e.g. The Little Prince" />
     </div>
     <div class="field">
-      <label>Why do you want to read it?</label>
+      <label for="f-note">Why do you want to read it?</label>
       <textarea id="f-note" placeholder="e.g. Because it looks super fun and cute!"></textarea>
     </div>
     <button class="modal-submit" onclick="submitBook()">Add Book ✦</button>
@@ -472,6 +477,14 @@ function accentForId(id) {
   return ACCENTS[hash % ACCENTS.length];
 }
 
+// Hex to rgba helper for CSS variables
+function hexAlpha(hex, a) {
+  const r = parseInt(hex.slice(1,3),16);
+  const g = parseInt(hex.slice(3,5),16);
+  const b = parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+
 const app = initializeApp(firebaseConfig);
 const db  = getFirestore(app);
 const booksCol = collection(db, "books");
@@ -480,7 +493,6 @@ let currentPlayer = null;
 let allBooks = {};
 let pendingAction = null;
 
-// ── Expose all functions called from HTML onclick attrs ──
 window.requestAction = requestAction;
 window.closeModal    = id => document.getElementById(id).classList.remove('open');
 window.openModal     = id => document.getElementById(id).classList.add('open');
@@ -488,7 +500,6 @@ window.logout        = logout;
 window.submitBook    = submitBook;
 window.castVote      = castVote;
 
-// ── Session restore ──
 const saved = sessionStorage.getItem("nextReadPlayer");
 if (saved && PLAYERS[saved]) setPlayer(saved, PLAYERS[saved]);
 updatePromptBar();
@@ -514,7 +525,6 @@ function logout() {
   renderBooks();
 }
 
-// ── Action gate ──
 function requestAction(action) {
   if (currentPlayer) {
     if (action === 'recommend') window.openModal('add-modal');
@@ -547,12 +557,10 @@ function submitCode() {
   pendingAction = null;
 }
 
-// Click outside to close modals
 document.querySelectorAll('.modal-bg').forEach(bg => {
   bg.addEventListener('click', e => { if (e.target === bg) bg.classList.remove('open'); });
 });
 
-// ── Add book ──
 async function submitBook() {
   const title = document.getElementById('f-title').value.trim();
   if (!title || !currentPlayer) return;
@@ -571,7 +579,6 @@ async function submitBook() {
   window.closeModal('add-modal');
 }
 
-// ── Vote ──
 function castVote(bookId, rating) {
   if (!currentPlayer) { requestAction('vote'); return; }
   updateDoc(doc(db, 'books', bookId), {
@@ -579,14 +586,12 @@ function castVote(bookId, rating) {
   });
 }
 
-// ── Firestore listener ──
 onSnapshot(booksCol, snap => {
   allBooks = {};
   snap.forEach(d => { allBooks[d.id] = d.data(); });
   renderBooks();
 });
 
-// ── Render ──
 function avg(votes) {
   const vals = Object.values(votes || {});
   if (!vals.length) return null;
@@ -622,13 +627,16 @@ function renderBooks() {
       return sb - sa;
     });
 
-  const allEntries = [...needsVotes, ...allVoted];
-
-  function cardHtml([id, book], idx) {
+  function cardHtml([id, book]) {
     const myVote = currentPlayer ? (book.votes?.[currentPlayer.code] ?? null) : null;
     const score  = avg(book.votes);
     const accent = accentForId(id);
     const locked = !currentPlayer;
+
+    // Build CSS variable values from accent hex
+    const accentBg     = hexAlpha(accent.mid, 0.10);
+    const accentBorder = hexAlpha(accent.mid, 0.55);
+    const accentStrong = hexAlpha(accent.mid, 0.28);
 
     const voteBtns = RATINGS.map(r => {
       const isMine = myVote === r.v;
@@ -639,13 +647,10 @@ function renderBooks() {
         class="vote-btn${isMine ? ' mine' : ''}${locked ? ' locked' : ''}"
         onclick="castVote('${id}', ${r.v})"
         title="${r.v} — ${r.label}"
-        style="--accent:${accent.mid}22;--accent-border:${accent.mid}66;--accent-strong:${accent.mid}44;">
-        <span class="vote-emoji-circle">${r.emoji}</span>
-        <span class="voters-pill">${voterEmojis.join('')}</span>
+        style="--accent-bg:${accentBg};--accent-border:${accentBorder};--accent-strong:${accentStrong};">
+        <span class="vote-emoji-circle">${r.emoji}</span><span class="voters-pill">${voterEmojis.join('')}</span>
       </button>`;
     }).join('');
-
-    const votePrompt = '';
 
     return `<div class="book-card">
       <div class="c-bl"></div><div class="c-br"></div>
@@ -662,7 +667,6 @@ function renderBooks() {
           <div class="rec-by">${book.recommenderEmoji} recommended by ${book.recommender}</div>
           ${book.note ? `<div class="card-note">"${book.note}"</div>` : ''}
           <div class="votes-row">${voteBtns}</div>
-          ${votePrompt}
         </div>
       </div>
     </div>`;
@@ -671,12 +675,11 @@ function renderBooks() {
   list.innerHTML = `
     <div class="col-header col-title">Needs votes</div>
     <div class="col-header col-title-right">Everyone voted</div>
-    <div>${needsVotes.length ? needsVotes.map((e,i) => cardHtml(e,i)).join('') : '<div class="empty-state">All caught up ✦</div>'}</div>
-    <div>${allVoted.length ? allVoted.map((e,i) => cardHtml(e,i)).join('') : '<div class="empty-state">No verdicts yet ✦</div>'}</div>
+    <div>${needsVotes.length ? needsVotes.map(e => cardHtml(e)).join('') : '<div class="empty-state">All caught up ✦</div>'}</div>
+    <div>${allVoted.length ? allVoted.map(e => cardHtml(e)).join('') : '<div class="empty-state">No verdicts yet ✦</div>'}</div>
   `;
 }
 
-// ── Cover fetch ──
 async function fetchCover(title) {
   try {
     const r = await fetch(`https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(title)}&maxResults=1&fields=items(volumeInfo/imageLinks)`);
