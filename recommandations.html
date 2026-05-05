@@ -243,12 +243,10 @@ body {
 .vote-btn.locked { cursor: default; opacity: .7; }
 .vote-btn.locked:hover { border-color: #c9a84c1a; color: #5a4a38; background: rgba(201,168,76,.03); }
 .vote-emoji { font-size: .82rem; }
-.vote-count {
-  background: #c9a84c1a; border-radius: 10px;
-  font-size: .48rem; padding: 0 5px; min-width: 14px;
-  text-align: center; color: #c9a84c77;
+.voter-emoji {
+  font-size: .78rem;
+  line-height: 1;
 }
-.vote-btn.mine .vote-count { background: #c9a84c33; color: #c9a84c; }
 
 .vote-prompt {
   margin-top: .45rem; font-size: .68rem; color: #4a3a2a;
@@ -550,10 +548,17 @@ function scorePill(score) {
 
 function renderBooks() {
   const list = document.getElementById('book-list');
+  const TOTAL_PLAYERS = Object.keys(PLAYERS).length;
+
   const sorted = Object.entries(allBooks).sort(([,a],[,b]) => {
-    const sa = parseFloat(avg(a.votes)) ?? -1;
-    const sb = parseFloat(avg(b.votes)) ?? -1;
-    return sb - sa;
+    const va = Object.keys(a.votes || {}).length;
+    const vb = Object.keys(b.votes || {}).length;
+    // fewer votes = higher up
+    if (va !== vb) return va - vb;
+    // tiebreak: lower avg score = higher up (least exciting first)
+    const sa = parseFloat(avg(a.votes)) ?? 0;
+    const sb = parseFloat(avg(b.votes)) ?? 0;
+    return sa - sb;
   });
 
   if (!sorted.length) {
@@ -568,19 +573,17 @@ function renderBooks() {
     const locked = !currentPlayer;
 
     const voteBtns = RATINGS.map(r => {
-      const count  = Object.values(book.votes || {}).filter(v => v === r.v).length;
       const isMine = myVote === r.v;
-      const voters = Object.entries(book.votes || {})
+      const voterEmojis = Object.entries(book.votes || {})
         .filter(([,v]) => v === r.v)
-        .map(([code]) => PLAYERS[code]?.emoji || '?')
-        .join(' ');
+        .map(([code]) => PLAYERS[code]?.emoji || '?');
       return `<button
         class="vote-btn${isMine ? ' mine' : ''}${locked ? ' locked' : ''}"
         onclick="castVote('${id}', ${r.v})"
-        title="${r.v} — ${r.label}${voters ? ' · ' + voters : ''}">
+        title="${r.v} — ${r.label}">
         <span class="vote-emoji">${r.emoji}</span>
         <span>${r.v}</span>
-        ${count ? `<span class="vote-count">${count}</span>` : ''}
+        ${voterEmojis.map(e => `<span class="voter-emoji">${e}</span>`).join('')}
       </button>`;
     }).join('');
 
@@ -600,7 +603,7 @@ function renderBooks() {
             <span class="card-title">${book.title}</span>
             ${scorePill(score)}
           </div>
-          <div class="rec-by">${book.recommenderEmoji} recommended by ${book.recommender}</div>
+          <div class="rec-by"> recommended by ${book.recommender}</div>
           ${book.note ? `<div class="card-note">"${book.note}"</div>` : ''}
           <div class="votes-row">${voteBtns}</div>
           ${votePrompt}
