@@ -1,939 +1,703 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://firestore.googleapis.com https://*.googleapis.com;">
-
-<title>Bingo Card - Marine</title>
-
-<link rel="stylesheet" href="style.css">
-
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>Next Read Recommandations</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 18px; }
 body {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    gap: 20px;
-    position: relative;
-    z-index: 1;
+  background: #0d0a0e;
+  font-family: 'Crimson Text', Georgia, serif;
+  color: #c8b89a;
+  min-height: 100vh;
+  padding-bottom: 6rem;
 }
 
-button, input {
-    font-family: 'Crimson Text', Georgia, 'Times New Roman', serif;
+.layout {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1.2rem;
 }
 
-/* Player Header */
-.player-header {
-    position: fixed;
-    top: 24px;
-    left: 24px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    z-index: 100;
+.page-header {
+  text-align: center;
+  padding: 2.5rem 1rem 1.5rem;
+}
+.club-label {
+  font-family: 'Cinzel', serif;
+  font-size: .6rem; letter-spacing: .4em;
+  text-transform: uppercase; color: #c9a84c88;
+  margin-bottom: .4rem;
+}
+.page-title {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.6rem, 5vw, 2.4rem);
+  font-weight: 700; color: #f0e6c8;
+  letter-spacing: .06em;
+}
+.ornament {
+  display: flex; align-items: center; gap: .5rem;
+  max-width: 16rem; margin: .9rem auto;
+}
+.ornament .line {
+  flex: 1; height: 1px;
+  background: linear-gradient(to right, transparent, #c9a84c44, transparent);
+}
+.ornament .gem { color: #c9a84c; font-size: .55rem; }
+.page-sub { font-size: .85rem; color: #7a6a58; font-style: italic; }
+
+.action-bar {
+  display: flex; gap: .6rem; justify-content: center;
+  flex-wrap: wrap; margin-bottom: 1.75rem;
+}
+.gold-btn {
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: .55rem 1.2rem;
+  font-family: 'Cinzel', serif; font-size: .62rem;
+  letter-spacing: .1em; text-transform: uppercase;
+  background: rgba(201,168,76,.07); border: 1px solid #c9a84c66;
+  color: #c9a84c; border-radius: 5px; cursor: pointer;
+  transition: all .2s;
+}
+.gold-btn:hover { background: rgba(201,168,76,.15); border-color: #c9a84c; }
+.gold-btn .icon { font-size: .9rem; }
+
+/* ── MODALS ── */
+.modal-bg {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,.72);
+  align-items: center; justify-content: center;
+  padding: 1.5rem;
+}
+.modal-bg.open { display: flex; }
+.modal {
+  background: linear-gradient(170deg,#1a1020 0%,#110d14 60%,#0f0a10 100%);
+  border: 1px solid #c9a84c55; border-radius: .5rem;
+  width: 100%; max-width: 380px;
+  padding: 2rem 1.75rem 1.75rem;
+  position: relative;
+}
+.modal::before, .modal::after, .modal .c-bl, .modal .c-br {
+  content: ''; position: absolute;
+  width: 1.3rem; height: 1.3rem;
+  border-color: #c9a84c44; border-style: solid; border-width: 0;
+}
+.modal::before { top:.45rem; left:.45rem; border-top-width:1px; border-left-width:1px; }
+.modal::after  { top:.45rem; right:.45rem; border-top-width:1px; border-right-width:1px; }
+.modal .c-bl   { bottom:.45rem; left:.45rem; border-bottom-width:1px; border-left-width:1px; }
+.modal .c-br   { bottom:.45rem; right:.45rem; border-bottom-width:1px; border-right-width:1px; }
+.modal-icon { font-size: 1.6rem; text-align: center; margin-bottom: .5rem; }
+.modal-title {
+  font-family: 'Cinzel', serif; font-size: .95rem; font-weight: 700;
+  color: #f0e6c8; letter-spacing: .06em;
+  text-align: center; margin-bottom: .25rem;
+}
+.modal-sub {
+  font-size: .75rem; color: #7a6a58; font-style: italic;
+  text-align: center; margin-bottom: 1.4rem;
+}
+.gold-input {
+  width: 100%; padding: .58rem .9rem;
+  background: #0f0b12; border: 1px solid #c9a84c33;
+  border-radius: 4px; color: #f0e6c8;
+  font-family: 'Cinzel', serif; font-size: .75rem;
+  letter-spacing: .1em; text-align: center; outline: none;
+  transition: border-color .2s; margin-bottom: .7rem;
+}
+.gold-input:focus { border-color: #c9a84c88; }
+.gold-input::placeholder { color: #3a2a1a; }
+.login-error {
+  font-size: .72rem; color: #c9784c; font-style: italic;
+  min-height: 1.1rem; text-align: center; margin-bottom: .5rem;
+}
+.modal-submit {
+  width: 100%; padding: .65rem;
+  font-family: 'Cinzel', serif; font-size: .65rem;
+  letter-spacing: .12em; text-transform: uppercase;
+  background: rgba(201,168,76,.1); border: 1px solid #c9a84c88;
+  color: #c9a84c; border-radius: 4px; cursor: pointer;
+  transition: all .2s;
+}
+.modal-submit:hover { background: rgba(201,168,76,.2); }
+.modal-cancel {
+  display: block; width: 100%; margin-top: .6rem;
+  font-family: 'Cinzel', serif; font-size: .55rem;
+  letter-spacing: .1em; text-transform: uppercase;
+  background: none; border: none; color: #4a3a2a;
+  cursor: pointer; padding: .4rem; transition: color .2s;
+}
+.modal-cancel:hover { color: #7a6a58; }
+.field { margin-bottom: .85rem; }
+.field label {
+  display: block; font-family: 'Cinzel', serif;
+  font-size: .5rem; letter-spacing: .1em; text-transform: uppercase;
+  color: #c9a84c88; margin-bottom: .35rem;
+}
+.field input, .field textarea {
+  width: 100%; padding: .5rem .8rem;
+  background: #0f0b12; border: 1px solid #c9a84c33;
+  border-radius: 4px; color: #f0e6c8;
+  font-family: 'Crimson Text', serif; font-size: .88rem;
+  outline: none; transition: border-color .2s; letter-spacing: 0;
+  text-align: left;
+}
+.field input:focus, .field textarea:focus { border-color: #c9a84c88; }
+.field textarea { resize: vertical; min-height: 65px; }
+
+/* ── SESSION BAR ── */
+.session-bar {
+  display: none;
+  align-items: center; justify-content: center; gap: .6rem;
+  margin-bottom: 1.5rem;
+  font-size: .75rem; color: #c9a84c88;
+}
+.session-bar.visible { display: flex; }
+.session-name {
+  font-family: 'Cinzel', serif; font-size: .65rem;
+  letter-spacing: .08em; color: #c9a84c;
+  border: 1px solid #c9a84c33; border-radius: 20px;
+  padding: .2rem .65rem;
+}
+.session-out {
+  font-family: 'Cinzel', serif; font-size: .52rem;
+  letter-spacing: .08em; text-transform: uppercase;
+  background: none; border: none; color: #4a3a2a;
+  cursor: pointer; transition: color .2s;
+}
+.session-out:hover { color: #7a6a58; }
+
+/* ── BOOK CARD ── */
+.book-card {
+  background: linear-gradient(170deg,#1a1020 0%,#110d14 50%,#0f0a10 100%);
+  border: 1px solid #c9a84c44; border-radius: .5rem;
+  overflow: hidden; position: relative;
+  margin-bottom: 1rem;
+}
+.book-card::before, .book-card::after, .book-card .c-bl, .book-card .c-br {
+  content: ''; position: absolute;
+  width: 1.4rem; height: 1.4rem;
+  border-color: #c9a84c33; border-style: solid; border-width: 0;
+}
+.book-card::before { top:.45rem; left:.45rem; border-top-width:1px; border-left-width:1px; }
+.book-card::after  { top:.45rem; right:.45rem; border-top-width:1px; border-right-width:1px; }
+.book-card .c-bl   { bottom:.45rem; left:.45rem; border-bottom-width:1px; border-left-width:1px; }
+.book-card .c-br   { bottom:.45rem; right:.45rem; border-bottom-width:1px; border-right-width:1px; }
+.accent-bar { height: .2rem; }
+.card-body { padding: .9rem 1rem; display: flex; gap: .9rem; align-items: flex-start; }
+.cover-wrap {
+  width: 60px; min-width: 60px; height: 88px;
+  border-radius: .3rem; overflow: hidden;
+  border: 1px solid #c9a84c22; background: #1a1020;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem; flex-shrink: 0;
+}
+.cover-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.card-main { flex: 1; min-width: 0; }
+.card-title-row {
+  display: flex; align-items: baseline; gap: .5rem;
+  flex-wrap: wrap; margin-bottom: .15rem;
+}
+.card-title {
+  font-family: 'Cinzel', serif; font-size: .92rem; font-weight: 700;
+  color: #f0e6c8; letter-spacing: .04em;
+}
+.rec-by { font-size: .7rem; color: #5a4a38; font-style: italic; }
+.score-pill {
+  font-family: 'Cinzel', serif; font-size: .5rem;
+  letter-spacing: .05em; text-transform: uppercase;
+  padding: 2px 7px; border-radius: 20px;
+}
+.score-high { background: rgba(45,122,90,.2); color: #5abf90; border: 1px solid #2d7a5a44; }
+.score-mid  { background: rgba(201,120,76,.18); color: #c9784c; border: 1px solid #c9784c33; }
+.score-low  { background: rgba(180,50,50,.18); color: #c96060; border: 1px solid #b4323244; }
+.score-none { background: rgba(201,168,76,.05); color: #5a4a38; border: 1px solid #c9a84c18; }
+.card-note {
+  font-size: .78rem; color: #6a5a48; font-style: italic;
+  line-height: 1.5; margin: .35rem 0 .5rem;
 }
 
-.img-frame {
-    position: relative;
-    width: 90px;
-    height: 90px;
+/* ── VOTE BUTTONS ── */
+.votes-row { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .6rem; align-items: center; }
+
+.vote-btn {
+  display: inline-flex; align-items: center;
+  gap: 0; cursor: pointer;
+  border: none; background: none; padding: 0;
+  transition: opacity .15s; user-select: none; flex-shrink: 0;
+}
+.vote-btn.locked { cursor: default; opacity: .55; }
+.vote-btn:not(.locked):hover { opacity: .8; }
+
+/* Circle around the rating emoji */
+.vote-emoji-circle {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 2.2rem; height: 2.2rem;
+  border-radius: 50%;
+  font-size: 1rem; line-height: 1;
+  border: 1.5px solid var(--accent-border, #c9a84c55);
+  background: radial-gradient(circle at 35% 35%, var(--accent-strong, rgba(201,168,76,.18)), var(--accent-bg, rgba(201,168,76,.06)));
+  box-shadow: inset 0 1px 2px rgba(255,255,255,.08), 0 0 6px var(--accent-border, #c9a84c33);
+  flex-shrink: 0; z-index: 1;
+  transition: background .15s, box-shadow .15s;
+}
+.vote-btn.mine .vote-emoji-circle {
+  background: radial-gradient(circle at 35% 35%, var(--accent-strong, rgba(201,168,76,.45)), var(--accent-bg, rgba(201,168,76,.18)));
+  box-shadow: inset 0 1px 2px rgba(255,255,255,.15), 0 0 12px var(--accent-border, #c9a84c88);
 }
 
-.player-name {
-    font-family: 'Cinzel', serif;
-    font-size: 2.8rem;
-    font-weight: 600;
-    color: #f0e6c8;
-    text-shadow: 0 0 20px rgba(201, 168, 76, 0.3);
-    letter-spacing: 2px;
-    white-space: nowrap;
+/* Pill for voter emojis */
+.voters-pill {
+  display: inline-flex; align-items: center;
+  gap: .1rem;
+  height: 1.55rem;
+  padding: 0 .55rem;
+  margin-left: .3rem;
+  border-radius: 2rem;
+  background: rgba(201,168,76,.10);
+  border: 1.5px solid #c9a84c55;
+  font-size: .95rem;
+}
+.vote-btn.mine .voters-pill {
+  background: rgba(201,168,76,.2);
+  border-color: #c9a84c88;
+}
+.voters-pill:empty { display: none; }
+
+/* ── TWO COLUMN LAYOUT ── */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 1.25rem;
+  align-items: start;
+}
+.col-header {
+  font-family: 'Cinzel', serif; font-size: .52rem;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: #c9a84c88; margin-bottom: .75rem;
+  display: flex; align-items: center; gap: .35rem;
+}
+.col-header::before, .col-header::after { content: '✦'; font-size: .38rem; opacity: .4; }
+.col-title { grid-column: 1; }
+.col-title-right { grid-column: 2; }
+
+.empty-state {
+  text-align: center; padding: 3.5rem 1rem;
+  border: 1px dashed #c9a84c1a; border-radius: .5rem;
+  color: #3a2a1a; font-style: italic; font-size: .85rem;
 }
 
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+/* ── LEGEND ── */
+.legend-wrap {
+  margin: 1.5rem 0 2rem; padding: .85rem 1rem;
+  border: 1px solid #c9a84c14; border-radius: .5rem;
+  background: rgba(201,168,76,.015);
+}
+.legend-title {
+  font-family: 'Cinzel', serif; font-size: .5rem;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: #c9a84c77; margin-bottom: .5rem;
+  display: flex; align-items: center; gap: .3rem;
+}
+.legend-title::before, .legend-title::after { content: '✦'; font-size: .4rem; opacity: .4; }
+.legend-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: .3rem .6rem; }
+.legend-item { display: flex; align-items: center; gap: .3rem; }
+.l-emoji { font-size: .85rem; }
+.l-text { font-size: .62rem; color: #4a3a2a; line-height: 1.4; }
+
+.vote-prompt {
+  font-size: .75rem; color: #4a3a2a;
+  font-style: italic; cursor: pointer;
+  transition: color .2s; display: inline-block;
+}
+.vote-prompt:hover { color: #c9a84c88; }
+
+.page-footer {
+  text-align: center; margin-top: 1rem;
+  font-family: 'Cinzel', serif; font-size: .42rem;
+  letter-spacing: .2em; color: #c9a84c66; text-transform: uppercase;
 }
 
-.img-frame::after {
-    content: '';
-    position: absolute;
-    inset: -4px;
-    border-radius: 50%;
-    background: #0d0a0e;
-    z-index: 1;
+.home-btn {
+  position: fixed; bottom: 1.2rem; left: 1.2rem; z-index: 100;
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: .5rem .85rem;
+  font-family: 'Cinzel', serif; font-size: .55rem;
+  letter-spacing: .1em; text-transform: uppercase;
+  text-decoration: none; border-radius: 6px;
+  background: rgba(13,10,14,.88); border: 1px solid #c9a84c44;
+  color: #c9a84ccc; backdrop-filter: blur(6px);
+  transition: all .25s;
+}
+.home-btn:hover {
+  border-color: #c9a84c; color: #f0e6c8;
+  box-shadow: 0 0 16px rgba(201,168,76,.18);
 }
 
-.img-frame img {
-    position: relative;
-    z-index: 2;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
-    border: 2px solid #c9a84c55;
+@media (max-width: 600px) {
+  .two-col { grid-template-columns: 1fr; }
+  .col-title-right { grid-column: 1; }
 }
-
-/* Card layout: journey box | bingo card | controls */
-.card-layout {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 30px;
-    width: 100%;
-    max-width: 1300px;
-}
-
-/* Bingo card (centre column) */
-.container {
-    position: relative;
-    flex-shrink: 0;
-    width: min(90vw, 560px);
-    aspect-ratio: 1024 / 1536;
-    background-image: url('current_bingo.png');
-    background-size: 100% 100%;
-    margin: 0 auto;
-}
-
-.bingo-grid {
-    position: absolute;
-    left: 50%;
-    top: 34.5%;
-    width: 73%;
-    aspect-ratio: 1 / 1;
-    transform: translateX(-50%);
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(5, 1fr);
-}
-
-.bingo-cell {
-    aspect-ratio: 1 / 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: clamp(10px, 1.4vw, 13px);
-    line-height: 1.2;
-    text-align: center;
-    padding: 4px;
-    overflow: hidden;
-}
-
-.bingo-cell.marked {
-    background: rgba(212, 175, 55, 0.6);
-    font-weight: bold;
-}
-
-.bingo-cell.free {
-    font-weight: bold;
-    color: #d4af37;
-}
-
-.cell-text {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    font-family: 'Crimson Text', Georgia, serif;
-    font-size: inherit;
-    line-height: 1.2;
-    color: #2a1a0a;
-    padding: 4px;
-    overflow-wrap: break-word;
-    word-break: break-word;
-}
-
-textarea {
-    width: 100%;
-    height: 100%;
-    border: none;
-    background: transparent;
-    outline: none;
-    resize: none;
-    display: flex;
-    text-align: center;
-    font-family: 'Crimson Text', Georgia, serif;
-    font-size: inherit;
-    line-height: inherit;
-    color: #2a1a0a;
-    padding: 4px;
-    margin: 0;
-    overflow: hidden;
-    overflow-wrap: break-word;
-    word-break: break-word;
-}
-
-input {
-    width: 100%;
-    height: 100%;
-    border: none;
-    text-align: center;
-    background: transparent;
-    outline: none;
-    color: #2a1a0a;
-    font-family: 'Crimson Text', Georgia, serif;
-}
-
-/* Controls (right column) — same width as journey-wrapper so card is truly centred */
-.controls {
-    position: static;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: stretch;
-    width: 350px;
-    flex-shrink: 0;
-}
-
-.secondary-buttons {
-    display: flex;
-    gap: 8px;
-}
-
-button {
-    background: rgba(31, 58, 54, 0.9);
-    color: #f5ecd9;
-    border: 1px solid #c9a84c55;
-    padding: 10px 20px;
-    font-size: 14px;
-    font-family: 'Cinzel', serif;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 12px rgba(201, 168, 76, 0.15);
-}
-
-button:hover {
-    background: rgba(44, 79, 73, 0.9);
-    border-color: #c9a84c;
-    box-shadow: 0 0 20px rgba(201, 168, 76, 0.25);
-    transform: translateY(-2px);
-}
-
-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-}
-
-.primary-btn {
-    font-size: 22px;
-    padding: 22px 28px;
-    font-weight: 600;
-    background: rgba(201, 168, 76, 0.2);
-    border: 2px solid #c9a84c;
-    box-shadow: 0 0 20px rgba(201, 168, 76, 0.3);
-    width: 100%;
-}
-
-.primary-btn:hover:not(:disabled) {
-    background: rgba(201, 168, 76, 0.3);
-    border-color: #d4af37;
-    box-shadow: 0 0 30px rgba(201, 168, 76, 0.5);
-    transform: translateY(-3px);
-}
-
-.small-btn {
-    font-size: 11px;
-    padding: 8px 12px;
-    flex: 1;
-}
-
-.status {
-    text-align: center;
-    font-size: 1rem;
-    color: #c9a84c;
-    font-style: normal;
-    opacity: 0.8;
-    margin-top: 5px;
-}
-
-.player-id {
-    font-size: 12px;
-    color: #c9a84c99;
-    text-align: center;
-    font-style: italic;
-}
-
-.reading-format {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-
-.reading-format label {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: opacity 0.2s;
-}
-
-.reading-format label:hover { opacity: 0.8; }
-
-.reading-format input[type="radio"] {
-    width: auto;
-    height: auto;
-    cursor: pointer;
-}
-
-.emotions {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-}
-
-.emotion-btn {
-    width: 44px;
-    height: 44px;
-    font-size: 1.5rem;
-    padding: 4px;
-    background: rgba(31, 58, 54, 0.6);
-    border: 1px solid #c9a84c33;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.emotion-btn:hover:not(:disabled) {
-    background: rgba(44, 79, 73, 0.8);
-    border-color: #c9a84c;
-    transform: scale(1.1);
-}
-
-.emotion-btn.active {
-    background: rgba(201, 168, 76, 0.4);
-    border-color: #c9a84c;
-    box-shadow: 0 0 12px rgba(201, 168, 76, 0.3);
-}
-
-/* Journey box (left column) */
-.journey-wrapper {
-    position: relative;
-    width: 350px;
-    flex-shrink: 0;
-    padding-top: 70px;
-}
-
-.journey-cover {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90px;
-    height: 130px;
-    object-fit: cover;
-    border-radius: 6px;
-    border: 2px solid #c9a84c55;
-    box-shadow: 0 0 15px rgba(201,168,76,0.3);
-    z-index: 2;
-}
-
-.journey-box {
-    padding: 90px 20px 24px 20px;
-    background: rgba(26, 15, 31, 0.9);
-    border: 1px solid #c9a84c33;
-    border-radius: 12px;
-    box-shadow: 0 0 18px rgba(201,168,76,0.15);
-    text-align: center;
-    color: #f5ecd9;
-}
-
-.journey-box h2 {
-    font-family: 'Cinzel', serif;
-    font-size: 0.8rem;
-    letter-spacing: 1px;
-    margin-bottom: 12px;
-    color: #c9a84c;
-    text-transform: uppercase;
-}
-
-.chapter-display {
-    font-family: 'Crimson Text', Georgia, serif;
-    font-size: 0.8rem;
-    margin-bottom: 6px;
-}
-
-#chapterSlider {
-    width: 90%;
-    cursor: pointer;
-}
-
-/* Lock button */
-.lock-btn {
-    position: fixed;
-    top: 24px;
-    right: 24px;
-    z-index: 200;
-    background: rgba(31, 58, 54, 0.9);
-    border: 1px solid #c9a84c55;
-    border-radius: 50%;
-    width: 48px;
-    height: 48px;
-    font-size: 1.4rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 12px rgba(201, 168, 76, 0.15);
-    padding: 0;
-    text-transform: none;
-    letter-spacing: 0;
-}
-
-.lock-btn:hover {
-    border-color: #c9a84c;
-    box-shadow: 0 0 20px rgba(201, 168, 76, 0.35);
-    transform: scale(1.1);
-}
-
-.lock-btn.unlocked {
-    border-color: #c9a84c;
-    background: rgba(201, 168, 76, 0.25);
-}
-
-/* Password modal */
-.lock-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
-    z-index: 300;
-    align-items: center;
-    justify-content: center;
-}
-
-.lock-overlay.visible { display: flex; }
-
-.lock-modal {
-    background: rgba(26, 15, 31, 0.97);
-    border: 1px solid #c9a84c55;
-    border-radius: 12px;
-    padding: 32px;
-    text-align: center;
-    box-shadow: 0 0 30px rgba(201, 168, 76, 0.2);
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    min-width: 260px;
-}
-
-.lock-modal h3 {
-    font-family: 'Cinzel', serif;
-    color: #c9a84c;
-    font-size: 1rem;
-    letter-spacing: 1px;
-    margin: 0;
-}
-
-.lock-modal input[type="password"] {
-    width: 100%;
-    background: rgba(255,255,255,0.07);
-    border: 1px solid #c9a84c55;
-    border-radius: 6px;
-    color: #f5ecd9;
-    font-family: 'Crimson Text', Georgia, serif;
-    font-size: 1.1rem;
-    padding: 10px 14px;
-    text-align: center;
-    outline: none;
-    box-sizing: border-box;
-    height: auto;
-}
-
-.lock-modal input[type="password"]:focus { border-color: #c9a84c; }
-
-.lock-error {
-    color: #e06c75;
-    font-size: 0.85rem;
-    min-height: 1em;
-}
-
-.lock-modal .modal-buttons {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-}
-
-/* Responsive */
-@media (max-width: 1000px) {
-    body {
-        padding: 15px;
-        gap: 20px;
-        padding-top: 20px;
-    }
-
-    .player-header {
-        position: static;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        margin-bottom: 0;
-        order: 1;
-        z-index: 10;
-    }
-
-    .player-name { font-size: 2rem; }
-
-    .card-layout {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .journey-wrapper {
-        width: min(90vw, 400px);
-        padding-top: 0;
-        order: 2;
-        margin-top: 20px;
-    }
-
-    .journey-cover {
-        position: static;
-        transform: none;
-        width: 80px;
-        height: 115px;
-        margin: 0 auto 15px auto;
-        display: block;
-    }
-
-    .journey-box {
-        padding: 20px;
-        width: 100%;
-    }
-
-    .container {
-        width: min(90vw, 560px);
-        order: 3;
-        margin: 0 auto;
-    }
-
-    .controls {
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 10px;
-        width: min(90vw, 400px);
-        margin-top: 0;
-        order: 4;
-    }
-
-    .secondary-buttons { width: 100%; }
-    .status { text-align: center; order: 5; }
-    .ornament { order: 6; }
-    .home-btn { order: 7; }
-    .footer { order: 8; }
-
-    .lock-btn {
-        top: 12px;
-        right: 12px;
-    }
+@media (max-width: 480px) {
+  .legend-grid { grid-template-columns: repeat(2,1fr); }
 }
 </style>
 </head>
-
 <body>
 
-<div class="stars" id="stars"></div>
-
-<!-- Lock button -->
-<button class="lock-btn" id="lockBtn" title="Unlock card">🔒</button>
-
-<!-- Password modal -->
-<div class="lock-overlay" id="lockOverlay">
-    <div class="lock-modal">
-        <h3>🔐 Unlock Card</h3>
-        <input type="password" id="passwordInput" placeholder="Enter password" autocomplete="off">
-        <div class="lock-error" id="lockError"></div>
-        <div class="modal-buttons">
-            <button class="small-btn" id="unlockSubmit">Unlock</button>
-            <button class="small-btn" id="unlockCancel">Cancel</button>
-        </div>
-    </div>
+<!-- Code modal -->
+<div class="modal-bg" id="code-modal">
+  <div class="modal">
+    <div class="c-bl"></div><div class="c-br"></div>
+    <div class="modal-icon" id="code-modal-icon">🗝️</div>
+    <div class="modal-title" id="code-modal-title">Who goes there?</div>
+    <div class="modal-sub" id="code-modal-sub">Enter your secret code to continue</div>
+    <input class="gold-input" id="code-input" type="text" placeholder="your code…" autocomplete="off" />
+    <div class="login-error" id="login-error"></div>
+    <button class="modal-submit" id="code-submit">✦ Continue ✦</button>
+    <button class="modal-cancel" onclick="closeModal('code-modal')">Cancel</button>
+  </div>
 </div>
 
-<!-- Player Header -->
-<div class="player-header">
-    <div class="img-frame">
-        <img id="playerPhoto" src="marine.png" alt="Player Photo">
+<!-- Add book modal -->
+<div class="modal-bg" id="add-modal">
+  <div class="modal">
+    <div class="c-bl"></div><div class="c-br"></div>
+    <div class="modal-icon">📖</div>
+    <div class="modal-title">Recommend a Book</div>
+    <div class="modal-sub">What should we read next?</div>
+    <div class="field">
+      <label for="f-title">Book title *</label>
+      <input id="f-title" type="text" placeholder="e.g. The Little Prince" />
     </div>
-    <div class="player-name" id="playerHeaderName"></div>
-    <div class="player-id" id="playerId"></div>
+    <div class="field">
+      <label for="f-note">Why do you want to read it?</label>
+      <textarea id="f-note" placeholder="e.g. Because it looks super fun and cute!"></textarea>
+    </div>
+    <button class="modal-submit" onclick="submitBook()">Add Book ✦</button>
+    <button class="modal-cancel" onclick="closeModal('add-modal')">Cancel</button>
+  </div>
 </div>
 
-<!-- Card layout: journey | bingo | controls -->
-<div class="card-layout">
-
-    <!-- Journey Slider -->
-    <div class="journey-wrapper">
-        <img src="current_cover.jpg" alt="Book cover" class="journey-cover">
-        <div class="journey-box">
-            <h2>How's the journey going?</h2>
-            <div class="chapter-display">
-                Chapter <span id="chapterValue">0</span> / 41
-            </div>
-            <input type="range" id="chapterSlider" min="0" max="41" value="0">
-
-            <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #c9a84c33;">
-                <div style="font-size: 0.9rem; margin-bottom: 8px; color: #c9a84c;">Reading format:</div>
-                <div class="reading-format">
-                    <label><input type="radio" name="format" value="audio"> 🎧 Audio</label>
-                    <label><input type="radio" name="format" value="ebook"> 📱 eBook</label>
-                    <label><input type="radio" name="format" value="physical" checked> 📖 Physical</label>
-                </div>
-            </div>
-
-            <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #c9a84c33;">
-                <div style="font-size: 0.9rem; margin-bottom: 8px; color: #c9a84c;">Emotions so far:</div>
-                <div class="emotions">
-                    <button class="emotion-btn" data-emotion="joy">😊</button>
-                    <button class="emotion-btn" data-emotion="sad">😢</button>
-                    <button class="emotion-btn" data-emotion="excited">🤩</button>
-                    <button class="emotion-btn" data-emotion="scared">😨</button>
-                </div>
-            </div>
-        </div>
+<!-- PAGE -->
+<div class="layout">
+  <div class="page-header">
+    <div class="club-label">The Bingo Book Club</div>
+    <div class="page-title">What Shall We Read?</div>
+    <div class="ornament">
+      <div class="line"></div><div class="gem">◆</div><div class="line"></div>
     </div>
+    <div class="page-sub">Browse the picks · vote for your favourite · recommend a new one</div>
+  </div>
 
-    <!-- Bingo Card -->
-    <div class="container">
-        <div class="bingo-grid" id="bingoGrid"></div>
+  <div class="session-bar" id="session-bar">
+    <span style="color:#5a4a38;font-size:.68rem;">Voting as</span>
+    <span class="session-name" id="session-name"></span>
+    <button class="session-out" onclick="logout()">✕ switch</button>
+  </div>
+
+  <div class="action-bar">
+    <button class="gold-btn" onclick="requestAction('vote')">
+      <span class="icon">🗳️</span> Cast my votes
+    </button>
+    <button class="gold-btn" onclick="requestAction('recommend')">
+      <span class="icon">📖</span> Recommend a book
+    </button>
+  </div>
+
+  <div class="two-col" id="book-list"></div>
+
+  <div class="legend-wrap">
+    <div class="legend-title">Voting guide</div>
+    <div class="legend-grid">
+      <div class="legend-item"><span class="l-emoji">⭐</span><span class="l-text">This is the one</span></div>
+      <div class="legend-item"><span class="l-emoji">👍</span><span class="l-text">Speaking to me</span></div>
+      <div class="legend-item"><span class="l-emoji">👀</span><span class="l-text">I see the vision</span></div>
+      <div class="legend-item"><span class="l-emoji">😐</span><span class="l-text">I'll survive… I guess</span></div>
+      <div class="legend-item"><span class="l-emoji">🚫</span><span class="l-text">Respectfully, no</span></div>
+      <div class="legend-item"><span class="l-emoji">😈</span><span class="l-text">Hate-read only</span></div>
     </div>
+  </div>
 
-    <!-- Controls -->
-    <div class="controls">
-        <button id="saveBtn" class="primary-btn" disabled>💾 Save Progress</button>
-        <div class="secondary-buttons">
-            <button id="toggleMode" class="small-btn" disabled>✏️ Edit</button>
-            <button id="resetBtn" class="small-btn" disabled>🔄 Reset</button>
-        </div>
-        <div class="status" id="status">🔒 Read Only</div>
-    </div>
+  <div id="vote-prompt-bar" style="display:none; text-align:center; margin-bottom:1.5rem;">
+    <span class="vote-prompt" onclick="requestAction('vote')">✦ enter your code to vote</span>
+  </div>
 
-</div><!-- /.card-layout -->
-
-<div class="ornament">
-    <div class="line"></div>
-    <div class="gem">◆</div>
-    <div class="line"></div>
+  <div class="page-footer">✦ &nbsp; The Bingo Book Club &nbsp; ✦</div>
 </div>
 
-<a class="home-btn" href="index.html">
-    <span class="home-btn-icon">🏠</span> Home
-</a>
+<a class="home-btn" href="index.html">🏠 Home</a>
 
-<div class="footer">✦ &nbsp; The Bingo Book Club &nbsp; ✦</div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-<script>
-// ── STARS ─────────────────────────────────────────────────────
-const starsContainer = document.getElementById('stars');
-for (let i = 0; i < 80; i++) {
-    const star = document.createElement('div');
-    star.className = 'star';
-    const size = Math.random() > 0.8 ? 3 : 2;
-    star.style.cssText = `
-        left: ${Math.random() * 100}%;
-        top: ${Math.random() * 100}%;
-        width: ${size}px;
-        height: ${size}px;
-        --d: ${2 + Math.random() * 4}s;
-        --delay: ${Math.random() * 4}s;
-    `;
-    starsContainer.appendChild(star);
-}
-
-// ── CONFIG ────────────────────────────────────────────────────
-const CARD_PASSWORD = 'marinara';
-
-const PROJECT_ID = 'bingobookclub-2144e';
-const FIRESTORE_BASE =
-    'https://firestore.googleapis.com/v1/projects/' +
-    PROJECT_ID +
-    '/databases/(default)/documents/first_bingo/';
-
-const playerId = 'marine';
-
-// ── STATE ─────────────────────────────────────────────────────
-const GRID_SIZE = 25;
-let cells   = Array(GRID_SIZE).fill('');
-let marked  = Array(GRID_SIZE).fill(false);
-let isEditMode    = false;
-let isUnlocked    = false;
-let chapterProgress = 0;
-let readingFormat = 'physical';
-let emotions      = [];
-
-// ── ELEMENTS ──────────────────────────────────────────────────
-const grid          = document.getElementById('bingoGrid');
-const statusEl      = document.getElementById('status');
-const saveBtn       = document.getElementById('saveBtn');
-const toggleBtn     = document.getElementById('toggleMode');
-const resetBtn      = document.getElementById('resetBtn');
-const lockBtn       = document.getElementById('lockBtn');
-const lockOverlay   = document.getElementById('lockOverlay');
-const passwordInput = document.getElementById('passwordInput');
-const lockError     = document.getElementById('lockError');
-const chapterSlider = document.getElementById('chapterSlider');
-const chapterValue  = document.getElementById('chapterValue');
-
-document.getElementById('playerHeaderName').textContent = playerId;
-
-// ── LOCK / UNLOCK ─────────────────────────────────────────────
-function setLockState(unlocked) {
-    isUnlocked = unlocked;
-    lockBtn.textContent = unlocked ? '🔓' : '🔒';
-    lockBtn.classList.toggle('unlocked', unlocked);
-    lockBtn.title = unlocked ? 'Lock card' : 'Unlock card';
-
-    saveBtn.disabled   = !unlocked;
-    toggleBtn.disabled = !unlocked;
-    resetBtn.disabled  = !unlocked;
-    chapterSlider.disabled = !unlocked;
-
-    document.querySelectorAll('.emotion-btn').forEach(b => b.disabled = !unlocked);
-    document.querySelectorAll('input[name="format"]').forEach(r => r.disabled = !unlocked);
-
-    restoreStatus();
-    initGrid();
-}
-
-lockBtn.onclick = () => {
-    if (isUnlocked) {
-        setLockState(false);
-    } else {
-        passwordInput.value = '';
-        lockError.textContent = '';
-        lockOverlay.classList.add('visible');
-        setTimeout(() => passwordInput.focus(), 50);
-    }
+const firebaseConfig = {
+  apiKey: "AIzaSyAIQTe-QGQmwqTVmIyJZZ_qlDNsD6GUskY",
+  authDomain: "bingobookclub-2144e.firebaseapp.com",
+  projectId: "bingobookclub-2144e",
+  storageBucket: "bingobookclub-2144e.firebasestorage.app",
+  messagingSenderId: "294177836341",
+  appId: "1:294177836341:web:6d5f11e64737fbe3aad07c"
 };
 
-document.getElementById('unlockSubmit').onclick = tryUnlock;
-document.getElementById('unlockCancel').onclick = () => lockOverlay.classList.remove('visible');
-
-passwordInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter')  tryUnlock();
-    if (e.key === 'Escape') lockOverlay.classList.remove('visible');
-});
-
-function tryUnlock() {
-    if (passwordInput.value === CARD_PASSWORD) {
-        lockOverlay.classList.remove('visible');
-        setLockState(true);
-    } else {
-        lockError.textContent = 'Wrong password, try again.';
-        passwordInput.value = '';
-        passwordInput.focus();
-    }
-}
-
-// ── SLIDER ────────────────────────────────────────────────────
-chapterSlider.oninput = e => {
-    chapterProgress = Number(e.target.value);
-    chapterValue.textContent = chapterProgress;
+const PLAYERS = {
+  marinara:   { name: "Marine", emoji: "🧜‍♀️" },
+  lenarrator: { name: "Lena",   emoji: "🌙"  },
+  elanalogy:  { name: "Elana",  emoji: "🐉"  },
+  kathistory: { name: "Kathi",  emoji: "🍄"  },
 };
 
-// ── READING FORMAT ────────────────────────────────────────────
-document.querySelectorAll('input[name="format"]').forEach(radio => {
-    radio.addEventListener('change', e => { readingFormat = e.target.value; });
+const RATINGS = [
+  { v: 5, emoji: "⭐", label: "This is the one"  },
+  { v: 4, emoji: "👍", label: "Speaking to me"   },
+  { v: 3, emoji: "👀", label: "I see the vision" },
+  { v: 2, emoji: "😐", label: "I'll survive"     },
+  { v: 1, emoji: "🚫", label: "Respectfully, no" },
+  { v: 0, emoji: "😈", label: "Hate-read only"   },
+];
+
+const ACCENTS = [
+  { grad: "linear-gradient(to right,#1a4a3a,#2d7a5a,#1a4a3a)", mid: "#2d7a5a" },
+  { grad: "linear-gradient(to right,#6b1515,#c9784c,#6b1515)", mid: "#c9784c" },
+  { grad: "linear-gradient(to right,#3a1a5a,#8a4ab0,#3a1a5a)", mid: "#8a4ab0" },
+  { grad: "linear-gradient(to right,#5a1a1a,#c94c4c,#5a1a1a)", mid: "#c94c4c" },
+  { grad: "linear-gradient(to right,#1a3a5a,#4a8ab0,#1a3a5a)", mid: "#4a8ab0" },
+  { grad: "linear-gradient(to right,#2a1a4a,#7a4aa0,#2a1a4a)", mid: "#7a4aa0" },
+];
+
+function accentForId(id) {
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) hash = (hash * 31 + id.charCodeAt(i)) >>> 0;
+  return ACCENTS[hash % ACCENTS.length];
+}
+
+function hexAlpha(hex, a) {
+  const r = parseInt(hex.slice(1,3),16);
+  const g = parseInt(hex.slice(3,5),16);
+  const b = parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+const booksCol = collection(db, "books");
+
+let currentPlayer = null;
+let allBooks = {};
+let pendingAction = null;
+
+window.requestAction = requestAction;
+window.closeModal    = id => document.getElementById(id).classList.remove('open');
+window.openModal     = id => document.getElementById(id).classList.add('open');
+window.logout        = logout;
+window.submitBook    = submitBook;
+window.castVote      = castVote;
+
+const saved = sessionStorage.getItem("nextReadPlayer");
+if (saved && PLAYERS[saved]) setPlayer(saved, PLAYERS[saved]);
+updatePromptBar();
+
+function updatePromptBar() {
+  document.getElementById('vote-prompt-bar').style.display = currentPlayer ? 'none' : 'block';
+}
+
+function setPlayer(code, player) {
+  currentPlayer = { code, ...player };
+  document.getElementById("session-name").textContent = player.emoji + " " + player.name;
+  document.getElementById("session-bar").classList.add("visible");
+  sessionStorage.setItem("nextReadPlayer", code);
+  updatePromptBar();
+  renderBooks();
+}
+
+function logout() {
+  currentPlayer = null;
+  sessionStorage.removeItem("nextReadPlayer");
+  document.getElementById("session-bar").classList.remove("visible");
+  updatePromptBar();
+  renderBooks();
+}
+
+function requestAction(action) {
+  if (currentPlayer) {
+    if (action === 'recommend') window.openModal('add-modal');
+    return;
+  }
+  pendingAction = action;
+  document.getElementById('code-modal-icon').textContent  = action === 'vote' ? '🗳️' : '📖';
+  document.getElementById('code-modal-title').textContent = action === 'vote' ? "Who's voting?" : "Who's recommending?";
+  document.getElementById('code-input').value = '';
+  document.getElementById('login-error').textContent = '';
+  window.openModal('code-modal');
+  setTimeout(() => document.getElementById('code-input').focus(), 80);
+}
+
+document.getElementById('code-submit').addEventListener('click', submitCode);
+document.getElementById('code-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') submitCode();
 });
 
-// ── EMOTIONS ──────────────────────────────────────────────────
-document.querySelectorAll('.emotion-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        if (!isUnlocked) return;
-        const emotion = btn.dataset.emotion;
-        const idx = emotions.indexOf(emotion);
-        if (idx > -1) {
-            emotions.splice(idx, 1);
-            btn.classList.remove('active');
-        } else {
-            emotions.push(emotion);
-            btn.classList.add('active');
-        }
+function submitCode() {
+  const code = document.getElementById('code-input').value.trim().toLowerCase();
+  const player = PLAYERS[code];
+  if (!player) {
+    document.getElementById('login-error').textContent = "Hmm, that code doesn't ring a bell…";
+    return;
+  }
+  setPlayer(code, player);
+  window.closeModal('code-modal');
+  if (pendingAction === 'recommend') window.openModal('add-modal');
+  pendingAction = null;
+}
+
+document.querySelectorAll('.modal-bg').forEach(bg => {
+  bg.addEventListener('click', e => { if (e.target === bg) bg.classList.remove('open'); });
+});
+
+async function submitBook() {
+  const title = document.getElementById('f-title').value.trim();
+  if (!title || !currentPlayer) return;
+  const note  = document.getElementById('f-note').value.trim();
+  const cover = await fetchCover(title);
+  await addDoc(booksCol, {
+    title, note: note || '',
+    recommender: currentPlayer.name,
+    recommenderEmoji: currentPlayer.emoji,
+    cover: cover || '',
+    votes: {},
+    addedAt: Date.now(),
+  });
+  document.getElementById('f-title').value = '';
+  document.getElementById('f-note').value  = '';
+  window.closeModal('add-modal');
+}
+
+function castVote(bookId, rating) {
+  if (!currentPlayer) { requestAction('vote'); return; }
+  updateDoc(doc(db, 'books', bookId), {
+    [`votes.${currentPlayer.code}`]: rating
+  });
+}
+
+onSnapshot(booksCol, snap => {
+  allBooks = {};
+  snap.forEach(d => { allBooks[d.id] = d.data(); });
+  renderBooks();
+});
+
+function avg(votes) {
+  const vals = Object.values(votes || {});
+  if (!vals.length) return null;
+  return (vals.reduce((a,b) => a+b, 0) / vals.length).toFixed(1);
+}
+
+function scorePill(score) {
+  if (score === null) return `<span class="score-pill score-none">no votes</span>`;
+  const n = parseFloat(score);
+  const cls = n >= 4 ? 'score-high' : n >= 2.5 ? 'score-mid' : 'score-low';
+  return `<span class="score-pill ${cls}">${score} / 5</span>`;
+}
+
+function renderBooks() {
+  const list = document.getElementById('book-list');
+  const TOTAL_PLAYERS = Object.keys(PLAYERS).length;
+  const entries = Object.entries(allBooks);
+
+  if (!entries.length) {
+    list.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">No books yet — be the first to recommend one ✦</div>`;
+    return;
+  }
+
+  const needsVotes = entries
+    .filter(([,b]) => Object.keys(b.votes || {}).length < TOTAL_PLAYERS)
+    .sort((a, b) => (a[1].addedAt || 0) - (b[1].addedAt || 0));
+
+  const allVoted = entries
+    .filter(([,b]) => Object.keys(b.votes || {}).length >= TOTAL_PLAYERS)
+    .sort(([,a],[,b]) => {
+      const sa = parseFloat(avg(a.votes)) ?? 0;
+      const sb = parseFloat(avg(b.votes)) ?? 0;
+      return sb - sa;
     });
-});
 
-// ── FIRESTORE HELPERS ─────────────────────────────────────────
-function toFV(val) {
-    if (typeof val === 'boolean') return { booleanValue: val };
-    if (typeof val === 'number')  return { integerValue: String(val) };
-    if (Array.isArray(val))       return { arrayValue: { values: val.map(toFV) } };
-    return { stringValue: String(val) };
+  function cardHtml([id, book]) {
+    const myVote = currentPlayer ? (book.votes?.[currentPlayer.code] ?? null) : null;
+    const score  = avg(book.votes);
+    const accent = accentForId(id);
+    const locked = !currentPlayer;
+
+    const accentBg     = hexAlpha(accent.mid, 0.85);
+    const accentBorder = hexAlpha(accent.mid, 0.55);
+    const accentStrong = hexAlpha(accent.mid, 0.28);
+
+    const voteBtns = RATINGS.map(r => {
+      const isMine = myVote === r.v;
+      const voterEmojis = Object.entries(book.votes || {})
+        .filter(([,v]) => v === r.v)
+        .map(([code]) => PLAYERS[code]?.emoji || '?');
+      return `<button
+        class="vote-btn${isMine ? ' mine' : ''}${locked ? ' locked' : ''}"
+        onclick="castVote('${id}', ${r.v})"
+        title="${r.v} — ${r.label}"
+        style="--accent-bg:${accentBg};--accent-border:${accentBorder};--accent-strong:${accentStrong};">
+        <span class="vote-emoji-circle">${r.emoji}</span>${voterEmojis.length ? `<span class="voters-pill">${voterEmojis.join('')}</span>` : ''}
+      </button>`;
+    }).join('');
+
+    return `<div class="book-card">
+      <div class="c-bl"></div><div class="c-br"></div>
+      <div class="accent-bar" style="background:${accent.grad};"></div>
+      <div class="card-body">
+        <div class="cover-wrap">
+          ${book.cover ? `<img src="${book.cover}" alt="${book.title}" />` : '📖'}
+        </div>
+        <div class="card-main">
+          <div class="card-title-row">
+            <span class="card-title">${book.title}</span>
+            ${scorePill(score)}
+          </div>
+          <div class="rec-by">${book.recommenderEmoji} recommended by ${book.recommender}</div>
+          ${book.note ? `<div class="card-note">"${book.note}"</div>` : ''}
+          <div class="votes-row">${voteBtns}</div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  list.innerHTML = `
+    <div class="col-header col-title">Needs votes</div>
+    <div class="col-header col-title-right">Everyone voted</div>
+    <div>${needsVotes.length ? needsVotes.map(e => cardHtml(e)).join('') : '<div class="empty-state">All caught up ✦</div>'}</div>
+    <div>${allVoted.length ? allVoted.map(e => cardHtml(e)).join('') : '<div class="empty-state">No verdicts yet ✦</div>'}</div>
+  `;
 }
 
-function fromFV(fv) {
-    if (!fv) return null;
-    if (fv.booleanValue !== undefined) return fv.booleanValue;
-    if (fv.integerValue !== undefined) return Number(fv.integerValue);
-    if (fv.stringValue  !== undefined) return fv.stringValue;
-    if (fv.arrayValue)                 return (fv.arrayValue.values || []).map(fromFV);
-    return null;
-}
-
-// ── STATUS ────────────────────────────────────────────────────
-function restoreStatus() {
-    if (!isUnlocked)      statusEl.textContent = '🔒 Read Only';
-    else if (isEditMode)  statusEl.textContent = 'Edit Mode';
-    else                  statusEl.textContent = 'Play Mode';
-}
-
-// ── GRID ──────────────────────────────────────────────────────
-function initGrid() {
-    grid.innerHTML = '';
-    for (let i = 0; i < GRID_SIZE; i++) {
-        const cell = document.createElement('div');
-        cell.className = 'bingo-cell';
-
-        if (i === 12) {
-            cell.textContent = '';
-            cell.classList.add('free');
-            marked[i] = true;
-        } else if (isUnlocked && isEditMode) {
-            const ta = document.createElement('textarea');
-            ta.value = cells[i];
-            ta.oninput = e => { cells[i] = e.target.value; };
-            cell.appendChild(ta);
-        } else {
-            const text = document.createElement('div');
-            text.className = 'cell-text';
-            text.textContent = cells[i];
-            cell.appendChild(text);
-            if (marked[i]) cell.classList.add('marked');
-            if (isUnlocked) {
-                cell.style.cursor = 'pointer';
-                cell.onclick = () => { marked[i] = !marked[i]; initGrid(); };
-            }
-        }
-        grid.appendChild(cell);
+async function fetchCover(title) {
+  try {
+    const r = await fetch(`https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(title)}&maxResults=1&fields=items(volumeInfo/imageLinks)`);
+    const d = await r.json();
+    const links = d?.items?.[0]?.volumeInfo?.imageLinks;
+    if (links) {
+      const url = (links.large || links.medium || links.thumbnail || links.smallThumbnail || '')
+        .replace('http://', 'https://')
+        .replace('&edge=curl', '')
+        .replace('zoom=1', 'zoom=2');
+      if (url) return url;
     }
+  } catch {}
+  try {
+    const r = await fetch(`https://openlibrary.org/search.json?title=${encodeURIComponent(title)}&limit=1`);
+    const d = await r.json();
+    const id = d?.docs?.[0]?.cover_i;
+    if (id) return `https://covers.openlibrary.org/b/id/${id}-L.jpg`;
+  } catch {}
+  return null;
 }
-
-// ── SAVE ──────────────────────────────────────────────────────
-async function saveCard() {
-    if (!isUnlocked) return;
-    saveBtn.disabled = true;
-    statusEl.textContent = 'Saving...';
-
-    const body = {
-        fields: {
-            cells:           toFV(cells),
-            marked:          toFV(marked),
-            chapterProgress: { integerValue: String(chapterProgress) },
-            readingFormat:   { stringValue: readingFormat },
-            emotions:        toFV(emotions),
-            savedAt:         { stringValue: new Date().toISOString() }
-        }
-    };
-
-    try {
-        const resp = await fetch(FIRESTORE_BASE + encodeURIComponent(playerId), {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body)
-        });
-        if (!resp.ok) throw new Error('HTTP ' + resp.status);
-        statusEl.textContent = 'Saved to Firebase!';
-    } catch (e) {
-        console.error('Save error:', e);
-        statusEl.textContent = 'Firebase save failed';
-    } finally {
-        saveBtn.disabled = false;
-        setTimeout(restoreStatus, 2500);
-    }
-}
-
-// ── LOAD ──────────────────────────────────────────────────────
-async function loadCard() {
-    statusEl.textContent = 'Loading...';
-    try {
-        const resp = await fetch(FIRESTORE_BASE + encodeURIComponent(playerId));
-
-        if (resp.status === 404) {
-            statusEl.textContent = 'No saved data found';
-            setTimeout(restoreStatus, 2500);
-            return;
-        }
-        if (!resp.ok) throw new Error('HTTP ' + resp.status);
-
-        const data = await resp.json();
-        const f = data.fields || {};
-
-        if (f.cells)           cells           = fromFV(f.cells)  || Array(GRID_SIZE).fill('');
-        if (f.marked)        { marked          = fromFV(f.marked) || Array(GRID_SIZE).fill(false); marked[12] = true; }
-        if (f.chapterProgress) {
-            chapterProgress = Number(f.chapterProgress.integerValue || 0);
-            chapterSlider.value = chapterProgress;
-            chapterValue.textContent = chapterProgress;
-        }
-        if (f.readingFormat) {
-            readingFormat = f.readingFormat.stringValue || 'physical';
-            const r = document.querySelector(`input[name="format"][value="${readingFormat}"]`);
-            if (r) r.checked = true;
-        }
-        if (f.emotions) {
-            emotions = fromFV(f.emotions) || [];
-            document.querySelectorAll('.emotion-btn').forEach(btn => {
-                btn.classList.toggle('active', emotions.includes(btn.dataset.emotion));
-            });
-        }
-
-        initGrid();
-        statusEl.textContent = 'Data loaded!';
-        setTimeout(restoreStatus, 2000);
-    } catch (e) {
-        console.error('Load error:', e);
-        statusEl.textContent = 'No saved data';
-        setTimeout(restoreStatus, 2000);
-    }
-}
-
-// ── BUTTON HANDLERS ───────────────────────────────────────────
-toggleBtn.onclick = () => {
-    if (!isUnlocked) return;
-    isEditMode = !isEditMode;
-    toggleBtn.textContent = isEditMode ? '👁️ Play' : '✏️ Edit';
-    restoreStatus();
-    initGrid();
-};
-
-resetBtn.onclick = () => {
-    if (!isUnlocked) return;
-    if (!confirm('Reset this bingo card?')) return;
-    cells           = Array(GRID_SIZE).fill('');
-    marked          = Array(GRID_SIZE).fill(false);
-    marked[12]      = true;
-    chapterProgress = 0;
-    readingFormat   = 'physical';
-    emotions        = [];
-    chapterSlider.value = 0;
-    chapterValue.textContent = 0;
-    document.querySelector('input[name="format"][value="physical"]').checked = true;
-    document.querySelectorAll('.emotion-btn').forEach(btn => btn.classList.remove('active'));
-    initGrid();
-    statusEl.textContent = 'Card reset';
-    setTimeout(restoreStatus, 1500);
-};
-
-saveBtn.onclick = saveCard;
-
-// ── INIT ──────────────────────────────────────────────────────
-setLockState(false);
-loadCard();
 </script>
-
 </body>
 </html>
