@@ -216,7 +216,7 @@ body {
 .score-low  { background: rgba(180,50,50,.18); color: #c96060; border: 1px solid #b4323244; }
 .score-none { background: rgba(201,168,76,.05); color: #5a4a38; border: 1px solid #c9a84c18; }
 .card-note {
-  font-size: .78rem; color: #6a5a48; font-style: italic;
+  font-size: .78rem; color: #f0e6c8;
   line-height: 1.5; margin: .35rem 0 .5rem;
 }
 
@@ -232,7 +232,13 @@ body {
 .vote-btn.locked { cursor: default; opacity: .55; }
 .vote-btn:not(.locked):hover { opacity: .8; }
 
-/* Circle around the rating emoji */
+/* Wrapper: pill behind, circle on top */
+.vote-btn-inner {
+  position: relative;
+  display: inline-flex; align-items: center;
+}
+
+/* Circle around the rating emoji — sits on top via z-index */
 .vote-emoji-circle {
   display: inline-flex; align-items: center; justify-content: center;
   width: 2.2rem; height: 2.2rem;
@@ -241,7 +247,8 @@ body {
   border: 1.5px solid var(--accent-border, #c9a84c55);
   background: radial-gradient(circle at 35% 35%, var(--accent-strong, rgba(201,168,76,.18)), var(--accent-bg, rgba(201,168,76,.06)));
   box-shadow: inset 0 1px 2px rgba(255,255,255,.08), 0 0 6px var(--accent-border, #c9a84c33);
-  flex-shrink: 0; z-index: 1;
+  position: relative; z-index: 2;
+  flex-shrink: 0;
   transition: background .15s, box-shadow .15s;
 }
 .vote-btn.mine .vote-emoji-circle {
@@ -249,21 +256,24 @@ body {
   box-shadow: inset 0 1px 2px rgba(255,255,255,.15), 0 0 12px var(--accent-border, #c9a84c88);
 }
 
-/* Pill for voter emojis */
+/* Pill stretches behind and to the right of the circle */
 .voters-pill {
   display: inline-flex; align-items: center;
   gap: .1rem;
-  height: 1.55rem;
-  padding: 0 .55rem;
-  margin-left: .3rem;
-  border-radius: 2rem;
+  height: 1.9rem;
+  padding: 0 .6rem 0 1.4rem;
+  margin-left: -1.1rem;
+  border-radius: 0 2rem 2rem 0;
   background: rgba(201,168,76,.10);
   border: 1.5px solid #c9a84c55;
+  border-left: none;
   font-size: .95rem;
+  position: relative; z-index: 1;
 }
 .vote-btn.mine .voters-pill {
   background: rgba(201,168,76,.2);
   border-color: #c9a84c88;
+  border-left: none;
 }
 .voters-pill:empty { display: none; }
 
@@ -645,7 +655,7 @@ function renderBooks() {
         onclick="castVote('${id}', ${r.v})"
         title="${r.v} — ${r.label}"
         style="--accent-bg:${accentBg};--accent-border:${accentBorder};--accent-strong:${accentStrong};">
-        <span class="vote-emoji-circle">${r.emoji}</span>${voterEmojis.length ? `<span class="voters-pill">${voterEmojis.join('')}</span>` : ''}
+        <span class="vote-btn-inner"><span class="vote-emoji-circle">${r.emoji}</span>${voterEmojis.length ? `<span class="voters-pill">${voterEmojis.join('')}</span>` : ''}</span>
       </button>`;
     }).join('');
 
