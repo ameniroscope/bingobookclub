@@ -244,19 +244,11 @@ body {
 .vote-btn.locked { cursor: default; opacity: .7; }
 .vote-btn.locked:hover { border-color: #c9a84c1a; color: #5a4a38; background: rgba(201,168,76,.03); }
 
-/* Circle around the rating emoji */
+/* Rating emoji — no circle, just the emoji */
 .vote-emoji {
   font-size: .85rem; line-height: 1;
-  width: 1.7rem; height: 1.7rem;
   display: inline-flex; align-items: center; justify-content: center;
-  border-radius: 50%;
-  border: 1px solid var(--accent-border, #c9a84c33);
-  background: var(--accent, rgba(201,168,76,.06));
   flex-shrink: 0;
-}
-.vote-btn.mine .vote-emoji {
-  border-color: var(--accent-border, #c9a84c77);
-  background: var(--accent-strong, rgba(201,168,76,.18));
 }
 
 /* Voter emojis — pill, same height as circle (1.7rem) */
@@ -426,6 +418,10 @@ body {
     </div>
   </div>
 
+  <div id="vote-prompt-bar" style="display:none; text-align:center; margin-bottom:1.5rem;">
+    <span class="vote-prompt" onclick="requestAction('vote')">✦ enter your code to vote</span>
+  </div>
+
   <div class="page-footer">✦ &nbsp; The Bingo Book Club &nbsp; ✦</div>
 </div>
 
@@ -495,12 +491,18 @@ window.castVote      = castVote;
 // ── Session restore ──
 const saved = sessionStorage.getItem("nextReadPlayer");
 if (saved && PLAYERS[saved]) setPlayer(saved, PLAYERS[saved]);
+updatePromptBar();
+
+function updatePromptBar() {
+  document.getElementById('vote-prompt-bar').style.display = currentPlayer ? 'none' : 'block';
+}
 
 function setPlayer(code, player) {
   currentPlayer = { code, ...player };
   document.getElementById("session-name").textContent = player.emoji + " " + player.name;
   document.getElementById("session-bar").classList.add("visible");
   sessionStorage.setItem("nextReadPlayer", code);
+  updatePromptBar();
   renderBooks();
 }
 
@@ -508,6 +510,7 @@ function logout() {
   currentPlayer = null;
   sessionStorage.removeItem("nextReadPlayer");
   document.getElementById("session-bar").classList.remove("visible");
+  updatePromptBar();
   renderBooks();
 }
 
@@ -637,14 +640,12 @@ function renderBooks() {
         onclick="castVote('${id}', ${r.v})"
         title="${r.v} — ${r.label}"
         style="--accent:${accent.mid}22;--accent-border:${accent.mid}66;--accent-strong:${accent.mid}44;">
-        <span class="vote-emoji">${r.emoji}</span>
-        ${voterEmojis.map(e => `<span class="voter-emoji">${e}</span>`).join('')}
+        <span class="vote-emoji-circle">${r.emoji}</span>
+        <span class="voters-pill">${voterEmojis.join('')}</span>
       </button>`;
     }).join('');
 
-    const votePrompt = locked
-      ? `<div class="vote-prompt" onclick="requestAction('vote')">✦ enter your code to vote</div>`
-      : '';
+    const votePrompt = '';
 
     return `<div class="book-card">
       <div class="c-bl"></div><div class="c-br"></div>
