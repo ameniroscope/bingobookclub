@@ -250,27 +250,28 @@ body {
   width: 1.7rem; height: 1.7rem;
   display: inline-flex; align-items: center; justify-content: center;
   border-radius: 50%;
-  border: 1px solid #c9a84c33;
-  background: rgba(201,168,76,.06);
+  border: 1px solid var(--accent-border, #c9a84c33);
+  background: var(--accent, rgba(201,168,76,.06));
   flex-shrink: 0;
 }
 .vote-btn.mine .vote-emoji {
-  border-color: #c9a84c77;
-  background: rgba(201,168,76,.18);
+  border-color: var(--accent-border, #c9a84c77);
+  background: var(--accent-strong, rgba(201,168,76,.18));
 }
 
-/* Voter emojis keep the pill bubble */
+/* Voter emojis — pill, same height as circle (1.7rem) */
 .voter-emoji {
   font-size: .78rem; line-height: 1;
   display: inline-flex; align-items: center; justify-content: center;
+  height: 1.7rem;
   background: rgba(201,168,76,.08);
   border: 1px solid #c9a84c22;
   border-radius: 20px;
-  padding: .1rem .3rem;
+  padding: 0 .35rem;
 }
 .vote-btn.mine .voter-emoji {
-  background: rgba(201,168,76,.18);
-  border-color: #c9a84c44;
+  background: var(--accent, rgba(201,168,76,.18));
+  border-color: var(--accent-border, #c9a84c44);
 }
 
 .vote-prompt {
@@ -461,13 +462,19 @@ const RATINGS = [
 ];
 
 const ACCENTS = [
-  "linear-gradient(to right,#1a4a3a,#2d7a5a,#1a4a3a)",
-  "linear-gradient(to right,#6b1515,#c9784c,#6b1515)",
-  "linear-gradient(to right,#3a1a5a,#8a4ab0,#3a1a5a)",
-  "linear-gradient(to right,#5a1a1a,#c94c4c,#5a1a1a)",
-  "linear-gradient(to right,#1a3a5a,#4a8ab0,#1a3a5a)",
-  "linear-gradient(to right,#2a1a4a,#7a4aa0,#2a1a4a)",
+  { grad: "linear-gradient(to right,#1a4a3a,#2d7a5a,#1a4a3a)", mid: "#2d7a5a" },
+  { grad: "linear-gradient(to right,#6b1515,#c9784c,#6b1515)", mid: "#c9784c" },
+  { grad: "linear-gradient(to right,#3a1a5a,#8a4ab0,#3a1a5a)", mid: "#8a4ab0" },
+  { grad: "linear-gradient(to right,#5a1a1a,#c94c4c,#5a1a1a)", mid: "#c94c4c" },
+  { grad: "linear-gradient(to right,#1a3a5a,#4a8ab0,#1a3a5a)", mid: "#4a8ab0" },
+  { grad: "linear-gradient(to right,#2a1a4a,#7a4aa0,#2a1a4a)", mid: "#7a4aa0" },
 ];
+
+function accentForId(id) {
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) hash = (hash * 31 + id.charCodeAt(i)) >>> 0;
+  return ACCENTS[hash % ACCENTS.length];
+}
 
 const app = initializeApp(firebaseConfig);
 const db  = getFirestore(app);
@@ -617,7 +624,7 @@ function renderBooks() {
   function cardHtml([id, book], idx) {
     const myVote = currentPlayer ? (book.votes?.[currentPlayer.code] ?? null) : null;
     const score  = avg(book.votes);
-    const accent = ACCENTS[idx % ACCENTS.length];
+    const accent = accentForId(id);
     const locked = !currentPlayer;
 
     const voteBtns = RATINGS.map(r => {
@@ -628,7 +635,8 @@ function renderBooks() {
       return `<button
         class="vote-btn${isMine ? ' mine' : ''}${locked ? ' locked' : ''}"
         onclick="castVote('${id}', ${r.v})"
-        title="${r.v} — ${r.label}">
+        title="${r.v} — ${r.label}"
+        style="--accent:${accent.mid}22;--accent-border:${accent.mid}66;--accent-strong:${accent.mid}44;">
         <span class="vote-emoji">${r.emoji}</span>
         ${voterEmojis.map(e => `<span class="voter-emoji">${e}</span>`).join('')}
       </button>`;
@@ -640,7 +648,7 @@ function renderBooks() {
 
     return `<div class="book-card">
       <div class="c-bl"></div><div class="c-br"></div>
-      <div class="accent-bar" style="background:${accent};"></div>
+      <div class="accent-bar" style="background:${accent.grad};"></div>
       <div class="card-body">
         <div class="cover-wrap">
           ${book.cover ? `<img src="${book.cover}" alt="${book.title}" />` : '📖'}
