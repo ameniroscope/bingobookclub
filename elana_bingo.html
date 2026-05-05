@@ -77,13 +77,26 @@ button, input {
     border: 2px solid #c9a84c55;
 }
 
-/* Container and Grid */
+/* Card layout: journey box | bingo card | controls */
+.card-layout {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    width: 100%;
+    max-width: 1200px;
+}
+
+/* Bingo card (centre column) */
 .container {
     position: relative;
+    flex-shrink: 0;
     width: min(90vw, 560px);
     aspect-ratio: 1024 / 1536;
     background-image: url('current_bingo.png');
     background-size: 100% 100%;
+    margin: 0 auto; /* ensure centering within flex */
 }
 
 .bingo-grid {
@@ -167,17 +180,15 @@ input {
     font-family: 'Crimson Text', Georgia, serif;
 }
 
-/* Controls */
+/* Controls (right column) */
 .controls {
-    position: fixed;
-    right: 200px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 100;
+    position: static;
     display: flex;
     flex-direction: column;
     gap: 10px;
     align-items: stretch;
+    width: 350px; /* match journey-wrapper width so card is truly centered */
+    flex-shrink: 0;
 }
 
 .secondary-buttons {
@@ -214,12 +225,13 @@ button:disabled {
 }
 
 .primary-btn {
-    font-size: 18px;
-    padding: 16px 24px;
+    font-size: 22px;       /* larger text */
+    padding: 22px 28px;    /* taller & wider */
     font-weight: 600;
     background: rgba(201, 168, 76, 0.2);
     border: 2px solid #c9a84c;
     box-shadow: 0 0 20px rgba(201, 168, 76, 0.3);
+    width: 100%;
 }
 
 .primary-btn:hover:not(:disabled) {
@@ -308,13 +320,11 @@ button:disabled {
     box-shadow: 0 0 12px rgba(201, 168, 76, 0.3);
 }
 
-/* Chapter slider */
+/* Journey box (left column) */
 .journey-wrapper {
-    position: fixed;
-    left: 150px;
-    top: 50%;
-    transform: translateY(-50%);
+    position: relative;
     width: 350px;
+    flex-shrink: 0;
     padding-top: 70px;
 }
 
@@ -479,9 +489,12 @@ button:disabled {
 
     .player-name { font-size: 2rem; }
 
+    .card-layout {
+        flex-direction: column;
+        align-items: center;
+    }
+
     .journey-wrapper {
-        position: static;
-        transform: none;
         width: min(90vw, 400px);
         padding-top: 0;
         order: 2;
@@ -505,11 +518,10 @@ button:disabled {
     .container {
         width: min(90vw, 560px);
         order: 3;
+        margin: 0 auto; /* center on mobile too */
     }
 
     .controls {
-        position: static;
-        transform: none;
         display: flex;
         flex-direction: column;
         align-items: stretch;
@@ -562,52 +574,56 @@ button:disabled {
     <div class="player-id" id="playerId"></div>
 </div>
 
-<!-- Slider -->
-<div class="journey-wrapper">
-    <img src="current_cover.jpg" alt="Book cover" class="journey-cover">
-    <div class="journey-box">
-        <h2>How's the journey going?</h2>
-        <div class="chapter-display">
-            Chapter <span id="chapterValue">0</span> / 41
-        </div>
-        <input type="range" id="chapterSlider" min="0" max="41" value="0">
+<!-- Card layout: journey | bingo | controls -->
+<div class="card-layout">
 
-        <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #c9a84c33;">
-            <div style="font-size: 0.9rem; margin-bottom: 8px; color: #c9a84c;">Reading format:</div>
-            <div class="reading-format">
-                <label><input type="radio" name="format" value="audio"> 🎧 Audio</label>
-                <label><input type="radio" name="format" value="ebook"> 📱 eBook</label>
-                <label><input type="radio" name="format" value="physical" checked> 📖 Physical</label>
+    <!-- Slider -->
+    <div class="journey-wrapper">
+        <img src="current_cover.jpg" alt="Book cover" class="journey-cover">
+        <div class="journey-box">
+            <h2>How's the journey going?</h2>
+            <div class="chapter-display">
+                Chapter <span id="chapterValue">0</span> / 41
             </div>
-        </div>
+            <input type="range" id="chapterSlider" min="0" max="41" value="0">
 
-        <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #c9a84c33;">
-            <div style="font-size: 0.9rem; margin-bottom: 8px; color: #c9a84c;">Emotions so far:</div>
-            <div class="emotions">
-                <button class="emotion-btn" data-emotion="joy">😊</button>
-                <button class="emotion-btn" data-emotion="sad">😢</button>
-                <button class="emotion-btn" data-emotion="excited">🤩</button>
-                <button class="emotion-btn" data-emotion="scared">😨</button>
+            <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #c9a84c33;">
+                <div style="font-size: 0.9rem; margin-bottom: 8px; color: #c9a84c;">Reading format:</div>
+                <div class="reading-format">
+                    <label><input type="radio" name="format" value="audio"> 🎧 Audio</label>
+                    <label><input type="radio" name="format" value="ebook"> 📱 eBook</label>
+                    <label><input type="radio" name="format" value="physical" checked> 📖 Physical</label>
+                </div>
+            </div>
+
+            <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #c9a84c33;">
+                <div style="font-size: 0.9rem; margin-bottom: 8px; color: #c9a84c;">Emotions so far:</div>
+                <div class="emotions">
+                    <button class="emotion-btn" data-emotion="joy">😊</button>
+                    <button class="emotion-btn" data-emotion="sad">😢</button>
+                    <button class="emotion-btn" data-emotion="excited">🤩</button>
+                    <button class="emotion-btn" data-emotion="scared">😨</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Bingo Card -->
-<div class="container">
-    <div class="bingo-grid" id="bingoGrid"></div>
-</div>
-
-<!-- Controls -->
-<div class="controls">
-    <button id="saveBtn" class="primary-btn" disabled>💾 Save Progress</button>
-    <div class="secondary-buttons">
-        <button id="toggleMode" class="small-btn" disabled>✏️ Edit</button>
-        <button id="resetBtn" class="small-btn" disabled>🔄 Reset</button>
+    <!-- Bingo Card -->
+    <div class="container">
+        <div class="bingo-grid" id="bingoGrid"></div>
     </div>
-</div>
 
-<div class="status" id="status">🔒 Read Only</div>
+    <!-- Controls -->
+    <div class="controls">
+        <button id="saveBtn" class="primary-btn" disabled>💾 Save Progress</button>
+        <div class="secondary-buttons">
+            <button id="toggleMode" class="small-btn" disabled>✏️ Edit</button>
+            <button id="resetBtn" class="small-btn" disabled>🔄 Reset</button>
+        </div>
+        <div class="status" id="status">🔒 Read Only</div>
+    </div>
+
+</div><!-- /.card-layout -->
 
 <div class="ornament">
     <div class="line"></div>
@@ -640,7 +656,7 @@ for (let i = 0; i < 80; i++) {
 }
 
 // ── CONFIG ────────────────────────────────────────────────────
-const CARD_PASSWORD = 'elanalogy'; // 👈 Change this to your password
+const CARD_PASSWORD = 'elanalogy';
 
 const PROJECT_ID = 'bingobookclub-2144e';
 const FIRESTORE_BASE =
@@ -661,15 +677,15 @@ let readingFormat = 'physical';
 let emotions = [];
 
 // ── ELEMENTS ──────────────────────────────────────────────────
-const grid        = document.getElementById('bingoGrid');
-const statusEl    = document.getElementById('status');
-const saveBtn     = document.getElementById('saveBtn');
-const toggleBtn   = document.getElementById('toggleMode');
-const resetBtn    = document.getElementById('resetBtn');
-const lockBtn     = document.getElementById('lockBtn');
-const lockOverlay = document.getElementById('lockOverlay');
+const grid          = document.getElementById('bingoGrid');
+const statusEl      = document.getElementById('status');
+const saveBtn       = document.getElementById('saveBtn');
+const toggleBtn     = document.getElementById('toggleMode');
+const resetBtn      = document.getElementById('resetBtn');
+const lockBtn       = document.getElementById('lockBtn');
+const lockOverlay   = document.getElementById('lockOverlay');
 const passwordInput = document.getElementById('passwordInput');
-const lockError   = document.getElementById('lockError');
+const lockError     = document.getElementById('lockError');
 const chapterSlider = document.getElementById('chapterSlider');
 const chapterValue  = document.getElementById('chapterValue');
 
@@ -897,12 +913,12 @@ toggleBtn.onclick = () => {
 resetBtn.onclick = () => {
     if (!isUnlocked) return;
     if (!confirm('Reset this bingo card?')) return;
-    cells          = Array(GRID_SIZE).fill('');
-    marked         = Array(GRID_SIZE).fill(false);
-    marked[12]     = true;
+    cells           = Array(GRID_SIZE).fill('');
+    marked          = Array(GRID_SIZE).fill(false);
+    marked[12]      = true;
     chapterProgress = 0;
-    readingFormat  = 'physical';
-    emotions       = [];
+    readingFormat   = 'physical';
+    emotions        = [];
     chapterSlider.value = 0;
     chapterValue.textContent = 0;
     document.querySelector('input[name="format"][value="physical"]').checked = true;
@@ -915,7 +931,7 @@ resetBtn.onclick = () => {
 saveBtn.onclick = saveCard;
 
 // ── INIT ──────────────────────────────────────────────────────
-setLockState(false); // start locked
+setLockState(false);
 loadCard();
 </script>
 
