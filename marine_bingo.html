@@ -96,6 +96,7 @@ button, input {
     aspect-ratio: 1024 / 1536;
     background-image: url('current_bingo.png');
     background-size: 100% 100%;
+    margin: 0 auto; /* ensure centering within flex */
 }
 
 .bingo-grid {
@@ -186,7 +187,7 @@ input {
     flex-direction: column;
     gap: 10px;
     align-items: stretch;
-    width: 160px;
+    width: 180px; /* slightly wider to accommodate larger save btn */
     flex-shrink: 0;
 }
 
@@ -224,12 +225,13 @@ button:disabled {
 }
 
 .primary-btn {
-    font-size: 18px;
-    padding: 16px 24px;
+    font-size: 22px;       /* larger text */
+    padding: 22px 28px;    /* taller & wider */
     font-weight: 600;
     background: rgba(201, 168, 76, 0.2);
     border: 2px solid #c9a84c;
     box-shadow: 0 0 20px rgba(201, 168, 76, 0.3);
+    width: 100%;
 }
 
 .primary-btn:hover:not(:disabled) {
@@ -516,6 +518,7 @@ button:disabled {
     .container {
         width: min(90vw, 560px);
         order: 3;
+        margin: 0 auto; /* center on mobile too */
     }
 
     .controls {
