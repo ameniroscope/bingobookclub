@@ -241,7 +241,7 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 <div class="lock-modal-wrap" id="lockModalWrap">
   <div class="lock-modal">
     <h3>🔐 Unlock Bingo Card</h3>
-    <input type="password" id="passwordInput" placeholder="Enter password" autocomplete="off">
+    <input type="text" id="passwordInput" placeholder="Enter password" autocomplete="off">
     <div class="lock-error" id="lockError"></div>
     <div class="lock-modal-btns">
       <button id="unlockSubmit">Unlock</button>
@@ -266,7 +266,7 @@ import {
 const PID           = "kathi";
 const PEMOJI        = "🍄";
 const PNAME         = "Kathi";
-let CARD_PASSWORD = null; // loaded from Firebase accessCodes
+// password is never stored in JS — verified directly against Firebase
 /* ══════════════════════════════════════════ */
 
 const OTHER       = { marine:"kathi",   kathi:"marine" };
@@ -351,8 +351,11 @@ passwordInput.addEventListener('keydown', e => {
   if (e.key === 'Escape') lockModalWrap.classList.remove('open');
 });
 
-function tryUnlock() {
-  if (passwordInput.value === CARD_PASSWORD) {
+async function tryUnlock() {
+  const entered = passwordInput.value;
+  lockError.textContent = 'Checking…';
+  const ok = await verifyPassword(entered);
+  if (ok) {
     lockModalWrap.classList.remove('open');
     setLockState(true);
   } else {
@@ -443,21 +446,20 @@ async function loadBingo() {
   bingoStatus.textContent = '';
 }
 
-/* ── LOAD PASSWORD FROM FIREBASE ── */
-async function loadPassword() {
+/* ── VERIFY PASSWORD AGAINST FIREBASE ──
+   accessCodes: doc ID = password, fields: { name, avatar, color }
+   We look up the entered password as a doc ID and check name matches. ── */
+async function verifyPassword(entered) {
   try {
-    const snap = await getDoc(doc(db, 'accessCodes', PID));
-    if (snap.exists()) CARD_PASSWORD = snap.data().password || snap.data().code || null;
-    // fallback: some schemas store the password as the field matching PID
-    if (!CARD_PASSWORD) {
-      const snap2 = await getDoc(doc(db, 'accessCodes', 'codes'));
-      if (snap2.exists()) CARD_PASSWORD = snap2.data()[PID] || null;
-    }
-  } catch(e) { console.error('Could not load password:', e); }
+    const snap = await getDoc(doc(db, 'accessCodes', entered));
+    return snap.exists() && snap.data().name === PNAME;
+  } catch(e) {
+    console.error('Password check failed:', e);
+    return false;
+  }
 }
 
 async function init() {
-  await loadPassword();
   await loadBingo();
 }
 init();
