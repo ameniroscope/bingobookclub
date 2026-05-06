@@ -91,7 +91,7 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
   <!-- RIGHT -->
   <div class="right-col">
     <div>
-  <div class="kicker">TThe Shouty Book Club</div>
+  <div class="kicker">The Shouty Book Club</div>
   <div class="big-title">Hey Emilia,</div>
 </div>
 
@@ -134,7 +134,7 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 
 <div class="footer">
   <div class="footer-orn"><div class="orn-line"></div><div class="orn-gem">◆</div><div class="orn-line"></div></div>
-  ✦ &nbsp; The Bingo Book Club &nbsp; ✦
+  ✦ &nbsp; The Shouty Book Club &nbsp; ✦
 </div>
 
 <script type="module">
@@ -248,6 +248,11 @@ async function endDrag(cx,cy){
 }
 window.addEventListener('mouseup',e=>endDrag(e.clientX,e.clientY));
 window.addEventListener('touchend',e=>endDrag(e.changedTouches[0].clientX,e.changedTouches[0].clientY));
+
+// Show starting markers immediately
+placeMarker('marine', 0);
+placeMarker('kathi', 0);
+mapHint.style.display = 'block';
 
 /* Live markers */
 onSnapshot(collection(db,'progress_spoiler'),snap=>{
