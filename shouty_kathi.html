@@ -14,22 +14,39 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{--ink:#2b1d0e;--ink-faded:#5c3d1e;--gold:#8b6914;--gold-lt:#c9a84c;--parch:#f2e8d0;--parch-dark:#e0ceaa;--worn:#c9af82;}
 html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var(--ink);}
-#bg{position:fixed;inset:0;z-index:0;background:#e4d0ac;}
+#bg{position:fixed;inset:0;z-index:0;background:#2596be;}
 #bg::after{content:'';position:absolute;inset:0;background:
   radial-gradient(ellipse 70% 50% at 15% 20%,rgba(180,130,60,0.13) 0%,transparent 55%),
   radial-gradient(ellipse 60% 70% at 85% 75%,rgba(160,110,40,0.10) 0%,transparent 55%),
   radial-gradient(ellipse 100% 100% at 50% 50%,transparent 60%,rgba(80,40,5,0.18) 100%);}
 
-/* TOP BAR */
-.topbar{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;
-  padding:0.75rem 1.5rem;border-bottom:1px solid var(--worn);background:rgba(242,232,208,0.95);}
-.topbar-title{font-family:'Cinzel',serif;font-size:0.9rem;letter-spacing:3px;text-transform:uppercase;color:var(--gold);}
-.home-link{font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:1.5px;text-transform:uppercase;
-  text-decoration:none;color:var(--ink-faded);border:1px solid var(--worn);border-radius:4px;padding:0.4rem 0.8rem;transition:all 0.2s;}
-.home-link:hover{border-color:var(--gold);color:var(--ink);}
+/* HOME BUTTON */
+.home-btn{
+  position:fixed;
+  top:1.5rem;
+  left:1.5rem;
+  z-index:100;
+  background:rgba(59,30,6,0.85);
+  color:var(--gold-lt);
+  font-family:'Cinzel',serif;
+  font-size:0.75rem;
+  letter-spacing:2px;
+  padding:0.6rem 1.2rem;
+  border-radius:6px;
+  border:2px solid var(--gold);
+  text-decoration:none;
+  text-transform:uppercase;
+  transition:all 0.3s ease;
+  box-shadow:0 2px 8px rgba(0,0,0,0.3);
+}
+.home-btn:hover{
+  background:rgba(59,30,6,0.95);
+  transform:translateY(-2px);
+  box-shadow:0 4px 12px rgba(0,0,0,0.4);
+}
 
 /* LAYOUT */
-.wrap{position:relative;z-index:1;min-height:calc(100vh - 48px);max-width:1100px;
+.wrap{position:relative;z-index:1;min-height:100vh;max-width:1100px;
   margin:0 auto;padding:2rem 1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start;}
 
 .kicker{font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:4px;color:var(--gold);text-transform:uppercase;margin-bottom:0.3rem;}
@@ -100,9 +117,22 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 
 /* ── ROOMS (right column) ── */
 .rooms-col{display:flex;flex-direction:column;gap:1rem;}
-.rooms-header{display:flex;align-items:center;gap:0.75rem;}
-.player-avatar{width:48px;height:48px;border-radius:50%;background:#3b1e06;border:1.5px solid var(--gold-lt);
-  display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;}
+
+/* Player header styling like dark bingo page */
+.rooms-header{display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;}
+.player-img-frame{position:relative;width:60px;height:60px;flex-shrink:0;}
+.player-img-frame::before{content:'';position:absolute;inset:-6px;border-radius:50%;
+  background:conic-gradient(from 0deg,transparent 0%,rgba(201,168,76,0.2) 20%,rgba(201,168,76,0.55) 50%,rgba(201,168,76,0.2) 80%,transparent 100%);
+  animation:spin 12s linear infinite;z-index:0;}
+.player-img-frame::after{content:'';position:absolute;inset:-3px;border-radius:50%;background:#2596be;z-index:1;}
+.player-avatar{position:relative;z-index:2;width:100%;height:100%;
+  border-radius:50%;border:2px solid rgba(201,168,76,0.35);
+  background:#3b1e06;display:flex;align-items:center;justify-content:center;font-size:1.8rem;}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+
+.player-info{display:flex;flex-direction:column;}
+.player-name{font-family:'Cinzel',serif;font-weight:600;font-size:1.3rem;color:var(--ink);letter-spacing:2px;}
+
 .rooms-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .room-btn{position:relative;height:90px;display:flex;flex-direction:column;align-items:center;
   justify-content:center;gap:0.25rem;border-radius:6px;cursor:pointer;transition:all 0.2s;border:1.5px solid;}
@@ -169,11 +199,8 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 <body>
 <div id="bg"></div>
 
-<!-- TOP BAR -->
-<header class="topbar">
-  <div class="topbar-title" id="pageTitle">— Book Club —</div>
-  <a class="home-link" href="shouty_index.html">🦖 Shouty Bookclub</a>
-</header>
+<!-- HOME BUTTON -->
+<a href="shouty_index.html" class="home-btn">← Home</a>
 
 <!-- MAIN LAYOUT -->
 <div class="wrap">
@@ -203,10 +230,12 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
   <!-- RIGHT: ROOMS -->
   <div class="rooms-col">
     <div class="rooms-header">
-      <div class="player-avatar" id="playerAvatar"></div>
-      <div>
+      <div class="player-img-frame">
+        <div class="player-avatar" id="playerAvatar"></div>
+      </div>
+      <div class="player-info">
         <div class="kicker">Chapter Rooms</div>
-        <div id="playerName" style="font-family:'Cinzel',serif;font-weight:600;font-size:1.2rem;color:var(--ink);"></div>
+        <div class="player-name" id="playerName"></div>
       </div>
     </div>
     <div class="rooms-grid" id="roomsGrid"></div>
@@ -299,7 +328,6 @@ const GRID_SIZE = 25;
 
 /* ── INIT UI ── */
 document.title = `Book Club — ${PNAME}`;
-document.getElementById('pageTitle').textContent = PNAME + ' — Book Club';
 document.getElementById('playerAvatar').textContent = PEMOJI;
 document.getElementById('playerName').textContent = PNAME;
 
