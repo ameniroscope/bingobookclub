@@ -259,9 +259,9 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 .send-btn:hover{background:#5a3010;}
 
 @media (max-width: 800px) {
+@media (max-width: 800px) {
     body {
         padding: 15px;
-        gap: 20px;
         padding-top: 20px;
     }
 
@@ -270,10 +270,42 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
         flex-direction: column;
         align-items: center;
         text-align: center;
-        margin-bottom: 20px;  /* ← Change this */
-        order: 1;
+        margin-bottom: 30px;  /* ← Space below header */
         z-index: 10;
     }
+    
+    .player-header .player-name {
+        font-size: 2rem;  /* Smaller on mobile */
+    }
+    
+    .img-frame {
+        width: 70px;  /* Smaller avatar on mobile */
+        height: 70px;
+    }
+
+    .wrap {
+        grid-template-columns: 1fr;  /* Stack columns */
+        gap: 2rem;
+        padding: 1rem;
+    }
+    
+    .bingo-controls {
+        position: static;  /* Move controls below card on mobile */
+        flex-direction: row;
+        left: auto;
+        top: auto;
+        transform: none;
+        justify-content: center;
+        margin-top: 0.5rem;
+    }
+    
+    .home-btn {
+        top: 1rem;
+        right: 1rem;
+        font-size: 0.65rem;
+        padding: 0.5rem 0.8rem;
+    }
+}
 
   
 </style>
