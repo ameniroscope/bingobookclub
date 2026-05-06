@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iron Flame — Chapter Rooms</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Cinzel:wght@400;600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink:        #2b1d0e;
+  --ink-faded:  #5c3d1e;
+  --gold:       #8b6914;
+  --gold-lt:    #c9a84c;
+  --parch:      #f2e8d0;
+  --parch-dark: #e0ceaa;
+  --worn:       #c9af82;
+  --locked-bg:  #3b1e06;
+  --locked-fg:  #c9a84c;
+}
+
+html, body {
+  min-height: 100vh;
+  font-family: 'IM Fell English', Georgia, serif;
+  color: var(--ink);
+  background: #1a120a;
+}
+
+/* parchment body background */
+#bg {
+  position: fixed; inset: 0; z-index: 0;
+  background: var(--parch);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E");
+  background-size: 400px 400px;
+}
+#bg::after {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 15% 20%, rgba(180,130,60,0.13) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 70% at 85% 75%, rgba(160,110,40,0.10) 0%, transparent 55%),
+    radial-gradient(ellipse 100% 100% at 50% 50%, transparent 60%, rgba(80,40,5,0.18) 100%);
+}
+
+.wrap {
+  position: relative; z-index: 1;
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 3rem 1.4rem 4rem;
+}
+
+/* ── HEADER ── */
+.header { text-align: center; margin-bottom: 2.5rem; }
+
+.kicker {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 0.68rem; letter-spacing: 5px;
+  color: var(--gold); text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+
+.title {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  font-weight: 600; letter-spacing: 2px;
+  color: var(--ink); line-height: 1.15;
+}
+
+.ornament {
+  display: flex; align-items: center; gap: 0.6rem;
+  max-width: 16rem; margin: 0.9rem auto 0;
+}
+.orn-line { flex: 1; height: 1px; background: linear-gradient(to right, transparent, var(--worn), transparent); }
+.orn-gem  { color: var(--gold); font-size: 0.65rem; }
+
+/* ── IDENTITY PANEL ── */
+.identity {
+  background: rgba(242,232,208,0.82);
+  border: 1.5px solid var(--worn);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 2rem;
+  display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+  box-shadow: inset 0 1px 6px rgba(100,60,10,0.1), 0 2px 10px rgba(0,0,0,0.18);
+}
+
+.identity label {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 0.78rem; letter-spacing: 1px;
+  color: var(--ink-faded); white-space: nowrap;
+}
+
+.identity select, .identity input[type=number] {
+  background: var(--parch); border: 1px solid var(--worn);
+  border-radius: 4px; padding: 0.35rem 0.55rem;
+  font-family: 'IM Fell English', serif; font-size: 0.9rem;
+  color: var(--ink); cursor: pointer;
+}
+
+.identity select { min-width: 130px; }
+.identity input[type=number] { width: 72px; }
+
+.id-group { display: flex; align-items: center; gap: 0.5rem; }
+
+/* ── ROOMS GRID ── */
+.rooms {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.1rem;
+}
+
+/* ── ROOM CARD ── */
+.room {
+  background: rgba(242,232,208,0.78);
+  border: 1.5px solid var(--worn);
+  border-radius: 8px;
+  box-shadow: inset 0 1px 8px rgba(100,60,10,0.1), 0 3px 14px rgba(0,0,0,0.22);
+  overflow: hidden;
+  display: flex; flex-direction: column;
+}
+
+.room-header {
+  padding: 0.75rem 1rem 0.6rem;
+  border-bottom: 1px solid var(--worn);
+  background: rgba(201,175,130,0.25);
+}
+
+.room-number {
+  font-family: 'Cinzel', serif;
+  font-size: 0.68rem; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 0.15rem;
+}
+
+.room-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1rem; font-weight: 600;
+  color: var(--ink);
+}
+
+.room-subtitle {
+  font-size: 0.78rem; color: var(--ink-faded); font-style: italic;
+  margin-top: 0.15rem;
+}
+
+/* status badge */
+.badge {
+  display: inline-block;
+  font-family: 'IM Fell English SC', serif;
+  font-size: 0.62rem; letter-spacing: 1.5px;
+  padding: 0.18rem 0.55rem;
+  border-radius: 3px;
+  margin-top: 0.45rem;
+}
+.badge.write { background: #3b1e06; color: var(--gold-lt); }
+.badge.read  { background: var(--gold); color: var(--parch); }
+.badge.locked{ background: rgba(100,60,10,0.12); color: var(--ink-faded); border: 1px solid var(--worn); }
+
+/* messages area */
+.messages {
+  flex: 1; padding: 0.75rem 1rem;
+  min-height: 90px; max-height: 220px;
+  overflow-y: auto;
+  display: flex; flex-direction: column; gap: 0.55rem;
+}
+
+.msg {
+  font-size: 0.88rem; line-height: 1.6;
+}
+.msg-name {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 0.72rem; letter-spacing: 1px;
+  color: var(--gold); display: block; margin-bottom: 0.1rem;
+}
+.msg-text { color: var(--ink); }
+
+.msg.mine .msg-name { color: #3b1e06; }
+
+.empty-note {
+  font-size: 0.82rem; color: var(--ink-faded);
+  font-style: italic; text-align: center;
+  margin: auto;
+}
+
+.locked-note {
+  font-size: 0.82rem; color: var(--ink-faded);
+  font-style: italic; text-align: center;
+  padding: 0.5rem 0; margin: auto;
+}
+.locked-note strong {
+  display: block; font-family: 'Cinzel', serif;
+  font-size: 0.8rem; color: var(--ink-faded);
+  margin-bottom: 0.2rem; font-weight: 400;
+}
+
+/* compose */
+.compose {
+  border-top: 1px solid var(--worn);
+  padding: 0.65rem 1rem;
+  display: flex; gap: 0.5rem; align-items: flex-end;
+  background: rgba(201,175,130,0.15);
+}
+
+.compose textarea {
+  flex: 1; resize: none; min-height: 38px; max-height: 90px;
+  background: var(--parch); border: 1px solid var(--worn);
+  border-radius: 4px; padding: 0.35rem 0.5rem;
+  font-family: 'IM Fell English', serif; font-size: 0.88rem;
+  color: var(--ink); line-height: 1.5; overflow-y: hidden;
+}
+
+.compose textarea::placeholder { color: var(--worn); font-style: italic; }
+
+.send-btn {
+  height: 38px; padding: 0 0.85rem;
+  background: #3b1e06; border: 1px solid var(--gold-lt);
+  border-radius: 4px; color: var(--gold-lt);
+  font-family: 'Cinzel', serif; font-size: 0.65rem;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  cursor: pointer; transition: background 0.2s;
+  white-space: nowrap;
+}
+.send-btn:hover { background: #5a3010; }
+
+/* ── FOOTER ── */
+.footer {
+  text-align: center; margin-top: 3rem;
+  font-family: 'IM Fell English SC', serif;
+  font-size: 0.6rem; letter-spacing: 3px;
+  color: var(--gold); text-transform: uppercase;
+}
+
+/* home btn */
+.home-btn {
+  position: fixed; bottom: 1.2rem; left: 1.2rem; z-index: 100;
+  display: flex; align-items: center; gap: 0.45rem;
+  padding: 0.5rem 0.85rem;
+  font-family: 'Cinzel', serif; font-size: 0.55rem;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  text-decoration: none; border-radius: 5px;
+  background: rgba(242,232,208,0.9); border: 1px solid var(--worn);
+  color: var(--ink-faded);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  transition: all 0.2s;
+}
+.home-btn:hover { border-color: var(--gold); color: var(--ink); }
+
+@media (max-width: 600px) {
+  .identity { flex-direction: column; align-items: stretch; }
+  .rooms { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div id="bg"></div>
+
+<div class="wrap">
+
+  <header class="header">
+    <div class="kicker">Spoiler-Safe</div>
+    <div class="title">Chapter Rooms</div>
+    <div class="ornament">
+      <div class="orn-line"></div><div class="orn-gem">◆</div><div class="orn-line"></div>
+    </div>
+  </header>
+
+  <div class="identity">
+    <div class="id-group">
+      <label for="nameSelect">Reading as</label>
+      <select id="nameSelect">
+        <option value="">— choose —</option>
+        <option value="marine">🧜‍♀️ Marine</option>
+        <option value="kathi">🍄 Kathi</option>
+      </select>
+    </div>
+    <div class="id-group">
+      <label for="progressInput">Up to chapter</label>
+      <input type="number" id="progressInput" min="0" max="66" value="0" />
+    </div>
+    <div class="id-group" style="font-size:0.8rem; color:var(--ink-faded); font-style:italic;">
+      Progress saved automatically
+    </div>
+  </div>
+
+  <div class="rooms" id="roomsContainer"></div>
+
+  <div class="footer">✦ &nbsp; The Bingo Book Club &nbsp; ✦</div>
+</div>
+
+<a class="home-btn" href="index.html">
+  <span style="font-size:0.85rem;">🏠</span> Home
+</a>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+import {
+  getFirestore, collection, addDoc, onSnapshot,
+  query, where, orderBy, serverTimestamp, doc, setDoc, getDoc
+} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAIQTe-QGQmwqTVmIyJZZ_qlDNsD6GUskY",
+  authDomain: "bingobookclub-2144e.firebaseapp.com",
+  projectId: "bingobookclub-2144e",
+  storageBucket: "bingobookclub-2144e.firebasestorage.app",
+  messagingSenderId: "294177836341",
+  appId: "1:294177836341:web:6d5f11e64737fbe3aad07c"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+const ROOMS = [6, 16, 26, 36, 46, 56, 66];
+const ROOM_LABELS = {
+  6:  "Chapters 1–6",   16: "Chapters 7–16",
+  26: "Chapters 17–26", 36: "Chapters 27–36",
+  46: "Chapters 37–46", 56: "Chapters 47–56",
+  66: "Chapters 57–66"
+};
+const EMOJIS = { marine: "🧜‍♀️", kathi: "🍄" };
+
+const nameSelect     = document.getElementById("nameSelect");
+const progressInput  = document.getElementById("progressInput");
+const roomsContainer = document.getElementById("roomsContainer");
+
+let currentName     = sessionStorage.getItem("bookClubName") || "";
+let currentProgress = 0;
+
+// ── restore session ──
+if (currentName) {
+  nameSelect.value = currentName;
+  loadProgress(currentName);
+}
+
+nameSelect.addEventListener("change", () => {
+  currentName = nameSelect.value;
+  sessionStorage.setItem("bookClubName", currentName);
+  if (currentName) loadProgress(currentName);
+  renderRooms();
+});
+
+progressInput.addEventListener("change", () => {
+  const v = Math.min(66, Math.max(0, parseInt(progressInput.value) || 0));
+  progressInput.value = v;
+  currentProgress = v;
+  if (currentName) saveProgress(currentName, v);
+  renderRooms();
+});
+
+async function loadProgress(name) {
+  try {
+    const d = await getDoc(doc(db, "progress_spoiler", name));
+    if (d.exists()) {
+      currentProgress = d.data().chapter || 0;
+      progressInput.value = currentProgress;
+      renderRooms();
+    }
+  } catch(e) { console.error(e); }
+}
+
+async function saveProgress(name, chapter) {
+  try { await setDoc(doc(db, "progress_spoiler", name), { chapter }); }
+  catch(e) { console.error(e); }
+}
+
+// ── build room cards ──
+function renderRooms() {
+  roomsContainer.innerHTML = "";
+  ROOMS.forEach(ch => buildRoom(ch));
+}
+
+function canRead(roomChapter) {
+  return currentProgress >= roomChapter;
+}
+
+function buildRoom(roomChapter) {
+  const unlocked = canRead(roomChapter);
+  const card = document.createElement("div");
+  card.className = "room";
+  card.id = `room-${roomChapter}`;
+
+  const label = ROOM_LABELS[roomChapter];
+  const prevCh = ROOMS[ROOMS.indexOf(roomChapter) - 1] || 0;
+
+  let badgeClass, badgeText;
+  if (!currentName)         { badgeClass = "locked"; badgeText = "Choose a name"; }
+  else if (!unlocked)       { badgeClass = "write";  badgeText = "Write only"; }
+  else                       { badgeClass = "read";   badgeText = "Unlocked"; }
+
+  card.innerHTML = `
+    <div class="room-header">
+      <div class="room-number">Room ${ROOMS.indexOf(roomChapter)+1}</div>
+      <div class="room-title">Up to Chapter ${roomChapter}</div>
+      <div class="room-subtitle">${label}</div>
+      <span class="badge ${badgeClass}">${badgeText}</span>
+    </div>
+    <div class="messages" id="msgs-${roomChapter}">
+      <span class="empty-note">Loading…</span>
+    </div>
+    <div class="compose" id="compose-${roomChapter}">
+      <textarea id="ta-${roomChapter}" placeholder="Leave a thought…" rows="1"></textarea>
+      <button class="send-btn" data-ch="${roomChapter}">Post</button>
+    </div>`;
+
+  roomsContainer.appendChild(card);
+
+  // auto-grow textarea
+  const ta = card.querySelector(`#ta-${roomChapter}`);
+  ta.addEventListener("input", () => {
+    ta.style.height = "auto";
+    ta.style.height = ta.scrollHeight + "px";
+  });
+
+  card.querySelector(".send-btn").addEventListener("click", () => sendMessage(roomChapter));
+  ta.addEventListener("keydown", e => {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(roomChapter); }
+  });
+
+  subscribeRoom(roomChapter);
+}
+
+function subscribeRoom(roomChapter) {
+  const messagesDiv = document.getElementById(`msgs-${roomChapter}`);
+  const unlocked = canRead(roomChapter);
+
+  const q = query(
+    collection(db, "spoiler_messages"),
+    where("room", "==", roomChapter),
+    orderBy("ts", "asc")
+  );
+
+  onSnapshot(q, snap => {
+    const unlocked = canRead(roomChapter);
+    messagesDiv.innerHTML = "";
+
+    if (!currentName) {
+      messagesDiv.innerHTML = `<span class="empty-note">Choose a name above to join.</span>`;
+      return;
+    }
+
+    let msgs = [];
+    snap.forEach(d => msgs.push({ id: d.id, ...d.data() }));
+
+    // filter: if locked, show only own messages
+    if (!unlocked) msgs = msgs.filter(m => m.name === currentName);
+
+    if (msgs.length === 0) {
+      if (!unlocked) {
+        messagesDiv.innerHTML = `<div class="locked-note"><strong>Write mode</strong>Post your thoughts — you'll see everyone's once you reach chapter ${roomChapter}.</div>`;
+      } else {
+        messagesDiv.innerHTML = `<span class="empty-note">No thoughts yet. Be the first!</span>`;
+      }
+      return;
+    }
+
+    msgs.forEach(m => {
+      const el = document.createElement("div");
+      el.className = "msg" + (m.name === currentName ? " mine" : "");
+      const emoji = EMOJIS[m.name] || "✦";
+      el.innerHTML = `<span class="msg-name">${emoji} ${m.name}</span><span class="msg-text">${escHtml(m.text)}</span>`;
+      messagesDiv.appendChild(el);
+    });
+
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  });
+}
+
+async function sendMessage(roomChapter) {
+  if (!currentName) { alert("Please choose your name first."); return; }
+  const ta = document.getElementById(`ta-${roomChapter}`);
+  const text = ta.value.trim();
+  if (!text) return;
+
+  try {
+    await addDoc(collection(db, "spoiler_messages"), {
+      room: roomChapter,
+      name: currentName,
+      text,
+      ts: serverTimestamp()
+    });
+    ta.value = "";
+    ta.style.height = "auto";
+  } catch(e) { console.error("Send error:", e); alert("Could not send. Try again."); }
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>");
+}
+
+// initial render
+renderRooms();
+</script>
+</body>
+</html>
