@@ -52,15 +52,20 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 .intro-text p+p{margin-top:0.9rem;}
 
 /* PLAYER BUTTONS */
-.player-btns{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
-.player-btn{display:flex;flex-direction:column;align-items:center;gap:0.5rem;padding:1.4rem 1rem;
-  border-radius:8px;cursor:pointer;text-decoration:none;transition:all 0.2s;
-  background:rgba(242,232,208,0.82);border:1.5px solid var(--worn);
-  box-shadow:inset 0 1px 5px rgba(100,60,10,0.1),0 2px 10px rgba(0,0,0,0.18);}
-.player-btn:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:inset 0 1px 5px rgba(100,60,10,0.1),0 6px 18px rgba(0,0,0,0.28);}
-.player-btn .emoji{font-size:2rem;line-height:1;}
-.player-btn .pname{font-family:'Cinzel',serif;font-weight:600;font-size:0.9rem;letter-spacing:2px;color:var(--ink);}
-.player-btn .psub{font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;}
+.player-btns{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem 2.5rem;justify-content:center;}
+.player-btn{display:flex;flex-direction:column;align-items:center;gap:0;text-decoration:none;
+  color:var(--ink);font-family:'Cinzel',serif;letter-spacing:1px;transition:transform 0.3s ease;}
+.player-btn:hover{transform:translateY(-5px);}
+.player-img-frame{position:relative;width:140px;height:140px;margin:0 auto;}
+.player-img-frame::before{content:'';position:absolute;inset:-8px;border-radius:50%;
+  background:conic-gradient(from 0deg,transparent 0%,rgba(201,168,76,0.2) 20%,rgba(201,168,76,0.55) 50%,rgba(201,168,76,0.2) 80%,transparent 100%);
+  animation:spin 12s linear infinite;z-index:0;}
+.player-img-frame::after{content:'';position:absolute;inset:-4px;border-radius:50%;background:var(--parch);z-index:1;}
+.player-img-frame .avatar{position:relative;z-index:2;width:100%;height:100%;object-fit:cover;
+  border-radius:50%;border:2px solid rgba(201,168,76,0.35);}
+.player-btn:hover .avatar{border-color:var(--gold-lt);box-shadow:0 0 25px rgba(201,168,76,0.4);}
+.player-btn .pname{display:block;margin-top:14px;font-size:1rem;letter-spacing:2px;color:var(--ink);}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
 
 /* FOOTER */
 .footer{font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:3px;color:var(--gold);text-transform:uppercase;text-align:center;padding:2rem 0 0.5rem;position:relative;z-index:1;}
@@ -99,15 +104,17 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
     <div>
       <div class="kicker" style="margin-bottom:0.75rem;">Choose your reader</div>
       <div class="player-btns">
-        <a class="player-btn" href="marine.html">
-          <span class="emoji">🧜‍♀️</span>
+        <a class="player-btn" href="shouty_marine.html">
+          <div class="player-img-frame">
+            <img class="avatar" src="marine.png" alt="Marine">
+          </div>
           <span class="pname">Marine</span>
-          <span class="psub">Enter →</span>
         </a>
-        <a class="player-btn" href="kathi.html">
-          <span class="emoji">🍄</span>
+        <a class="player-btn" href="shouty_kathi.html">
+          <div class="player-img-frame">
+            <img class="avatar" src="kathi.png" alt="Kathi">
+          </div>
           <span class="pname">Kathi</span>
-          <span class="psub">Enter →</span>
         </a>
       </div>
     </div>
