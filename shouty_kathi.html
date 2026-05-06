@@ -8,7 +8,7 @@
     marine.html  →  PID = "marine"  PEMOJI = "🧜‍♀️"  PNAME = "Marine"  CARD_PASSWORD = "marinara"
     kathi.html   →  PID = "kathi"   PEMOJI = "🍄"    PNAME = "Kathi"   CARD_PASSWORD = "your-password"
 -->
-<title>Book Club — Player</title>
+<title>Shouty Bingo - Kathi</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -90,13 +90,12 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 /* Section titles */
 .section-title{
   font-family:'Cinzel',serif;
-  font-size:2rem;
-  font-weight:600;
-  color:#f0e6c8;
-  text-shadow:0 0 20px rgba(201,168,76,0.3);
-  letter-spacing:2px;
-  margin-bottom:1rem;
+  font-size:0.75rem;
+  letter-spacing:5px;
+  color:var(--gold);
+  text-transform:uppercase;
   text-align:center;
+  margin-bottom:1rem;
 }
 
 /* ── BINGO ── */
@@ -262,7 +261,7 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 
   <!-- LEFT: BINGO -->
   <div class="bingo-section">
-    <div class="section-title" id="bingoSectionTitle"></div>
+    <div class="section-title">READING BINGO</div>
     
     <div class="bingo-header">
       <div class="kicker">Reading Bingo</div>
@@ -286,7 +285,7 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 
   <!-- RIGHT: ROOMS -->
   <div class="rooms-col">
-    <div class="section-title" id="roomsSectionTitle"></div>
+    <div class="section-title">CHAPTER ROOMS</div>
     
     <div class="rooms-header">
       <div class="player-img-frame">
@@ -390,8 +389,6 @@ document.title = `Book Club — ${PNAME}`;
 document.getElementById('playerAvatar').textContent = PEMOJI;
 document.getElementById('playerName').textContent = PNAME;
 document.getElementById('playerHeaderName').textContent = PNAME;
-document.getElementById('bingoSectionTitle').textContent = PNAME;
-document.getElementById('roomsSectionTitle').textContent = PNAME;
 
 /* ══════════════════════════════════════════
    BINGO STATE
