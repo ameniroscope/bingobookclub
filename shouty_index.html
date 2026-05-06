@@ -295,6 +295,43 @@ placeMarker('marine', 0);
 placeMarker('kathi', 0);
 mapHint.style.display = 'block';
 
+
+  window.findMapPosition = function () {
+  const map = document.getElementById("mapEl");
+
+  if (!map) {
+    console.error("Map element not found");
+    return;
+  }
+
+  console.log("Position finder ON. Click anywhere on the map.");
+
+  map.onclick = function (e) {
+    const rect = map.getBoundingClientRect();
+
+    const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(2);
+    const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(2);
+
+    console.log(`${x}, ${y}`);
+    console.log(`{ x:${x}, y:${y} }`);
+
+    const dot = document.createElement("div");
+    dot.style.position = "absolute";
+    dot.style.left = x + "%";
+    dot.style.top = y + "%";
+    dot.style.width = "12px";
+    dot.style.height = "12px";
+    dot.style.background = "red";
+    dot.style.border = "2px solid white";
+    dot.style.borderRadius = "50%";
+    dot.style.transform = "translate(-50%, -50%)";
+    dot.style.zIndex = "99999";
+    dot.style.pointerEvents = "none";
+
+    map.appendChild(dot);
+  };
+};
+
 /* Live markers */
 onSnapshot(collection(db,'progress_spoiler'),snap=>{
   snap.forEach(d=>{
