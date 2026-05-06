@@ -108,7 +108,7 @@ html, body {
 /* ── ROOMS GRID ── */
 .rooms {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 1.1rem;
 }
 
@@ -247,9 +247,9 @@ html, body {
 }
 .home-btn:hover { border-color: var(--gold); color: var(--ink); }
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
   .identity { flex-direction: column; align-items: stretch; }
-  .rooms { grid-template-columns: 1fr; }
+  .rooms { grid-template-columns: repeat(2, 1fr); }
 }
 </style>
 </head>
@@ -313,12 +313,19 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db  = getFirestore(app);
 
-const ROOMS = [6, 16, 26, 36, 46, 56, 66];
+const ROOMS = [0, 6, 16, 26, 36, 46, 56, 66];
 const ROOM_LABELS = {
+  0:  "No spoilers — general chat",
   6:  "Chapters 1–6",   16: "Chapters 7–16",
   26: "Chapters 17–26", 36: "Chapters 27–36",
   46: "Chapters 37–46", 56: "Chapters 47–56",
   66: "Chapters 57–66"
+};
+const ROOM_TITLES = {
+  0:  "General",        6:  "Up to Chapter 6",
+  16: "Up to Chapter 16", 26: "Up to Chapter 26",
+  36: "Up to Chapter 36", 46: "Up to Chapter 46",
+  56: "Up to Chapter 56", 66: "Up to Chapter 66"
 };
 const EMOJIS = { marine: "🧜‍♀️", kathi: "🍄" };
 
@@ -377,23 +384,23 @@ function canRead(roomChapter) {
 }
 
 function buildRoom(roomChapter) {
-  const unlocked = canRead(roomChapter);
+  const unlocked = canRead(roomChapter) || roomChapter === 0;
   const card = document.createElement("div");
   card.className = "room";
   card.id = `room-${roomChapter}`;
 
   const label = ROOM_LABELS[roomChapter];
-  const prevCh = ROOMS[ROOMS.indexOf(roomChapter) - 1] || 0;
+  const isGeneral = roomChapter === 0;
 
   let badgeClass, badgeText;
-  if (!currentName)         { badgeClass = "locked"; badgeText = "Choose a name"; }
-  else if (!unlocked)       { badgeClass = "write";  badgeText = "Write only"; }
-  else                       { badgeClass = "read";   badgeText = "Unlocked"; }
+  if (!currentName)               { badgeClass = "locked"; badgeText = "Choose a name"; }
+  else if (!unlocked && !isGeneral){ badgeClass = "write";  badgeText = "Write only"; }
+  else                             { badgeClass = "read";   badgeText = isGeneral ? "Open" : "Unlocked"; }
 
   card.innerHTML = `
     <div class="room-header">
-      <div class="room-number">Room ${ROOMS.indexOf(roomChapter)+1}</div>
-      <div class="room-title">Up to Chapter ${roomChapter}</div>
+      <div class="room-number">${isGeneral ? "General" : `Room ${ROOMS.indexOf(roomChapter)}`}</div>
+      <div class="room-title">${ROOM_TITLES[roomChapter]}</div>
       <div class="room-subtitle">${label}</div>
       <span class="badge ${badgeClass}">${badgeText}</span>
     </div>
