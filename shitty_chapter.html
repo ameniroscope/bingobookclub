@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter Hub | The Bingo Book Club</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  background: #0d0a0e;
+  font-family: 'Crimson Text', Georgia, serif;
+  min-height: 100vh;
+  color: #f0e6c8;
+}
+
+.layout {
+  min-height: 100vh;
+  max-width: 1250px;
+  margin: 0 auto;
+  padding: 3rem 1.4rem;
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.map-column {
+  position: sticky;
+  top: 3rem;
+  display: flex;
+  justify-content: center;
+  padding-top: 10.4rem;
+}
+
+.map {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  border: 2px solid #c9a84c;
+  border-radius: 15px;
+  overflow: hidden;
+  background: #0d0a0e;
+  box-shadow: 0 0 18px rgba(201,168,76,0.16);
+}
+
+.map-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.player {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  filter:
+    drop-shadow(0 0 6px rgba(201,168,76,0.7))
+    drop-shadow(0 0 12px rgba(201,168,76,0.45));
+  animation: glowPulse 3s ease-in-out infinite;
+  transform: translate(-50%, -50%);
+  transition: left 0.6s ease, top 0.6s ease;
+  z-index: 10;
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    filter:
+      drop-shadow(0 0 6px rgba(201,168,76,0.7))
+      drop-shadow(0 0 12px rgba(201,168,76,0.45));
+  }
+
+  50% {
+    filter:
+      drop-shadow(0 0 10px rgba(201,168,76,1))
+      drop-shadow(0 0 20px rgba(201,168,76,0.7));
+  }
+}
+
+.page {
+  text-align: center;
+}
+
+.club-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.72rem;
+  letter-spacing: 6px;
+  color: #c9a84c88;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+
+.main-title {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(2rem, 5vw, 3.3rem);
+  font-weight: 700;
+  color: #f0e6c8;
+  letter-spacing: 2px;
+}
+
+.ornament {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  max-width: 18rem;
+  margin: 1rem auto;
+}
+
+.line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #c9a84c55, transparent);
+}
+
+.gem {
+  color: #c9a84c;
+  font-size: 0.6rem;
+}
+
+.message {
+  max-width: 34rem;
+  margin: 0 auto 1.2rem;
+}
+
+.message p {
+  font-size: 0.88rem;
+  color: #c8b89a;
+  line-height: 1.9;
+}
+
+.message p + p {
+  margin-top: 0.6rem;
+}
+
+.message em {
+  color: #f0e6c8;
+  font-style: italic;
+}
+
+.user-panel {
+  max-width: 700px;
+  margin: 0 auto 1.4rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.8rem;
+  border: 1px solid #c9a84c44;
+  border-radius: 10px;
+  background: rgba(26,15,31,0.88);
+}
+
+.user-badge {
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #f0e6c8;
+}
+
+.logout-btn {
+  min-height: 40px;
+  padding: 0 1rem;
+  font-family: 'Cinzel', serif;
+  text-transform: uppercase;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #1a0f1f;
+  border: 1px solid #c9a84c33;
+  color: #f5ecd9;
+  letter-spacing: 2px;
+}
+
+.legend {
+  max-width: 700px;
+  margin: 0 auto 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  color: #c8b89a;
+  font-size: 0.9rem;
+}
+
+.legend span {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot.normal {
+  background: #1f3a36;
+}
+
+.dot.my-comment {
+  background: #1a0f1f;
+}
+
+.dot.they-comment {
+  background: #b76b03;
+}
+
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.6rem;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.btn {
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  border-radius: 6px;
+  background: #1f3a36;
+  border: 1px solid #c9a84c55;
+  color: #f5ecd9;
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  letter-spacing: 1.5px;
+  transition: all 0.25s ease;
+  box-shadow: 0 0 8px rgba(201,168,76,0.12);
+}
+
+.btn:hover {
+  background: #2c4f49;
+  border-color: #c9a84c55;
+  box-shadow: 0 0 12px rgba(201,168,76,0.28);
+  transform: translateY(-1px);
+}
+
+.btn.my-comment {
+  background: #1a0f1f;
+  border-color: #c9a84c;
+  color: #f5ecd9;
+  box-shadow: 0 0 14px rgba(90,51,122,0.55);
+}
+
+.btn.they-comment {
+  background: #b76b03;
+  border-color: #c9a84c;
+  color: #fff3dd;
+  box-shadow: 0 0 14px rgba(183,107,3,0.5);
+}
+
+.footer {
+  margin-top: 2.2rem;
+  font-family: 'Cinzel', serif;
+  font-size: 0.45rem;
+  letter-spacing: 2px;
+  color: #c9a84cbb;
+  text-transform: uppercase;
+}
+
+.home-btn {
+  position: fixed;
+  bottom: 1.2rem;
+  left: 1.2rem;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 0.9rem;
+  font-family: 'Cinzel', serif;
+  font-size: 0.55rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 6px;
+  background: rgba(13,10,14,0.85);
+  border: 1px solid #c9a84c55;
+  color: #c9a84ccc;
+  backdrop-filter: blur(6px);
+  transition: all 0.25s;
+}
+
+.home-btn:hover {
+  border-color: #c9a84c;
+  color: #f0e6c8;
+  background: rgba(13,10,14,0.95);
+  box-shadow: 0 0 16px rgba(201,168,76,0.2);
+}
+
+.home-btn-icon {
+  font-size: 0.85rem;
+}
+
+  .bottom-center {
+  width: 100%;
+  text-align: center;
+  margin: 0 auto 2.5rem;
+}
+
+.bottom-center .ornament {
+  margin: 1rem auto;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+    max-width: 760px;
+  }
+
+.map-column {
+  position: static;
+  max-width: 430px;
+  width: 100%;
+  margin: 0 auto;
+  padding-top: 0;
+}
+}
+
+@media (max-width: 700px) {
+  .layout {
+    padding: 1.4rem 1rem 2.5rem;
+    gap: 1.4rem;
+  }
+
+  .buttons {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .user-panel {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .logout-btn {
+    width: 100%;
+  }
+
+  .player {
+    width: 28px;
+    height: 28px;
+    font-size: 1.15rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .buttons {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .btn {
+    height: 54px;
+    font-size: 0.7rem;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="layout">
+
+  <aside class="map-column">
+    <div id="status" style="display:none;"></div>
+
+    <div class="map">
+      <img src="iron_flamme.png" class="map-image" alt="Book map">
+    </div>
+  </aside>
+
+  <main class="page">
+
+    <div class="club-title">Spoiler-Safe</div>
+    <div class="main-title">Chapter Rooms</div>
+
+    <div class="ornament">
+      <div class="line"></div>
+      <div class="gem">◆</div>
+      <div class="line"></div>
+    </div>
+
+    <div class="message">
+      <p>A room for every chapter and a space for every thought — big or small.</p>
+      <p>No need to scream into the void… we’re all here to listen.</p>
+    </div>
+
+    <div class="user-panel">
+      <div class="user-badge" id="loggedInText">Not logged in</div>
+      <button class="logout-btn" id="logoutBtn" type="button">Log out</button>
+    </div>
+
+    <div class="legend">
+      <span><i class="dot normal"></i> No comments</span>
+      <span><i class="dot my-comment"></i> You commented</span>
+      <span><i class="dot they-comment"></i> They commented</span>
+    </div>
+
+    <div class="buttons" id="chapterButtons"></div>
+
+  </main>
+
+</div>
+  
+  <div class="bottom-center">
+
+  <div class="ornament">
+    <div class="line"></div>
+    <div class="gem">◆</div>
+    <div class="line"></div>
+  </div>
+
+  <div class="footer">✦ &nbsp; The Bingo Book Club &nbsp; ✦</div>
+</div>
+
+<a class="home-btn" href="index.html">
+  <span class="home-btn-icon">🏠</span>
+  Home
+</a>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAIQTe-QGQmwqTVmIyJZZ_qlDNsD6GUskY",
+  authDomain: "bingobookclub-2144e.firebaseapp.com",
+  projectId: "bingobookclub-2144e",
+  storageBucket: "bingobookclub-2144e.firebasestorage.app",
+  messagingSenderId: "294177836341",
+  appId: "1:294177836341:web:6d5f11e64737fbe3aad07c"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const totalChapters = 41;
+const container = document.getElementById("chapterButtons");
+const loggedInText = document.getElementById("loggedInText");
+const logoutBtn = document.getElementById("logoutBtn");
+
+const savedName = sessionStorage.getItem("bookClubName");
+
+if (savedName) {
+  loggedInText.textContent = "✦ Logged in as " + savedName;
+  logoutBtn.style.display = "block";
+} else {
+  loggedInText.textContent = "Not logged in yet";
+  logoutBtn.style.display = "none";
+}
+
+logoutBtn.addEventListener("click", () => {
+  sessionStorage.removeItem("bookClubName");
+  sessionStorage.removeItem("bookClubAvatar");
+  sessionStorage.removeItem("bookClubColor");
+  window.location.reload();
+});
+
+for (let i = 1; i <= totalChapters; i++) {
+  const link = document.createElement("a");
+  link.className = "btn";
+  link.href = `chat.html?chapter=${i}`;
+  link.textContent = `Chap ${i}`;
+  link.id = `chapter-${i}-btn`;
+  container.appendChild(link);
+}
+
+loadChapterHighlights();
+
+function getChapterNumber(chapterValue) {
+  if (!chapterValue) return null;
+
+  return String(chapterValue)
+    .replace("chapter-", "")
+    .replace("chapter", "")
+    .replace("Chap", "")
+    .replace("chap", "")
+    .trim();
+}
+
+async function loadChapterHighlights() {
+  try {
+    const snapshot = await getDocs(collection(db, "messages"));
+
+    const chaptersWithMyComments = new Set();
+    const chaptersWithOtherComments = new Set();
+
+    snapshot.forEach((docSnap) => {
+      const msg = docSnap.data();
+      const chapterNumber = getChapterNumber(msg.chapter);
+
+      if (!chapterNumber) return;
+
+      if (savedName && msg.name === savedName) {
+        chaptersWithMyComments.add(chapterNumber);
+      } else {
+        chaptersWithOtherComments.add(chapterNumber);
+      }
+    });
+
+    for (let i = 1; i <= totalChapters; i++) {
+      const button = document.getElementById(`chapter-${i}-btn`);
+      const chapter = String(i);
+
+      if (!button) continue;
+
+      button.classList.remove("my-comment", "they-comment");
+
+      if (chaptersWithMyComments.has(chapter)) {
+        button.classList.add("my-comment");
+      } else if (chaptersWithOtherComments.has(chapter)) {
+        button.classList.add("they-comment");
+      }
+    }
+  } catch (error) {
+    console.error("Could not load chapter highlights:", error);
+  }
+}
+
+/* MAP CODE */
+
+const map = document.querySelector(".map");
+const status = document.getElementById("status");
+
+
+const positions = {
+  0:  { x: 13.4, y: 22.7 }, // START — also used as fallback
+  1:  { x: 33.4, y: 21.4 },
+  2:  { x: 48.7, y: 21.9 },
+  3:  { x: 63.7, y: 21.9 },
+  4:  { x: 77.2, y: 21.9 },
+  5:  { x: 90.3, y: 26.3 },
+  6:  { x: 76.8, y: 30.4 },
+  7:  { x: 62.7, y: 30.9 },
+  8:  { x: 50.1, y: 30.8 },
+  9:  { x: 35.6, y: 30.4 },
+  10: { x: 21.8, y: 30.6 },
+  11: { x: 12.2, y: 38.7 },
+  12: { x: 24.6, y: 38.5 },
+  13: { x: 38.9, y: 38.9 },
+  14: { x: 52.5, y: 38.9 },
+  15: { x: 67.5, y: 38.7 },
+  16: { x: 80.8, y: 38.7 },
+  17: { x: 91.0, y: 44.6 },
+  18: { x: 81.0, y: 47.3 },
+  19: { x: 68.2, y: 47.1 },
+  20: { x: 55.6, y: 47.4 },
+  21: { x: 42.5, y: 47.0 },
+  22: { x: 28.4, y: 47.0 },
+  23: { x: 18.9, y: 55.2 },
+  24: { x: 32.2, y: 55.2 },
+  25: { x: 47.5, y: 55.1 },
+  26: { x: 62.2, y: 55.4 },
+  27: { x: 76.0, y: 55.2 },
+  28: { x: 90.6, y: 61.4 },
+  29: { x: 78.9, y: 63.8 },
+  30: { x: 66.0, y: 64.0 },
+  31: { x: 53.2, y: 64.0 },
+  32: { x: 39.6, y: 64.0 },
+  33: { x: 26.5, y: 63.8 },
+  34: { x: 18.4, y: 72.2 },
+  35: { x: 32.2, y: 72.2 },
+  36: { x: 46.0, y: 72.5 },
+  37: { x: 59.9, y: 72.2 },
+  38: { x: 73.2, y: 72.2 },
+  39: { x: 89.4, y: 77.8 },
+  40: { x: 39.9, y: 81.6 },
+  41: { x: 26.3, y: 81.7 },
+  42: { x: 13.4, y: 22.7 }, // END — reuses START as fallback, update if you have a finish position
+};
+  
+const playerEmojis = {
+  marine: "🧜‍♀️",
+  elana: "🐉",
+  kathi: "🍄",
+  lena: "🌙"
+};
+
+
+const playerOffsets = {
+  marine: {  x:  -2.5, y:  -2.5 },
+  elana:  { x:  2.5, y: -2.5 },
+  kathi:  { x: -2.5, y:  2.5 },
+  lena:   { x:  2.5, y:  2.5 },
+};
+
+function getOrCreatePlayerMarker(playerId) {
+  let marker = document.getElementById("player-" + playerId);
+
+  if (!marker) {
+    marker = document.createElement("div");
+    marker.className = "player";
+    marker.id = "player-" + playerId;
+    marker.textContent = playerEmojis[playerId] || "✨";
+    map.appendChild(marker);
+  }
+
+  return marker;
+}
+
+
+function movePlayer(playerId, chapter, indexInChapter) {
+  const marker = getOrCreatePlayerMarker(playerId);
+  const position = positions[chapter] || positions[0];
+  const offset = playerOffsets[playerId] || { x: 0, y: 0 };
+
+  marker.style.left = position.x + offset.x + "%";
+  marker.style.top  = position.y + offset.y + "%";
+  marker.title = playerId + " — chapter " + chapter;
+}
+
+const playersRef = collection(db, "first_bingo");
+
+onSnapshot(
+  playersRef,
+  (snapshot) => {
+    status.textContent = "Connected";
+
+    const chapterGroups = {};
+
+    snapshot.forEach((docSnap) => {
+      const playerId = docSnap.id;
+      const data = docSnap.data();
+      const chapter = Number(data.chapterProgress ?? 0);
+
+      if (!chapterGroups[chapter]) {
+        chapterGroups[chapter] = [];
+      }
+
+      chapterGroups[chapter].push(playerId);
+    });
+
+    Object.keys(chapterGroups).forEach((chapter) => {
+      chapterGroups[chapter].forEach((playerId, index) => {
+        movePlayer(playerId, Number(chapter), index);
+      });
+    });
+  },
+  (error) => {
+    console.error("Firebase error:", error);
+    status.textContent = "Firebase error";
+  }
+);
+
+/* Optional map coordinate helper */
+map.addEventListener("click", (e) => {
+  const rect = map.getBoundingClientRect();
+
+  const x = (((e.clientX - rect.left) / rect.width) * 100).toFixed(1);
+  const y = (((e.clientY - rect.top) / rect.height) * 100).toFixed(1);
+
+  console.log(`{ x: ${x}, y: ${y} }`);
+});
+</script>
+
+</body>
+</html>
