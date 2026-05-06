@@ -152,7 +152,7 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
 import {
   getFirestore, collection, onSnapshot,
-  doc, setDoc, getDoc
+  doc, setDoc
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
 const fb = initializeApp({
@@ -163,185 +163,217 @@ const fb = initializeApp({
   messagingSenderId: "294177836341",
   appId: "1:294177836341:web:6d5f11e64737fbe3aad07c"
 });
+
 const db = getFirestore(fb);
+
+const mapEl = document.getElementById("mapEl");
+const tooltip = document.getElementById("mapTooltip");
+const mapHint = document.getElementById("mapHint");
 
 const PLAYERS = {
   marine: { emoji:"🧜‍♀️", offset:{x:-2,y:0} },
-  kathi:  { emoji:"🍄",   offset:{x:2, y:0}  },
+  kathi:  { emoji:"🍄", offset:{x:2,y:0} },
 };
 
 /* MAP POSITIONS */
-const rowY=[22.7,32.2,41.2,51.5,60.9,69.6];
-const rowX1=[10.3,10.8,10.8,11.3,11.3,10.8];
-const xStep=8.7;
-function mkPos(r,c){return{x:rowX1[r]+c*xStep,y:rowY[r]};}
-const POS={0:mkPos(0,0)};
-let _c=0;
-for(let r=0;r<rowY.length;r++) for(let c=0;c<10;c++){_c++;if(_c>66)break;POS[_c]=mkPos(r,c);}
+const rowY = [22.7,32.2,41.2,51.5,60.9,69.6];
+const rowX1 = [10.3,10.8,10.8,11.3,11.3,10.8];
+const xStep = 8.7;
 
-  /* POSITION FINDER — click map and get percentages */
+function mkPos(r,c){
+  return { x: rowX1[r] + c * xStep, y: rowY[r] };
+}
+
+const POS = {0: mkPos(0,0)};
+let _c = 0;
+
+for(let r = 0; r < rowY.length; r++){
+  for(let c = 0; c < 10; c++){
+    _c++;
+    if(_c > 66) break;
+    POS[_c] = mkPos(r,c);
+  }
+}
+
+/* POSITION FINDER */
 window.findMapPosition = function () {
   mapEl.style.cursor = "crosshair";
 
-  function handler(e) {
+  console.clear();
+  console.log("Position finder ON.");
+  console.log("Click the map. Each click prints x/y percentages.");
+
+  mapEl.addEventListener("click", function finderClick(e) {
     const rect = mapEl.getBoundingClientRect();
+
     const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(2);
     const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(2);
 
-    console.log(`{ x: ${x}, y: ${y} }`);
-    console.log(`mkPos custom: x=${x}%, y=${y}%`);
+    console.log(`{ x:${x}, y:${y} }`);
 
     const dot = document.createElement("div");
-    dot.style.position = "absolute";
-    dot.style.left = x + "%";
-    dot.style.top = y + "%";
-    dot.style.width = "10px";
-    dot.style.height = "10px";
-    dot.style.borderRadius = "50%";
-    dot.style.background = "red";
-    dot.style.transform = "translate(-50%, -50%)";
-    dot.style.zIndex = "999";
-    dot.title = `${x}, ${y}`;
+    dot.style.cssText = `
+      position:absolute;
+      left:${x}%;
+      top:${y}%;
+      width:12px;
+      height:12px;
+      background:red;
+      border:2px solid white;
+      border-radius:50%;
+      transform:translate(-50%,-50%);
+      z-index:99999;
+      pointer-events:none;
+    `;
+
     mapEl.appendChild(dot);
-  }
-
-  mapEl.addEventListener("click", handler);
-
-  console.log("Position finder enabled. Click the map to log x/y percentages.");
+  });
 };
-const mapEl   = document.getElementById('mapEl');
-const tooltip = document.getElementById('mapTooltip');
-const mapHint = document.getElementById('mapHint');
-const progress = {marine:0,kathi:0};
+
+const progress = { marine:0, kathi:0 };
 
 function placeMarker(pid, ch) {
-  let m = document.getElementById('marker-'+pid);
+  let m = document.getElementById("marker-" + pid);
+
   if (!m) {
-    m = document.createElement('div');
-    m.id = 'marker-'+pid;
-    m.className = 'marker';
+    m = document.createElement("div");
+    m.id = "marker-" + pid;
+    m.className = "marker";
     m.textContent = PLAYERS[pid].emoji;
     mapEl.appendChild(m);
   }
-  const p = POS[Math.min(ch,66)] || POS[1];
+
+  const p = POS[Math.min(ch,66)] || POS[0];
   const o = PLAYERS[pid].offset;
-  m.style.left = (p.x+o.x)+'%';
-  m.style.top  = (p.y+o.y)+'%';
+
+  m.style.left = (p.x + o.x) + "%";
+  m.style.top = (p.y + o.y) + "%";
 }
 
 function snapNearest(cx,cy){
-  const rect=mapEl.getBoundingClientRect();
-  const xp=(cx-rect.left)/rect.width*100;
-  const yp=(cy-rect.top)/rect.height*100;
-  let best=1,bestD=Infinity;
-  for(const[ch,p]of Object.entries(POS)){
-    if(+ch===0)continue;
-    const d=Math.hypot(xp-p.x,yp-p.y);
-    if(d<bestD){bestD=d;best=+ch;}
+  const rect = mapEl.getBoundingClientRect();
+  const xp = (cx - rect.left) / rect.width * 100;
+  const yp = (cy - rect.top) / rect.height * 100;
+
+  let best = 1;
+  let bestD = Infinity;
+
+  for(const [ch,p] of Object.entries(POS)){
+    if(+ch === 0) continue;
+
+    const d = Math.hypot(xp - p.x, yp - p.y);
+
+    if(d < bestD){
+      bestD = d;
+      best = +ch;
+    }
   }
+
   return best;
 }
 
-/* Drag — both players draggable on the home page */
-let dragging=false, dragPid=null;
+/* Drag markers */
+let dragging = false;
+let dragPid = null;
 
 function tryStartDrag(cx,cy){
   for(const pid of Object.keys(PLAYERS)){
-    const m=document.getElementById('marker-'+pid);
-    if(!m)continue;
-    const r=m.getBoundingClientRect();
-    if(Math.hypot(cx-(r.left+r.width/2),cy-(r.top+r.height/2))<24){
-      dragging=true; dragPid=pid;
-      m.classList.add('draggable');
-      m.style.transition='none';
+    const m = document.getElementById("marker-" + pid);
+    if(!m) continue;
+
+    const r = m.getBoundingClientRect();
+
+    if(Math.hypot(cx - (r.left + r.width / 2), cy - (r.top + r.height / 2)) < 24){
+      dragging = true;
+      dragPid = pid;
+      m.classList.add("draggable");
+      m.style.transition = "none";
       return;
     }
   }
 }
-mapEl.addEventListener('mousedown', e=>tryStartDrag(e.clientX,e.clientY));
-mapEl.addEventListener('touchstart', e=>{tryStartDrag(e.touches[0].clientX,e.touches[0].clientY);},{passive:true});
+
+mapEl.addEventListener("mousedown", e => tryStartDrag(e.clientX,e.clientY));
+
+mapEl.addEventListener("touchstart", e => {
+  tryStartDrag(e.touches[0].clientX,e.touches[0].clientY);
+},{passive:true});
 
 function onMove(cx,cy){
-  if(!dragging||!dragPid)return;
-  const rect=mapEl.getBoundingClientRect();
-  const xp=Math.min(Math.max((cx-rect.left)/rect.width*100,2),98);
-  const yp=Math.min(Math.max((cy-rect.top)/rect.height*100,2),98);
-  const m=document.getElementById('marker-'+dragPid);
-  if(m){m.style.left=xp+'%';m.style.top=yp+'%';}
-  const ch=snapNearest(cx,cy);
-  tooltip.textContent='Chapter '+ch;
-  tooltip.style.left=xp+'%';tooltip.style.top=yp+'%';
-  tooltip.classList.add('show');
-}
-window.addEventListener('mousemove',e=>{if(dragging)onMove(e.clientX,e.clientY);});
-window.addEventListener('touchmove',e=>{if(dragging)onMove(e.touches[0].clientX,e.touches[0].clientY);},{passive:true});
+  if(!dragging || !dragPid) return;
 
-async function endDrag(cx,cy){
-  if(!dragging)return;
-  dragging=false; tooltip.classList.remove('show');
-  const m=document.getElementById('marker-'+dragPid);
-  if(m){m.style.transition='';m.classList.remove('draggable');}
-  const ch=snapNearest(cx,cy);
-  progress[dragPid]=ch;
-  placeMarker(dragPid,ch);
-  await setDoc(doc(db,'progress_spoiler',dragPid),{chapter:ch},{merge:true});
-  dragPid=null;
-}
-window.addEventListener('mouseup',e=>endDrag(e.clientX,e.clientY));
-window.addEventListener('touchend',e=>endDrag(e.changedTouches[0].clientX,e.changedTouches[0].clientY));
+  const rect = mapEl.getBoundingClientRect();
+  const xp = Math.min(Math.max((cx - rect.left) / rect.width * 100,2),98);
+  const yp = Math.min(Math.max((cy - rect.top) / rect.height * 100,2),98);
 
-// Show starting markers immediately
-placeMarker('marine', 0);
-placeMarker('kathi', 0);
-mapHint.style.display = 'block';
+  const m = document.getElementById("marker-" + dragPid);
 
-
-  window.findMapPosition = function () {
-  const map = document.getElementById("mapEl");
-
-  if (!map) {
-    console.error("Map element not found");
-    return;
+  if(m){
+    m.style.left = xp + "%";
+    m.style.top = yp + "%";
   }
 
-  console.log("Position finder ON. Click anywhere on the map.");
+  const ch = snapNearest(cx,cy);
 
-  map.onclick = function (e) {
-    const rect = map.getBoundingClientRect();
+  tooltip.textContent = "Chapter " + ch;
+  tooltip.style.left = xp + "%";
+  tooltip.style.top = yp + "%";
+  tooltip.classList.add("show");
+}
 
-    const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(2);
-    const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(2);
+window.addEventListener("mousemove", e => {
+  if(dragging) onMove(e.clientX,e.clientY);
+});
 
-    console.log(`${x}, ${y}`);
-    console.log(`{ x:${x}, y:${y} }`);
+window.addEventListener("touchmove", e => {
+  if(dragging) onMove(e.touches[0].clientX,e.touches[0].clientY);
+},{passive:true});
 
-    const dot = document.createElement("div");
-    dot.style.position = "absolute";
-    dot.style.left = x + "%";
-    dot.style.top = y + "%";
-    dot.style.width = "12px";
-    dot.style.height = "12px";
-    dot.style.background = "red";
-    dot.style.border = "2px solid white";
-    dot.style.borderRadius = "50%";
-    dot.style.transform = "translate(-50%, -50%)";
-    dot.style.zIndex = "99999";
-    dot.style.pointerEvents = "none";
+async function endDrag(cx,cy){
+  if(!dragging) return;
 
-    map.appendChild(dot);
-  };
-};
+  dragging = false;
+  tooltip.classList.remove("show");
+
+  const m = document.getElementById("marker-" + dragPid);
+
+  if(m){
+    m.style.transition = "";
+    m.classList.remove("draggable");
+  }
+
+  const ch = snapNearest(cx,cy);
+  progress[dragPid] = ch;
+  placeMarker(dragPid,ch);
+
+  await setDoc(doc(db,"progress_spoiler",dragPid),{chapter:ch},{merge:true});
+
+  dragPid = null;
+}
+
+window.addEventListener("mouseup", e => endDrag(e.clientX,e.clientY));
+
+window.addEventListener("touchend", e => {
+  endDrag(e.changedTouches[0].clientX,e.changedTouches[0].clientY);
+});
+
+/* Starting markers */
+placeMarker("marine", 0);
+placeMarker("kathi", 0);
+mapHint.style.display = "block";
 
 /* Live markers */
-onSnapshot(collection(db,'progress_spoiler'),snap=>{
-  snap.forEach(d=>{
-    if(!PLAYERS[d.id])return;
-    const ch=d.data().chapter||0;
-    progress[d.id]=ch;
+onSnapshot(collection(db,"progress_spoiler"), snap => {
+  snap.forEach(d => {
+    if(!PLAYERS[d.id]) return;
+
+    const ch = d.data().chapter || 0;
+    progress[d.id] = ch;
     placeMarker(d.id,ch);
   });
-  mapHint.style.display='block';
-},err=>console.error(err));
+
+  mapHint.style.display = "block";
+}, err => console.error(err));
 </script>
 </body>
 </html>
