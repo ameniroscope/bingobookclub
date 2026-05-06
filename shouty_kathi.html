@@ -14,17 +14,44 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{--ink:#2b1d0e;--ink-faded:#5c3d1e;--gold:#8b6914;--gold-lt:#c9a84c;--parch:#f2e8d0;--parch-dark:#e0ceaa;--worn:#c9af82;}
 html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var(--ink);}
-#bg{position:fixed;inset:0;z-index:0;background:#2596be;}
+#bg{position:fixed;inset:0;z-index:0;background:#e4d0ac;}
 #bg::after{content:'';position:absolute;inset:0;background:
   radial-gradient(ellipse 70% 50% at 15% 20%,rgba(180,130,60,0.13) 0%,transparent 55%),
   radial-gradient(ellipse 60% 70% at 85% 75%,rgba(160,110,40,0.10) 0%,transparent 55%),
   radial-gradient(ellipse 100% 100% at 50% 50%,transparent 60%,rgba(80,40,5,0.18) 100%);}
 
+  /* Player Header */
+.player-header {
+    position: fixed;
+    top: 24px;
+    left: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    z-index: 100;
+}
+
+.img-frame {
+    position: relative;
+    width: 90px;
+    height: 90px;
+}
+
+.player-name {
+    font-family: 'Cinzel', serif;
+    font-size: 2.8rem;
+    font-weight: 600;
+    color: #f0e6c8;
+    text-shadow: 0 0 20px rgba(201, 168, 76, 0.3);
+    letter-spacing: 2px;
+    white-space: nowrap;
+}
+  
 /* HOME BUTTON */
 .home-btn{
   position:fixed;
   top:1.5rem;
-  left:1.5rem;
+  right:1.5rem;
   z-index:100;
   background:rgba(59,30,6,0.85);
   color:var(--gold-lt);
@@ -200,7 +227,16 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 <div id="bg"></div>
 
 <!-- HOME BUTTON -->
-<a href="shouty_index.html" class="home-btn">← Home</a>
+<a href="shouty_index.html" class="home-btn">🏠 Home</a>
+
+<!-- Player Header -->
+<div class="player-header">
+    <div class="img-frame">
+        <img id="playerPhoto" src="kathi.png" alt="Player Photo">
+    </div>
+    <div class="player-name" id="playerHeaderName"></div>
+    <div class="player-id" id="playerId"></div>
+</div>
 
 <!-- MAIN LAYOUT -->
 <div class="wrap">
