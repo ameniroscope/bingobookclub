@@ -8,7 +8,7 @@
     marine.html  →  PID = "marine"  PEMOJI = "🧜‍♀️"  PNAME = "Marine"  CARD_PASSWORD = "marinara"
     kathi.html   →  PID = "kathi"   PEMOJI = "🍄"    PNAME = "Kathi"   CARD_PASSWORD = "your-password"
 -->
-<title>Book Club — Player</title>
+<title>Shouty Bingo - Jathi</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -82,33 +82,69 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 }
 
 /* LAYOUT */
-.wrap{position:relative;z-index:1;min-height:100vh;max-width:1100px;
-  margin:0 auto;padding:2rem 1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start;}
+.wrap{
+  position:relative;
+  z-index:1;
+  min-height:100vh;
+  max-width:1100px;
+  margin:0 auto;
+  padding:2rem 1.5rem;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:2rem;
+  align-items:center;
+  justify-content:center;
+}
 
 /* Section titles */
 .section-title{
   font-family:'Cinzel',serif;
-  font-size:0.75rem;
+  font-size:1.1rem;
   letter-spacing:5px;
   color:var(--gold);
   text-transform:uppercase;
   text-align:center;
-  margin-bottom:1rem;
+  margin-bottom:0.5rem;
 }
 
 /* ── BINGO ── */
 .bingo-section{display:flex;flex-direction:column;}
-.bingo-header{display:flex;align-items:center;justify-content:flex-end;margin-bottom:8px;gap:0.5rem;flex-wrap:wrap;}
-.bingo-badge{background:#3b1e06;color:var(--gold-lt);font-size:11px;font-family:'Cinzel',serif;
-  letter-spacing:1px;padding:3px 10px;border-radius:3px;border:1px solid var(--gold-lt);display:none;}
-.bingo-badge.show{display:inline;}
 
-/* Lock button inside bingo header */
+/* Lock buttons container on the left */
+.bingo-controls{
+  position:absolute;
+  left:-50px;
+  top:50%;
+  transform:translateY(-50%);
+  display:flex;
+  flex-direction:column;
+  gap:0.5rem;
+}
+
+/* Lock button */
 .bingo-lock-btn{background:none;border:1.5px solid var(--worn);border-radius:50%;
-  width:32px;height:32px;cursor:pointer;font-size:1rem;display:flex;align-items:center;
+  width:36px;height:36px;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;
   justify-content:center;transition:all 0.2s;flex-shrink:0;padding:0;}
 .bingo-lock-btn:hover{border-color:var(--gold);}
 .bingo-lock-btn.unlocked{border-color:var(--gold);background:rgba(139,105,20,0.15);}
+
+/* Bingo badge */
+.bingo-badge{
+  background:#3b1e06;
+  color:var(--gold-lt);
+  font-size:11px;
+  font-family:'Cinzel',serif;
+  letter-spacing:1px;
+  padding:3px 10px;
+  border-radius:3px;
+  border:1px solid var(--gold-lt);
+  display:none;
+  position:absolute;
+  top:-35px;
+  left:50%;
+  transform:translateX(-50%);
+}
+.bingo-badge.show{display:inline;}
 
 /* Password modal — uses normal flow wrapper so it doesn't collapse the iframe */
 .lock-modal-wrap{display:none;position:fixed;inset:0;z-index:400;background:rgba(20,10,4,0.72);
@@ -131,8 +167,13 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 .lock-modal-btns button:hover{background:#5a3010;}
 
 /* Bingo card image container - NO BORDER OR BACKGROUND */
-.bingo-card-wrap{position:relative;width:100%;aspect-ratio:1024/1536;
-  background-image:url('current_bingo.png');background-size:100% 100%;margin-top:6px;}
+.bingo-card-wrap{
+  position:relative;
+  width:100%;
+  aspect-ratio:1024/1536;
+  background-image:url('shouty_bingo.png');
+  background-size:100% 100%;
+}
 
 /* Grid overlaid on the image — same positioning as original bingo page */
 .bingo-grid{position:absolute;left:50%;top:34.5%;width:73%;aspect-ratio:1/1;
@@ -156,8 +197,8 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
   font-size:inherit;line-height:1.2;color:#2a1a0a;padding:2px;overflow:hidden;
   overflow-wrap:break-word;word-break:break-word;}
 
-.bingo-hint{font-size:10px;color:var(--gold);margin-top:5px;font-style:italic;}
-.bingo-status{font-size:10px;color:var(--ink-faded);font-style:italic;text-align:right;margin-top:3px;min-height:1em;}
+.bingo-hint{font-size:10px;color:var(--gold);margin-top:5px;font-style:italic;text-align:center;}
+.bingo-status{font-size:10px;color:var(--ink-faded);font-style:italic;text-align:center;margin-top:3px;min-height:1em;}
 
 /* ── ROOMS (right column) ── */
 .rooms-col{display:flex;flex-direction:column;}
@@ -224,7 +265,7 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 <div id="bg"></div>
 
 <!-- HOME BUTTON -->
-<a href="shouty_index.html" class="home-btn">🏠 Home</a>
+<a href="shouty_index.html" class="home-btn">🦖 Shouty Book Club</a>
 
 <!-- Player Header -->
 <div class="player-header">
@@ -241,21 +282,18 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
   <div class="bingo-section">
     <div class="section-title">READING BINGO</div>
     
-    <div class="bingo-header">
-      <span class="bingo-badge" id="bingoBadge">BINGO!</span>
-      <button class="bingo-lock-btn" id="bingoEditBtn" title="Toggle edit mode" style="display:none;">✏️</button>
-      <button class="bingo-lock-btn" id="bingoLockBtn" title="Unlock card">🔒</button>
-    </div>
-
-    <!-- Card image with overlaid grid -->
+    <!-- Card image with overlaid grid and controls -->
     <div class="bingo-card-wrap">
+      <span class="bingo-badge" id="bingoBadge">BINGO!</span>
+      <div class="bingo-controls">
+        <button class="bingo-lock-btn" id="bingoEditBtn" title="Toggle edit mode" style="display:none;">✏️</button>
+        <button class="bingo-lock-btn" id="bingoLockBtn" title="Unlock card">🔒</button>
+      </div>
       <div class="bingo-grid" id="bingoGrid"></div>
     </div>
 
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:5px;">
-      <div class="bingo-hint" id="bingoHint">Unlock to edit or mark squares</div>
-      <div class="bingo-status" id="bingoStatus"></div>
-    </div>
+    <div class="bingo-hint" id="bingoHint">Unlock to edit or mark squares</div>
+    <div class="bingo-status" id="bingoStatus"></div>
   </div>
 
   <!-- RIGHT: ROOMS -->
