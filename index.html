@@ -23,7 +23,23 @@
     max-width:1400px;
     margin:0 auto;
   }
+  
+  .dino-peek {
+    position: fixed;
+    right: -6px;
+    bottom: 22%;
+    z-index: 10;
+    font-size: 2.2rem;
+    text-decoration: none;
+    transform: rotate(-12deg);
+    filter: drop-shadow(0 0 10px rgba(201,168,76,0.45));
+    transition: transform 0.25s ease, right 0.25s ease;
+  }
 
+.dino-peek:hover {
+  right: 6px;
+  transform: rotate(-6deg) scale(1.15);
+}
   /* ── Desktop: image takes 1/3, content takes 2/3 ── */
   @media(min-width:760px){
     .page{
@@ -381,6 +397,7 @@
 
 
   <div class="footer">✦ &nbsp; Good books · Great company &nbsp; ✦</div>
+  <a class="dino-peek" href="shouty_index.html" title="Secret dino page">🦖</a>
 </div>
 
 <script>
