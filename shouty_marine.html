@@ -184,6 +184,7 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
       <div class="kicker">Reading Bingo</div>
       <div style="display:flex;align-items:center;gap:0.5rem;">
         <span class="bingo-badge" id="bingoBadge">BINGO!</span>
+        <button class="bingo-lock-btn" id="bingoEditBtn" title="Toggle edit mode" style="display:none;">✏️</button>
         <button class="bingo-lock-btn" id="bingoLockBtn" title="Unlock card">🔒</button>
       </div>
     </div>
@@ -316,6 +317,7 @@ const bingoBadge   = document.getElementById('bingoBadge');
 const bingoHint    = document.getElementById('bingoHint');
 const bingoStatus  = document.getElementById('bingoStatus');
 const lockBtn      = document.getElementById('bingoLockBtn');
+const editBtn      = document.getElementById('bingoEditBtn');
 const lockModalWrap= document.getElementById('lockModalWrap');
 const passwordInput= document.getElementById('passwordInput');
 const lockError    = document.getElementById('lockError');
@@ -326,11 +328,23 @@ function setLockState(unlocked) {
   lockBtn.textContent = unlocked ? '🔓' : '🔒';
   lockBtn.classList.toggle('unlocked', unlocked);
   lockBtn.title = unlocked ? 'Lock card' : 'Unlock card';
+  editBtn.style.display = unlocked ? 'flex' : 'none';
+  editBtn.textContent = isEditMode ? '👁️' : '✏️';
+  editBtn.title = isEditMode ? 'Switch to play mode' : 'Switch to edit mode';
   bingoHint.textContent = unlocked
-    ? (isEditMode ? 'Click cells to toggle; edit mode active' : 'Click cells to mark — unlock more with 🔓')
+    ? (isEditMode ? 'Edit mode — type in squares' : 'Click squares to mark them')
     : 'Unlock to edit or mark squares';
   renderBingo();
 }
+
+editBtn.addEventListener('click', () => {
+  if (!isUnlocked) return;
+  isEditMode = !isEditMode;
+  editBtn.textContent = isEditMode ? '👁️' : '✏️';
+  editBtn.title = isEditMode ? 'Switch to play mode' : 'Switch to edit mode';
+  bingoHint.textContent = isEditMode ? 'Edit mode — type in squares' : 'Click squares to mark them';
+  renderBingo();
+});
 
 lockBtn.addEventListener('click', () => {
   if (isUnlocked) {
