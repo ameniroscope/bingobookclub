@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Bingo Book Club</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;600&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--ink:#2b1d0e;--ink-faded:#5c3d1e;--gold:#8b6914;--gold-lt:#c9a84c;--parch:#f2e8d0;--parch-dark:#e0ceaa;--worn:#c9af82;}
+html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var(--ink);}
+#bg{position:fixed;inset:0;z-index:0;background:var(--parch);}
+#bg::after{content:'';position:absolute;inset:0;background:
+  radial-gradient(ellipse 70% 50% at 15% 20%,rgba(180,130,60,0.13) 0%,transparent 55%),
+  radial-gradient(ellipse 60% 70% at 85% 75%,rgba(160,110,40,0.10) 0%,transparent 55%),
+  radial-gradient(ellipse 100% 100% at 50% 50%,transparent 60%,rgba(80,40,5,0.18) 100%);}
+
+/* LAYOUT */
+.wrap{position:relative;z-index:1;min-height:100vh;max-width:1100px;margin:0 auto;
+  padding:3rem 1.5rem 2rem;display:grid;grid-template-columns:420px 1fr;gap:3rem;align-items:start;}
+
+/* ── LEFT: MAP ── */
+.map-col{position:sticky;top:3rem;display:flex;flex-direction:column;align-items:center;gap:0.75rem;}
+.map-wrap{position:relative;width:100%;border-radius:10px;overflow:hidden;
+  border:2px solid var(--worn);
+  box-shadow:0 0 0 1px var(--parch-dark),4px 6px 24px rgba(0,0,0,0.45),inset 0 0 30px rgba(100,60,10,0.15);}
+.map-wrap::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:5;
+  background:radial-gradient(ellipse at 50% 50%,transparent 60%,rgba(50,25,5,0.2) 100%);}
+.map-img{width:100%;height:auto;display:block;filter:sepia(0.35) saturate(0.85) brightness(0.92);}
+.marker{position:absolute;width:36px;height:36px;display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;transform:translate(-50%,-50%);z-index:10;
+  filter:drop-shadow(0 1px 3px rgba(0,0,0,0.7));transition:left 0.4s ease,top 0.4s ease;pointer-events:none;}
+.marker.draggable{cursor:grab;pointer-events:all;}
+.marker.draggable:active{cursor:grabbing;}
+.map-tooltip{position:absolute;z-index:30;background:rgba(59,30,6,0.92);color:var(--gold-lt);
+  font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:1px;padding:0.2rem 0.5rem;border-radius:3px;
+  border:1px solid var(--gold-lt);pointer-events:none;white-space:nowrap;transform:translate(-50%,-140%);
+  opacity:0;transition:opacity 0.15s;}
+.map-tooltip.show{opacity:1;}
+.map-hint{font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:1px;color:var(--ink-faded);font-style:italic;text-align:center;}
+
+/* ── RIGHT: CONTENT ── */
+.right-col{display:flex;flex-direction:column;gap:2rem;padding-top:1rem;}
+
+.kicker{font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:5px;color:var(--gold);text-transform:uppercase;margin-bottom:0.35rem;}
+.big-title{font-family:'Cinzel',serif;font-size:2.6rem;font-weight:600;letter-spacing:3px;color:var(--ink);line-height:1.1;}
+.ornament{display:flex;align-items:center;gap:0.6rem;margin:0.75rem 0 0;}
+.orn-line{flex:1;height:1px;background:linear-gradient(to right,transparent,var(--worn),transparent);}
+.orn-gem{color:var(--gold);font-size:0.65rem;}
+
+.intro-text{font-size:1rem;line-height:1.85;color:var(--ink-faded);}
+.intro-text p+p{margin-top:0.9rem;}
+
+/* PLAYER BUTTONS */
+.player-btns{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.player-btn{display:flex;flex-direction:column;align-items:center;gap:0.5rem;padding:1.4rem 1rem;
+  border-radius:8px;cursor:pointer;text-decoration:none;transition:all 0.2s;
+  background:rgba(242,232,208,0.82);border:1.5px solid var(--worn);
+  box-shadow:inset 0 1px 5px rgba(100,60,10,0.1),0 2px 10px rgba(0,0,0,0.18);}
+.player-btn:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:inset 0 1px 5px rgba(100,60,10,0.1),0 6px 18px rgba(0,0,0,0.28);}
+.player-btn .emoji{font-size:2rem;line-height:1;}
+.player-btn .pname{font-family:'Cinzel',serif;font-weight:600;font-size:0.9rem;letter-spacing:2px;color:var(--ink);}
+.player-btn .psub{font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;}
+
+/* FOOTER */
+.footer{font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:3px;color:var(--gold);text-transform:uppercase;text-align:center;padding:2rem 0 0.5rem;position:relative;z-index:1;}
+.footer-orn{display:flex;align-items:center;gap:0.5rem;max-width:12rem;margin:0 auto 0.4rem;}
+
+@media(max-width:860px){.wrap{grid-template-columns:1fr;}.map-col{position:static;max-width:460px;width:100%;margin:0 auto;}}
+</style>
+</head>
+<body>
+<div id="bg"></div>
+
+<div class="wrap">
+  <!-- MAP -->
+  <aside class="map-col">
+    <div class="map-wrap" id="mapEl">
+      <img src="shouty_map.png" class="map-img" alt="Map of Iron Flame">
+      <div class="map-tooltip" id="mapTooltip"></div>
+    </div>
+    <div class="map-hint" id="mapHint" style="display:none;">Drag your marker to update your progress</div>
+  </aside>
+
+  <!-- RIGHT -->
+  <div class="right-col">
+    <div>
+      <div class="kicker">The Bingo Book Club</div>
+      <div class="big-title">Iron Flame</div>
+      <div class="ornament"><div class="orn-line"></div><div class="orn-gem">◆</div><div class="orn-line"></div></div>
+    </div>
+
+    <div class="intro-text">
+      <p>Welcome, dear readers. This is your spoiler-safe companion for <em>Iron Flame</em> by Rebecca Yarros — a place to track your progress, mark your bingo card, and share your thoughts chapter by chapter.</p>
+      <p>Drag your marker across the map to show how far you've read. Chapter rooms unlock as you go, so you'll only see what you've already experienced. Write freely — your thoughts will appear to the other reader once they catch up.</p>
+      <p>Choose your reader below to begin.</p>
+    </div>
+
+    <div>
+      <div class="kicker" style="margin-bottom:0.75rem;">Choose your reader</div>
+      <div class="player-btns">
+        <a class="player-btn" href="marine.html">
+          <span class="emoji">🧜‍♀️</span>
+          <span class="pname">Marine</span>
+          <span class="psub">Enter →</span>
+        </a>
+        <a class="player-btn" href="kathi.html">
+          <span class="emoji">🍄</span>
+          <span class="pname">Kathi</span>
+          <span class="psub">Enter →</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="footer-orn"><div class="orn-line"></div><div class="orn-gem">◆</div><div class="orn-line"></div></div>
+  ✦ &nbsp; The Bingo Book Club &nbsp; ✦
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+import {
+  getFirestore, collection, onSnapshot,
+  doc, setDoc, getDoc
+} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+
+const fb = initializeApp({
+  apiKey: "AIzaSyAIQTe-QGQmwqTVmIyJZZ_qlDNsD6GUskY",
+  authDomain: "bingobookclub-2144e.firebaseapp.com",
+  projectId: "bingobookclub-2144e",
+  storageBucket: "bingobookclub-2144e.firebasestorage.app",
+  messagingSenderId: "294177836341",
+  appId: "1:294177836341:web:6d5f11e64737fbe3aad07c"
+});
+const db = getFirestore(fb);
+
+const PLAYERS = {
+  marine: { emoji:"🧜‍♀️", offset:{x:-2,y:0} },
+  kathi:  { emoji:"🍄",   offset:{x:2, y:0}  },
+};
+
+/* MAP POSITIONS */
+const rowY=[22.7,32.2,41.2,51.5,60.9,69.6];
+const rowX1=[10.3,10.8,10.8,11.3,11.3,10.8];
+const xStep=8.7;
+function mkPos(r,c){return{x:rowX1[r]+c*xStep,y:rowY[r]};}
+const POS={0:mkPos(0,0)};
+let _c=0;
+for(let r=0;r<rowY.length;r++) for(let c=0;c<10;c++){_c++;if(_c>66)break;POS[_c]=mkPos(r,c);}
+
+const mapEl   = document.getElementById('mapEl');
+const tooltip = document.getElementById('mapTooltip');
+const mapHint = document.getElementById('mapHint');
+const progress = {marine:0,kathi:0};
+
+function placeMarker(pid, ch) {
+  let m = document.getElementById('marker-'+pid);
+  if (!m) {
+    m = document.createElement('div');
+    m.id = 'marker-'+pid;
+    m.className = 'marker';
+    m.textContent = PLAYERS[pid].emoji;
+    mapEl.appendChild(m);
+  }
+  const p = POS[Math.min(ch,66)] || POS[1];
+  const o = PLAYERS[pid].offset;
+  m.style.left = (p.x+o.x)+'%';
+  m.style.top  = (p.y+o.y)+'%';
+}
+
+function snapNearest(cx,cy){
+  const rect=mapEl.getBoundingClientRect();
+  const xp=(cx-rect.left)/rect.width*100;
+  const yp=(cy-rect.top)/rect.height*100;
+  let best=1,bestD=Infinity;
+  for(const[ch,p]of Object.entries(POS)){
+    if(+ch===0)continue;
+    const d=Math.hypot(xp-p.x,yp-p.y);
+    if(d<bestD){bestD=d;best=+ch;}
+  }
+  return best;
+}
+
+/* Drag — both players draggable on the home page */
+let dragging=false, dragPid=null;
+
+function tryStartDrag(cx,cy){
+  for(const pid of Object.keys(PLAYERS)){
+    const m=document.getElementById('marker-'+pid);
+    if(!m)continue;
+    const r=m.getBoundingClientRect();
+    if(Math.hypot(cx-(r.left+r.width/2),cy-(r.top+r.height/2))<24){
+      dragging=true; dragPid=pid;
+      m.classList.add('draggable');
+      m.style.transition='none';
+      return;
+    }
+  }
+}
+mapEl.addEventListener('mousedown', e=>tryStartDrag(e.clientX,e.clientY));
+mapEl.addEventListener('touchstart', e=>{tryStartDrag(e.touches[0].clientX,e.touches[0].clientY);},{passive:true});
+
+function onMove(cx,cy){
+  if(!dragging||!dragPid)return;
+  const rect=mapEl.getBoundingClientRect();
+  const xp=Math.min(Math.max((cx-rect.left)/rect.width*100,2),98);
+  const yp=Math.min(Math.max((cy-rect.top)/rect.height*100,2),98);
+  const m=document.getElementById('marker-'+dragPid);
+  if(m){m.style.left=xp+'%';m.style.top=yp+'%';}
+  const ch=snapNearest(cx,cy);
+  tooltip.textContent='Chapter '+ch;
+  tooltip.style.left=xp+'%';tooltip.style.top=yp+'%';
+  tooltip.classList.add('show');
+}
+window.addEventListener('mousemove',e=>{if(dragging)onMove(e.clientX,e.clientY);});
+window.addEventListener('touchmove',e=>{if(dragging)onMove(e.touches[0].clientX,e.touches[0].clientY);},{passive:true});
+
+async function endDrag(cx,cy){
+  if(!dragging)return;
+  dragging=false; tooltip.classList.remove('show');
+  const m=document.getElementById('marker-'+dragPid);
+  if(m){m.style.transition='';m.classList.remove('draggable');}
+  const ch=snapNearest(cx,cy);
+  progress[dragPid]=ch;
+  placeMarker(dragPid,ch);
+  await setDoc(doc(db,'progress_spoiler',dragPid),{chapter:ch},{merge:true});
+  dragPid=null;
+}
+window.addEventListener('mouseup',e=>endDrag(e.clientX,e.clientY));
+window.addEventListener('touchend',e=>endDrag(e.changedTouches[0].clientX,e.changedTouches[0].clientY));
+
+/* Live markers */
+onSnapshot(collection(db,'progress_spoiler'),snap=>{
+  snap.forEach(d=>{
+    if(!PLAYERS[d.id])return;
+    const ch=d.data().chapter||0;
+    progress[d.id]=ch;
+    placeMarker(d.id,ch);
+  });
+  mapHint.style.display='block';
+},err=>console.error(err));
+</script>
+</body>
+</html>
