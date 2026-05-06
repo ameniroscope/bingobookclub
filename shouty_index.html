@@ -176,12 +176,47 @@ const PLAYERS = {
 };
 
 /* MAP POSITIONS */
-const rowY = [22.7,32.2,41.2,51.5,60.9,69.6];
-const rowX1 = [10.3,10.8,10.8,11.3,11.3,10.8];
-const xStep = 8.7;
+/* MAP POSITIONS */
 
+const rowY = [
+  29.50,
+  40.01,
+  50.83,
+  61.65,
+  72.31,
+  83.77
+];
+
+const rowX1 = [
+  8.86,
+  9.33,
+  9.10,
+  9.10,
+  9.10,
+  9.10
+];
+
+/* exact top row x positions */
+const topRowX = [
+  8.86,
+  17.43,
+  26.00,
+  34.10,
+  42.67,
+  51.00,
+  59.10,
+  66.71,
+  75.29,
+  83.14,
+  91.00
+];
+
+/* optional helper */
 function mkPos(r,c){
-  return { x: rowX1[r] + c * xStep, y: rowY[r] };
+  return {
+    x: topRowX[c] ?? rowX1[r],
+    y: rowY[r]
+  };
 }
 
 const POS = {0: mkPos(0,0)};
