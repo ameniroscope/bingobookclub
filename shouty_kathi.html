@@ -37,7 +37,16 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
     height: 90px;
 }
 
-.player-name {
+.img-frame img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--gold);
+    box-shadow: 0 0 20px rgba(201, 168, 76, 0.4);
+}
+
+.player-header .player-name {
     font-family: 'Cinzel', serif;
     font-size: 2.8rem;
     font-weight: 600;
@@ -151,14 +160,14 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 .player-img-frame::before{content:'';position:absolute;inset:-6px;border-radius:50%;
   background:conic-gradient(from 0deg,transparent 0%,rgba(201,168,76,0.2) 20%,rgba(201,168,76,0.55) 50%,rgba(201,168,76,0.2) 80%,transparent 100%);
   animation:spin 12s linear infinite;z-index:0;}
-.player-img-frame::after{content:'';position:absolute;inset:-3px;border-radius:50%;background:#2596be;z-index:1;}
+.player-img-frame::after{content:'';position:absolute;inset:-3px;border-radius:50%;background:#e4d0ac;z-index:1;}
 .player-avatar{position:relative;z-index:2;width:100%;height:100%;
   border-radius:50%;border:2px solid rgba(201,168,76,0.35);
   background:#3b1e06;display:flex;align-items:center;justify-content:center;font-size:1.8rem;}
 @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
 
 .player-info{display:flex;flex-direction:column;}
-.player-name{font-family:'Cinzel',serif;font-weight:600;font-size:1.3rem;color:var(--ink);letter-spacing:2px;}
+.rooms-header .player-name{font-family:'Cinzel',serif;font-weight:600;font-size:1.3rem;color:var(--ink);letter-spacing:2px;}
 
 .rooms-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .room-btn{position:relative;height:90px;display:flex;flex-direction:column;align-items:center;
@@ -235,7 +244,6 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
         <img id="playerPhoto" src="kathi.png" alt="Player Photo">
     </div>
     <div class="player-name" id="playerHeaderName"></div>
-    <div class="player-id" id="playerId"></div>
 </div>
 
 <!-- MAIN LAYOUT -->
@@ -366,6 +374,7 @@ const GRID_SIZE = 25;
 document.title = `Book Club — ${PNAME}`;
 document.getElementById('playerAvatar').textContent = PEMOJI;
 document.getElementById('playerName').textContent = PNAME;
+document.getElementById('playerHeaderName').textContent = PNAME;
 
 /* ══════════════════════════════════════════
    BINGO STATE
