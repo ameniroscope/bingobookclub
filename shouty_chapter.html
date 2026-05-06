@@ -17,8 +17,6 @@
   --parch:      #f2e8d0;
   --parch-dark: #e0ceaa;
   --worn:       #c9af82;
-  --locked-bg:  #3b1e06;
-  --locked-fg:  #c9a84c;
 }
 
 html, body {
@@ -28,13 +26,9 @@ html, body {
   background: #1a120a;
 }
 
-/* parchment body background */
 #bg {
   position: fixed; inset: 0; z-index: 0;
   background: var(--parch);
-  background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E");
-  background-size: 400px 400px;
 }
 #bg::after {
   content: '';
@@ -45,15 +39,52 @@ html, body {
     radial-gradient(ellipse 100% 100% at 50% 50%, transparent 60%, rgba(80,40,5,0.18) 100%);
 }
 
-.wrap {
+/* ── LAYOUT ── */
+.layout {
   position: relative; z-index: 1;
-  max-width: 820px;
+  min-height: 100vh;
+  max-width: 1250px;
   margin: 0 auto;
-  padding: 3rem 1.4rem 4rem;
+  padding: 3rem 1.4rem;
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 2rem;
+  align-items: start;
 }
 
-/* ── HEADER ── */
-.header { text-align: center; margin-bottom: 2.5rem; }
+/* ── MAP ── */
+.map-column {
+  position: sticky; top: 3rem;
+  display: flex; justify-content: center;
+  padding-top: 10rem;
+}
+
+.map {
+  position: relative;
+  width: 100%; max-width: 420px;
+  border-radius: 10px; overflow: hidden;
+  border: 3px solid var(--worn);
+  box-shadow: 0 0 0 1px var(--parch-dark), 4px 6px 24px rgba(0,0,0,0.45), inset 0 0 30px rgba(100,60,10,0.15);
+}
+.map::after {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 50%, transparent 60%, rgba(50,25,5,0.2) 100%);
+  pointer-events: none;
+}
+.map-image { width: 100%; height: auto; display: block; filter: sepia(0.35) saturate(0.85) brightness(0.92); }
+
+.player {
+  position: absolute; width: 34px; height: 34px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.35rem;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.7));
+  transform: translate(-50%, -50%);
+  transition: left 0.6s ease, top 0.6s ease;
+  z-index: 10;
+}
+
+/* ── RIGHT COLUMN ── */
+.page { text-align: center; }
 
 .kicker {
   font-family: 'IM Fell English SC', serif;
@@ -64,175 +95,224 @@ html, body {
 
 .title {
   font-family: 'Cinzel', serif;
-  font-size: clamp(1.8rem, 5vw, 2.8rem);
-  font-weight: 600; letter-spacing: 2px;
-  color: var(--ink); line-height: 1.15;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 600; letter-spacing: 2px; color: var(--ink);
 }
 
 .ornament {
   display: flex; align-items: center; gap: 0.6rem;
-  max-width: 16rem; margin: 0.9rem auto 0;
+  max-width: 16rem; margin: 0.9rem auto 1.4rem;
 }
 .orn-line { flex: 1; height: 1px; background: linear-gradient(to right, transparent, var(--worn), transparent); }
 .orn-gem  { color: var(--gold); font-size: 0.65rem; }
 
-/* ── IDENTITY PANEL ── */
+/* identity */
 .identity {
-  background: rgba(242,232,208,0.82);
-  border: 1.5px solid var(--worn);
-  border-radius: 8px;
-  padding: 1rem 1.25rem;
-  margin-bottom: 2rem;
+  max-width: 700px; margin: 0 auto 1.6rem;
+  background: rgba(242,232,208,0.75);
+  border: 1.5px solid var(--worn); border-radius: 8px;
+  padding: 0.85rem 1.1rem;
   display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
-  box-shadow: inset 0 1px 6px rgba(100,60,10,0.1), 0 2px 10px rgba(0,0,0,0.18);
+  box-shadow: inset 0 1px 6px rgba(100,60,10,0.1), 0 2px 10px rgba(0,0,0,0.15);
 }
-
 .identity label {
   font-family: 'IM Fell English SC', serif;
-  font-size: 0.78rem; letter-spacing: 1px;
-  color: var(--ink-faded); white-space: nowrap;
+  font-size: 0.78rem; letter-spacing: 1px; color: var(--ink-faded); white-space: nowrap;
 }
-
 .identity select, .identity input[type=number] {
-  background: var(--parch); border: 1px solid var(--worn);
-  border-radius: 4px; padding: 0.35rem 0.55rem;
-  font-family: 'IM Fell English', serif; font-size: 0.9rem;
-  color: var(--ink); cursor: pointer;
+  background: var(--parch); border: 1px solid var(--worn); border-radius: 4px;
+  padding: 0.32rem 0.5rem;
+  font-family: 'IM Fell English', serif; font-size: 0.9rem; color: var(--ink);
 }
-
 .identity select { min-width: 130px; }
-.identity input[type=number] { width: 72px; }
-
+.identity input[type=number] { width: 70px; }
 .id-group { display: flex; align-items: center; gap: 0.5rem; }
 
-/* ── ROOMS GRID ── */
-.rooms {
+/* ── ROOM BUTTONS ── */
+.buttons {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1.1rem;
+  gap: 0.7rem;
+  max-width: 700px; margin: 0 auto;
 }
 
-/* ── ROOM CARD ── */
-.room {
-  background: rgba(242,232,208,0.78);
-  border: 1.5px solid var(--worn);
-  border-radius: 8px;
-  box-shadow: inset 0 1px 8px rgba(100,60,10,0.1), 0 3px 14px rgba(0,0,0,0.22);
-  overflow: hidden;
+.room-btn {
+  position: relative;
+  height: 80px;
   display: flex; flex-direction: column;
-}
-
-.room-header {
-  padding: 0.75rem 1rem 0.6rem;
-  border-bottom: 1px solid var(--worn);
-  background: rgba(201,175,130,0.25);
-}
-
-.room-number {
-  font-family: 'Cinzel', serif;
-  font-size: 0.68rem; letter-spacing: 2px; text-transform: uppercase;
-  color: var(--gold); margin-bottom: 0.15rem;
-}
-
-.room-title {
-  font-family: 'Cinzel', serif;
-  font-size: 1rem; font-weight: 600;
+  align-items: center; justify-content: center; gap: 0.25rem;
+  border-radius: 6px; cursor: pointer; text-decoration: none;
+  background: rgba(242,232,208,0.82);
+  border: 1.5px solid var(--worn);
   color: var(--ink);
+  box-shadow: inset 0 1px 5px rgba(100,60,10,0.1), 0 2px 8px rgba(0,0,0,0.22);
+  transition: all 0.2s;
+}
+.room-btn:hover {
+  background: var(--parch-dark);
+  border-color: var(--gold);
+  transform: translateY(-2px);
+  box-shadow: inset 0 1px 5px rgba(100,60,10,0.12), 0 5px 16px rgba(0,0,0,0.3);
+}
+.room-btn.write {
+  background: rgba(59,30,6,0.88);
+  border-color: var(--gold-lt);
+  color: var(--parch);
+}
+.room-btn.read {
+  background: rgba(139,105,20,0.18);
+  border-color: var(--gold);
+}
+.room-btn.general {
+  background: rgba(242,232,208,0.92);
+  border-color: var(--gold);
 }
 
-.room-subtitle {
-  font-size: 0.78rem; color: var(--ink-faded); font-style: italic;
-  margin-top: 0.15rem;
+.btn-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.72rem; letter-spacing: 1px; font-weight: 600;
 }
-
-/* status badge */
-.badge {
-  display: inline-block;
+.btn-sub {
+  font-size: 0.68rem; font-style: italic;
+  opacity: 0.75;
+}
+.btn-badge {
+  position: absolute; top: 6px; right: 7px;
   font-family: 'IM Fell English SC', serif;
-  font-size: 0.62rem; letter-spacing: 1.5px;
-  padding: 0.18rem 0.55rem;
-  border-radius: 3px;
-  margin-top: 0.45rem;
+  font-size: 0.55rem; letter-spacing: 1px;
+  padding: 0.1rem 0.35rem; border-radius: 3px;
 }
-.badge.write { background: #3b1e06; color: var(--gold-lt); }
-.badge.read  { background: var(--gold); color: var(--parch); }
-.badge.locked{ background: rgba(100,60,10,0.12); color: var(--ink-faded); border: 1px solid var(--worn); }
+.room-btn.write  .btn-badge { background: rgba(201,168,76,0.18); color: var(--gold-lt); }
+.room-btn.read   .btn-badge { background: var(--gold); color: var(--parch); }
+.room-btn.general .btn-badge { background: var(--gold); color: var(--parch); }
 
-/* messages area */
+/* notification dot */
+.notif {
+  position: absolute; top: 6px; left: 8px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--gold-lt); display: none;
+}
+
+/* ── MODAL OVERLAY ── */
+.overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(20,10,4,0.72);
+  display: flex; align-items: center; justify-content: center;
+  padding: 1rem;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s;
+}
+.overlay.open { opacity: 1; pointer-events: all; }
+
+.modal {
+  background: var(--parch);
+  border: 2px solid var(--worn);
+  border-radius: 10px;
+  width: 100%; max-width: 540px;
+  max-height: 82vh;
+  display: flex; flex-direction: column;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.55), inset 0 1px 10px rgba(100,60,10,0.1);
+  transform: translateY(12px);
+  transition: transform 0.2s;
+}
+.overlay.open .modal { transform: translateY(0); }
+
+.modal-header {
+  padding: 1rem 1.25rem 0.85rem;
+  border-bottom: 1px solid var(--worn);
+  background: rgba(201,175,130,0.3);
+  border-radius: 8px 8px 0 0;
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem;
+}
+.modal-header-text {}
+.modal-room-num {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 0.68rem; letter-spacing: 2px; color: var(--gold);
+}
+.modal-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.05rem; font-weight: 600; color: var(--ink);
+}
+.modal-sub { font-size: 0.8rem; color: var(--ink-faded); font-style: italic; margin-top: 0.1rem; }
+
+.modal-badge {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 0.62rem; letter-spacing: 1px;
+  padding: 0.2rem 0.55rem; border-radius: 3px; white-space: nowrap;
+  margin-top: 0.2rem; display: inline-block;
+}
+.modal-badge.write  { background: #3b1e06; color: var(--gold-lt); }
+.modal-badge.read   { background: var(--gold); color: var(--parch); }
+.modal-badge.general{ background: var(--gold); color: var(--parch); }
+
+.close-btn {
+  background: none; border: none; cursor: pointer;
+  color: var(--ink-faded); font-size: 1.3rem; line-height: 1;
+  padding: 0.1rem 0.2rem;
+  font-family: serif;
+  transition: color 0.15s;
+}
+.close-btn:hover { color: var(--ink); }
+
 .messages {
-  flex: 1; padding: 0.75rem 1rem;
-  min-height: 90px; max-height: 220px;
-  overflow-y: auto;
-  display: flex; flex-direction: column; gap: 0.55rem;
+  flex: 1; overflow-y: auto;
+  padding: 1rem 1.25rem;
+  display: flex; flex-direction: column; gap: 0.7rem;
+  min-height: 120px;
 }
 
-.msg {
-  font-size: 0.88rem; line-height: 1.6;
-}
-.msg-name {
-  font-family: 'IM Fell English SC', serif;
-  font-size: 0.72rem; letter-spacing: 1px;
-  color: var(--gold); display: block; margin-bottom: 0.1rem;
-}
-.msg-text { color: var(--ink); }
-
-.msg.mine .msg-name { color: #3b1e06; }
-
-.empty-note {
-  font-size: 0.82rem; color: var(--ink-faded);
-  font-style: italic; text-align: center;
-  margin: auto;
-}
-
-.locked-note {
-  font-size: 0.82rem; color: var(--ink-faded);
-  font-style: italic; text-align: center;
-  padding: 0.5rem 0; margin: auto;
+.empty-note, .locked-note {
+  font-size: 0.85rem; color: var(--ink-faded);
+  font-style: italic; text-align: center; margin: auto;
+  line-height: 1.7;
 }
 .locked-note strong {
   display: block; font-family: 'Cinzel', serif;
-  font-size: 0.8rem; color: var(--ink-faded);
-  margin-bottom: 0.2rem; font-weight: 400;
+  font-size: 0.82rem; color: var(--ink-faded);
+  margin-bottom: 0.3rem; font-weight: 400; font-style: normal;
 }
 
-/* compose */
+.msg { font-size: 0.9rem; line-height: 1.65; }
+.msg-name {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 0.72rem; letter-spacing: 1px; color: var(--gold);
+  display: block; margin-bottom: 0.1rem;
+}
+.msg.mine .msg-name { color: #3b1e06; }
+.msg-text { color: var(--ink); }
+
 .compose {
   border-top: 1px solid var(--worn);
-  padding: 0.65rem 1rem;
+  padding: 0.7rem 1.1rem;
   display: flex; gap: 0.5rem; align-items: flex-end;
-  background: rgba(201,175,130,0.15);
+  background: rgba(201,175,130,0.18);
+  border-radius: 0 0 8px 8px;
 }
-
 .compose textarea {
-  flex: 1; resize: none; min-height: 38px; max-height: 90px;
-  background: var(--parch); border: 1px solid var(--worn);
-  border-radius: 4px; padding: 0.35rem 0.5rem;
-  font-family: 'IM Fell English', serif; font-size: 0.88rem;
+  flex: 1; resize: none; min-height: 38px; max-height: 100px;
+  background: rgba(255,252,244,0.85); border: 1px solid var(--worn);
+  border-radius: 4px; padding: 0.38rem 0.55rem;
+  font-family: 'IM Fell English', serif; font-size: 0.9rem;
   color: var(--ink); line-height: 1.5; overflow-y: hidden;
 }
-
 .compose textarea::placeholder { color: var(--worn); font-style: italic; }
-
 .send-btn {
-  height: 38px; padding: 0 0.85rem;
+  height: 38px; padding: 0 0.9rem;
   background: #3b1e06; border: 1px solid var(--gold-lt);
   border-radius: 4px; color: var(--gold-lt);
   font-family: 'Cinzel', serif; font-size: 0.65rem;
   letter-spacing: 1.5px; text-transform: uppercase;
-  cursor: pointer; transition: background 0.2s;
-  white-space: nowrap;
+  cursor: pointer; transition: background 0.2s; white-space: nowrap;
 }
 .send-btn:hover { background: #5a3010; }
 
 /* ── FOOTER ── */
+.bottom-center { position: relative; z-index: 1; text-align: center; margin: 2rem auto 2.5rem; }
 .footer {
-  text-align: center; margin-top: 3rem;
   font-family: 'IM Fell English SC', serif;
   font-size: 0.6rem; letter-spacing: 3px;
   color: var(--gold); text-transform: uppercase;
 }
-
-/* home btn */
 .home-btn {
   position: fixed; bottom: 1.2rem; left: 1.2rem; z-index: 100;
   display: flex; align-items: center; gap: 0.45rem;
@@ -240,16 +320,19 @@ html, body {
   font-family: 'Cinzel', serif; font-size: 0.55rem;
   letter-spacing: 1.5px; text-transform: uppercase;
   text-decoration: none; border-radius: 5px;
-  background: rgba(242,232,208,0.9); border: 1px solid var(--worn);
-  color: var(--ink-faded);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  background: rgba(242,232,208,0.92); border: 1px solid var(--worn);
+  color: var(--ink-faded); box-shadow: 0 2px 8px rgba(0,0,0,0.3);
   transition: all 0.2s;
 }
 .home-btn:hover { border-color: var(--gold); color: var(--ink); }
 
-@media (max-width: 700px) {
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; max-width: 760px; }
+  .map-column { position: static; max-width: 430px; width: 100%; margin: 0 auto; padding-top: 0; }
+}
+@media (max-width: 600px) {
+  .buttons { grid-template-columns: repeat(2, 1fr); }
   .identity { flex-direction: column; align-items: stretch; }
-  .rooms { grid-template-columns: repeat(2, 1fr); }
 }
 </style>
 </head>
@@ -257,42 +340,73 @@ html, body {
 
 <div id="bg"></div>
 
-<div class="wrap">
+<div class="layout">
 
-  <header class="header">
+  <!-- MAP -->
+  <aside class="map-column">
+    <div class="map">
+      <img src="iron_flamme.png" class="map-image" alt="Book map">
+    </div>
+  </aside>
+
+  <!-- RIGHT -->
+  <main class="page">
     <div class="kicker">Spoiler-Safe</div>
     <div class="title">Chapter Rooms</div>
     <div class="ornament">
       <div class="orn-line"></div><div class="orn-gem">◆</div><div class="orn-line"></div>
     </div>
-  </header>
 
-  <div class="identity">
-    <div class="id-group">
-      <label for="nameSelect">Reading as</label>
-      <select id="nameSelect">
-        <option value="">— choose —</option>
-        <option value="marine">🧜‍♀️ Marine</option>
-        <option value="kathi">🍄 Kathi</option>
-      </select>
+    <div class="identity">
+      <div class="id-group">
+        <label for="nameSelect">Reading as</label>
+        <select id="nameSelect">
+          <option value="">— choose —</option>
+          <option value="marine">🧜‍♀️ Marine</option>
+          <option value="kathi">🍄 Kathi</option>
+        </select>
+      </div>
+      <div class="id-group">
+        <label for="progressInput">Up to chapter</label>
+        <input type="number" id="progressInput" min="0" max="66" value="0" />
+      </div>
+      <div class="id-group" style="font-size:0.78rem;color:var(--ink-faded);font-style:italic;">
+        Progress saved automatically
+      </div>
     </div>
-    <div class="id-group">
-      <label for="progressInput">Up to chapter</label>
-      <input type="number" id="progressInput" min="0" max="66" value="0" />
-    </div>
-    <div class="id-group" style="font-size:0.8rem; color:var(--ink-faded); font-style:italic;">
-      Progress saved automatically
-    </div>
+
+    <div class="buttons" id="buttonsContainer"></div>
+  </main>
+</div>
+
+<div class="bottom-center">
+  <div class="ornament">
+    <div class="orn-line"></div><div class="orn-gem">◆</div><div class="orn-line"></div>
   </div>
-
-  <div class="rooms" id="roomsContainer"></div>
-
   <div class="footer">✦ &nbsp; The Bingo Book Club &nbsp; ✦</div>
 </div>
 
-<a class="home-btn" href="index.html">
-  <span style="font-size:0.85rem;">🏠</span> Home
-</a>
+<!-- MODAL -->
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div class="modal-header-text">
+        <div class="modal-room-num" id="modalRoomNum"></div>
+        <div class="modal-title" id="modalTitle"></div>
+        <div class="modal-sub" id="modalSub"></div>
+        <span class="modal-badge" id="modalBadge"></span>
+      </div>
+      <button class="close-btn" id="closeBtn">✕</button>
+    </div>
+    <div class="messages" id="modalMessages"></div>
+    <div class="compose">
+      <textarea id="modalTA" placeholder="Leave a thought…" rows="1"></textarea>
+      <button class="send-btn" id="modalSend">Post</button>
+    </div>
+  </div>
+</div>
+
+<a class="home-btn" href="index.html"><span style="font-size:0.85rem;">🏠</span> Home</a>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
@@ -314,47 +428,45 @@ const app = initializeApp(firebaseConfig);
 const db  = getFirestore(app);
 
 const ROOMS = [0, 6, 16, 26, 36, 46, 56, 66];
-const ROOM_LABELS = {
-  0:  "No spoilers — general chat",
-  6:  "Chapters 1–6",   16: "Chapters 7–16",
-  26: "Chapters 17–26", 36: "Chapters 27–36",
-  46: "Chapters 37–46", 56: "Chapters 47–56",
-  66: "Chapters 57–66"
-};
 const ROOM_TITLES = {
-  0:  "General",        6:  "Up to Chapter 6",
-  16: "Up to Chapter 16", 26: "Up to Chapter 26",
-  36: "Up to Chapter 36", 46: "Up to Chapter 46",
-  56: "Up to Chapter 56", 66: "Up to Chapter 66"
+  0:"General", 6:"Up to Chapter 6", 16:"Up to Chapter 16",
+  26:"Up to Chapter 26", 36:"Up to Chapter 36",
+  46:"Up to Chapter 46", 56:"Up to Chapter 56", 66:"Up to Chapter 66"
 };
-const EMOJIS = { marine: "🧜‍♀️", kathi: "🍄" };
+const ROOM_SUBS = {
+  0:"No spoilers — anything goes",
+  6:"Chapters 1–6", 16:"Chapters 7–16", 26:"Chapters 17–26",
+  36:"Chapters 27–36", 46:"Chapters 37–46", 56:"Chapters 47–56", 66:"Chapters 57–66"
+};
+const EMOJIS = { marine:"🧜‍♀️", kathi:"🍄" };
+const playerOffsets = { marine:{x:-2,y:0}, kathi:{x:2,y:0} };
 
-const nameSelect     = document.getElementById("nameSelect");
-const progressInput  = document.getElementById("progressInput");
-const roomsContainer = document.getElementById("roomsContainer");
-
-let currentName     = sessionStorage.getItem("bookClubName") || "";
+let currentName = sessionStorage.getItem("bookClubName") || "";
 let currentProgress = 0;
+let activeRoom = null;
+let activeUnsub = null;
 
-// ── restore session ──
-if (currentName) {
-  nameSelect.value = currentName;
-  loadProgress(currentName);
-}
+const nameSelect    = document.getElementById("nameSelect");
+const progressInput = document.getElementById("progressInput");
+const overlay       = document.getElementById("overlay");
+const closeBtn      = document.getElementById("closeBtn");
+const modalTA       = document.getElementById("modalTA");
+const modalSend     = document.getElementById("modalSend");
+
+if (currentName) { nameSelect.value = currentName; loadProgress(currentName); }
 
 nameSelect.addEventListener("change", () => {
   currentName = nameSelect.value;
   sessionStorage.setItem("bookClubName", currentName);
   if (currentName) loadProgress(currentName);
-  renderRooms();
+  renderButtons();
 });
 
 progressInput.addEventListener("change", () => {
-  const v = Math.min(66, Math.max(0, parseInt(progressInput.value) || 0));
-  progressInput.value = v;
-  currentProgress = v;
+  const v = Math.min(66, Math.max(0, parseInt(progressInput.value)||0));
+  progressInput.value = v; currentProgress = v;
   if (currentName) saveProgress(currentName, v);
-  renderRooms();
+  renderButtons();
 });
 
 async function loadProgress(name) {
@@ -363,102 +475,111 @@ async function loadProgress(name) {
     if (d.exists()) {
       currentProgress = d.data().chapter || 0;
       progressInput.value = currentProgress;
-      renderRooms();
+      renderButtons();
     }
   } catch(e) { console.error(e); }
 }
-
 async function saveProgress(name, chapter) {
   try { await setDoc(doc(db, "progress_spoiler", name), { chapter }); }
   catch(e) { console.error(e); }
 }
 
-// ── build room cards ──
-function renderRooms() {
-  roomsContainer.innerHTML = "";
-  ROOMS.forEach(ch => buildRoom(ch));
-}
+function canRead(ch) { return ch === 0 || currentProgress >= ch; }
 
-function canRead(roomChapter) {
-  return currentProgress >= roomChapter;
-}
+// ── BUTTONS ──
+function renderButtons() {
+  const c = document.getElementById("buttonsContainer");
+  c.innerHTML = "";
+  ROOMS.forEach((ch, i) => {
+    const unlocked = canRead(ch);
+    const isGeneral = ch === 0;
 
-function buildRoom(roomChapter) {
-  const unlocked = canRead(roomChapter) || roomChapter === 0;
-  const card = document.createElement("div");
-  card.className = "room";
-  card.id = `room-${roomChapter}`;
+    const btn = document.createElement("div");
+    btn.className = "room-btn " + (isGeneral ? "general" : unlocked ? "read" : "write");
+    btn.dataset.ch = ch;
 
-  const label = ROOM_LABELS[roomChapter];
-  const isGeneral = roomChapter === 0;
+    const badgeText = isGeneral ? "Open" : unlocked ? "Unlocked" : "Write only";
 
-  let badgeClass, badgeText;
-  if (!currentName)               { badgeClass = "locked"; badgeText = "Choose a name"; }
-  else if (!unlocked && !isGeneral){ badgeClass = "write";  badgeText = "Write only"; }
-  else                             { badgeClass = "read";   badgeText = isGeneral ? "Open" : "Unlocked"; }
+    btn.innerHTML = `
+      <div class="notif" id="notif-${ch}"></div>
+      <span class="btn-badge">${badgeText}</span>
+      <span class="btn-label">${ROOM_TITLES[ch]}</span>
+      <span class="btn-sub">${ROOM_SUBS[ch]}</span>`;
 
-  card.innerHTML = `
-    <div class="room-header">
-      <div class="room-number">${isGeneral ? "General" : `Room ${ROOMS.indexOf(roomChapter)}`}</div>
-      <div class="room-title">${ROOM_TITLES[roomChapter]}</div>
-      <div class="room-subtitle">${label}</div>
-      <span class="badge ${badgeClass}">${badgeText}</span>
-    </div>
-    <div class="messages" id="msgs-${roomChapter}">
-      <span class="empty-note">Loading…</span>
-    </div>
-    <div class="compose" id="compose-${roomChapter}">
-      <textarea id="ta-${roomChapter}" placeholder="Leave a thought…" rows="1"></textarea>
-      <button class="send-btn" data-ch="${roomChapter}">Post</button>
-    </div>`;
-
-  roomsContainer.appendChild(card);
-
-  // auto-grow textarea
-  const ta = card.querySelector(`#ta-${roomChapter}`);
-  ta.addEventListener("input", () => {
-    ta.style.height = "auto";
-    ta.style.height = ta.scrollHeight + "px";
+    btn.addEventListener("click", () => openRoom(ch));
+    c.appendChild(btn);
   });
-
-  card.querySelector(".send-btn").addEventListener("click", () => sendMessage(roomChapter));
-  ta.addEventListener("keydown", e => {
-    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(roomChapter); }
-  });
-
-  subscribeRoom(roomChapter);
 }
 
-function subscribeRoom(roomChapter) {
-  const messagesDiv = document.getElementById(`msgs-${roomChapter}`);
-  const unlocked = canRead(roomChapter);
+// ── MODAL ──
+function openRoom(ch) {
+  activeRoom = ch;
+  const unlocked = canRead(ch);
+  const isGeneral = ch === 0;
+
+  document.getElementById("modalRoomNum").textContent = isGeneral ? "General Room" : `Room ${ROOMS.indexOf(ch)}`;
+  document.getElementById("modalTitle").textContent   = ROOM_TITLES[ch];
+  document.getElementById("modalSub").textContent     = ROOM_SUBS[ch];
+
+  const badge = document.getElementById("modalBadge");
+  badge.className = "modal-badge " + (isGeneral ? "general" : unlocked ? "read" : "write");
+  badge.textContent = isGeneral ? "Open" : unlocked ? "Unlocked — all messages visible" : "Write only — you won't see others yet";
+
+  overlay.classList.add("open");
+  document.body.style.overflow = "hidden";
+
+  modalTA.value = ""; modalTA.style.height = "auto";
+  subscribeModal(ch);
+}
+
+function closeRoom() {
+  overlay.classList.remove("open");
+  document.body.style.overflow = "";
+  if (activeUnsub) { activeUnsub(); activeUnsub = null; }
+  activeRoom = null;
+}
+
+closeBtn.addEventListener("click", closeRoom);
+overlay.addEventListener("click", e => { if (e.target === overlay) closeRoom(); });
+
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeRoom(); });
+
+modalTA.addEventListener("input", () => {
+  modalTA.style.height = "auto";
+  modalTA.style.height = modalTA.scrollHeight + "px";
+});
+modalTA.addEventListener("keydown", e => {
+  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+});
+modalSend.addEventListener("click", sendMessage);
+
+function subscribeModal(ch) {
+  if (activeUnsub) activeUnsub();
+  const msgDiv = document.getElementById("modalMessages");
+  msgDiv.innerHTML = `<span class="empty-note">Loading…</span>`;
 
   const q = query(
     collection(db, "spoiler_messages"),
-    where("room", "==", roomChapter),
+    where("room", "==", ch),
     orderBy("ts", "asc")
   );
 
-  onSnapshot(q, snap => {
-    const unlocked = canRead(roomChapter);
-    messagesDiv.innerHTML = "";
-
-    if (!currentName) {
-      messagesDiv.innerHTML = `<span class="empty-note">Choose a name above to join.</span>`;
-      return;
-    }
-
+  activeUnsub = onSnapshot(q, snap => {
+    const unlocked = canRead(ch);
     let msgs = [];
     snap.forEach(d => msgs.push({ id: d.id, ...d.data() }));
-
-    // filter: if locked, show only own messages
     if (!unlocked) msgs = msgs.filter(m => m.name === currentName);
 
+    msgDiv.innerHTML = "";
+
+    if (!currentName) {
+      msgDiv.innerHTML = `<span class="empty-note">Choose your name above to join.</span>`; return;
+    }
     if (msgs.length === 0) {
-      if (!unlocked) {
-        messagesDiv.innerHTML = `<div class="locked-note"><strong>Write mode</strong>Post your thoughts — you'll see everyone's once you reach chapter ${roomChapter}.</div>`;
+      if (!unlocked && ch !== 0) {
+        msgDiv.innerHTML = `<div class="locked-note"><strong>Write mode</strong>Post freely — you'll see everyone's thoughts once you reach chapter ${ch}.</div>`;
       } else {
-        messagesDiv.innerHTML = `<span class="empty-note">No thoughts yet. Be the first!</span>`;
+        msgDiv.innerHTML = `<span class="empty-note">No thoughts yet. Be the first!</span>`;
       }
       return;
     }
@@ -466,39 +587,82 @@ function subscribeRoom(roomChapter) {
     msgs.forEach(m => {
       const el = document.createElement("div");
       el.className = "msg" + (m.name === currentName ? " mine" : "");
-      const emoji = EMOJIS[m.name] || "✦";
-      el.innerHTML = `<span class="msg-name">${emoji} ${m.name}</span><span class="msg-text">${escHtml(m.text)}</span>`;
-      messagesDiv.appendChild(el);
+      el.innerHTML = `<span class="msg-name">${EMOJIS[m.name]||"✦"} ${m.name}</span><span class="msg-text">${esc(m.text)}</span>`;
+      msgDiv.appendChild(el);
     });
-
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-  });
+    msgDiv.scrollTop = msgDiv.scrollHeight;
+  }, err => console.error(err));
 }
 
-async function sendMessage(roomChapter) {
-  if (!currentName) { alert("Please choose your name first."); return; }
-  const ta = document.getElementById(`ta-${roomChapter}`);
-  const text = ta.value.trim();
-  if (!text) return;
-
+async function sendMessage() {
+  if (!currentName) { alert("Choose your name first."); return; }
+  const text = modalTA.value.trim();
+  if (!text || activeRoom === null) return;
   try {
     await addDoc(collection(db, "spoiler_messages"), {
-      room: roomChapter,
-      name: currentName,
-      text,
-      ts: serverTimestamp()
+      room: activeRoom, name: currentName, text, ts: serverTimestamp()
     });
-    ta.value = "";
-    ta.style.height = "auto";
-  } catch(e) { console.error("Send error:", e); alert("Could not send. Try again."); }
+    modalTA.value = ""; modalTA.style.height = "auto";
+  } catch(e) { console.error(e); alert("Could not send. Try again."); }
 }
 
-function escHtml(s) {
+function esc(s) {
   return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>");
 }
 
-// initial render
-renderRooms();
+/* ── MAP PLAYERS ── */
+const map = document.querySelector(".map");
+
+const rowY  = [22.7, 32.2, 41.2, 51.5, 60.9, 69.6];
+const rowX1 = [10.3, 10.8, 10.8, 11.3, 11.3, 10.8];
+const xStep = 8.7;
+function pos(row, col) { return { x: rowX1[row] + col * xStep, y: rowY[row] }; }
+
+const positions = {
+  0: pos(0,0), 1:pos(0,0), 2:pos(0,1), 3:pos(0,2), 4:pos(0,3), 5:pos(0,4),
+  6:pos(0,5), 7:pos(0,6), 8:pos(0,7), 9:pos(0,8), 10:pos(0,9),
+  11:pos(1,0),12:pos(1,1),13:pos(1,2),14:pos(1,3),15:pos(1,4),
+  16:pos(1,5),17:pos(1,6),18:pos(1,7),19:pos(1,8),20:pos(1,9),
+  21:pos(2,0),22:pos(2,1),23:pos(2,2),24:pos(2,3),25:pos(2,4),
+  26:pos(2,5),27:pos(2,6),28:pos(2,7),29:pos(2,8),30:pos(2,9),
+  31:pos(3,0),32:pos(3,1),33:pos(3,2),34:pos(3,3),35:pos(3,4),
+  36:pos(3,5),37:pos(3,6),38:pos(3,7),39:pos(3,8),40:pos(3,9),
+  41:pos(4,0),42:pos(4,1),43:pos(4,2),44:pos(4,3),45:pos(4,4),
+  46:pos(4,5),47:pos(4,6),48:pos(4,7),49:pos(4,8),50:pos(4,9),
+  51:pos(5,0),52:pos(5,1),53:pos(5,2),54:pos(5,3),55:pos(5,4),
+  56:pos(5,5),57:pos(5,6),58:pos(5,7),59:pos(5,8),60:pos(5,9),
+  61:pos(5,0),62:pos(5,1),63:pos(5,2),64:pos(5,3),65:pos(5,4),66:pos(5,5),
+};
+
+function getOrCreateMarker(id) {
+  let m = document.getElementById("player-"+id);
+  if (!m) {
+    m = document.createElement("div");
+    m.className = "player"; m.id = "player-"+id;
+    m.textContent = EMOJIS[id] || "✨";
+    map.appendChild(m);
+  }
+  return m;
+}
+function movePlayer(id, chapter) {
+  const m = getOrCreateMarker(id);
+  const p = positions[chapter] || positions[0];
+  const o = playerOffsets[id] || {x:0,y:0};
+  m.style.left = (p.x+o.x)+"%"; m.style.top = (p.y+o.y)+"%";
+  m.title = id+" — chapter "+chapter;
+}
+
+import { onSnapshot as _on, collection as _col } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+onSnapshot(collection(db,"first_bingo"), snap => {
+  snap.forEach(d => movePlayer(d.id, Number(d.data().chapterProgress??0)));
+}, err => console.error(err));
+
+map.addEventListener("click", e => {
+  const r = map.getBoundingClientRect();
+  console.log(`{ x: ${((e.clientX-r.left)/r.width*100).toFixed(1)}, y: ${((e.clientY-r.top)/r.height*100).toFixed(1)} }`);
+});
+
+renderButtons();
 </script>
 </body>
 </html>
