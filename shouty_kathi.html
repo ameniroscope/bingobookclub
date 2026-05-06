@@ -258,7 +258,24 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
   text-transform:uppercase;cursor:pointer;transition:background 0.2s;white-space:nowrap;}
 .send-btn:hover{background:#5a3010;}
 
-@media(max-width:800px){.wrap{grid-template-columns:1fr;}}
+@media (max-width: 800px) {
+    body {
+        padding: 15px;
+        gap: 20px;
+        padding-top: 20px;
+    }
+
+    .player-header {
+        position: static;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        margin-bottom: 20px;  /* ← Change this */
+        order: 1;
+        z-index: 10;
+    }
+
+  
 </style>
 </head>
 <body>
