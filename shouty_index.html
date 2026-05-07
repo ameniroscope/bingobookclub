@@ -203,7 +203,6 @@ const PLAYERS = {
 };
 
 /* MAP POSITIONS - 18 chunks (3 rows × 6 columns) */
-
 const colX = [
   13.54,
   28.30,
@@ -270,7 +269,7 @@ window.findMapPosition = function () {
 
 const progress = { marine:0, kathi:0 };
 
-function placeMarker(pid, ch) {
+function placeMarker(pid, chunkNum) {
   let m = document.getElementById("marker-" + pid);
 
   if (!m) {
@@ -281,7 +280,7 @@ function placeMarker(pid, ch) {
     mapEl.appendChild(m);
   }
 
-  const p = POS[Math.min(ch,18)] || POS[1];
+  const p = POS[Math.min(Math.max(chunkNum, 1), 18)] || POS[1];
   const o = PLAYERS[pid].offset;
 
   m.style.left = (p.x + o.x) + "%";
@@ -297,8 +296,6 @@ function snapNearest(cx,cy){
   let bestD = Infinity;
 
   for(const [ch,p] of Object.entries(POS)){
-    if(+ch === 0) continue;
-
     const d = Math.hypot(xp - p.x, yp - p.y);
 
     if(d < bestD){
@@ -380,12 +377,14 @@ async function endDrag(cx,cy){
     m.classList.remove("draggable");
   }
 
-  const ch = snapNearest(cx,cy);
-  progress[dragPid] = ch;
-  placeMarker(dragPid,ch);
+  const chunkNum = snapNearest(cx,cy);
+  progress[dragPid] = chunkNum;
+  placeMarker(dragPid, chunkNum);
 
-  // Save as room number (chunk + 5, so chunk 1 = room 6)
-  await setDoc(doc(db,"progress_spoiler",dragPid),{room:ch + 5},{merge:true});
+  // Convert chunk number to chapter number for Firebase
+  // Chunk 1 = chapter 6, Chunk 2 = chapter 12, etc.
+  const chapterNum = chunkNum * 6;
+  await setDoc(doc(db,"progress_spoiler",dragPid),{chapter: chapterNum},{merge:true});
 
   dragPid = null;
 }
@@ -397,20 +396,22 @@ window.addEventListener("touchend", e => {
 });
 
 /* Starting markers */
-placeMarker("marine", 0);
-placeMarker("kathi", 0);
+placeMarker("marine", 1);
+placeMarker("kathi", 1);
 mapHint.style.display = "block";
 
-/* Live markers */
+/* Live markers - listen to Firebase and update positions */
 onSnapshot(collection(db,"progress_spoiler"), snap => {
   snap.forEach(d => {
     if(!PLAYERS[d.id]) return;
 
-    // Read room number and convert to chunk (room 6 = chunk 1, room 7 = chunk 2, etc.)
-    const roomNum = d.data().room || 6;
-    const ch = Math.max(0, roomNum - 5); // room 6 becomes chunk 1, room 5 or less becomes chunk 0
-    progress[d.id] = ch;
-    placeMarker(d.id,ch);
+    // Read chapter number and convert to chunk number
+    // Chapter 6 = Chunk 1, Chapter 12 = Chunk 2, etc.
+    const chapterNum = d.data().chapter || 0;
+    const chunkNum = Math.ceil(chapterNum / 6);
+    
+    progress[d.id] = chunkNum;
+    placeMarker(d.id, chunkNum);
   });
 
   mapHint.style.display = "block";
