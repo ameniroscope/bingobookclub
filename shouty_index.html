@@ -55,8 +55,8 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
   grid-template-columns:420px 1fr;
   gap:3rem;
 
-  align-items:center;      /* vertically center content */
-  justify-content:center;  /* horizontally center grid */
+  align-items:center;
+  justify-content:center;
 }
 
 /* ── LEFT: MAP ── */
@@ -142,7 +142,7 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
     Welcome to our deeply unhinged little corner of literary chaos — a place built entirely for screaming about books, questionable decisions, emotional damage, and whatever Violet is doing this week.
   </p>
   <p>
-    Here, all forms of dramatic shouting are encouraged. Rage at Xaden. Defend your favourites with your life. Type in all caps when things become unbearable. Cry, spiral, theorise, and recover together chapter by chapter.
+    Here, all forms of dramatic shouting are encouraged. Rage at Xaden. Defend your favourites with your life. Type in all caps when things become unbearable. Cry, spiral, theorise, and recover together chunk by chunk.
   </p>
   <p>
     This is our spoiler-safe sanctuary for chaotic commentary, cursed observations, and the kind of book discussions that start sensible and end with keyboard smashing.
@@ -176,7 +176,6 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 
 
 <script type="module">
-// [Script content remains the same - keeping it unchanged]
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
 import {
   getFirestore, collection, onSnapshot,
@@ -203,7 +202,7 @@ const PLAYERS = {
   kathi:  { emoji:"🍄", offset:{x:0,y:5} },
 };
 
-/* MAP POSITIONS */
+/* MAP POSITIONS - 18 chunks (3 rows × 6 columns) */
 
 const colX = [
   13.54,
@@ -222,24 +221,16 @@ const rowY = [
 
 const POS = {};
 
-let chapter = 1;
+let chunk = 1;
 
 for (let r = 0; r < rowY.length; r++) {
   for (let c = 0; c < colX.length; c++) {
-    POS[chapter] = {
+    POS[chunk] = {
       x: colX[c],
       y: rowY[r]
     };
-    chapter++;
+    chunk++;
   }
-}
-
-/* optional helper */
-function mkPos(r,c){
-  return {
-    x: topRowX[c] ?? rowX1[r],
-    y: rowY[r]
-  };
 }
 
 /* POSITION FINDER */
@@ -362,7 +353,7 @@ function onMove(cx,cy){
 
   const ch = snapNearest(cx,cy);
 
-  tooltip.textContent = "Chapter " + ch;
+  tooltip.textContent = "Chunk " + ch;
   tooltip.style.left = xp + "%";
   tooltip.style.top = yp + "%";
   tooltip.classList.add("show");
@@ -393,7 +384,8 @@ async function endDrag(cx,cy){
   progress[dragPid] = ch;
   placeMarker(dragPid,ch);
 
-  await setDoc(doc(db,"progress_spoiler",dragPid),{chapter:ch},{merge:true});
+  // Save as room number (chunk + 5, so chunk 1 = room 6)
+  await setDoc(doc(db,"progress_spoiler",dragPid),{room:ch + 5},{merge:true});
 
   dragPid = null;
 }
@@ -414,7 +406,9 @@ onSnapshot(collection(db,"progress_spoiler"), snap => {
   snap.forEach(d => {
     if(!PLAYERS[d.id]) return;
 
-    const ch = d.data().chapter || 0;
+    // Read room number and convert to chunk (room 6 = chunk 1, room 7 = chunk 2, etc.)
+    const roomNum = d.data().room || 6;
+    const ch = Math.max(0, roomNum - 5); // room 6 becomes chunk 1, room 5 or less becomes chunk 0
     progress[d.id] = ch;
     placeMarker(d.id,ch);
   });
