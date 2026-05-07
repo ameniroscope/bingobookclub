@@ -423,24 +423,24 @@ const db = getFirestore(fb);
 
 const ROOMS = [
   {ch:0,  label:"General"},
-  {ch:6,  label:"Chunk 1"},
-  {ch:12, label:"Chunk 2"},
-  {ch:18, label:"Chunk 3"},
-  {ch:24, label:"Chunk 4"},
-  {ch:30, label:"Chunk 5"},
-  {ch:36, label:"Chunk 6"},
-  {ch:42, label:"Chunk 7"},
-  {ch:48, label:"Chunk 8"},
-  {ch:54, label:"Chunk 9"},
-  {ch:60, label:"Chunk 10"},
-  {ch:66, label:"Chunk 11"},
-  {ch:72, label:"Chunk 12"},
-  {ch:78, label:"Chunk 13"},
-  {ch:84, label:"Chunk 14"},
-  {ch:90, label:"Chunk 15"},
-  {ch:96, label:"Chunk 16"},
-  {ch:102, label:"Chunk 17"},
-  {ch:108, label:"Chunk 18"},
+  {ch:1,  label:"Chunk 1"},
+  {ch:2, label:"Chunk 2"},
+  {ch:3, label:"Chunk 3"},
+  {ch:4, label:"Chunk 4"},
+  {ch:5, label:"Chunk 5"},
+  {ch:6, label:"Chunk 6"},
+  {ch:7, label:"Chunk 7"},
+  {ch:8, label:"Chunk 8"},
+  {ch:9, label:"Chunk 9"},
+  {ch:10, label:"Chunk 10"},
+  {ch:11, label:"Chunk 11"},
+  {ch:12, label:"Chunk 12"},
+  {ch:13, label:"Chunk 13"},
+  {ch:14, label:"Chunk 14"},
+  {ch:15, label:"Chunk 15"},
+  {ch:16, label:"Chunk 16"},
+  {ch:17, label:"Chunk 17"},
+  {ch:18, label:"Chunk 18"},
 ];
 
 const GRID_SIZE = 25;
@@ -632,9 +632,9 @@ let activeRoom = null, activeUnsub = null;
 
 onSnapshot(doc(db,'progress_spoiler',PID), d=>{
   if(d.exists()) {
-    // Read the chapter field from Firebase
-    myProgress = d.data().chapter || 0;
-    console.log('My progress (chapter):', myProgress);
+    // Read the room field from Firebase (0 = general, 1 = chunk 1, etc.)
+    myProgress = d.data().room || 0;
+    console.log('My progress (room):', myProgress);
   }
   renderRooms();
 }, err=>console.error(err));
@@ -669,12 +669,12 @@ const chatSend  = document.getElementById('chatSend');
 function openChat(room){
   activeRoom=room;
   const canRead = room.ch===0 || myProgress>=room.ch;
-  document.getElementById('chatRoomLabel').textContent = room.ch===0?'General Room':`Room — Chunk ${Math.ceil(room.ch/6)}`;
+  document.getElementById('chatRoomLabel').textContent = room.ch===0?'General Room':`Room — ${room.label}`;
   document.getElementById('chatTitle').textContent = room.label;
   document.getElementById('chatSub').textContent   = '';
   const st=document.getElementById('chatStatus');
   st.className='chat-status '+(room.ch===0?'open':canRead?'unlocked':'locked');
-  st.textContent = room.ch===0?'Open':canRead?'Unlocked — all messages visible':'Write only — visible after chunk '+Math.ceil(room.ch/6);
+  st.textContent = room.ch===0?'Open':canRead?'Unlocked — all messages visible':`Write only — visible after ${room.label.toLowerCase()}`;
   overlay.classList.add('open');
   document.body.style.overflow='hidden';
   chatTA.value=''; chatTA.style.height='auto';
@@ -707,7 +707,7 @@ function subscribeChat(room){
     msgDiv.innerHTML='';
     if(msgs.length===0){
       msgDiv.innerHTML=(!canRead&&room.ch!==0)
-        ?`<div class="write-note"><strong>Write mode</strong>Post freely — you'll see everyone's thoughts once you reach chunk ${Math.ceil(room.ch/6)}.</div>`
+        ?`<div class="write-note"><strong>Write mode</strong>Post freely — you'll see everyone's thoughts once you reach ${room.label.toLowerCase()}.</div>`
         :`<span class="empty-msg">No thoughts yet. Be the first!</span>`;
       return;
     }
