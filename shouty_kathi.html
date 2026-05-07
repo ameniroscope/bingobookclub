@@ -203,7 +203,7 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 /* ── ROOMS (right column) ── */
 .rooms-col{display:flex;flex-direction:column;}
 
-.rooms-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.rooms-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-height:600px;overflow-y:auto;padding-right:4px;}
 .room-btn{position:relative;height:90px;display:flex;flex-direction:column;align-items:center;
   justify-content:center;gap:0.25rem;border-radius:6px;cursor:pointer;transition:all 0.2s;border:1.5px solid;}
 .room-btn:hover{transform:translateY(-2px);box-shadow:0 5px 18px rgba(0,0,0,0.28);}
@@ -259,7 +259,6 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 .send-btn:hover{background:#5a3010;}
 
 @media (max-width: 800px) {
-@media (max-width: 800px) {
     body {
         padding: 15px;
         padding-top: 20px;
@@ -270,27 +269,27 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
         flex-direction: column;
         align-items: center;
         text-align: center;
-        margin-bottom: 30px;  /* ← Space below header */
+        margin-bottom: 30px;
         z-index: 10;
     }
     
     .player-header .player-name {
-        font-size: 2rem;  /* Smaller on mobile */
+        font-size: 2rem;
     }
     
     .img-frame {
-        width: 70px;  /* Smaller avatar on mobile */
+        width: 70px;
         height: 70px;
     }
 
     .wrap {
-        grid-template-columns: 1fr;  /* Stack columns */
+        grid-template-columns: 1fr;
         gap: 2rem;
         padding: 1rem;
     }
     
     .bingo-controls {
-        position: static;  /* Move controls below card on mobile */
+        position: static;
         flex-direction: row;
         left: auto;
         top: auto;
@@ -305,8 +304,11 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
         font-size: 0.65rem;
         padding: 0.5rem 0.8rem;
     }
+    
+    .rooms-grid {
+        max-height: none;
+    }
 }
-
   
 </style>
 </head>
@@ -347,7 +349,7 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 
   <!-- RIGHT: ROOMS -->
   <div class="rooms-col">
-    <div class="section-title">CHAPTER ROOMS</div>
+    <div class="section-title">CHUNK ROOMS</div>
     
     <div class="rooms-grid" id="roomsGrid"></div>
   </div>
@@ -421,13 +423,24 @@ const db = getFirestore(fb);
 
 const ROOMS = [
   {ch:0,  label:"General",      sub:"No spoilers — anything goes"},
-  {ch:6,  label:"Up to Ch. 6",  sub:"Chapters 1–6"},
-  {ch:16, label:"Up to Ch. 16", sub:"Chapters 7–16"},
-  {ch:26, label:"Up to Ch. 26", sub:"Chapters 17–26"},
-  {ch:36, label:"Up to Ch. 36", sub:"Chapters 27–36"},
-  {ch:46, label:"Up to Ch. 46", sub:"Chapters 37–46"},
-  {ch:56, label:"Up to Ch. 56", sub:"Chapters 47–56"},
-  {ch:66, label:"Up to Ch. 66", sub:"Chapters 57–66"},
+  {ch:6,  label:"Chunk 1",      sub:"Up to chunk 1"},
+  {ch:12, label:"Chunk 2",      sub:"Up to chunk 2"},
+  {ch:18, label:"Chunk 3",      sub:"Up to chunk 3"},
+  {ch:24, label:"Chunk 4",      sub:"Up to chunk 4"},
+  {ch:30, label:"Chunk 5",      sub:"Up to chunk 5"},
+  {ch:36, label:"Chunk 6",      sub:"Up to chunk 6"},
+  {ch:42, label:"Chunk 7",      sub:"Up to chunk 7"},
+  {ch:48, label:"Chunk 8",      sub:"Up to chunk 8"},
+  {ch:54, label:"Chunk 9",      sub:"Up to chunk 9"},
+  {ch:60, label:"Chunk 10",     sub:"Up to chunk 10"},
+  {ch:66, label:"Chunk 11",     sub:"Up to chunk 11"},
+  {ch:72, label:"Chunk 12",     sub:"Up to chunk 12"},
+  {ch:78, label:"Chunk 13",     sub:"Up to chunk 13"},
+  {ch:84, label:"Chunk 14",     sub:"Up to chunk 14"},
+  {ch:90, label:"Chunk 15",     sub:"Up to chunk 15"},
+  {ch:96, label:"Chunk 16",     sub:"Up to chunk 16"},
+  {ch:102, label:"Chunk 17",    sub:"Up to chunk 17"},
+  {ch:108, label:"Chunk 18",    sub:"Up to chunk 18"},
 ];
 
 const GRID_SIZE = 25;
@@ -612,7 +625,7 @@ async function init() {
 init();
 
 /* ══════════════════════════════════════════
-   ROOMS / CHAT (unchanged)
+   ROOMS / CHAT
 ══════════════════════════════════════════ */
 let myProgress = 0;
 let activeRoom = null, activeUnsub = null;
@@ -647,12 +660,12 @@ const chatSend  = document.getElementById('chatSend');
 function openChat(room){
   activeRoom=room;
   const canRead = room.ch===0 || myProgress>=room.ch;
-  document.getElementById('chatRoomLabel').textContent = room.ch===0?'General Room':`Room — Ch. ${room.ch}`;
+  document.getElementById('chatRoomLabel').textContent = room.ch===0?'General Room':`Room — Chunk ${Math.ceil(room.ch/6)}`;
   document.getElementById('chatTitle').textContent = room.label;
   document.getElementById('chatSub').textContent   = room.sub;
   const st=document.getElementById('chatStatus');
   st.className='chat-status '+(room.ch===0?'open':canRead?'unlocked':'locked');
-  st.textContent = room.ch===0?'Open':canRead?'Unlocked — all messages visible':'Write only — visible after ch '+room.ch;
+  st.textContent = room.ch===0?'Open':canRead?'Unlocked — all messages visible':'Write only — visible after chunk '+Math.ceil(room.ch/6);
   overlay.classList.add('open');
   document.body.style.overflow='hidden';
   chatTA.value=''; chatTA.style.height='auto';
@@ -685,7 +698,7 @@ function subscribeChat(room){
     msgDiv.innerHTML='';
     if(msgs.length===0){
       msgDiv.innerHTML=(!canRead&&room.ch!==0)
-        ?`<div class="write-note"><strong>Write mode</strong>Post freely — you'll see everyone's thoughts once you reach chapter ${room.ch}.</div>`
+        ?`<div class="write-note"><strong>Write mode</strong>Post freely — you'll see everyone's thoughts once you reach chunk ${Math.ceil(room.ch/6)}.</div>`
         :`<span class="empty-msg">No thoughts yet. Be the first!</span>`;
       return;
     }
