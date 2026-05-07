@@ -203,7 +203,7 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 /* ── ROOMS (right column) ── */
 .rooms-col{display:flex;flex-direction:column;}
 
-.rooms-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-height:600px;overflow-y:auto;padding-right:4px;}
+.rooms-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;max-height:600px;overflow-y:auto;padding-right:4px;}
 .room-btn{position:relative;height:90px;display:flex;flex-direction:column;align-items:center;
   justify-content:center;gap:0.25rem;border-radius:6px;cursor:pointer;transition:all 0.2s;border:1.5px solid;}
 .room-btn:hover{transform:translateY(-2px);box-shadow:0 5px 18px rgba(0,0,0,0.28);}
@@ -422,25 +422,25 @@ const fb = initializeApp({
 const db = getFirestore(fb);
 
 const ROOMS = [
-  {ch:0,  label:"General",      sub:"No spoilers — anything goes"},
-  {ch:6,  label:"Chunk 1",      sub:"Up to chunk 1"},
-  {ch:12, label:"Chunk 2",      sub:"Up to chunk 2"},
-  {ch:18, label:"Chunk 3",      sub:"Up to chunk 3"},
-  {ch:24, label:"Chunk 4",      sub:"Up to chunk 4"},
-  {ch:30, label:"Chunk 5",      sub:"Up to chunk 5"},
-  {ch:36, label:"Chunk 6",      sub:"Up to chunk 6"},
-  {ch:42, label:"Chunk 7",      sub:"Up to chunk 7"},
-  {ch:48, label:"Chunk 8",      sub:"Up to chunk 8"},
-  {ch:54, label:"Chunk 9",      sub:"Up to chunk 9"},
-  {ch:60, label:"Chunk 10",     sub:"Up to chunk 10"},
-  {ch:66, label:"Chunk 11",     sub:"Up to chunk 11"},
-  {ch:72, label:"Chunk 12",     sub:"Up to chunk 12"},
-  {ch:78, label:"Chunk 13",     sub:"Up to chunk 13"},
-  {ch:84, label:"Chunk 14",     sub:"Up to chunk 14"},
-  {ch:90, label:"Chunk 15",     sub:"Up to chunk 15"},
-  {ch:96, label:"Chunk 16",     sub:"Up to chunk 16"},
-  {ch:102, label:"Chunk 17",    sub:"Up to chunk 17"},
-  {ch:108, label:"Chunk 18",    sub:"Up to chunk 18"},
+  {ch:0,  label:"General"},
+  {ch:6,  label:"Chunk 1"},
+  {ch:12, label:"Chunk 2"},
+  {ch:18, label:"Chunk 3"},
+  {ch:24, label:"Chunk 4"},
+  {ch:30, label:"Chunk 5"},
+  {ch:36, label:"Chunk 6"},
+  {ch:42, label:"Chunk 7"},
+  {ch:48, label:"Chunk 8"},
+  {ch:54, label:"Chunk 9"},
+  {ch:60, label:"Chunk 10"},
+  {ch:66, label:"Chunk 11"},
+  {ch:72, label:"Chunk 12"},
+  {ch:78, label:"Chunk 13"},
+  {ch:84, label:"Chunk 14"},
+  {ch:90, label:"Chunk 15"},
+  {ch:96, label:"Chunk 16"},
+  {ch:102, label:"Chunk 17"},
+  {ch:108, label:"Chunk 18"},
 ];
 
 const GRID_SIZE = 25;
@@ -645,7 +645,7 @@ function renderRooms(){
     const badge = isGeneral?'Open':unlocked?'Unlocked':'Write only';
     const btn = document.createElement('div');
     btn.className='room-btn '+cls;
-    btn.innerHTML=`<span class="btn-badge">${badge}</span><span class="btn-label">${r.label}</span><span class="btn-sub">${r.sub}</span>`;
+    btn.innerHTML=`<span class="btn-badge">${badge}</span><span class="btn-label">${r.label}</span>`;
     btn.addEventListener('click',()=>openChat(r));
     grid.appendChild(btn);
   });
