@@ -199,44 +199,40 @@ const tooltip = document.getElementById("mapTooltip");
 const mapHint = document.getElementById("mapHint");
 
 const PLAYERS = {
-  marine: { emoji:"🧜‍♀️", offset:{x:-2,y:0} },
-  kathi:  { emoji:"🍄", offset:{x:2,y:0} },
+  marine: { emoji:"🧜‍♀️", offset:{x:0,y:-5} },
+  kathi:  { emoji:"🍄", offset:{x:0,y:5} },
 };
 
 /* MAP POSITIONS */
 
+const colX = [
+  13.54,
+  28.30,
+  43.06,
+  57.43,
+  72.03,
+  86.87
+];
+
 const rowY = [
-  29.50,
-  40.01,
-  50.83,
-  61.65,
-  72.31,
-  83.77
+  35.00,
+  54.28,
+  74.25
 ];
 
-const rowX1 = [
-  8.86,
-  9.33,
-  9.10,
-  9.10,
-  9.10,
-  9.10
-];
+const POS = {};
 
-/* exact top row x positions */
-const topRowX = [
-  8.86,
-  17.43,
-  26.00,
-  34.10,
-  42.67,
-  51.00,
-  59.10,
-  66.71,
-  75.29,
-  83.14,
-  91.00
-];
+let chapter = 1;
+
+for (let r = 0; r < rowY.length; r++) {
+  for (let c = 0; c < colX.length; c++) {
+    POS[chapter] = {
+      x: colX[c],
+      y: rowY[r]
+    };
+    chapter++;
+  }
+}
 
 /* optional helper */
 function mkPos(r,c){
@@ -244,17 +240,6 @@ function mkPos(r,c){
     x: topRowX[c] ?? rowX1[r],
     y: rowY[r]
   };
-}
-
-const POS = {0: mkPos(0,0)};
-let _c = 0;
-
-for(let r = 0; r < rowY.length; r++){
-  for(let c = 0; c < 11; c++){
-    _c++;
-    if(_c > 66) break;
-    POS[_c] = mkPos(r,c);
-  }
 }
 
 /* POSITION FINDER */
@@ -305,7 +290,7 @@ function placeMarker(pid, ch) {
     mapEl.appendChild(m);
   }
 
-  const p = POS[Math.min(ch,66)] || POS[0];
+  const p = POS[Math.min(ch,18)] || POS[1];
   const o = PLAYERS[pid].offset;
 
   m.style.left = (p.x + o.x) + "%";
