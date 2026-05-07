@@ -381,10 +381,8 @@ async function endDrag(cx,cy){
   progress[dragPid] = chunkNum;
   placeMarker(dragPid, chunkNum);
 
-  // Convert chunk number to chapter number for Firebase
-  // Chunk 1 = chapter 6, Chunk 2 = chapter 12, etc.
-  const chapterNum = chunkNum * 6;
-  await setDoc(doc(db,"progress_spoiler",dragPid),{chapter: chapterNum},{merge:true});
+  // Save chunk number directly as room number (chunk 1 = room 1, chunk 2 = room 2, etc.)
+  await setDoc(doc(db,"progress_spoiler",dragPid),{room: chunkNum},{merge:true});
 
   dragPid = null;
 }
@@ -405,13 +403,11 @@ onSnapshot(collection(db,"progress_spoiler"), snap => {
   snap.forEach(d => {
     if(!PLAYERS[d.id]) return;
 
-    // Read chapter number and convert to chunk number
-    // Chapter 6 = Chunk 1, Chapter 12 = Chunk 2, etc.
-    const chapterNum = d.data().chapter || 0;
-    const chunkNum = Math.ceil(chapterNum / 6);
+    // Read room number directly (room 0 = general, room 1 = chunk 1, etc.)
+    const roomNum = d.data().room || 0;
     
-    progress[d.id] = chunkNum;
-    placeMarker(d.id, chunkNum);
+    progress[d.id] = roomNum;
+    placeMarker(d.id, roomNum);
   });
 
   mapHint.style.display = "block";
