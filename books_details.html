@@ -601,13 +601,65 @@ body {
 }
 
 .no-card-msg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
   padding: 2rem;
   text-align: center;
   font-family: 'Cinzel', serif;
   color: #c9a84c88;
-  font-size: 0.85rem;
+  line-height: 1.8;
+}
+
+.construction-icon {
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.construction-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #c9a84c;
   letter-spacing: 0.08em;
-  line-height: 1.6;
+  margin-bottom: 0.5rem;
+}
+
+.construction-book {
+  font-size: 0.9rem;
+  color: #f0e6c8;
+  font-style: italic;
+  margin-bottom: 1rem;
+}
+
+.construction-text {
+  font-size: 0.75rem;
+  color: #7a6a58;
+  max-width: 380px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+.construction-recommender {
+  margin-top: 1.5rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #c9a84c22;
+  border-radius: 0.5rem;
+  background: rgba(201,168,76,0.03);
+  font-size: 0.7rem;
+  color: #a89070;
+}
+
+.construction-emoji {
+  font-size: 1rem;
+  margin-right: 0.3rem;
 }
   
 </style>
@@ -897,9 +949,17 @@ function renderSlide(book) {
   if (!cardData) {
     return `<div class="slide"><div class="card-scroll">
       <div class="no-card-msg">
-        📖<br><br>
-        Detailed card for <strong>${book.title}</strong> is coming soon!<br><br>
-        This book was recommended by ${book.recommenderEmoji} ${book.recommender}
+        <div class="construction-icon">🏗️</div>
+        <div class="construction-title">Card Under Construction</div>
+        <div class="construction-book">${book.title}</div>
+        <div class="construction-text">
+          The detailed information card for this book is being crafted with care. 
+          In the meantime, you can still vote for it on the main page!
+        </div>
+        <div class="construction-recommender">
+          <span class="construction-emoji">${book.recommenderEmoji}</span>
+          Recommended by ${book.recommender}
+        </div>
       </div>
     </div></div>`;
   }
