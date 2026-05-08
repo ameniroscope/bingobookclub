@@ -3,11 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!--
-  PLAYER CONFIG — change these lines per file:
-    marine.html  →  PID = "marine"  PEMOJI = "🧜‍♀️"  PNAME = "Marine"  CARD_PASSWORD = "marinara"
-    kathi.html   →  PID = "kathi"   PEMOJI = "🍄"    PNAME = "Kathi"   CARD_PASSWORD = "your-password"
--->
 <title>Shouty Bingo - Marine</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;600&display=swap');
@@ -20,7 +15,6 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
   radial-gradient(ellipse 60% 70% at 85% 75%,rgba(160,110,40,0.10) 0%,transparent 55%),
   radial-gradient(ellipse 100% 100% at 50% 50%,transparent 60%,rgba(80,40,5,0.18) 100%);}
 
-  /* Player Header */
 .player-header {
     position: fixed;
     top: 24px;
@@ -56,7 +50,6 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
     white-space: nowrap;
 }
   
-/* HOME BUTTON */
 .home-btn{
   position:fixed;
   top:1.5rem;
@@ -81,7 +74,6 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
   box-shadow:0 4px 12px rgba(0,0,0,0.4);
 }
 
-/* LAYOUT */
 .wrap{
   position:relative;
   z-index:1;
@@ -96,7 +88,6 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
   justify-content:center;
 }
 
-/* Section titles */
 .section-title{
   font-family:'Cinzel',serif;
   font-size:1.1rem;
@@ -107,10 +98,8 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
   margin-bottom:0.5rem;
 }
 
-/* ── BINGO ── */
 .bingo-section{display:flex;flex-direction:column;}
 
-/* Lock buttons container on the left */
 .bingo-controls{
   position:absolute;
   left:-50px;
@@ -121,14 +110,12 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
   gap:0.5rem;
 }
 
-/* Lock button */
 .bingo-lock-btn{background:none;border:1.5px solid var(--worn);border-radius:50%;
   width:36px;height:36px;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;
   justify-content:center;transition:all 0.2s;flex-shrink:0;padding:0;}
 .bingo-lock-btn:hover{border-color:var(--gold);}
 .bingo-lock-btn.unlocked{border-color:var(--gold);background:rgba(139,105,20,0.15);}
 
-/* Bingo badge */
 .bingo-badge{
   background:#3b1e06;
   color:var(--gold-lt);
@@ -146,8 +133,7 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 }
 .bingo-badge.show{display:inline;}
 
-/* Password modal — uses normal flow wrapper so it doesn't collapse the iframe */
-.lock-modal-wrap{display:none;position:fixed;inset:0;z-index:400;background:rgba(20,10,4,1);
+.lock-modal-wrap{display:none;position:fixed;inset:0;z-index:400;background:rgba(20,10,4,0.95);
   align-items:center;justify-content:center;}
 .lock-modal-wrap.open{display:flex;}
 .lock-modal{background:var(--parch);border:2px solid var(--worn);border-radius:10px;
@@ -166,7 +152,6 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
   border:1px solid var(--gold-lt);border-radius:4px;cursor:pointer;transition:background 0.2s;}
 .lock-modal-btns button:hover{background:#5a3010;}
 
-/* Bingo card image container - NO BORDER OR BACKGROUND */
 .bingo-card-wrap{
   position:relative;
   width:100%;
@@ -175,7 +160,6 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
   background-size:100% 100%;
 }
 
-/* Grid overlaid on the image — same positioning as original bingo page */
 .bingo-grid{position:absolute;left:50%;top:35.8%;width:73%;aspect-ratio:1/1;
   transform:translateX(-50%);display:grid;
   grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(5,1fr);}
@@ -186,12 +170,10 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 .bingo-cell.marked{background:rgba(212,175,55,0.55);}
 .bingo-cell.free{font-weight:600;color:var(--gold);cursor:default;}
 
-/* Cell text (read mode) */
 .cell-text{width:100%;height:100%;display:flex;align-items:center;justify-content:center;
   text-align:center;font-family:'IM Fell English',Georgia,serif;font-size:inherit;
   line-height:1.2;color:#2a1a0a;padding:2px;overflow-wrap:break-word;word-break:break-word;}
 
-/* Cell textarea (edit mode) */
 .bingo-cell textarea{width:100%;height:100%;border:none;background:rgba(255,252,240,0.7);
   outline:none;resize:none;text-align:center;font-family:'IM Fell English',Georgia,serif;
   font-size:inherit;line-height:1.2;color:#2a1a0a;padding:2px;overflow:hidden;
@@ -200,7 +182,6 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 .bingo-hint{font-size:10px;color:var(--gold);margin-top:5px;font-style:italic;text-align:center;}
 .bingo-status{font-size:10px;color:var(--ink-faded);font-style:italic;text-align:center;margin-top:3px;min-height:1em;}
 
-/* ── ROOMS (right column) ── */
 .rooms-col{display:flex;flex-direction:column;}
 
 .rooms-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;max-height:none;padding-right:4px;}
@@ -218,7 +199,6 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 .room-btn.general .btn-badge,.room-btn.unlocked .btn-badge{background:var(--gold);color:var(--parch);}
 .room-btn.locked .btn-badge{background:rgba(201,168,76,0.18);color:var(--gold-lt);}
 
-/* ── CHAT MODAL ── */
 .overlay{position:fixed;inset:0;z-index:200;background:rgba(20,10,4,0.72);
   display:flex;align-items:center;justify-content:center;padding:1rem;
   opacity:0;pointer-events:none;transition:opacity 0.2s;}
@@ -314,13 +294,13 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 </head>
 <body>
 <!-- PASSWORD MODAL - shown first -->
-<div class="lock-modal-wrap open" id="lockModalWrap">
+<div class="lock-modal-wrap open" id="initialLockModal">
   <div class="lock-modal">
     <h3>🔐 Welcome to Book Club</h3>
-    <input type="text" id="passwordInput" placeholder="Enter password" autocomplete="off">
-    <div class="lock-error" id="lockError"></div>
+    <input type="text" id="initialPasswordInput" placeholder="Enter password" autocomplete="off">
+    <div class="lock-error" id="initialLockError"></div>
     <div class="lock-modal-btns">
-      <button id="unlockSubmit">Enter</button>
+      <button id="initialUnlockSubmit">Enter</button>
     </div>
   </div>
 </div>
@@ -329,10 +309,8 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 <div id="mainContent" style="display:none;">
 <div id="bg"></div>
 
-<!-- HOME BUTTON -->
 <a href="shouty_index.html" class="home-btn">🦖 Shouty Book Club</a>
 
-<!-- Player Header -->
 <div class="player-header">
     <div class="img-frame">
         <img id="playerPhoto" src="marine.png" alt="Player Photo">
@@ -340,14 +318,10 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
     <div class="player-name" id="playerHeaderName"></div>
 </div>
 
-<!-- MAIN LAYOUT -->
 <div class="wrap">
-
-  <!-- LEFT: BINGO -->
   <div class="bingo-section">
     <div class="section-title">READING BINGO</div>
     
-    <!-- Card image with overlaid grid and controls -->
     <div class="bingo-card-wrap">
       <span class="bingo-badge" id="bingoBadge">BINGO!</span>
       <div class="bingo-controls">
@@ -360,10 +334,8 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
     <div class="bingo-status" id="bingoStatus"></div>
   </div>
 
-  <!-- RIGHT: ROOMS -->
   <div class="rooms-col">
     <div class="section-title">CHUNK ROOMS</div>
-    
     <div class="rooms-grid" id="roomsGrid"></div>
   </div>
 </div>
@@ -389,35 +361,18 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
   </div>
 </div>
 
-<!-- PASSWORD MODAL -->
-<div class="lock-modal-wrap" id="lockModalWrap">
-  <div class="lock-modal">
-    <h3>🔐 Unlock Bingo Card</h3>
-    <input type="text" id="passwordInput" placeholder="Enter password" autocomplete="off">
-    <div class="lock-error" id="lockError"></div>
-    <div class="lock-modal-btns">
-      <button id="unlockSubmit">Unlock</button>
-      <button id="unlockCancel">Cancel</button>
-    </div>
-  </div>
-</div>
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import {
   getFirestore, collection, addDoc, onSnapshot,
   query, where, orderBy, serverTimestamp,
   doc, setDoc, getDoc
-} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-/* ══════════════════════════════════════════
-   PLAYER CONFIG — edit for each file:
-   marine.html:  PID = "marine"  PEMOJI = "🧜‍♀️"  PNAME = "Marine"  PASSWORD = "your-password-here"
-   kathi.html:   PID = "kathi"   PEMOJI = "🍄"    PNAME = "Kathi"   PASSWORD = "your-password-here"
-══════════════════════════════════════════ */
 const PID      = "marine";
 const PEMOJI   = "🧜‍♀️";
 const PNAME    = "Marine";
-const PASSWORD = "marinara"; // ← Change this to your desired password
-/* ══════════════════════════════════════════ */
+const PASSWORD = "marinara";
 
 const OTHER       = { marine:"kathi",   kathi:"marine" };
 const OTHER_EMOJI = { marine:"🍄",      kathi:"🧜‍♀️" };
@@ -457,13 +412,34 @@ const ROOMS = [
 
 const GRID_SIZE = 25;
 
-/* ── INIT UI ── */
+// Initial password check
+const initialLockModal = document.getElementById('initialLockModal');
+const initialPasswordInput = document.getElementById('initialPasswordInput');
+const initialUnlockSubmit = document.getElementById('initialUnlockSubmit');
+const initialLockError = document.getElementById('initialLockError');
+const mainContent = document.getElementById('mainContent');
+
+function checkInitialPassword() {
+  const input = initialPasswordInput.value.trim();
+  if (input === PASSWORD) {
+    initialLockModal.classList.remove('open');
+    mainContent.style.display = 'block';
+    init();
+  } else {
+    initialLockError.textContent = 'Incorrect password';
+    initialPasswordInput.value = '';
+    initialPasswordInput.focus();
+  }
+}
+
+initialUnlockSubmit.addEventListener('click', checkInitialPassword);
+initialPasswordInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') checkInitialPassword();
+});
+
 document.title = `Book Club — ${PNAME}`;
 document.getElementById('playerHeaderName').textContent = PNAME;
 
-/* ══════════════════════════════════════════
-   BINGO STATE
-══════════════════════════════════════════ */
 let cells      = Array(GRID_SIZE).fill('');
 let markedSet  = new Set([12]);
 let isEditMode = false;
@@ -475,7 +451,6 @@ const bingoHint    = document.getElementById('bingoHint');
 const bingoStatus  = document.getElementById('bingoStatus');
 const editBtn      = document.getElementById('bingoEditBtn');
 
-/* ── TOGGLE EDIT/PLAY MODE ── */
 editBtn.addEventListener('click', () => {
   isEditMode = !isEditMode;
   editBtn.textContent = isEditMode ? '👁️' : '✏️';
@@ -484,7 +459,6 @@ editBtn.addEventListener('click', () => {
   renderBingo();
 });
 
-/* ── BINGO CHECK ── */
 function checkBingo() {
   for (let r = 0; r < 5; r++) if ([0,1,2,3,4].every(c => markedSet.has(r*5+c))) return true;
   for (let c = 0; c < 5; c++) if ([0,1,2,3,4].every(r => markedSet.has(r*5+c))) return true;
@@ -493,7 +467,6 @@ function checkBingo() {
   return false;
 }
 
-/* ── RENDER BINGO ── */
 function renderBingo() {
   bingoGrid.innerHTML = '';
   for (let i = 0; i < GRID_SIZE; i++) {
@@ -503,7 +476,6 @@ function renderBingo() {
 
     if (isFree) {
       cell.style.cursor = 'default';
-      // free square shows nothing (the card image has it)
     } else if (isEditMode) {
       const ta = document.createElement('textarea');
       ta.value = cells[i];
@@ -528,7 +500,6 @@ function renderBingo() {
   bingoBadge.classList.toggle('show', checkBingo());
 }
 
-/* ── FIREBASE SAVE ── */
 async function saveToFirebase() {
   if (isSaving) return;
   isSaving = true;
@@ -548,7 +519,6 @@ async function saveToFirebase() {
   }
 }
 
-/* ── FIREBASE LOAD ── */
 async function loadBingo() {
   bingoStatus.textContent = 'Loading…';
   try {
@@ -568,17 +538,12 @@ async function init() {
   renderRooms();
 }
 
-/* ══════════════════════════════════════════
-   ROOMS / CHAT
-══════════════════════════════════════════ */
 let myProgress = 0;
 let activeRoom = null, activeUnsub = null;
 
 onSnapshot(doc(db,'progress_spoiler',PID), d=>{
   if(d.exists()) {
-    // Read the room field from Firebase (0 = general, 1 = chunk 1, etc.)
     myProgress = d.data().room || 0;
-    console.log('My progress (room):', myProgress);
   }
   renderRooms();
 }, err=>console.error(err));
@@ -596,14 +561,8 @@ function renderRooms(){
     btn.innerHTML=`<span class="btn-badge">${badge}</span><span class="btn-label">${r.label}</span>`;
     btn.addEventListener('click',()=>openChat(r));
     grid.appendChild(btn);
-    
-    // Debug logging
-    if(!isGeneral) {
-      console.log(`Room ${r.label}: requires ch ${r.ch}, my progress ${myProgress}, unlocked: ${unlocked}`);
-    }
   });
 }
-renderRooms();
 
 const overlay   = document.getElementById('overlay');
 const chatClose = document.getElementById('chatClose');
