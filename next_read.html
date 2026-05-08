@@ -609,7 +609,7 @@ function castVote(bookId, rating) {
 
 function openBookDetails(bookId, title) {
   const slug = slugify(title);
-  window.location.href = `book-details.html?id=${bookId}&book=${slug}`;
+  window.location.href = `book_details.html?id=${bookId}&book=${slug}`;
 }
 
 onSnapshot(booksCol, snap => {
