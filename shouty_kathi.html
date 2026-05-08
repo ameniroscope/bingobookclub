@@ -147,7 +147,7 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 .bingo-badge.show{display:inline;}
 
 /* Password modal — uses normal flow wrapper so it doesn't collapse the iframe */
-.lock-modal-wrap{display:none;position:fixed;inset:0;z-index:400;background:rgba(20,10,4,0.95);
+.lock-modal-wrap{display:none;position:fixed;inset:0;z-index:400;background:rgba(20,10,4,1);
   align-items:center;justify-content:center;}
 .lock-modal-wrap.open{display:flex;}
 .lock-modal{background:var(--parch);border:2px solid var(--worn);border-radius:10px;
@@ -410,13 +410,13 @@ import {
 
 /* ══════════════════════════════════════════
    PLAYER CONFIG — edit for each file:
-   marine.html:  PID = "marine"  PEMOJI = "🧜‍♀️"  PNAME = "Marine"  CARD_PASSWORD = "marinara"
-   kathi.html:   PID = "kathi"   PEMOJI = "🍄"    PNAME = "Kathi"   CARD_PASSWORD = "your-password"
+   marine.html:  PID = "marine"  PEMOJI = "🧜‍♀️"  PNAME = "Marine"  PASSWORD = "your-password-here"
+   kathi.html:   PID = "kathi"   PEMOJI = "🍄"    PNAME = "Kathi"   PASSWORD = "your-password-here"
 ══════════════════════════════════════════ */
-const PID           = "kathi";
-const PEMOJI        = "🍄";
-const PNAME         = "Kathi";
-// password is never stored in JS — verified directly against Firebase
+const PID      = "kathi";
+const PEMOJI   = "🍄";
+const PNAME    = "Kathi";
+const PASSWORD = "kathistory"; // ← Change this to your desired password
 /* ══════════════════════════════════════════ */
 
 const OTHER       = { marine:"kathi",   kathi:"marine" };
