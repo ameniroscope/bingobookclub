@@ -313,6 +313,20 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 </style>
 </head>
 <body>
+<!-- PASSWORD MODAL - shown first -->
+<div class="lock-modal-wrap open" id="lockModalWrap">
+  <div class="lock-modal">
+    <h3>🔐 Welcome to Book Club</h3>
+    <input type="text" id="passwordInput" placeholder="Enter password" autocomplete="off">
+    <div class="lock-error" id="lockError"></div>
+    <div class="lock-modal-btns">
+      <button id="unlockSubmit">Enter</button>
+    </div>
+  </div>
+</div>
+
+<!-- Main content - hidden until password entered -->
+<div id="mainContent" style="display:none;">
 <div id="bg"></div>
 
 <!-- HOME BUTTON -->
@@ -337,13 +351,12 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
     <div class="bingo-card-wrap">
       <span class="bingo-badge" id="bingoBadge">BINGO!</span>
       <div class="bingo-controls">
-        <button class="bingo-lock-btn" id="bingoEditBtn" title="Toggle edit mode" style="display:none;">✏️</button>
-        <button class="bingo-lock-btn" id="bingoLockBtn" title="Unlock card">🔒</button>
+        <button class="bingo-lock-btn unlocked" id="bingoEditBtn" title="Toggle edit mode">✏️</button>
       </div>
       <div class="bingo-grid" id="bingoGrid"></div>
     </div>
 
-    <div class="bingo-hint" id="bingoHint">Unlock to edit or mark squares</div>
+    <div class="bingo-hint" id="bingoHint">Click squares to mark them</div>
     <div class="bingo-status" id="bingoStatus"></div>
   </div>
 
@@ -353,6 +366,7 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
     
     <div class="rooms-grid" id="roomsGrid"></div>
   </div>
+</div>
 </div>
 
 <!-- CHAT MODAL -->
@@ -387,8 +401,6 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
     </div>
   </div>
 </div>
-
-<script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
 import {
   getFirestore, collection, addDoc, onSnapshot,
@@ -454,7 +466,6 @@ document.getElementById('playerHeaderName').textContent = PNAME;
 ══════════════════════════════════════════ */
 let cells      = Array(GRID_SIZE).fill('');
 let markedSet  = new Set([12]);
-let isUnlocked = false;
 let isEditMode = false;
 let isSaving   = false;
 
@@ -462,68 +473,16 @@ const bingoGrid    = document.getElementById('bingoGrid');
 const bingoBadge   = document.getElementById('bingoBadge');
 const bingoHint    = document.getElementById('bingoHint');
 const bingoStatus  = document.getElementById('bingoStatus');
-const lockBtn      = document.getElementById('bingoLockBtn');
 const editBtn      = document.getElementById('bingoEditBtn');
-const lockModalWrap= document.getElementById('lockModalWrap');
-const passwordInput= document.getElementById('passwordInput');
-const lockError    = document.getElementById('lockError');
 
-/* ── LOCK / UNLOCK ── */
-function setLockState(unlocked) {
-  isUnlocked = unlocked;
-  lockBtn.textContent = unlocked ? '🔓' : '🔒';
-  lockBtn.classList.toggle('unlocked', unlocked);
-  lockBtn.title = unlocked ? 'Lock card' : 'Unlock card';
-  editBtn.style.display = unlocked ? 'flex' : 'none';
-  editBtn.textContent = isEditMode ? '👁️' : '✏️';
-  editBtn.title = isEditMode ? 'Switch to play mode' : 'Switch to edit mode';
-  bingoHint.textContent = unlocked
-    ? (isEditMode ? 'Edit mode — type in squares' : 'Click squares to mark them')
-    : 'Unlock to edit or mark squares';
-  renderBingo();
-}
-
+/* ── TOGGLE EDIT/PLAY MODE ── */
 editBtn.addEventListener('click', () => {
-  if (!isUnlocked) return;
   isEditMode = !isEditMode;
   editBtn.textContent = isEditMode ? '👁️' : '✏️';
   editBtn.title = isEditMode ? 'Switch to play mode' : 'Switch to edit mode';
   bingoHint.textContent = isEditMode ? 'Edit mode — type in squares' : 'Click squares to mark them';
   renderBingo();
 });
-
-lockBtn.addEventListener('click', () => {
-  if (isUnlocked) {
-    isEditMode = false;
-    setLockState(false);
-  } else {
-    passwordInput.value = '';
-    lockError.textContent = '';
-    lockModalWrap.classList.add('open');
-    setTimeout(() => passwordInput.focus(), 50);
-  }
-});
-
-document.getElementById('unlockSubmit').addEventListener('click', tryUnlock);
-document.getElementById('unlockCancel').addEventListener('click', () => lockModalWrap.classList.remove('open'));
-passwordInput.addEventListener('keydown', e => {
-  if (e.key === 'Enter')  tryUnlock();
-  if (e.key === 'Escape') lockModalWrap.classList.remove('open');
-});
-
-async function tryUnlock() {
-  const entered = passwordInput.value;
-  lockError.textContent = 'Checking…';
-  const ok = await verifyPassword(entered);
-  if (ok) {
-    lockModalWrap.classList.remove('open');
-    setLockState(true);
-  } else {
-    lockError.textContent = 'Wrong password, try again.';
-    passwordInput.value = '';
-    passwordInput.focus();
-  }
-}
 
 /* ── BINGO CHECK ── */
 function checkBingo() {
@@ -545,7 +504,7 @@ function renderBingo() {
     if (isFree) {
       cell.style.cursor = 'default';
       // free square shows nothing (the card image has it)
-    } else if (isUnlocked && isEditMode) {
+    } else if (isEditMode) {
       const ta = document.createElement('textarea');
       ta.value = cells[i];
       ta.addEventListener('input', e => { cells[i] = e.target.value; });
@@ -556,15 +515,13 @@ function renderBingo() {
       txt.className = 'cell-text';
       txt.textContent = cells[i];
       cell.appendChild(txt);
-      if (isUnlocked) {
-        cell.style.cursor = 'pointer';
-        cell.addEventListener('click', async () => {
-          markedSet.has(i) ? markedSet.delete(i) : markedSet.add(i);
-          bingoBadge.classList.toggle('show', checkBingo());
-          renderBingo();
-          await saveToFirebase();
-        });
-      }
+      cell.style.cursor = 'pointer';
+      cell.addEventListener('click', async () => {
+        markedSet.has(i) ? markedSet.delete(i) : markedSet.add(i);
+        bingoBadge.classList.toggle('show', checkBingo());
+        renderBingo();
+        await saveToFirebase();
+      });
     }
     bingoGrid.appendChild(cell);
   }
@@ -606,23 +563,10 @@ async function loadBingo() {
   bingoStatus.textContent = '';
 }
 
-/* ── VERIFY PASSWORD AGAINST FIREBASE ──
-   accessCodes: doc ID = password, fields: { name, avatar, color }
-   We look up the entered password as a doc ID and check name matches. ── */
-async function verifyPassword(entered) {
-  try {
-    const snap = await getDoc(doc(db, 'accessCodes', entered));
-    return snap.exists() && snap.data().name === PNAME;
-  } catch(e) {
-    console.error('Password check failed:', e);
-    return false;
-  }
-}
-
 async function init() {
   await loadBingo();
+  renderRooms();
 }
-init();
 
 /* ══════════════════════════════════════════
    ROOMS / CHAT
