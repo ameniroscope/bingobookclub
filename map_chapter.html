@@ -185,6 +185,40 @@ body {
   letter-spacing: 2px;
 }
 
+.player.draggable {
+  cursor: grab;
+}
+
+.player.dragging {
+  cursor: grabbing;
+  filter:
+    drop-shadow(0 0 12px rgba(201,168,76,1))
+    drop-shadow(0 0 24px rgba(201,168,76,0.9));
+  z-index: 100;
+}
+
+.chapter-indicator {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(26,15,31,0.95);
+  border: 2px solid #c9a84c;
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  letter-spacing: 1.5px;
+  color: #c9a84c;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 50;
+}
+
+.chapter-indicator.show {
+  opacity: 1;
+}
+
 .legend {
   max-width: 700px;
   margin: 0 auto 1rem;
@@ -309,7 +343,7 @@ body {
   font-size: 0.85rem;
 }
 
-  .bottom-center {
+.bottom-center {
   width: 100%;
   text-align: center;
   margin: 0 auto 2.5rem;
@@ -325,13 +359,13 @@ body {
     max-width: 760px;
   }
 
-.map-column {
-  position: static;
-  max-width: 430px;
-  width: 100%;
-  margin: 0 auto;
-  padding-top: 0;
-}
+  .map-column {
+    position: static;
+    max-width: 430px;
+    width: 100%;
+    margin: 0 auto;
+    padding-top: 0;
+  }
 }
 
 @media (max-width: 700px) {
@@ -382,6 +416,7 @@ body {
 
     <div class="map">
       <img src="map.png" class="map-image" alt="Book map">
+      <div class="chapter-indicator" id="chapterIndicator">Chapter 0</div>
     </div>
   </aside>
 
@@ -398,13 +433,15 @@ body {
 
     <div class="message">
       <p>A room for every chapter and a space for every thought — big or small.</p>
-      <p>No need to scream into the void… we’re all here to listen.</p>
+      <p>No need to scream into the void… we're all here to listen.</p>
     </div>
 
     <div class="user-panel">
       <div class="user-badge" id="loggedInText">Not logged in</div>
       <button class="logout-btn" id="logoutBtn" type="button">Log out</button>
     </div>
+
+
 
     <div class="legend">
       <span><i class="dot normal"></i> No comments</span>
@@ -418,7 +455,7 @@ body {
 
 </div>
   
-  <div class="bottom-center">
+<div class="bottom-center">
 
   <div class="ornament">
     <div class="line"></div>
@@ -440,7 +477,10 @@ import {
   getFirestore,
   collection,
   getDocs,
-  onSnapshot
+  onSnapshot,
+  doc,
+  setDoc,
+  getDoc
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -459,6 +499,7 @@ const totalChapters = 41;
 const container = document.getElementById("chapterButtons");
 const loggedInText = document.getElementById("loggedInText");
 const logoutBtn = document.getElementById("logoutBtn");
+const chapterIndicator = document.getElementById("chapterIndicator");
 
 const savedName = sessionStorage.getItem("bookClubName");
 
@@ -543,9 +584,8 @@ async function loadChapterHighlights() {
 const map = document.querySelector(".map");
 const status = document.getElementById("status");
 
-
 const positions = {
-  0:  { x: 13.4, y: 22.7 }, // START — also used as fallback
+  0:  { x: 13.4, y: 22.7 },
   1:  { x: 33.4, y: 21.4 },
   2:  { x: 48.7, y: 21.9 },
   3:  { x: 63.7, y: 21.9 },
@@ -587,7 +627,6 @@ const positions = {
   39: { x: 89.4, y: 77.8 },
   40: { x: 39.9, y: 81.6 },
   41: { x: 26.3, y: 81.7 },
-  42: { x: 13.4, y: 22.7 }, // END — reuses START as fallback, update if you have a finish position
 };
   
 const playerEmojis = {
@@ -597,9 +636,8 @@ const playerEmojis = {
   lena: "🌙"
 };
 
-
 const playerOffsets = {
-  marine: {  x:  -2.5, y:  -2.5 },
+  marine: { x: -2.5, y: -2.5 },
   elana:  { x:  2.5, y: -2.5 },
   kathi:  { x: -2.5, y:  2.5 },
   lena:   { x:  2.5, y:  2.5 },
@@ -619,7 +657,6 @@ function getOrCreatePlayerMarker(playerId) {
   return marker;
 }
 
-
 function movePlayer(playerId, chapter, indexInChapter) {
   const marker = getOrCreatePlayerMarker(playerId);
   const position = positions[chapter] || positions[0];
@@ -628,8 +665,155 @@ function movePlayer(playerId, chapter, indexInChapter) {
   marker.style.left = position.x + offset.x + "%";
   marker.style.top  = position.y + offset.y + "%";
   marker.title = playerId + " — chapter " + chapter;
+  
+  // Make own player draggable
+  if (savedName && playerId === savedName.toLowerCase()) {
+    marker.classList.add('draggable');
+    setupDragging(marker, playerId);
+  }
 }
 
+// Find closest chapter position
+function findClosestChapter(percentX, percentY) {
+  let closestChapter = 0;
+  let closestDistance = Infinity;
+  
+  Object.keys(positions).forEach(chapter => {
+    const pos = positions[chapter];
+    const distance = Math.sqrt(
+      Math.pow(pos.x - percentX, 2) + Math.pow(pos.y - percentY, 2)
+    );
+    
+    if (distance < closestDistance) {
+      closestDistance = distance;
+      closestChapter = parseInt(chapter);
+    }
+  });
+  
+  return closestChapter;
+}
+
+// Setup dragging for player's own emoji
+function setupDragging(marker, playerId) {
+  let isDragging = false;
+  let startX, startY;
+  
+  const onStart = (e) => {
+    if (!savedName || playerId !== savedName.toLowerCase()) return;
+    
+    isDragging = true;
+    marker.classList.add('dragging');
+    chapterIndicator.classList.add('show');
+    
+    const rect = map.getBoundingClientRect();
+    
+    if (e.type === 'mousedown') {
+      startX = e.clientX;
+      startY = e.clientY;
+    } else if (e.type === 'touchstart') {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+    }
+    
+    e.preventDefault();
+  };
+  
+  const onMove = (e) => {
+    if (!isDragging) return;
+    
+    const rect = map.getBoundingClientRect();
+    let clientX, clientY;
+    
+    if (e.type === 'mousemove') {
+      clientX = e.clientX;
+      clientY = e.clientY;
+    } else if (e.type === 'touchmove') {
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    }
+    
+    const percentX = ((clientX - rect.left) / rect.width) * 100;
+    const percentY = ((clientY - rect.top) / rect.height) * 100;
+    
+    // Clamp to map bounds
+    const clampedX = Math.max(0, Math.min(100, percentX));
+    const clampedY = Math.max(0, Math.min(100, percentY));
+    
+    marker.style.left = clampedX + "%";
+    marker.style.top = clampedY + "%";
+    
+    // Show nearest chapter
+    const nearestChapter = findClosestChapter(clampedX, clampedY);
+    chapterIndicator.textContent = `Chapter ${nearestChapter}`;
+    
+    e.preventDefault();
+  };
+  
+  const onEnd = async (e) => {
+    if (!isDragging) return;
+    
+    isDragging = false;
+    marker.classList.remove('dragging');
+    
+    const rect = map.getBoundingClientRect();
+    const currentLeft = parseFloat(marker.style.left);
+    const currentTop = parseFloat(marker.style.top);
+    
+    // Find closest chapter and snap to it
+    const nearestChapter = findClosestChapter(currentLeft, currentTop);
+    const targetPos = positions[nearestChapter];
+    const offset = playerOffsets[playerId] || { x: 0, y: 0 };
+    
+    marker.style.left = (targetPos.x + offset.x) + "%";
+    marker.style.top = (targetPos.y + offset.y) + "%";
+    
+    // Update Firebase
+    try {
+      await setDoc(doc(db, "first_bingo", playerId), {
+        chapterProgress: nearestChapter
+      }, { merge: true });
+      
+      console.log("Progress updated to chapter", nearestChapter);
+    } catch (error) {
+      console.error("Error updating progress:", error);
+    }
+    
+    // Hide indicator after a delay
+    setTimeout(() => {
+      chapterIndicator.classList.remove('show');
+    }, 1500);
+    
+    e.preventDefault();
+  };
+  
+  // Mouse events
+  marker.addEventListener('mousedown', onStart);
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('mouseup', onEnd);
+  
+  // Touch events
+  marker.addEventListener('touchstart', onStart);
+  document.addEventListener('touchmove', onMove, { passive: false });
+  document.addEventListener('touchend', onEnd);
+}
+
+// Initial load - removed slider code
+if (savedName) {
+  const userKey = savedName.toLowerCase();
+  const userDocRef = doc(db, "first_bingo", userKey);
+  
+  getDoc(userDocRef).then((docSnap) => {
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      const currentProgress = Number(data.chapterProgress ?? 0);
+      console.log(`Loaded progress: Chapter ${currentProgress}`);
+    }
+  }).catch((error) => {
+    console.error("Error loading progress:", error);
+  });
+}
+
+// Listen to all players' progress
 const playersRef = collection(db, "first_bingo");
 
 onSnapshot(
