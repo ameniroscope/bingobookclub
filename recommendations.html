@@ -234,7 +234,8 @@ body {
   transition: opacity .15s; user-select: none; flex-shrink: 0;
 }
 .vote-btn.locked { cursor: default; opacity: .55; }
-.vote-btn:not(.locked):hover { opacity: .8; }
+.vote-btn:not(.locked) { opacity: .75; }
+.vote-btn:not(.locked):hover { opacity: 1; }
 
 .vote-btn-inner {
   position: relative;
@@ -732,6 +733,14 @@ function renderBooks() {
 }
 
 async function fetchCover(title) {
+  // 1. Open Library
+  try {
+    const r = await fetch(`https://openlibrary.org/search.json?title=${encodeURIComponent(title)}&limit=1`);
+    const d = await r.json();
+    const id = d?.docs?.[0]?.cover_i;
+    if (id) return `https://covers.openlibrary.org/b/id/${id}-L.jpg`;
+  } catch {}
+  // 2. Google Books
   try {
     const r = await fetch(`https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(title)}&maxResults=1&fields=items(volumeInfo/imageLinks)`);
     const d = await r.json();
@@ -743,12 +752,6 @@ async function fetchCover(title) {
         .replace('zoom=1', 'zoom=2');
       if (url) return url;
     }
-  } catch {}
-  try {
-    const r = await fetch(`https://openlibrary.org/search.json?title=${encodeURIComponent(title)}&limit=1`);
-    const d = await r.json();
-    const id = d?.docs?.[0]?.cover_i;
-    if (id) return `https://covers.openlibrary.org/b/id/${id}-L.jpg`;
   } catch {}
   return null;
 }
