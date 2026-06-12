@@ -733,29 +733,24 @@ function renderBooks() {
 }
 
 async function fetchCover(title) {
-  // Google Books: grab several results, use the first that has a cover
   try {
     const r = await fetch(`https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(title)}&maxResults=5&printType=books&fields=items(volumeInfo(imageLinks))`);
     const d = await r.json();
     const links = d?.items?.find(it => it.volumeInfo?.imageLinks)?.volumeInfo?.imageLinks;
-
     const coverUrl = (links?.thumbnail || links?.smallThumbnail || '')
       .replace('http://', 'https://')
       .replace('&edge=curl', '');
-      // no zoom=2 upgrade — it 404s for many books
-
-    if (coverUrl) return { cover: coverUrl };
+    if (coverUrl) return coverUrl;
   } catch {}
 
-  // Open Library fallback
   try {
     const r = await fetch(`https://openlibrary.org/search.json?title=${encodeURIComponent(title)}&limit=5`);
     const d = await r.json();
     const coverId = d?.docs?.find(doc => doc.cover_i)?.cover_i;
-    if (coverId) return { cover: `https://covers.openlibrary.org/b/id/${coverId}-M.jpg` };
+    if (coverId) return `https://covers.openlibrary.org/b/id/${coverId}-M.jpg`;
   } catch {}
 
-  return { cover: null };
+  return '';
 }
 </script>
 </body>
