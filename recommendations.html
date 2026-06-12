@@ -707,9 +707,9 @@ function renderBooks() {
       <div class="c-bl"></div><div class="c-br"></div>
       <div class="accent-bar" style="background:${accent.grad};"></div>
       <div class="card-body">
-        <div class="cover-wrap">
+        <a href="book_details.html?id=${id}" class="cover-wrap" style="cursor:pointer;text-decoration:none;">
           ${book.cover ? `<img src="${book.cover}" alt="${book.title}" />` : '📖'}
-        </div>
+        </a>
         <div class="card-main">
           <div class="card-title-row">
             <span class="card-title">${book.title}</span>
