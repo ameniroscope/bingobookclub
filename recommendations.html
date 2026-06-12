@@ -255,7 +255,7 @@ body {
   flex-shrink: 0;
   transition: background .15s, box-shadow .15s;
 }
-  
+
 .vote-btn.mine .vote-emoji-circle {
   background: radial-gradient(circle at 35% 35%, rgba(255,255,255,.10)),
               var(--card-bg, #1e1b2e);
@@ -610,12 +610,12 @@ async function submitBook() {
   const note  = document.getElementById('f-note').value.trim();
 
   try {
-    const cover = await fetchCover(title);
+    const cover = await fetchCover(title); // returns a URL string, or '' if none found
     await addDoc(booksCol, {
       title, note: note || '',
       recommender: currentPlayer.name,
       recommenderEmoji: currentPlayer.emoji,
-      cover: cover || '',
+      cover: cover,
       votes: {},
       addedAt: Date.now(),
     });
@@ -658,6 +658,15 @@ function scorePill(score) {
   return `<span class="score-pill ${cls}">${score} / 5</span>`;
 }
 
+// Covers stored before the fix may be objects ({cover: ...}) instead of strings.
+// This normalizes anything stored in Firestore down to a usable URL string or ''.
+function coverUrlOf(book) {
+  const c = book.cover;
+  if (typeof c === 'string') return c;
+  if (c && typeof c === 'object' && typeof c.cover === 'string') return c.cover;
+  return '';
+}
+
 function renderBooks() {
   const list = document.getElementById('book-list');
   const TOTAL_PLAYERS = Object.keys(PLAYERS).length;
@@ -685,6 +694,7 @@ function renderBooks() {
     const score  = avg(book.votes);
     const accent = accentForId(id);
     const locked = !currentPlayer;
+    const coverUrl = coverUrlOf(book);
 
     const accentBg     = hexAlpha(accent.mid, 0.85);
     const accentBorder = hexAlpha(accent.mid, 0.55);
@@ -709,7 +719,7 @@ function renderBooks() {
       <div class="accent-bar" style="background:${accent.grad};"></div>
       <div class="card-body">
         <a href="book_details.html?id=${id}" class="cover-wrap" style="cursor:pointer;text-decoration:none;">
-          ${book.cover ? `<img src="${book.cover}" alt="${book.title}" />` : '📖'}
+          ${coverUrl ? `<img src="${coverUrl}" alt="${book.title}" onerror="this.outerHTML='📖'" />` : '📖'}
         </a>
         <div class="card-main">
           <div class="card-title-row">
@@ -732,17 +742,23 @@ function renderBooks() {
   `;
 }
 
+// Returns a cover URL string, or '' if nothing was found.
 async function fetchCover(title) {
+  // Google Books: grab several results, use the first that has a cover
   try {
     const r = await fetch(`https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(title)}&maxResults=5&printType=books&fields=items(volumeInfo(imageLinks))`);
     const d = await r.json();
     const links = d?.items?.find(it => it.volumeInfo?.imageLinks)?.volumeInfo?.imageLinks;
+
     const coverUrl = (links?.thumbnail || links?.smallThumbnail || '')
       .replace('http://', 'https://')
       .replace('&edge=curl', '');
+      // no zoom=2 upgrade — it 404s for many books
+
     if (coverUrl) return coverUrl;
   } catch {}
 
+  // Open Library fallback
   try {
     const r = await fetch(`https://openlibrary.org/search.json?title=${encodeURIComponent(title)}&limit=5`);
     const d = await r.json();
