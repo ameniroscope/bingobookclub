@@ -123,6 +123,10 @@ body {
   transition: all .2s;
 }
 .modal-submit:hover { background: rgba(201,168,76,.2); }
+.modal-submit:disabled {
+  opacity: .45; cursor: default;
+  background: rgba(201,168,76,.05);
+}
 .modal-cancel {
   display: block; width: 100%; margin-top: .6rem;
   font-family: 'Cinzel', serif; font-size: .55rem;
@@ -232,13 +236,11 @@ body {
 .vote-btn.locked { cursor: default; opacity: .55; }
 .vote-btn:not(.locked):hover { opacity: .8; }
 
-/* Wrapper: pill behind, circle on top */
 .vote-btn-inner {
   position: relative;
   display: inline-flex; align-items: center;
 }
 
-/* Circle around the rating emoji — sits on top via z-index */
 .vote-emoji-circle {
   display: inline-flex; align-items: center; justify-content: center;
   width: 2.2rem; height: 2.2rem;
@@ -259,7 +261,6 @@ body {
   box-shadow: inset 0 1px 3px rgba(255,255,255,.25), 0 0 12px var(--accent-border, #c9a84c88);
 }
 
-/* Pill stretches behind and to the right of the circle */
 .voters-pill {
   display: inline-flex; align-items: center;
   gap: .1rem;
@@ -381,7 +382,7 @@ body {
     <div class="c-bl"></div><div class="c-br"></div>
     <div class="modal-icon">📖</div>
     <div class="modal-title">Recommend a Book</div>
-    <div class="modal-sub">What should we read next?</div>
+    <div class="modal-sub" id="add-modal-sub">What should we read next?</div>
     <div class="field">
       <label for="f-title">Book title *</label>
       <input id="f-title" type="text" placeholder="e.g. The Little Prince" />
@@ -390,8 +391,8 @@ body {
       <label for="f-note">Why do you want to read it?</label>
       <textarea id="f-note" placeholder="e.g. Because it looks super fun and cute!"></textarea>
     </div>
-    <button class="modal-submit" onclick="submitBook()">Add Book ✦</button>
-    <button class="modal-cancel" onclick="closeModal('add-modal')">Cancel</button>
+    <button class="modal-submit" id="add-submit" onclick="submitBook()">Add Book ✦</button>
+    <button class="modal-cancel" id="add-cancel" onclick="closeModal('add-modal')">Cancel</button>
   </div>
 </div>
 
@@ -503,9 +504,13 @@ const booksCol = collection(db, "books");
 let currentPlayer = null;
 let allBooks = {};
 let pendingAction = null;
+let isSubmittingBook = false;
 
 window.requestAction = requestAction;
-window.closeModal    = id => document.getElementById(id).classList.remove('open');
+window.closeModal    = id => {
+  document.getElementById(id).classList.remove('open');
+  if (id === 'add-modal') resetAddModal();
+};
 window.openModal     = id => document.getElementById(id).classList.add('open');
 window.logout        = logout;
 window.submitBook    = submitBook;
@@ -569,27 +574,61 @@ function submitCode() {
 }
 
 document.querySelectorAll('.modal-bg').forEach(bg => {
-  bg.addEventListener('click', e => { if (e.target === bg) bg.classList.remove('open'); });
+  bg.addEventListener('click', e => {
+    if (e.target === bg) {
+      bg.classList.remove('open');
+      if (bg.id === 'add-modal') resetAddModal();
+    }
+  });
 });
+
+function resetAddModal() {
+  if (isSubmittingBook) return; // don't reset while submitting
+  document.getElementById('f-title').value = '';
+  document.getElementById('f-note').value  = '';
+  isSubmittingBook = false;
+  const btn = document.getElementById('add-submit');
+  btn.disabled = false;
+  btn.textContent = 'Add Book ✦';
+  document.getElementById('add-cancel').style.display = '';
+  document.getElementById('add-modal-sub').textContent = 'What should we read next?';
+}
 
 async function submitBook() {
   const title = document.getElementById('f-title').value.trim();
-  if (!title || !currentPlayer) return;
+  if (!title || !currentPlayer || isSubmittingBook) return;
+
+  // Lock the UI immediately
+  isSubmittingBook = true;
+  const btn = document.getElementById('add-submit');
+  btn.disabled = true;
+  btn.textContent = '✦ Adding…';
+  document.getElementById('add-cancel').style.display = 'none';
+  document.getElementById('add-modal-sub').textContent = 'Fetching cover & saving…';
+
   const note  = document.getElementById('f-note').value.trim();
-  const cover = await fetchCover(title);
-  await addDoc(booksCol, {
-    title, note: note || '',
-    recommender: currentPlayer.name,
-    recommenderEmoji: currentPlayer.emoji,
-    cover: cover || '',
-    votes: {},
-    addedAt: Date.now(),
-  });
-  document.getElementById('f-title').value = '';
-  document.getElementById('f-note').value  = '';
-  window.closeModal('add-modal');
-  document.getElementById('f-title').value = '';
-  document.getElementById('f-note').value  = '';
+
+  try {
+    const cover = await fetchCover(title);
+    await addDoc(booksCol, {
+      title, note: note || '',
+      recommender: currentPlayer.name,
+      recommenderEmoji: currentPlayer.emoji,
+      cover: cover || '',
+      votes: {},
+      addedAt: Date.now(),
+    });
+  } finally {
+    // Close and reset regardless of success/failure
+    document.getElementById('add-modal').classList.remove('open');
+    isSubmittingBook = false;
+    document.getElementById('f-title').value = '';
+    document.getElementById('f-note').value  = '';
+    btn.disabled = false;
+    btn.textContent = 'Add Book ✦';
+    document.getElementById('add-cancel').style.display = '';
+    document.getElementById('add-modal-sub').textContent = 'What should we read next?';
+  }
 }
 
 function castVote(bookId, rating) {
