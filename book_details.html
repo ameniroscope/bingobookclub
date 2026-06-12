@@ -767,7 +767,7 @@ async function loadBook() {
         </div>
         <div class="mid">
           <div class="cover">
-            ${book.cover ? `<img src="${book.cover}" alt="cover">` : '📖'}
+             ${book.cover ? `<img src="${book.cover}" alt="cover" onerror="this.outerHTML='📖'">` : '📖'}
           </div>
           <div class="mid-right">
             <div class="stats-grid">
