@@ -248,7 +248,7 @@ body {
   border-radius: 50%;
   font-size: 1rem; line-height: 1;
   border: 1.5px solid var(--accent-border, #c9a84c55);
-  background: radial-gradient(circle at 35% 35%, rgba(255,255,255,.10), transparent),
+  background: radial-gradient(circle at 35% 35%, rgba(255,255,255,.10)),
               var(--card-bg, #1e1b2e);
   box-shadow: inset 0 1px 3px rgba(255,255,255,.12), 0 0 6px var(--accent-border, #c9a84c33);
   position: relative; z-index: 2;
@@ -257,7 +257,7 @@ body {
 }
   
 .vote-btn.mine .vote-emoji-circle {
-  background: radial-gradient(circle at 35% 35%, rgba(255,255,255,.10), transparent),
+  background: radial-gradient(circle at 35% 35%, rgba(255,255,255,.10)),
               var(--card-bg, #1e1b2e);
   box-shadow: inset 0 1px 3px rgba(255,255,255,.25), 0 0 12px var(--accent-border, #c9a84c88);
 }
@@ -733,14 +733,6 @@ function renderBooks() {
 }
 
 async function fetchCover(title) {
-  // 1. Open Library
-  try {
-    const r = await fetch(`https://openlibrary.org/search.json?title=${encodeURIComponent(title)}&limit=1`);
-    const d = await r.json();
-    const id = d?.docs?.[0]?.cover_i;
-    if (id) return `https://covers.openlibrary.org/b/id/${id}-L.jpg`;
-  } catch {}
-  // 2. Google Books
   try {
     const r = await fetch(`https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(title)}&maxResults=1&fields=items(volumeInfo/imageLinks)`);
     const d = await r.json();
@@ -752,6 +744,12 @@ async function fetchCover(title) {
         .replace('zoom=1', 'zoom=2');
       if (url) return url;
     }
+  } catch {}
+  try {
+    const r = await fetch(`https://openlibrary.org/search.json?title=${encodeURIComponent(title)}&limit=1`);
+    const d = await r.json();
+    const id = d?.docs?.[0]?.cover_i;
+    if (id) return `https://covers.openlibrary.org/b/id/${id}-L.jpg`;
   } catch {}
   return null;
 }
