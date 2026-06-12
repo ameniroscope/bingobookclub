@@ -734,24 +734,32 @@ function renderBooks() {
 
 async function fetchCover(title) {
   try {
-    const r = await fetch(`https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(title)}&maxResults=1&fields=items(volumeInfo/imageLinks)`);
+    const r = await fetch(`https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(title)}&maxResults=1&fields=items(volumeInfo(imageLinks))`);
     const d = await r.json();
-    const links = d?.items?.[0]?.volumeInfo?.imageLinks;
+    const volumeInfo = d?.items?.[0]?.volumeInfo;
+    const links = volumeInfo?.imageLinks;
+    
+    let coverUrl = null;
     if (links) {
-      const url = (links.large || links.medium || links.thumbnail || links.smallThumbnail || '')
+      coverUrl = (links.large || links.medium || links.thumbnail || links.smallThumbnail || '')
         .replace('http://', 'https://')
         .replace('&edge=curl', '')
         .replace('zoom=1', 'zoom=2');
-      if (url) return url;
     }
+    
+    return { cover: coverUrl };
   } catch {}
+  
   try {
     const r = await fetch(`https://openlibrary.org/search.json?title=${encodeURIComponent(title)}&limit=1`);
     const d = await r.json();
-    const id = d?.docs?.[0]?.cover_i;
-    if (id) return `https://covers.openlibrary.org/b/id/${id}-L.jpg`;
+    const doc = d?.docs?.[0];
+    const coverId = doc?.cover_i;
+    
+    return { cover: coverId ? `https://covers.openlibrary.org/b/id/${coverId}-L.jpg` : null };
   } catch {}
-  return null;
+  
+  return { cover: null };
 }
 </script>
 </body>
