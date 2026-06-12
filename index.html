@@ -269,6 +269,14 @@
     transform: translateY(-2px);
   }
 
+  /* ── Full-width button (spans both columns on desktop) ── */
+  @media(min-width:560px){
+    .btn-wide {
+      grid-column: 1 / -1;
+      max-width: none;
+    }
+  }
+
   /* ── Huge Bingo Button ── */
   .btn-bingo {
     height: 120px !important;
@@ -361,42 +369,14 @@
     <div class="section-divider"><div class="line"></div><div class="dot">✦</div><div class="line"></div></div>
 
     <div class="buttons">
-      <a class="btn btn-primary" href="current_book_pick.html">
-        <span class="btn-icon">📚</span>
+      <a class="btn btn-primary" href="recommendations.html">
+        <span class="btn-icon">💡</span>
         <div class="btn-text">
-          <span class="btn-label">Explore the books</span>
-          <span class="btn-sub">This month's reading list</span>
-        </div>
-      </a>
-      
-     <!-- ═══════════════════════════════════════════════════════════
-        TOGGLE BETWEEN VOTING AND RESULTS:
-       Comment out one, uncomment the other
-        ═══════════════════════════════════════════════════════════ -->
-      
-      <!-- VOTING BUTTON (currently hidden) -->
-      <!--
-      <a class="btn btn-secondary" href="https://form.typeform.com/to/W8YpzGgb" target="_blank">
-        <span class="btn-icon">🗳️</span>
-        <div class="btn-text">
-          <span class="btn-label">Next read vote</span>
-          <span class="btn-sub">Make your voice heard</span>
-        </div>
-      </a>
-      -->
-      
-      <!-- RESULTS BUTTON (currently active) -->
-      <a class="btn btn-secondary" href="results.html">
-        <span class="btn-icon">📊</span>
-        <div class="btn-text">
-          <span class="btn-label">Vote results</span>
-          <span class="btn-sub">See what won</span>
+          <span class="btn-label">Next read box</span>
+          <span class="btn-sub">Drop your suggestions and vote here</span>
         </div>
       </a>
 
-     <!-- ═══════════════════════════════════════════════════════════
-        ═══════════════════════════════════════════════════════════ -->
-      
       <a class="btn btn-secondary" href="bingo_hub.html">
         <span class="btn-icon">🎯</span>
         <div class="btn-text">
@@ -404,7 +384,7 @@
         </div>
       </a>
 
-       <a class="btn btn-primary" href="map_chapter.html">
+      <a class="btn btn-primary btn-wide" href="map_chapter.html">
         <span class="btn-icon">💬</span>
         <div class="btn-text">
           <span class="btn-label">Chapter Chats</span>
