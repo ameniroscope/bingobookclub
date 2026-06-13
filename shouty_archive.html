@@ -43,6 +43,10 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 .shelf-title{font-family:'Cinzel',serif;font-size:0.85rem;font-weight:600;color:#3f220a;text-align:center;
   letter-spacing:0.5px;line-height:1.25;}
 
+.notice{position:relative;z-index:1;max-width:600px;margin:2rem auto;padding:1.2rem 1.5rem;text-align:center;
+  background:rgba(242,232,208,0.85);border:1px solid var(--worn);border-radius:8px;color:var(--ink-faded);
+  font-style:italic;line-height:1.6;}
+
 .cards-wrap{position:relative;z-index:1;max-width:1100px;margin:2.5rem auto 0;padding:0 1.5rem;
   display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:start;}
 
@@ -116,21 +120,12 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 <a href="shouty_index.html" class="home-btn">🦖 Shouty Book Club</a>
 
 <div class="page-title">
-  <h1>Reading Bingo — Archive</h1>
+  <h1>Shouty Bookclub Bingo — Archive</h1>
   <span class="archive-tag">Read Only</span>
 </div>
 
-<!-- Book shelf -->
 <div class="shelf" id="shelf"></div>
-
-<!-- Selected read's cards -->
-<div class="cards-wrap" id="cardsWrap"></div>
-
-<!-- Selected read's chunk rooms -->
-<div class="rooms-section">
-  <div class="section-title">Chunk Room Archive</div>
-  <div class="rooms-grid" id="roomsGrid"></div>
-</div>
+<div id="content"></div>
 
 <!-- CHAT MODAL -->
 <div class="overlay" id="overlay">
@@ -148,29 +143,16 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, getDoc, query, where, orderBy }
-  from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
-
 // ─────────────────────────────────────────────────────────────
-//  ARCHIVED READS
-//  To add a new read later, append one line. Its data must live
-//  in the collections you name here (bingoCol / msgCol).
+//  ARCHIVED READS — file based, no Firebase
+//  Each read is one JSON file exported from Firestore. To add a
+//  new read later: export it, drop the .json in this folder, and
+//  append one line below with its title and filename.
 // ─────────────────────────────────────────────────────────────
 const BOOKS = [
-  { title: "Iron Flame", bingoCol: "shouty_bingo", msgCol: "shouty_messages" },
-  // { title: "Onyx Storm", bingoCol: "shouty_bingo_2", msgCol: "shouty_messages_2" },
+  { title: "Iron Flame", file: "archive_ironflame.json" },
+  // { title: "Onyx Storm", file: "bingo_archive_onyx_storm.json" },
 ];
-
-const fb = initializeApp({
-  apiKey: "AIzaSyAIQTe-QGQmwqTVmIyJZZ_qlDNsD6GUskY",
-  authDomain: "bingobookclub-2144e.firebaseapp.com",
-  projectId: "bingobookclub-2144e",
-  storageBucket: "bingobookclub-2144e.firebasestorage.app",
-  messagingSenderId: "294177836341",
-  appId: "1:294177836341:web:6d5f11e64737fbe3aad07c"
-});
-const db = getFirestore(fb);
 
 const PLAYERS = [
   { pid:"marine", name:"Marine", emoji:"🧜‍♀️", photo:"marine.png" },
@@ -182,7 +164,9 @@ const EMOJI_BY_PID = { marine:"🧜‍♀️",  kathi:"🍄"     };
 const ROOMS = Array.from({length:19},(_,i)=>({ch:i,label:i===0?"General":`Chunk ${i}`}));
 const GRID_SIZE = 25;
 
-let activeBook = BOOKS[0];
+let activeBook = null;
+let archiveData = null;   // parsed JSON for the active book
+const cache = {};         // filename -> parsed JSON
 
 function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
 
@@ -215,59 +199,95 @@ async function fetchCover(title){
   return null;
 }
 
-// ── Build the shelf ──
+// ── Load a book's JSON file (cached) ──
+async function loadBookData(book){
+  if(cache[book.file]) return cache[book.file];
+  const r = await fetch(book.file);
+  if(!r.ok) throw new Error(`Could not load ${book.file} (${r.status})`);
+  const json = await r.json();
+  cache[book.file] = json;
+  return json;
+}
+
+// Pull a collection's documents out of the export, unwrapping `_data`
+function getCollection(json, name){
+  const col = json?.collections?.[name];
+  if(!col) return {};
+  const out = {};
+  for(const [id,entry] of Object.entries(col)){
+    out[id] = entry._data || entry;   // tolerate both wrapped and flat
+  }
+  return out;
+}
+
+// ── Shelf ──
 async function buildShelf(){
   const shelf = document.getElementById('shelf');
   shelf.innerHTML = '';
-  // Hide the shelf entirely if there's only one read — no need for a one-book shelf
   if(BOOKS.length < 2) shelf.style.display = 'none';
 
   BOOKS.forEach((book,idx)=>{
     const el = document.createElement('div');
-    el.className = 'shelf-book' + (book===activeBook?' active':'');
+    el.className = 'shelf-book' + (idx===0?' active':'');
     el.innerHTML = `
       <div class="cover-wrap"><div class="cover-placeholder">📖</div></div>
       <div class="shelf-title">${esc(book.title)}</div>`;
-    el.addEventListener('click',()=>selectBook(book));
+    el.addEventListener('click',()=>selectBook(book,el));
     shelf.appendChild(el);
 
-    // Fetch and swap in the real cover
     fetchCover(book.title).then(url=>{
       if(!url) return;
       const wrap = el.querySelector('.cover-wrap');
       const img = document.createElement('img');
       img.alt = book.title;
-      img.onerror = ()=>{ /* keep placeholder */ };
-      img.onload = ()=>{ wrap.innerHTML = ''; wrap.appendChild(img); };
+      img.onload = ()=>{ wrap.innerHTML=''; wrap.appendChild(img); };
       img.src = url;
     });
   });
 }
 
-function selectBook(book){
+async function selectBook(book, el){
   activeBook = book;
-  document.querySelectorAll('.shelf-book').forEach((el,i)=>{
-    el.classList.toggle('active', BOOKS[i]===book);
-  });
-  loadCards();
-  loadRooms();
+  document.querySelectorAll('.shelf-book').forEach(b=>b.classList.remove('active'));
+  if(el) el.classList.add('active');
+
+  const content = document.getElementById('content');
+  content.innerHTML = `<div class="notice">Loading ${esc(book.title)}…</div>`;
+
+  try{
+    archiveData = await loadBookData(book);
+  }catch(e){
+    content.innerHTML = `<div class="notice">Couldn't load this read's data file.<br>${esc(e.message)}<br><br>
+      If you opened this page by double-clicking it, your browser may block local file loading.
+      Push it to GitHub Pages (or run a local server) and it'll work.</div>`;
+    return;
+  }
+  renderContent();
 }
 
-async function loadCards(){
+function renderContent(){
+  const content = document.getElementById('content');
+  content.innerHTML = `
+    <div class="cards-wrap" id="cardsWrap"></div>
+    <div class="rooms-section">
+      <div class="section-title">Chunk Room Archive</div>
+      <div class="rooms-grid" id="roomsGrid"></div>
+    </div>`;
+  renderCards();
+  renderRooms();
+}
+
+function renderCards(){
   const wrap = document.getElementById('cardsWrap');
-  wrap.innerHTML = '';
+  const bingo = getCollection(archiveData, 'shouty_bingo');
   for(const p of PLAYERS){
     let cells = Array(GRID_SIZE).fill('');
     let marked = [12];
-    try{
-      const d = await getDoc(doc(db,activeBook.bingoCol,p.pid));
-      if(d.exists()){
-        const data = d.data();
-        if(Array.isArray(data.cells))  cells  = data.cells;
-        if(Array.isArray(data.marked)) marked = data.marked;
-      }
-    }catch(e){ console.error('card load',p.pid,e); }
-
+    const rec = bingo[p.pid];
+    if(rec){
+      if(Array.isArray(rec.cells))  cells  = rec.cells;
+      if(Array.isArray(rec.marked)) marked = rec.marked;
+    }
     const markedSet = new Set(marked); markedSet.add(12);
     const hasBingo = checkBingo(marked);
 
@@ -297,15 +317,12 @@ async function loadCards(){
   }
 }
 
-async function loadRooms(){
+function renderRooms(){
+  const msgs = getCollection(archiveData, 'shouty_messages');
   const counts = {};
-  try{
-    const snap = await getDocs(collection(db,activeBook.msgCol));
-    snap.forEach(d=>{ const r=d.data().room; counts[r]=(counts[r]||0)+1; });
-  }catch(e){ console.error('room counts',e); }
+  for(const m of Object.values(msgs)){ counts[m.room] = (counts[m.room]||0)+1; }
 
   const grid = document.getElementById('roomsGrid');
-  grid.innerHTML = '';
   ROOMS.forEach(r=>{
     const n = counts[r.ch]||0;
     const btn = document.createElement('div');
@@ -320,44 +337,37 @@ const overlay = document.getElementById('overlay');
 document.getElementById('chatClose').addEventListener('click',closeChat);
 overlay.addEventListener('click',e=>{ if(e.target===overlay) closeChat(); });
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&overlay.classList.contains('open')) closeChat(); });
-
 function closeChat(){ overlay.classList.remove('open'); document.body.style.overflow=''; }
 
-async function openChat(room){
+function openChat(room){
   document.getElementById('chatRoomLabel').textContent = room.ch===0?'General Room':`Room — ${room.label}`;
   document.getElementById('chatTitle').textContent = room.label;
   overlay.classList.add('open');
   document.body.style.overflow='hidden';
   const msgDiv = document.getElementById('chatMessages');
-  msgDiv.innerHTML = '<span class="empty-msg">Loading…</span>';
-  try{
-    const q = query(collection(db,activeBook.msgCol),where('room','==',room.ch),orderBy('ts','asc'));
-    const snap = await getDocs(q);
-    const msgs = []; snap.forEach(d=>msgs.push(d.data()));
-    if(msgs.length===0){ msgDiv.innerHTML = '<span class="empty-msg">No thoughts recorded here.</span>'; return; }
-    msgDiv.innerHTML = '';
-    msgs.forEach(m=>{
-      const emoji = EMOJI_BY_PID[m.name]||'';
-      const name  = NAME_BY_PID[m.name]||m.name;
-      let time = '';
-      if(m.ts&&typeof m.ts.toDate==='function'){
-        time = m.ts.toDate().toLocaleDateString(undefined,{month:'short',day:'numeric'});
-      }
-      const el = document.createElement('div');
-      el.className = 'msg';
-      el.innerHTML = `<span class="msg-name">${emoji} ${name}<span class="msg-time">${time}</span></span><span class="msg-text">${esc(m.text)}</span>`;
-      msgDiv.appendChild(el);
-    });
-  }catch(e){
-    console.error(e);
-    msgDiv.innerHTML = `<span class="empty-msg">Could not load messages: ${esc(e.message)}</span>`;
-  }
+
+  const all = getCollection(archiveData, 'shouty_messages');
+  let msgs = Object.values(all).filter(m=>m.room===room.ch);
+  // sort by timestamp string (ISO sorts correctly as text)
+  msgs.sort((a,b)=> (a.ts||'').localeCompare(b.ts||''));
+
+  if(msgs.length===0){ msgDiv.innerHTML='<span class="empty-msg">No thoughts recorded here.</span>'; return; }
+  msgDiv.innerHTML='';
+  msgs.forEach(m=>{
+    const emoji = EMOJI_BY_PID[m.name]||'';
+    const name  = NAME_BY_PID[m.name]||m.name;
+    let time='';
+    if(m.ts){ const d=new Date(m.ts); if(!isNaN(d)) time=d.toLocaleDateString(undefined,{month:'short',day:'numeric'}); }
+    const el=document.createElement('div');
+    el.className='msg';
+    el.innerHTML=`<span class="msg-name">${emoji} ${name}<span class="msg-time">${time}</span></span><span class="msg-text">${esc(m.text)}</span>`;
+    msgDiv.appendChild(el);
+  });
 }
 
-// Init
+// Init — show the first read
 buildShelf();
-loadCards();
-loadRooms();
+selectBook(BOOKS[0], document.querySelector('.shelf-book'));
 </script>
 </body>
 </html>
