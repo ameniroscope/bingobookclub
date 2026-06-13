@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shouty Bingo — Archive</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;600&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--ink:#2b1d0e;--ink-faded:#5c3d1e;--gold:#8b6914;--gold-lt:#c9a84c;--parch:#f2e8d0;--parch-dark:#e0ceaa;--worn:#c9af82;}
+html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var(--ink);}
+#bg{position:fixed;inset:0;z-index:0;background:#e4d0ac;}
+#bg::after{content:'';position:absolute;inset:0;background:
+  radial-gradient(ellipse 70% 50% at 15% 20%,rgba(180,130,60,0.13) 0%,transparent 55%),
+  radial-gradient(ellipse 60% 70% at 85% 75%,rgba(160,110,40,0.10) 0%,transparent 55%),
+  radial-gradient(ellipse 100% 100% at 50% 50%,transparent 60%,rgba(80,40,5,0.18) 100%);}
+
+.home-btn{position:fixed;top:1.5rem;right:1.5rem;z-index:100;background:#3f220a;color:var(--gold-lt);
+  font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:2px;padding:0.6rem 1.2rem;border-radius:6px;
+  border:2px solid var(--gold);text-decoration:none;text-transform:uppercase;transition:all 0.3s ease;
+  box-shadow:0 2px 8px rgba(0,0,0,0.3);}
+.home-btn:hover{background:rgba(59,30,6,0.95);transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.4);}
+
+.page-title{position:relative;z-index:1;text-align:center;padding:2.5rem 1rem 0.5rem;}
+.page-title h1{font-family:'Cinzel',serif;font-size:2.2rem;font-weight:600;color:#3f220a;letter-spacing:2px;
+  text-shadow:0 0 20px rgba(201,168,76,0.3);}
+.page-title .archive-tag{display:inline-block;margin-top:0.6rem;font-family:'Cinzel',serif;font-size:0.7rem;
+  letter-spacing:3px;text-transform:uppercase;color:var(--parch);background:#3b1e06;border:1px solid var(--gold-lt);
+  padding:0.3rem 1rem;border-radius:4px;}
+.book-label{position:relative;z-index:1;text-align:center;font-style:italic;color:var(--ink-faded);
+  font-size:1.05rem;margin-top:0.5rem;}
+
+.cards-wrap{position:relative;z-index:1;max-width:1100px;margin:1.5rem auto 0;padding:0 1.5rem;
+  display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:start;}
+
+.player-col{display:flex;flex-direction:column;align-items:center;}
+.player-head{display:flex;flex-direction:column;align-items:center;gap:0.6rem;margin-bottom:1rem;}
+.img-frame{position:relative;width:80px;height:80px;}
+.img-frame img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:3px solid var(--gold);
+  box-shadow:0 0 20px rgba(201,168,76,0.4);}
+.img-frame .emoji-badge{position:absolute;bottom:-4px;right:-4px;font-size:1.6rem;
+  filter:drop-shadow(0 0 6px rgba(201,168,76,0.8));}
+.player-col .player-name{font-family:'Cinzel',serif;font-size:1.7rem;font-weight:600;color:#3f220a;letter-spacing:2px;}
+
+.bingo-card-wrap{position:relative;width:100%;aspect-ratio:1024/1536;background-image:url('shouty_bingo.png');
+  background-size:100% 100%;}
+.bingo-badge{background:#3b1e06;color:var(--gold-lt);font-size:11px;font-family:'Cinzel',serif;letter-spacing:1px;
+  padding:3px 10px;border-radius:3px;border:1px solid var(--gold-lt);display:none;position:absolute;top:-30px;
+  left:50%;transform:translateX(-50%);z-index:5;}
+.bingo-badge.show{display:inline;}
+.bingo-grid{position:absolute;left:50%;top:35.8%;width:73%;aspect-ratio:1/1;transform:translateX(-50%);
+  display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(5,1fr);}
+.bingo-cell{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;
+  font-size:clamp(8px,1.1vw,12px);line-height:1.2;text-align:center;padding:2px;overflow:hidden;}
+.bingo-cell.marked{background:rgba(212,175,55,0.55);}
+.bingo-cell.free{font-weight:600;color:var(--gold);}
+.cell-text{width:100%;height:100%;display:flex;align-items:center;justify-content:center;text-align:center;
+  font-family:'IM Fell English',Georgia,serif;font-size:inherit;line-height:1.2;color:#2a1a0a;padding:2px;
+  overflow-wrap:break-word;word-break:break-word;}
+
+.rooms-section{position:relative;z-index:1;max-width:1100px;margin:3rem auto 4rem;padding:0 1.5rem;}
+.section-title{font-family:'Cinzel',serif;font-size:1.1rem;letter-spacing:5px;color:var(--gold);
+  text-transform:uppercase;text-align:center;margin-bottom:1.2rem;}
+.rooms-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;}
+.room-btn{position:relative;height:64px;display:flex;align-items:center;justify-content:center;
+  border-radius:6px;cursor:pointer;transition:all 0.2s;border:1.5px solid var(--gold);
+  background:rgba(242,232,208,0.92);color:var(--ink);}
+.room-btn:hover{transform:translateY(-2px);box-shadow:0 5px 18px rgba(0,0,0,0.28);}
+.room-btn.empty{opacity:0.55;}
+.btn-label{font-family:'Cinzel',serif;font-size:0.85rem;letter-spacing:1px;font-weight:600;}
+.btn-count{position:absolute;top:5px;right:8px;font-size:0.65rem;font-style:italic;color:var(--ink-faded);}
+
+.overlay{position:fixed;inset:0;z-index:200;background:rgba(20,10,4,0.72);display:flex;align-items:center;
+  justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity 0.2s;}
+.overlay.open{opacity:1;pointer-events:all;}
+.chat-modal{background:var(--parch);border:2px solid var(--worn);border-radius:10px;width:100%;max-width:650px;
+  height:88vh;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 8px 40px rgba(0,0,0,0.55),inset 0 1px 10px rgba(100,60,10,0.1);
+  transform:translateY(12px);transition:transform 0.2s;}
+.overlay.open .chat-modal{transform:translateY(0);}
+.chat-hdr{padding:1rem 1.25rem 0.85rem;border-bottom:1px solid var(--worn);background:rgba(201,175,130,0.3);
+  border-radius:8px 8px 0 0;display:flex;align-items:flex-start;justify-content:space-between;gap:0.5rem;}
+.chat-room-label{font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:2px;color:var(--gold);}
+.chat-title{font-family:'Cinzel',serif;font-size:1.2rem;font-weight:600;color:var(--ink);}
+.chat-status{display:inline-block;margin-top:4px;font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:1px;
+  padding:0.22rem 0.6rem;border-radius:3px;background:#3b1e06;color:var(--gold-lt);border:1px solid var(--gold-lt);}
+.close-btn{background:none;border:none;cursor:pointer;color:var(--ink-faded);font-size:1.5rem;line-height:1;padding:0.1rem;transition:color 0.15s;}
+.close-btn:hover{color:var(--ink);}
+.messages{flex:1;overflow-y:auto;padding:0.9rem 1.1rem;display:flex;flex-direction:column;gap:0.7rem;}
+.empty-msg{font-size:1rem;color:var(--ink-faded);font-style:italic;text-align:center;margin:auto;}
+.msg-name{font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:1px;color:var(--gold);display:block;margin-bottom:0.1rem;}
+.msg-text{font-size:1rem;color:var(--ink);line-height:1.65;}
+.msg-time{font-size:0.7rem;color:var(--worn);font-style:italic;margin-left:0.4rem;}
+
+@media (max-width:800px){
+  .cards-wrap{grid-template-columns:1fr;gap:2.5rem;}
+  .home-btn{top:1rem;right:1rem;font-size:0.65rem;padding:0.5rem 0.8rem;}
+}
+</style>
+</head>
+<body>
+<div id="bg"></div>
+
+<a href="shouty_index.html" class="home-btn">🦖 Shouty Book Club</a>
+
+<div class="page-title">
+  <h1>Reading Bingo — Archive</h1>
+  <span class="archive-tag">Read Only</span>
+</div>
+<div class="book-label" id="bookLabel"></div>
+
+<div class="cards-wrap" id="cardsWrap"></div>
+
+<div class="rooms-section">
+  <div class="section-title">Chunk Room Archive</div>
+  <div class="rooms-grid" id="roomsGrid"></div>
+</div>
+
+<!-- CHAT MODAL -->
+<div class="overlay" id="overlay">
+  <div class="chat-modal">
+    <div class="chat-hdr">
+      <div>
+        <div class="chat-room-label" id="chatRoomLabel"></div>
+        <div class="chat-title" id="chatTitle"></div>
+        <span class="chat-status">Archived</span>
+      </div>
+      <button class="close-btn" id="chatClose">✕</button>
+    </div>
+    <div class="messages" id="chatMessages"></div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+import { getFirestore, collection, getDocs, doc, getDoc, query, where, orderBy }
+  from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+
+// ---- Edit this line if you archive a different book ----
+const BOOK_LABEL = "";   // e.g. "Onyx Storm" — leave "" to hide
+
+const fb = initializeApp({
+  apiKey: "AIzaSyAIQTe-QGQmwqTVmIyJZZ_qlDNsD6GUskY",
+  authDomain: "bingobookclub-2144e.firebaseapp.com",
+  projectId: "bingobookclub-2144e",
+  storageBucket: "bingobookclub-2144e.firebasestorage.app",
+  messagingSenderId: "294177836341",
+  appId: "1:294177836341:web:6d5f11e64737fbe3aad07c"
+});
+const db = getFirestore(fb);
+
+const PLAYERS = [
+  { pid:"marine", name:"Marine", emoji:"🧜‍♀️", photo:"marine.png" },
+  { pid:"kathi",  name:"Kathi",  emoji:"🍄",   photo:"kathi.png"  },
+];
+const NAME_BY_PID  = { marine:"Marine", kathi:"Kathi" };
+const EMOJI_BY_PID = { marine:"🧜‍♀️",  kathi:"🍄"     };
+
+const ROOMS = Array.from({length:19},(_,i)=>({ch:i,label:i===0?"General":`Chunk ${i}`}));
+const GRID_SIZE = 25;
+
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
+
+function checkBingo(marked){
+  const m = new Set(marked); m.add(12);
+  for(let r=0;r<5;r++) if([0,1,2,3,4].every(c=>m.has(r*5+c))) return true;
+  for(let c=0;c<5;c++) if([0,1,2,3,4].every(r=>m.has(r*5+c))) return true;
+  if([0,1,2,3,4].every(i=>m.has(i*5+i))) return true;
+  if([0,1,2,3,4].every(i=>m.has(i*5+(4-i)))) return true;
+  return false;
+}
+
+if(BOOK_LABEL) document.getElementById('bookLabel').textContent = BOOK_LABEL;
+
+async function loadCards(){
+  const wrap = document.getElementById('cardsWrap');
+  for(const p of PLAYERS){
+    let cells = Array(GRID_SIZE).fill('');
+    let marked = [12];
+    try{
+      const d = await getDoc(doc(db,'shouty_bingo',p.pid));
+      if(d.exists()){
+        const data = d.data();
+        if(Array.isArray(data.cells))  cells  = data.cells;
+        if(Array.isArray(data.marked)) marked = data.marked;
+      }
+    }catch(e){ console.error('card load',p.pid,e); }
+
+    const markedSet = new Set(marked); markedSet.add(12);
+    const hasBingo = checkBingo(marked);
+
+    const col = document.createElement('div');
+    col.className = 'player-col';
+
+    let cellsHtml = '';
+    for(let i=0;i<GRID_SIZE;i++){
+      const isFree = i===12;
+      const cls = 'bingo-cell' + (isFree?' free':markedSet.has(i)?' marked':'');
+      cellsHtml += `<div class="${cls}"><div class="cell-text">${isFree?'FREE':esc(cells[i])}</div></div>`;
+    }
+
+    col.innerHTML = `
+      <div class="player-head">
+        <div class="img-frame">
+          <img src="${p.photo}" alt="${p.name}">
+          <span class="emoji-badge">${p.emoji}</span>
+        </div>
+        <div class="player-name">${p.name}</div>
+      </div>
+      <div class="bingo-card-wrap">
+        <span class="bingo-badge${hasBingo?' show':''}">BINGO!</span>
+        <div class="bingo-grid">${cellsHtml}</div>
+      </div>`;
+    wrap.appendChild(col);
+  }
+}
+
+async function loadRooms(){
+  // Count messages per room once, so empty rooms are visually dimmed
+  const counts = {};
+  try{
+    const snap = await getDocs(collection(db,'shouty_messages'));
+    snap.forEach(d=>{ const r=d.data().room; counts[r]=(counts[r]||0)+1; });
+  }catch(e){ console.error('room counts',e); }
+
+  const grid = document.getElementById('roomsGrid');
+  ROOMS.forEach(r=>{
+    const n = counts[r.ch]||0;
+    const btn = document.createElement('div');
+    btn.className = 'room-btn' + (n===0?' empty':'');
+    btn.innerHTML = `<span class="btn-count">${n||''}</span><span class="btn-label">${r.label}</span>`;
+    btn.addEventListener('click',()=>openChat(r));
+    grid.appendChild(btn);
+  });
+}
+
+const overlay = document.getElementById('overlay');
+document.getElementById('chatClose').addEventListener('click',closeChat);
+overlay.addEventListener('click',e=>{ if(e.target===overlay) closeChat(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&overlay.classList.contains('open')) closeChat(); });
+
+function closeChat(){ overlay.classList.remove('open'); document.body.style.overflow=''; }
+
+async function openChat(room){
+  document.getElementById('chatRoomLabel').textContent = room.ch===0?'General Room':`Room — ${room.label}`;
+  document.getElementById('chatTitle').textContent = room.label;
+  overlay.classList.add('open');
+  document.body.style.overflow='hidden';
+  const msgDiv = document.getElementById('chatMessages');
+  msgDiv.innerHTML = '<span class="empty-msg">Loading…</span>';
+  try{
+    const q = query(collection(db,'shouty_messages'),where('room','==',room.ch),orderBy('ts','asc'));
+    const snap = await getDocs(q);
+    const msgs = []; snap.forEach(d=>msgs.push(d.data()));
+    if(msgs.length===0){ msgDiv.innerHTML = '<span class="empty-msg">No thoughts recorded here.</span>'; return; }
+    msgDiv.innerHTML = '';
+    msgs.forEach(m=>{
+      const emoji = EMOJI_BY_PID[m.name]||'';
+      const name  = NAME_BY_PID[m.name]||m.name;
+      let time = '';
+      if(m.ts&&typeof m.ts.toDate==='function'){
+        time = m.ts.toDate().toLocaleDateString(undefined,{month:'short',day:'numeric'});
+      }
+      const el = document.createElement('div');
+      el.className = 'msg';
+      el.innerHTML = `<span class="msg-name">${emoji} ${name}<span class="msg-time">${time}</span></span><span class="msg-text">${esc(m.text)}</span>`;
+      msgDiv.appendChild(el);
+    });
+  }catch(e){
+    console.error(e);
+    msgDiv.innerHTML = `<span class="empty-msg">Could not load messages: ${esc(e.message)}</span>`;
+  }
+}
+
+loadCards();
+loadRooms();
+</script>
+</body>
+</html>
