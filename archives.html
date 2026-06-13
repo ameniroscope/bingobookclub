@@ -59,8 +59,8 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
   filter:drop-shadow(0 0 6px rgba(201,168,76,0.8));}
 .player-col .player-name{font-family:'Cinzel',serif;font-size:1.7rem;font-weight:600;color:#3f220a;letter-spacing:2px;}
 
-.bingo-card-wrap{position:relative;width:100%;aspect-ratio:1024/1536;background-image:image);
-  background-size:100% 100%;}
+.bingo-card-wrap{position:relative;width:100%;aspect-ratio:1024/1536;
+  background-size:100% 100%;background-repeat:no-repeat;background-color:rgba(59,30,6,0.06);}
 .bingo-badge{background:#3b1e06;color:var(--gold-lt);font-size:11px;font-family:'Cinzel',serif;letter-spacing:1px;
   padding:3px 10px;border-radius:3px;border:1px solid var(--gold-lt);display:none;position:absolute;top:-30px;
   left:50%;transform:translateX(-50%);z-index:5;}
@@ -117,7 +117,7 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 <body>
 <div id="bg"></div>
 
-<a href="shouty_index.html" class="home-btn">🦖 Shouty Book Club</a>
+<a href="index.html" class="home-btn">🏠 Home</a>
 
 <div class="page-title">
   <h1>Bingo Book Club - Archive</h1>
@@ -147,11 +147,11 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 //  ARCHIVED READS — file based, no Firebase
 //  Each read is one JSON file exported from Firestore. To add a
 //  new read later: export it, drop the .json in this folder, and
-//  append one line below with its title and filename.
+//  append one line below with its title, filename, and image.
 // ─────────────────────────────────────────────────────────────
 const BOOKS = [
   { title: "Iron Flame", file: "archive_ironflame.json", image: "archive_ironflame.png" },
-  // { title: "Onyx Storm", file: "bingo_archive_onyx_storm.json" },
+  // { title: "Onyx Storm", file: "bingo_archive_onyx_storm.json", image: "archive_onyx_storm.png" },
 ];
 
 const PLAYERS = [
@@ -280,6 +280,8 @@ function renderContent(){
 function renderCards(){
   const wrap = document.getElementById('cardsWrap');
   const bingo = getCollection(archiveData, 'shouty_bingo');
+  const bgStyle = activeBook && activeBook.image
+    ? ` style="background-image:url('${esc(activeBook.image)}')"` : '';
   for(const p of PLAYERS){
     let cells = Array(GRID_SIZE).fill('');
     let marked = [12];
@@ -309,7 +311,7 @@ function renderCards(){
         </div>
         <div class="player-name">${p.name}</div>
       </div>
-      <div class="bingo-card-wrap">
+      <div class="bingo-card-wrap"${bgStyle}>
         <span class="bingo-badge${hasBingo?' show':''}">BINGO!</span>
         <div class="bingo-grid">${cellsHtml}</div>
       </div>`;
