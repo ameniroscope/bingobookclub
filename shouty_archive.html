@@ -27,10 +27,23 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 .page-title .archive-tag{display:inline-block;margin-top:0.6rem;font-family:'Cinzel',serif;font-size:0.7rem;
   letter-spacing:3px;text-transform:uppercase;color:var(--parch);background:#3b1e06;border:1px solid var(--gold-lt);
   padding:0.3rem 1rem;border-radius:4px;}
-.book-label{position:relative;z-index:1;text-align:center;font-style:italic;color:var(--ink-faded);
-  font-size:1.05rem;margin-top:0.5rem;}
 
-.cards-wrap{position:relative;z-index:1;max-width:1100px;margin:1.5rem auto 0;padding:0 1.5rem;
+/* ── Shelf ── */
+.shelf{position:relative;z-index:1;max-width:1000px;margin:2rem auto 0;padding:0 1.5rem;
+  display:flex;flex-wrap:wrap;gap:1.5rem;justify-content:center;}
+.shelf-book{display:flex;flex-direction:column;align-items:center;gap:0.6rem;cursor:pointer;
+  transition:transform 0.2s;width:140px;}
+.shelf-book:hover{transform:translateY(-4px);}
+.cover-wrap{position:relative;width:140px;height:210px;border-radius:4px;overflow:hidden;
+  box-shadow:0 4px 16px rgba(0,0,0,0.35);border:2px solid var(--gold);}
+.cover-wrap img{width:100%;height:100%;object-fit:cover;display:block;}
+.cover-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+  font-size:3rem;background:rgba(59,30,6,0.9);color:var(--gold-lt);}
+.shelf-book.active .cover-wrap{border-color:var(--gold-lt);box-shadow:0 0 22px rgba(201,168,76,0.6);}
+.shelf-title{font-family:'Cinzel',serif;font-size:0.85rem;font-weight:600;color:#3f220a;text-align:center;
+  letter-spacing:0.5px;line-height:1.25;}
+
+.cards-wrap{position:relative;z-index:1;max-width:1100px;margin:2.5rem auto 0;padding:0 1.5rem;
   display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:start;}
 
 .player-col{display:flex;flex-direction:column;align-items:center;}
@@ -106,10 +119,14 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
   <h1>Reading Bingo — Archive</h1>
   <span class="archive-tag">Read Only</span>
 </div>
-<div class="book-label" id="bookLabel"></div>
 
+<!-- Book shelf -->
+<div class="shelf" id="shelf"></div>
+
+<!-- Selected read's cards -->
 <div class="cards-wrap" id="cardsWrap"></div>
 
+<!-- Selected read's chunk rooms -->
 <div class="rooms-section">
   <div class="section-title">Chunk Room Archive</div>
   <div class="rooms-grid" id="roomsGrid"></div>
@@ -135,8 +152,15 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/fireba
 import { getFirestore, collection, getDocs, doc, getDoc, query, where, orderBy }
   from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
-// ---- Edit this line if you archive a different book ----
-const BOOK_LABEL = "";   // e.g. "Onyx Storm" — leave "" to hide
+// ─────────────────────────────────────────────────────────────
+//  ARCHIVED READS
+//  To add a new read later, append one line. Its data must live
+//  in the collections you name here (bingoCol / msgCol).
+// ─────────────────────────────────────────────────────────────
+const BOOKS = [
+  { title: "Iron Flame", bingoCol: "shouty_bingo", msgCol: "shouty_messages" },
+  // { title: "Onyx Storm", bingoCol: "shouty_bingo_2", msgCol: "shouty_messages_2" },
+];
 
 const fb = initializeApp({
   apiKey: "AIzaSyAIQTe-QGQmwqTVmIyJZZ_qlDNsD6GUskY",
@@ -158,6 +182,8 @@ const EMOJI_BY_PID = { marine:"🧜‍♀️",  kathi:"🍄"     };
 const ROOMS = Array.from({length:19},(_,i)=>({ch:i,label:i===0?"General":`Chunk ${i}`}));
 const GRID_SIZE = 25;
 
+let activeBook = BOOKS[0];
+
 function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
 
 function checkBingo(marked){
@@ -169,15 +195,72 @@ function checkBingo(marked){
   return false;
 }
 
-if(BOOK_LABEL) document.getElementById('bookLabel').textContent = BOOK_LABEL;
+// ── Cover fetching: Google Books primary, Open Library fallback ──
+async function fetchCover(title){
+  try{
+    const r = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(title)}&maxResults=1`);
+    const j = await r.json();
+    const img = j.items?.[0]?.volumeInfo?.imageLinks;
+    if(img){
+      let url = img.thumbnail || img.smallThumbnail;
+      if(url) return url.replace('http://','https://').replace('&edge=curl','');
+    }
+  }catch(e){ console.warn('Google Books cover failed',e); }
+  try{
+    const r = await fetch(`https://openlibrary.org/search.json?title=${encodeURIComponent(title)}&limit=1`);
+    const j = await r.json();
+    const id = j.docs?.[0]?.cover_i;
+    if(id) return `https://covers.openlibrary.org/b/id/${id}-L.jpg`;
+  }catch(e){ console.warn('Open Library cover failed',e); }
+  return null;
+}
+
+// ── Build the shelf ──
+async function buildShelf(){
+  const shelf = document.getElementById('shelf');
+  shelf.innerHTML = '';
+  // Hide the shelf entirely if there's only one read — no need for a one-book shelf
+  if(BOOKS.length < 2) shelf.style.display = 'none';
+
+  BOOKS.forEach((book,idx)=>{
+    const el = document.createElement('div');
+    el.className = 'shelf-book' + (book===activeBook?' active':'');
+    el.innerHTML = `
+      <div class="cover-wrap"><div class="cover-placeholder">📖</div></div>
+      <div class="shelf-title">${esc(book.title)}</div>`;
+    el.addEventListener('click',()=>selectBook(book));
+    shelf.appendChild(el);
+
+    // Fetch and swap in the real cover
+    fetchCover(book.title).then(url=>{
+      if(!url) return;
+      const wrap = el.querySelector('.cover-wrap');
+      const img = document.createElement('img');
+      img.alt = book.title;
+      img.onerror = ()=>{ /* keep placeholder */ };
+      img.onload = ()=>{ wrap.innerHTML = ''; wrap.appendChild(img); };
+      img.src = url;
+    });
+  });
+}
+
+function selectBook(book){
+  activeBook = book;
+  document.querySelectorAll('.shelf-book').forEach((el,i)=>{
+    el.classList.toggle('active', BOOKS[i]===book);
+  });
+  loadCards();
+  loadRooms();
+}
 
 async function loadCards(){
   const wrap = document.getElementById('cardsWrap');
+  wrap.innerHTML = '';
   for(const p of PLAYERS){
     let cells = Array(GRID_SIZE).fill('');
     let marked = [12];
     try{
-      const d = await getDoc(doc(db,'shouty_bingo',p.pid));
+      const d = await getDoc(doc(db,activeBook.bingoCol,p.pid));
       if(d.exists()){
         const data = d.data();
         if(Array.isArray(data.cells))  cells  = data.cells;
@@ -215,14 +298,14 @@ async function loadCards(){
 }
 
 async function loadRooms(){
-  // Count messages per room once, so empty rooms are visually dimmed
   const counts = {};
   try{
-    const snap = await getDocs(collection(db,'shouty_messages'));
+    const snap = await getDocs(collection(db,activeBook.msgCol));
     snap.forEach(d=>{ const r=d.data().room; counts[r]=(counts[r]||0)+1; });
   }catch(e){ console.error('room counts',e); }
 
   const grid = document.getElementById('roomsGrid');
+  grid.innerHTML = '';
   ROOMS.forEach(r=>{
     const n = counts[r.ch]||0;
     const btn = document.createElement('div');
@@ -248,7 +331,7 @@ async function openChat(room){
   const msgDiv = document.getElementById('chatMessages');
   msgDiv.innerHTML = '<span class="empty-msg">Loading…</span>';
   try{
-    const q = query(collection(db,'shouty_messages'),where('room','==',room.ch),orderBy('ts','asc'));
+    const q = query(collection(db,activeBook.msgCol),where('room','==',room.ch),orderBy('ts','asc'));
     const snap = await getDocs(q);
     const msgs = []; snap.forEach(d=>msgs.push(d.data()));
     if(msgs.length===0){ msgDiv.innerHTML = '<span class="empty-msg">No thoughts recorded here.</span>'; return; }
@@ -271,6 +354,8 @@ async function openChat(room){
   }
 }
 
+// Init
+buildShelf();
 loadCards();
 loadRooms();
 </script>
