@@ -9,62 +9,25 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{--ink:#2b1d0e;--ink-faded:#5c3d1e;--gold:#8b6914;--gold-lt:#c9a84c;--parch:#f2e8d0;--parch-dark:#e0ceaa;--worn:#c9af82;}
 html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var(--ink);display:flex;
-  justify-content:center;
-  align-items:center;}
+  justify-content:center;align-items:center;}
 #bg{position:fixed;inset:0;z-index:0;background:#e4d0ac;}
 #bg::after{content:'';position:absolute;inset:0;background:
   radial-gradient(ellipse 70% 50% at 15% 20%,rgba(180,130,60,0.13) 0%,transparent 55%),
   radial-gradient(ellipse 60% 70% at 85% 75%,rgba(160,110,40,0.10) 0%,transparent 55%),
   radial-gradient(ellipse 100% 100% at 50% 50%,transparent 60%,rgba(80,40,5,0.18) 100%);}
 
-/* HOME BUTTON */
-.home-btn{
-  position:fixed;
-  top:1.5rem;
-  left:1.5rem;
-  z-index:100;
-  background:rgba(59,30,6,0.85);
-  color:var(--gold-lt);
-  font-family:'Cinzel',serif;
-  font-size:0.75rem;
-  letter-spacing:2px;
-  padding:0.6rem 1.2rem;
-  border-radius:6px;
-  border:2px solid var(--gold);
-  text-decoration:none;
-  text-transform:uppercase;
-  transition:all 0.3s ease;
-  box-shadow:0 2px 8px rgba(0,0,0,0.3);
-}
-.home-btn:hover{
-  background:rgba(59,30,6,0.95);
-  transform:translateY(-2px);
-  box-shadow:0 4px 12px rgba(0,0,0,0.4);
-}
+.home-btn{position:fixed;top:1.5rem;left:1.5rem;z-index:100;background:rgba(59,30,6,0.85);color:var(--gold-lt);
+  font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:2px;padding:0.6rem 1.2rem;border-radius:6px;
+  border:2px solid var(--gold);text-decoration:none;text-transform:uppercase;transition:all 0.3s ease;
+  box-shadow:0 2px 8px rgba(0,0,0,0.3);}
+.home-btn:hover{background:rgba(59,30,6,0.95);transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.4);}
 
-/* LAYOUT */
-.wrap{
-  position:relative;
-  z-index:1;
-  min-height:100vh;
-  max-width:1100px;
-  margin:0 auto;
-  padding:2rem 1.5rem;
+.wrap{position:relative;z-index:1;min-height:100vh;max-width:1100px;margin:0 auto;padding:2rem 1.5rem;
+  display:grid;grid-template-columns:420px 1fr;gap:3rem;align-items:center;justify-content:center;}
 
-  display:grid;
-  grid-template-columns:420px 1fr;
-  gap:3rem;
-
-  align-items:center;
-  justify-content:center;
-}
-
-/* ── LEFT: MAP ── */
 .map-col{position:sticky;top:3rem;display:flex;flex-direction:column;align-items:center;gap:0.75rem;}
-.map-wrap{position:relative;width:100%;border-radius:10px;overflow:hidden;
-  border:2px solid var(--worn);
-  min-height: 300px;
-  box-shadow:0 0 0 1px var(--parch-dark),4px 6px 24px rgba(0,0,0,0.45),inset 0 0 30px rgba(100,60,10,0.15);}
+.map-wrap{position:relative;width:100%;border-radius:10px;overflow:hidden;border:2px solid var(--worn);
+  min-height:300px;box-shadow:0 0 0 1px var(--parch-dark),4px 6px 24px rgba(0,0,0,0.45),inset 0 0 30px rgba(100,60,10,0.15);}
 .map-wrap::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:5;
   background:radial-gradient(ellipse at 50% 50%,transparent 60%,rgba(50,25,5,0.2) 100%);}
 .map-img{width:100%;height:auto;display:block;filter:sepia(0.35) saturate(0.85) brightness(0.92);}
@@ -80,19 +43,15 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 .map-tooltip.show{opacity:1;}
 .map-hint{font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:1px;color:var(--ink-faded);font-style:italic;text-align:center;}
 
-/* ── RIGHT: CONTENT ── */
 .right-col{display:flex;flex-direction:column;gap:2rem;}
-
 .kicker{font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:5px;color:var(--gold);text-transform:uppercase;margin-bottom:0.35rem;text-align:center;}
 .big-title{font-family:'Cinzel',serif;font-size:3.2rem;font-weight:600;letter-spacing:3px;color:var(--ink);line-height:1.1;text-align:center;}
 .ornament{display:flex;align-items:center;gap:0.6rem;margin:0.75rem 0 0;}
 .orn-line{flex:1;height:1px;background:linear-gradient(to right,transparent,var(--worn),transparent);}
 .orn-gem{color:var(--gold);font-size:0.8rem;}
-
 .intro-text{font-size:1.15rem;line-height:1.85;color:var(--ink-faded);max-width:500px;margin:0 auto;text-align:justify;}
 .intro-text p+p{margin-top:0.9rem;}
 
-/* PLAYER BUTTONS */
 .player-btns{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem 2.5rem;justify-content:center;}
 .player-btn{display:flex;flex-direction:column;align-items:center;gap:0;text-decoration:none;
   color:var(--ink);font-family:'Cinzel',serif;letter-spacing:1px;transition:transform 0.3s ease;}
@@ -108,10 +67,6 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 .player-btn .pname{display:block;margin-top:14px;font-size:1.2rem;letter-spacing:2px;color:var(--ink);}
 @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
 
-/* FOOTER */
-.footer{font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:3px;color:var(--gold);text-transform:uppercase;text-align:center;padding:2rem 0 0.5rem;position:relative;z-index:1;}
-.footer-orn{display:flex;align-items:center;gap:0.5rem;max-width:12rem;margin:0 auto 0.4rem;}
-
 @media(max-width:860px){.wrap{grid-template-columns:1fr;}.map-col{position:static;max-width:460px;width:100%;margin:0 auto;}}
 </style>
 </head>
@@ -121,39 +76,32 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 <a href="index.html" class="home-btn">🏠 Home</a>
 
 <div class="wrap">
-  <!-- MAP -->
   <aside class="map-col">
     <div class="map-wrap" id="mapEl">
-      <img src="shouty_map.png" class="map-img" alt="Map of Iron Flame">
+      <img src="shouty_map.png" class="map-img" alt="Map of WitchSlayer">
       <div class="map-tooltip" id="mapTooltip"></div>
     </div>
     <div class="map-hint" id="mapHint" style="display:none;">Drag your marker to update your progress</div>
   </aside>
 
-  <!-- RIGHT -->
   <div class="right-col">
     <div>
-  <div class="kicker">The Shouty Book Club</div>
-  <div class="big-title">Hey Emilia,</div>
-</div>
+      <div class="kicker">The Shouty Book Club</div>
+      <div class="big-title">Hey Emilia,</div>
+    </div>
 
-<div class="intro-text">
-  <p>
-    Welcome to our deeply unhinged little corner of literary chaos — a place built entirely for screaming about books, questionable decisions, emotional damage, and whatever Violet is doing this week.
-  </p>
-  <p>
-    Here, all forms of dramatic shouting are encouraged. Rage at Xaden. Defend your favourites with your life. Type in all caps when things become unbearable. Cry, spiral, theorise, and recover together chunk by chunk.
-  </p>
-  <p>
-    This is our spoiler-safe sanctuary for chaotic commentary, cursed observations, and the kind of book discussions that start sensible and end with keyboard smashing.
-  </p>
+    <div class="intro-text">
+      <p>Welcome to our deeply unhinged little corner of literary chaos — a place built entirely for screaming about books, questionable decisions, emotional damage, and whatever our heroine is doing this week.</p>
+      <p>Here, all forms of dramatic shouting are encouraged. Rage at the moody dragon. Defend your favourites with your life. Type in all caps when things become unbearable. Cry, spiral, theorise, and recover together chunk by chunk.</p>
+      <p>This is our spoiler-safe sanctuary for chaotic commentary, cursed observations, and the kind of book discussions that start sensible and end with keyboard smashing.</p>
+    </div>
 
-</div>
-  <div class="ornament">
-    <div class="orn-line"></div>
-    <div class="orn-gem">◆</div>
-    <div class="orn-line"></div>
-  </div>
+    <div class="ornament">
+      <div class="orn-line"></div>
+      <div class="orn-gem">◆</div>
+      <div class="orn-line"></div>
+    </div>
+
     <div>
       <div class="kicker" style="margin-bottom:0.75rem;">Choose your reader</div>
       <div class="player-btns">
@@ -174,13 +122,10 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
   </div>
 </div>
 
-
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-import {
-  getFirestore, collection, onSnapshot,
-  doc, setDoc
-} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore, collection, onSnapshot, doc, setDoc }
+  from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const fb = initializeApp({
   apiKey: "AIzaSyAIQTe-QGQmwqTVmIyJZZ_qlDNsD6GUskY",
@@ -190,23 +135,23 @@ const fb = initializeApp({
   messagingSenderId: "294177836341",
   appId: "1:294177836341:web:6d5f11e64737fbe3aad07c"
 });
-
 const db = getFirestore(fb);
 
-const mapEl = document.getElementById("mapEl");
+const mapEl   = document.getElementById("mapEl");
 const tooltip = document.getElementById("mapTooltip");
 const mapHint = document.getElementById("mapHint");
 
 const PLAYERS = {
   marine: { emoji:"🧜‍♀️", offset:{x:0,y:3} },
-  kathi:  { emoji:"🍄", offset:{x:0,y:-3} },
+  kathi:  { emoji:"🍄",   offset:{x:0,y:-3} },
 };
 
-/* MAP POSITIONS - 18 chunks (3 rows × 6 columns) */
-/* MAP POSITIONS — 0 = start, 1–42 = chapters, 43 = epilogue
-   Snake layout following the winding path on the map */
+const MIN_CH = 0, MAX_CH = 43;   // 0 = start, 1–42 = chapters, 43 = epilogue
+
+/* MAP POSITIONS — snake layout following the winding path on the map.
+   42 and the epilogue (43) share the final spot. */
 const POS = {
-  0:  { x:11.55, y:25.06 },   // start
+  0:  { x:11.55, y:25.06 },
   1:  { x:25.83, y:23.63 },
   2:  { x:36.31, y:23.31 },
   3:  { x:47.50, y:23.79 },
@@ -248,61 +193,31 @@ const POS = {
   39: { x:39.88, y:72.58 },
   40: { x:28.21, y:72.58 },
   41: { x:16.55, y:72.58 },
-  42: { x:81.31, y:83.73 },   // ← see note
-  43: /* ??? */
+  42: { x:81.31, y:83.73 },
+  43: { x:81.31, y:83.73 },
 };
-let chunk = 1;
 
-for (let r = 0; r < rowY.length; r++) {
-  for (let c = 0; c < colX.length; c++) {
-    POS[chunk] = {
-      x: colX[c],
-      y: rowY[r]
-    };
-    chunk++;
-  }
-}
-
-/* POSITION FINDER */
+/* POSITION FINDER — run findMapPosition() in the console to grab x/y values */
 window.findMapPosition = function () {
   mapEl.style.cursor = "crosshair";
-
   console.clear();
-  console.log("Position finder ON.");
-  console.log("Click the map. Each click prints x/y percentages.");
-
+  console.log("Position finder ON. Click the map to print x/y percentages.");
   mapEl.addEventListener("click", function finderClick(e) {
     const rect = mapEl.getBoundingClientRect();
-
-    const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(2);
-    const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(2);
-
+    const x = ((e.clientX - rect.left) / rect.width  * 100).toFixed(2);
+    const y = ((e.clientY - rect.top)  / rect.height * 100).toFixed(2);
     console.log(`{ x:${x}, y:${y} }`);
-
     const dot = document.createElement("div");
-    dot.style.cssText = `
-      position:absolute;
-      left:${x}%;
-      top:${y}%;
-      width:12px;
-      height:12px;
-      background:red;
-      border:2px solid white;
-      border-radius:50%;
-      transform:translate(-50%,-50%);
-      z-index:99999;
-      pointer-events:none;
-    `;
-
+    dot.style.cssText = `position:absolute;left:${x}%;top:${y}%;width:12px;height:12px;background:red;
+      border:2px solid white;border-radius:50%;transform:translate(-50%,-50%);z-index:99999;pointer-events:none;`;
     mapEl.appendChild(dot);
   });
 };
 
 const progress = { marine:0, kathi:0 };
 
-function placeMarker(pid, chunkNum) {
+function placeMarker(pid, chNum) {
   let m = document.getElementById("marker-" + pid);
-
   if (!m) {
     m = document.createElement("div");
     m.id = "marker-" + pid;
@@ -310,137 +225,91 @@ function placeMarker(pid, chunkNum) {
     m.textContent = PLAYERS[pid].emoji;
     mapEl.appendChild(m);
   }
-
-  const p = POS[Math.min(Math.max(chunkNum, 1), 18)] || POS[1];
+  const clamped = Math.min(Math.max(chNum, MIN_CH), MAX_CH);
+  const p = POS[clamped] || POS[0];
   const o = PLAYERS[pid].offset;
-
   m.style.left = (p.x + o.x) + "%";
-  m.style.top = (p.y + o.y) + "%";
+  m.style.top  = (p.y + o.y) + "%";
 }
 
-function snapNearest(cx,cy){
+function snapNearest(cx, cy) {
   const rect = mapEl.getBoundingClientRect();
-  const xp = (cx - rect.left) / rect.width * 100;
-  const yp = (cy - rect.top) / rect.height * 100;
-
-  let best = 1;
-  let bestD = Infinity;
-
-  for(const [ch,p] of Object.entries(POS)){
+  const xp = (cx - rect.left) / rect.width  * 100;
+  const yp = (cy - rect.top)  / rect.height * 100;
+  let best = 0, bestD = Infinity;
+  for (const [ch, p] of Object.entries(POS)) {
     const d = Math.hypot(xp - p.x, yp - p.y);
-
-    if(d < bestD){
-      bestD = d;
-      best = +ch;
-    }
+    if (d < bestD) { bestD = d; best = +ch; }
   }
-
   return best;
 }
 
 /* Drag markers */
-let dragging = false;
-let dragPid = null;
+let dragging = false, dragPid = null;
 
-function tryStartDrag(cx,cy){
-  for(const pid of Object.keys(PLAYERS)){
+function tryStartDrag(cx, cy) {
+  for (const pid of Object.keys(PLAYERS)) {
     const m = document.getElementById("marker-" + pid);
-    if(!m) continue;
-
+    if (!m) continue;
     const r = m.getBoundingClientRect();
-
-    if(Math.hypot(cx - (r.left + r.width / 2), cy - (r.top + r.height / 2)) < 24){
-      dragging = true;
-      dragPid = pid;
+    if (Math.hypot(cx - (r.left + r.width/2), cy - (r.top + r.height/2)) < 24) {
+      dragging = true; dragPid = pid;
       m.classList.add("draggable");
       m.style.transition = "none";
       return;
     }
   }
 }
+mapEl.addEventListener("mousedown", e => tryStartDrag(e.clientX, e.clientY));
+mapEl.addEventListener("touchstart", e => tryStartDrag(e.touches[0].clientX, e.touches[0].clientY), {passive:true});
 
-mapEl.addEventListener("mousedown", e => tryStartDrag(e.clientX,e.clientY));
-
-mapEl.addEventListener("touchstart", e => {
-  tryStartDrag(e.touches[0].clientX,e.touches[0].clientY);
-},{passive:true});
-
-function onMove(cx,cy){
-  if(!dragging || !dragPid) return;
-
+function onMove(cx, cy) {
+  if (!dragging || !dragPid) return;
   const rect = mapEl.getBoundingClientRect();
-  const xp = Math.min(Math.max((cx - rect.left) / rect.width * 100,2),98);
-  const yp = Math.min(Math.max((cy - rect.top) / rect.height * 100,2),98);
-
+  const xp = Math.min(Math.max((cx - rect.left) / rect.width  * 100, 2), 98);
+  const yp = Math.min(Math.max((cy - rect.top)  / rect.height * 100, 2), 98);
   const m = document.getElementById("marker-" + dragPid);
-
-  if(m){
-    m.style.left = xp + "%";
-    m.style.top = yp + "%";
-  }
-
-  const ch = snapNearest(cx,cy);
-
-  tooltip.textContent = "Chunk " + ch;
+  if (m) { m.style.left = xp + "%"; m.style.top = yp + "%"; }
+  const ch = snapNearest(cx, cy);
+  tooltip.textContent = ch === 0 ? "Start" : ch === 43 ? "Epilogue" : "Chapter " + ch;
   tooltip.style.left = xp + "%";
-  tooltip.style.top = yp + "%";
+  tooltip.style.top  = yp + "%";
   tooltip.classList.add("show");
 }
+window.addEventListener("mousemove", e => { if (dragging) onMove(e.clientX, e.clientY); });
+window.addEventListener("touchmove", e => { if (dragging) onMove(e.touches[0].clientX, e.touches[0].clientY); }, {passive:true});
 
-window.addEventListener("mousemove", e => {
-  if(dragging) onMove(e.clientX,e.clientY);
-});
-
-window.addEventListener("touchmove", e => {
-  if(dragging) onMove(e.touches[0].clientX,e.touches[0].clientY);
-},{passive:true});
-
-async function endDrag(cx,cy){
-  if(!dragging) return;
-
+async function endDrag(cx, cy) {
+  if (!dragging) return;
   dragging = false;
   tooltip.classList.remove("show");
-
   const m = document.getElementById("marker-" + dragPid);
+  if (m) { m.style.transition = ""; m.classList.remove("draggable"); }
 
-  if(m){
-    m.style.transition = "";
-    m.classList.remove("draggable");
-  }
+  const chNum = snapNearest(cx, cy);
+  progress[dragPid] = chNum;
+  placeMarker(dragPid, chNum);
 
-  const chunkNum = snapNearest(cx,cy);
-  progress[dragPid] = chunkNum;
-  placeMarker(dragPid, chunkNum);
-
-  // Save chunk number directly as room number (chunk 1 = room 1, chunk 2 = room 2, etc.)
-  await setDoc(doc(db,"progress_spoiler",dragPid),{room: chunkNum},{merge:true});
-
+  // Save the CHAPTER reached (0–43). Player pages unlock rooms by chapter threshold.
+  await setDoc(doc(db, "progress_spoiler", dragPid), { chapter: chNum }, { merge:true });
   dragPid = null;
 }
-
-window.addEventListener("mouseup", e => endDrag(e.clientX,e.clientY));
-
-window.addEventListener("touchend", e => {
-  endDrag(e.changedTouches[0].clientX,e.changedTouches[0].clientY);
-});
+window.addEventListener("mouseup", e => endDrag(e.clientX, e.clientY));
+window.addEventListener("touchend", e => endDrag(e.changedTouches[0].clientX, e.changedTouches[0].clientY));
 
 /* Starting markers */
-placeMarker("marine", 1);
-placeMarker("kathi", 1);
+placeMarker("marine", 0);
+placeMarker("kathi", 0);
 mapHint.style.display = "block";
 
-/* Live markers - listen to Firebase and update positions */
-onSnapshot(collection(db,"progress_spoiler"), snap => {
+/* Live markers — listen to Firebase and update positions */
+onSnapshot(collection(db, "progress_spoiler"), snap => {
   snap.forEach(d => {
-    if(!PLAYERS[d.id]) return;
-
-    // Read room number directly (room 0 = general, room 1 = chunk 1, etc.)
-    const roomNum = d.data().room || 0;
-    
-    progress[d.id] = roomNum;
-    placeMarker(d.id, roomNum);
+    if (!PLAYERS[d.id]) return;
+    const chNum = d.data().chapter ?? 0;   // chapter-based now
+    progress[d.id] = chNum;
+    placeMarker(d.id, chNum);
   });
-
   mapHint.style.display = "block";
 }, err => console.error(err));
 </script>
