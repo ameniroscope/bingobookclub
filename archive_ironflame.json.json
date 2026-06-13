@@ -1,0 +1,1680 @@
+{
+  "exportedAt": "2026-06-13T12:29:09.871Z",
+  "project": "bingobookclub-2144e",
+  "collections": {
+    "shouty_bingo": {
+      "kathi": {
+        "_data": {
+          "cells": [
+            "Violet is going to make the ward stone work again",
+            "Violet and XYZ break another armoire while boinking",
+            "Violet gets promoted",
+            "XYZ uses his sexiness as blackmail",
+            "A new romantic player enters the chat",
+            "Violet is gonna start a weapon smuggling ring",
+            "Liam's sister is gonna try to kill violet ",
+            "Imogen makes a move on Rhiannon ",
+            "Brennan dies in a \"but I just got you back!\"-way",
+            "Capture a vennon/wyvern as proof ",
+            "More telepathic sexting",
+            "Rhiannon has a tramp stamp ",
+            "",
+            "XYZ proposes",
+            "Dramatic hair cutting",
+            "Rebel betrayal ",
+            "Andarna is going to do rebellious teenage shit",
+            "Segayle and Tairn have a baby dragon egg",
+            "Liam comes back as a vennon",
+            "Rhiannon breaks up with violet because of secrets ",
+            "Andarna develops a new power that saves the day",
+            "XYZ is gonna have a menty B",
+            "Dane redemption arc",
+            "Violet zaps the wrong person",
+            "Sister has to choose between mom and violet "
+          ],
+          "marked": [
+            12,
+            5,
+            4,
+            22,
+            3,
+            10,
+            7,
+            0,
+            20,
+            21,
+            16,
+            9,
+            24
+          ]
+        }
+      },
+      "marine": {
+        "_data": {
+          "marked": [
+            12,
+            13,
+            1,
+            5,
+            4,
+            22,
+            20,
+            18,
+            0
+          ],
+          "cells": [
+            "Electricity in ward stone makes it stronger ",
+            "“I missed this/you”",
+            "Dramatic hair cutting",
+            "Imogen makes a move on Xayden",
+            "They form a griffin/dragon army against the venins",
+            "Ocean 11 the weapons out of Besgiath",
+            "Liam sister betrays them cause she doesn’t trust V",
+            "“I trust you more than my own sister” Vi to Ri",
+            "Betrayal from one of the first friends",
+            "“I hate when you are mad at me”",
+            "She has to fight her mom and/or sister",
+            "Dane and the sister are eeeviiil together",
+            "",
+            "The mom did not know about the games",
+            "Andarna becomes over confident and fails",
+            "Wedding as sign of hope",
+            "Brenan has a booooy frieeeend",
+            "Ri has a tramp stamp",
+            "Sexy griffin man with a sharp jaw line",
+            "Adarna sex talk ",
+            "Mentiby from xyz",
+            "“It’s you and me against the world.”",
+            "Xyz allegiance question because of his love for Vi",
+            "Venins dead = no more magic",
+            "Dane and Xyz finally fist fight"
+          ]
+        }
+      }
+    },
+    "shouty_messages": {
+      "0LoC0iRe7Xq51F8CgR0f": {
+        "_data": {
+          "ts": "2026-05-29T06:50:36.453Z",
+          "room": 12,
+          "name": "marine",
+          "text": "Also, I see a sexy griffin man for Mira hehe\nSo not stuble but it would do her good, plus I get a square"
+        }
+      },
+      "0Wmrg3Ma1aa1d3q04YwJ": {
+        "_data": {
+          "room": 15,
+          "ts": "2026-06-02T12:47:48.527Z",
+          "text": "Every time Vi “figures out” a plan of the enemy I don’t understand it at all… The distraction is just venins in front of Samara or wherever the fuck but the real target is besgiath because what ?",
+          "name": "marine"
+        }
+      },
+      "0Yzv5ZKMFFosZrSJZOGp": {
+        "_data": {
+          "room": 18,
+          "ts": "2026-06-12T09:38:13.374Z",
+          "text": "Did the mom and dad knew everything about the prophecy then ? Why would they be so adament that Vi is a \"heart of a rider and brain of a scribe\" kind of person ? Because if the mom's plan was to protect their children, she would have sheltered them somewhere, not put them in a war college where \"do you know what day it is today ? It's dead baby day because everyday is dead baby day yeah !\"",
+          "name": "marine"
+        }
+      },
+      "1LiuGZIjI8F9fLhHW3MJ": {
+        "_data": {
+          "text": "What kind of dragon is Andarna ? I feel like this is more for next book but oh well",
+          "name": "marine",
+          "room": 18,
+          "ts": "2026-06-12T09:32:19.440Z"
+        }
+      },
+      "1Sdn10riYBKMUHrgpokj": {
+        "_data": {
+          "room": 14,
+          "ts": "2026-06-02T10:22:54.136Z",
+          "text": "Tyrrendor ?? Really Rebecca Tyrrendor ?!?",
+          "name": "marine"
+        }
+      },
+      "1e3ob4ftTZGLkcIlbppp": {
+        "_data": {
+          "room": 14,
+          "ts": "2026-06-02T05:55:11.677Z",
+          "text": "well she learned that weaving conveniently fast",
+          "name": "kathi"
+        }
+      },
+      "1lsEwfwU2MsYgyjA5Pkh": {
+        "_data": {
+          "text": "Awww we have a Dane cutie pie arc (for real, I have no idea where she could be going with his story)",
+          "name": "kathi",
+          "room": 14,
+          "ts": "2026-06-02T17:12:21.552Z"
+        }
+      },
+      "1opygmLWZbwcthVGNpX7": {
+        "_data": {
+          "text": "That would be insane",
+          "name": "marine",
+          "room": 18,
+          "ts": "2026-06-12T09:20:42.798Z"
+        }
+      },
+      "1pIhOWfPzt4K11W7hkLM": {
+        "_data": {
+          "text": "Oh my god ! She has such a high opinion of herself... What do you mean \"I will die and it will doom us all ! \"",
+          "name": "marine",
+          "room": 18,
+          "ts": "2026-06-12T07:27:29.377Z"
+        }
+      },
+      "26NtPuOgfCH4hZWV4oTg": {
+        "_data": {
+          "ts": "2026-05-29T06:09:15.273Z",
+          "room": 12,
+          "name": "marine",
+          "text": "Wait… Griffin can dragons can talk together in their mind ?"
+        }
+      },
+      "26leMCwjWp6Jox7u2rvr": {
+        "_data": {
+          "text": "But I mean Jack was too right ?",
+          "name": "marine",
+          "room": 18,
+          "ts": "2026-06-12T09:21:09.227Z"
+        }
+      },
+      "2xf0js3PXUHVsjBjfAZK": {
+        "_data": {
+          "name": "marine",
+          "text": "What the fuck ? Wyvern here ?",
+          "ts": "2026-06-01T13:31:56.435Z",
+          "room": 13
+        }
+      },
+      "33FRAovtkXQTp5CCsnQj": {
+        "_data": {
+          "ts": "2026-06-02T17:25:17.782Z",
+          "room": 15,
+          "name": "kathi",
+          "text": "I just got goosebumps from being so grossed out by the dick joke"
+        }
+      },
+      "3LRe4hs0b3zMF6igLLaq": {
+        "_data": {
+          "ts": "2026-06-03T06:09:43.065Z",
+          "room": 15,
+          "name": "kathi",
+          "text": "but i am intrigued, do we want to guess what his second signate is? my guess is, it's something corny that makes him even more bonded to violet. like he can control the weather or he is a shield and that's why he has so much control on himself the whole time. but I would also love that his signate is that his breath always smells minty fresh or that his hair always sits perfectly"
+        }
+      },
+      "3QosmAkr90B3tEx3HOZp": {
+        "_data": {
+          "name": "kathi",
+          "text": "So I think the whole \"opposites attract\" thing between Violet and xzy is about control. Violet struggles to get control over herself while struggling to get XYZ to loose control. And I think that's why I hate violet because I hate people with no self-control, it's such an entitled thing to be, get a grip girl",
+          "ts": "2026-05-29T07:16:03.597Z",
+          "room": 12
+        }
+      },
+      "3TJrMZJFPoF7vu3IeFRv": {
+        "_data": {
+          "name": "kathi",
+          "text": "really guys? now you're boinking?",
+          "ts": "2026-06-03T11:36:10.752Z",
+          "room": 17
+        }
+      },
+      "3Z8O5l29Q3ybdQNzeUwB": {
+        "_data": {
+          "room": 14,
+          "ts": "2026-06-02T10:01:49.993Z",
+          "text": "What do you mean the rune understand the “need” of open a door ?",
+          "name": "marine"
+        }
+      },
+      "3dKmLxRII1tYHriDauXg": {
+        "_data": {
+          "ts": "2026-06-12T07:49:12.379Z",
+          "room": 18,
+          "name": "marine",
+          "text": "She's gonna use a siphon to take the mom's power to the ward stone ?"
+        }
+      },
+      "3ePmuPsK1Dx9nRE3qvpk": {
+        "_data": {
+          "room": 18,
+          "ts": "2026-06-12T07:51:04.385Z",
+          "text": "I got to say, there's sooo many things I did not expect in this volume. Because what the fuck is this ?",
+          "name": "marine"
+        }
+      },
+      "3j7urDpV7JjaM86ujkSK": {
+        "_data": {
+          "text": "But I think you are right on your theory of weaving the wards and the little note book of knots",
+          "name": "marine",
+          "room": 13,
+          "ts": "2026-06-01T13:51:46.729Z"
+        }
+      },
+      "5DH24X26UCwlHn0mbahM": {
+        "_data": {
+          "ts": "2026-06-02T17:01:38.852Z",
+          "room": 14,
+          "name": "kathi",
+          "text": "This chapter makes me want to walk onto the train tracks IT IS SO CRINGY I WANNA DIE"
+        }
+      },
+      "5qVWsQzAux1U01igy8qV": {
+        "_data": {
+          "text": "They are currently in Besgaith right ? The most notorious war college of all... And yet Jack and to put lure box ? Is it because wyverns are kinda empty feral animals then ?",
+          "name": "marine",
+          "room": 17,
+          "ts": "2026-06-10T20:54:25.995Z"
+        }
+      },
+      "5vd8U3v5uzcoz9KgWuAE": {
+        "_data": {
+          "ts": "2026-06-10T20:52:21.924Z",
+          "room": 17,
+          "name": "marine",
+          "text": "What ? So now they attack Besgaith ? Whyyy ?"
+        }
+      },
+      "6DAQar3702JmFV9R2SCa": {
+        "_data": {
+          "text": "What is it with this plot and execution that makes me so physically pissed off ? What do you mean ? What is this ? nothing makes logical sense and at this point I don't know if it's supposed to be \"misleading information to create plot twists\" or just our sweet sweet Rebecca changing her mind every 4 pages",
+          "name": "marine",
+          "room": 18,
+          "ts": "2026-06-12T09:43:30.558Z"
+        }
+      },
+      "6FgyuvH9qLvBovDbJPnl": {
+        "_data": {
+          "ts": "2026-05-28T16:36:50.969Z",
+          "room": 11,
+          "name": "marine",
+          "text": "Crap it was not Ri but xyz that Vi trust more than Mira"
+        }
+      },
+      "6qws2Rvsw6dwPtfPWlkf": {
+        "_data": {
+          "room": 14,
+          "ts": "2026-06-02T08:32:10.934Z",
+          "text": "I have bad news for you my friend. This whole introduced theme of engagement and betrothal and vi being jealous of cat for being betrothed the zayden makes me think that he IS going to propose to her at some point. I smell a square coming my way ehehehe",
+          "name": "kathi"
+        }
+      },
+      "6y6RQOhIA1kY1rl6ZoTB": {
+        "_data": {
+          "text": "Is violet the only one who knows ancient lucerish? I thought jesinnia was there too? Why wouldn't they translate it together? Even I can tell that her translation is shit 😂",
+          "name": "kathi",
+          "room": 11,
+          "ts": "2026-05-29T06:48:39.862Z"
+        }
+      },
+      "7MGB3tlKSsAUYdZeK82F": {
+        "_data": {
+          "name": "marine",
+          "text": "Ha so griffin die if the flyer dies unlike dragon",
+          "ts": "2026-06-01T13:31:23.959Z",
+          "room": 13
+        }
+      },
+      "7tlq5Nh9yVADLiASyuNP": {
+        "_data": {
+          "text": "the griffins can't fly if there's more than a drizzle? even hummingbirds can fly in the rain wtf",
+          "name": "kathi",
+          "room": 17,
+          "ts": "2026-06-03T11:47:14.570Z"
+        }
+      },
+      "7zAY5FyuZfSUYkg1St2r": {
+        "_data": {
+          "name": "marine",
+          "text": "Seeee !! Thank you griffon people to tell the obvious ! No ned to kill the people you are trying to train you dumbass dragon people",
+          "ts": "2026-06-01T13:20:29.383Z",
+          "room": 13
+        }
+      },
+      "8qAAIklsQUvT9JS75qTR": {
+        "_data": {
+          "text": "Hihi go Mira go Mira",
+          "name": "marine",
+          "room": 11,
+          "ts": "2026-05-28T16:37:11.598Z"
+        }
+      },
+      "98NcYHkBAB1yyBxlJHZe": {
+        "_data": {
+          "ts": "2026-06-02T12:46:20.376Z",
+          "room": 15,
+          "name": "marine",
+          "text": "Wait now I remember why the flyers can’t wield if there’s a ward. Because a ward like this blocks any non dragon power… But this sounds like this is a new information from the book the way it’s written. They should have know from the jump that’s dumb… Again"
+        }
+      },
+      "9eHpZaE4YgNLIhE5vTDm": {
+        "_data": {
+          "text": "I am so confused 😫",
+          "name": "marine",
+          "room": 17,
+          "ts": "2026-06-10T20:47:39.836Z"
+        }
+      },
+      "9wkI2AMJjCC9ABPRSTKG": {
+        "_data": {
+          "text": "Fully agree with you on this, I think I'll compare to BrandoSando because he has amazing magic systems. Sometimes they are super clear from the beginning because we are learning it with the main characters. Sometimes there's secret ones or unclear ones and they get introduced slowly, little breadcrumbs, little foreshadowing. And everything is so clear and if it's not, it's because something is meant to be a surprise and unclear",
+          "name": "marine",
+          "room": 13,
+          "ts": "2026-06-01T14:04:21.529Z"
+        }
+      },
+      "A07nKX3RFJ3PT5jmXDPK": {
+        "_data": {
+          "text": "Why can she raise the wards once ?",
+          "name": "marine",
+          "room": 18,
+          "ts": "2026-06-12T07:37:53.923Z"
+        }
+      },
+      "A2WyJzqQmVkCWjcgK73a": {
+        "_data": {
+          "name": "marine",
+          "text": "That’s what they forgot ? Blood of six people know from everyone on six huge ass stones ?",
+          "ts": "2026-05-28T16:43:29.619Z",
+          "room": 11
+        }
+      },
+      "AUdwOPHDRNJ8UKA6yWLo": {
+        "_data": {
+          "text": "Ok see this “not every signet can imbue” should have been given in the beginning of the story Rebecca",
+          "name": "marine",
+          "room": 15,
+          "ts": "2026-06-02T11:40:12.275Z"
+        }
+      },
+      "AWnF99wPIFdQHySnVHcv": {
+        "_data": {
+          "ts": "2026-06-12T09:22:10.816Z",
+          "room": 18,
+          "name": "marine",
+          "text": "Whaaat ?"
+        }
+      },
+      "AXf0ywvndPhWJL1p3M9M": {
+        "_data": {
+          "room": 13,
+          "ts": "2026-06-01T14:08:37.362Z",
+          "text": "But I don't get this weaving stuff and how it relates to the dragon power... If it's the same power, we should have had visuals from the jumps, colors of the storm she creates, white of the ice Riddoc can do or purple when Rhi teleport stuff... It could have been so fucking cool\nAnd then if it's not the same magic, if dragon and griffon tap in each different magic and then the venins tapp in another one, it's 3 different kind of magic and then the weaving comes from the same source of the venins, that could be cool but I don't think she would go there... Which means it's only 1 source and how the fuck is weving similar ? Why Rebecca !!",
+          "name": "marine"
+        }
+      },
+      "AdIIJMfFhYB14pfqcyyj": {
+        "_data": {
+          "name": "marine",
+          "text": "Is Solace Varrish’s dragon ?",
+          "ts": "2026-06-02T11:48:29.238Z",
+          "room": 15
+        }
+      },
+      "BTtZmmp58ycHMidIA9dJ": {
+        "_data": {
+          "room": 18,
+          "ts": "2026-06-12T09:39:31.961Z",
+          "text": "Rebeccaaaa !",
+          "name": "marine"
+        }
+      },
+      "BhHiAloGTYen7n4RVBgg": {
+        "_data": {
+          "room": 14,
+          "ts": "2026-06-02T10:39:58.716Z",
+          "text": "Why is this turning into a self help book ? Gnegnegne Cat will not touch my emotions, I am in control",
+          "name": "marine"
+        }
+      },
+      "BhxugiVypE16hcqs34n1": {
+        "_data": {
+          "text": "ehehehehe he is a mindreader",
+          "name": "kathi",
+          "room": 15,
+          "ts": "2026-06-03T06:16:07.399Z"
+        }
+      },
+      "CDiQ9hA09hKdhSa7kFTH": {
+        "_data": {
+          "ts": "2026-05-29T06:47:02.607Z",
+          "room": 11,
+          "name": "kathi",
+          "text": "It was conveniently easy to get Mera to the rebellion, I feel like it should be harder. She has been even more brainwashed with propaganda than violet"
+        }
+      },
+      "CHZQZES9kCWwfN8znKks": {
+        "_data": {
+          "ts": "2026-06-03T10:05:54.446Z",
+          "room": 17,
+          "name": "kathi",
+          "text": "aaaahahaha it's jack"
+        }
+      },
+      "Cy1iUGgKpTlfPpnNQuAl": {
+        "_data": {
+          "text": "There's a secret seven kind of dragons ? \nWhat the fuck, dragons can think in the eggs ? \nWhat is this new thing now... Is there only one purple dragon every generation and so it's \"the one\"",
+          "name": "marine",
+          "room": 18,
+          "ts": "2026-06-12T07:44:10.958Z"
+        }
+      },
+      "DMRmE1qrVgPcZHMdAr5J": {
+        "_data": {
+          "name": "kathi",
+          "text": "I think I don't know what a luminary is and at this point I'm too afraid to aak",
+          "ts": "2026-05-28T14:28:41.300Z",
+          "room": 12
+        }
+      },
+      "DZs1IjpeBli3voyvwxct": {
+        "_data": {
+          "name": "marine",
+          "text": "Six and the one makes 7 ? My god I am shook",
+          "ts": "2026-06-12T07:33:20.976Z",
+          "room": 18
+        }
+      },
+      "DdTtBPgTmsPYGAZosoa3": {
+        "_data": {
+          "name": "marine",
+          "text": "The sage was here ? What ?",
+          "ts": "2026-06-12T09:20:10.166Z",
+          "room": 18
+        }
+      },
+      "DvFxHFpVtkxXJv0d05LQ": {
+        "_data": {
+          "text": "Why can one dragon only put his fire on one ward stone ? \nWhat dragon put his flame in the one of the mom ? Why is there only one heare when they were so clear about the seven dragons being needed ?",
+          "name": "marine",
+          "room": 18,
+          "ts": "2026-06-12T09:31:56.007Z"
+        }
+      },
+      "EP0meymg85VCx4I9Bly5": {
+        "_data": {
+          "ts": "2026-05-30T09:35:41.417Z",
+          "room": 13,
+          "name": "kathi",
+          "text": "\"who is Louella?....oh no. Louella is dead\""
+        }
+      },
+      "F7m40047sGJxr8Zg7Fnh": {
+        "_data": {
+          "room": 15,
+          "ts": "2026-06-02T12:04:43.917Z",
+          "text": "Is he also a memory/thought hearer ?",
+          "name": "marine"
+        }
+      },
+      "FAESPb9YHZ4jmdWPEyya": {
+        "_data": {
+          "name": "marine",
+          "text": "And it makes Xayden not as smart… I hate this",
+          "ts": "2026-06-02T12:11:09.453Z",
+          "room": 15
+        }
+      },
+      "FcqY8DeTBPR6yQvNqv57": {
+        "_data": {
+          "name": "marine",
+          "text": "Ah well that answers ut",
+          "ts": "2026-06-01T13:29:29.731Z",
+          "room": 13
+        }
+      },
+      "Ffi84Veji0PGE5MwZQE5": {
+        "_data": {
+          "ts": "2026-06-01T13:50:33.253Z",
+          "room": 13,
+          "name": "marine",
+          "text": "wait the power is shaped and you can see it ?"
+        }
+      },
+      "FvjjI1hrlZTZQ62hLizE": {
+        "_data": {
+          "ts": "2026-06-01T13:16:35.732Z",
+          "room": 13,
+          "name": "marine",
+          "text": "The riders are forcing the griffon and flyers to do a kind of parapet ? Why ?"
+        }
+      },
+      "G4iNaUL4Ylj4OljdmF2h": {
+        "_data": {
+          "room": 17,
+          "ts": "2026-06-12T06:55:26.950Z",
+          "text": "Venins mimic the powers or just the fighting styles ?",
+          "name": "marine"
+        }
+      },
+      "GPGLP3YjOraEUyXfLlzL": {
+        "_data": {
+          "ts": "2026-06-10T20:39:35.421Z",
+          "room": 17,
+          "name": "marine",
+          "text": "What ? I thought they just talked to the other generals and the mom ?"
+        }
+      },
+      "GtDdxnJsBNOMkSTx6QlC": {
+        "_data": {
+          "name": "kathi",
+          "text": "I also like that leadership was like \"we've noticed that there has been a lot of tension between the flyers and riders, so we thought as a solution you guys should beat the shit out of each other!\"",
+          "ts": "2026-06-02T06:07:31.576Z",
+          "room": 14
+        }
+      },
+      "H5R339RYBNkpFPiOBljS": {
+        "_data": {
+          "text": "Miss Rebecca is giving the reader too little credit and too much credit at the same time! Things that should be explained are absolutely ignored and things that are very obvious are overexplained",
+          "name": "kathi",
+          "room": 15,
+          "ts": "2026-06-02T18:10:11.359Z"
+        }
+      },
+      "HjxxbDqDVZo6kncmDZT8": {
+        "_data": {
+          "ts": "2026-05-29T06:46:10.267Z",
+          "room": 11,
+          "name": "kathi",
+          "text": "Okay some one my comments that I remember:"
+        }
+      },
+      "HpBy05tlJOhgXlxEGqub": {
+        "_data": {
+          "room": 18,
+          "ts": "2026-06-12T09:19:44.054Z",
+          "text": "If he breaks up with her now, I will flip a table... What do you mean \"You should be afraid of me\" what do you mean xyz, you ran like a puppy after her for months wtf",
+          "name": "marine"
+        }
+      },
+      "ICcWqNOnHrBygPuFNaes": {
+        "_data": {
+          "room": 17,
+          "ts": "2026-06-03T10:12:16.323Z",
+          "text": "and zayden has never felt that intention?",
+          "name": "kathi"
+        }
+      },
+      "KH9GBkEUXTkN2f7H5Omg": {
+        "_data": {
+          "room": 18,
+          "ts": "2026-06-12T07:36:56.375Z",
+          "text": "They want Xayden too ?",
+          "name": "marine"
+        }
+      },
+      "KPuEs4gcQw0A9mDTitHf": {
+        "_data": {
+          "name": "kathi",
+          "text": "sooo jack figured out how to become a vennon all by himself? inside the wards?",
+          "ts": "2026-06-03T10:11:59.203Z",
+          "room": 17
+        }
+      },
+      "LKoYNYBlReluglt6H7IP": {
+        "_data": {
+          "ts": "2026-05-28T16:41:49.658Z",
+          "room": 11,
+          "name": "marine",
+          "text": "Bwahaha Xayden turned into a unit of measure"
+        }
+      },
+      "LUwDIo9Z9iuvYKnOFLZd": {
+        "_data": {
+          "name": "marine",
+          "text": "This is so dumb !!! “Ah yes, you have to blend, but first punch each other !” Nooooo, you should make those stupid siblings challenge like put them in a bug shirt or use long chopsticks like in chinese hell and heaven…",
+          "ts": "2026-06-02T10:10:30.614Z",
+          "room": 14
+        }
+      },
+      "LYWCE25KV8NmjsrIVR0G": {
+        "_data": {
+          "room": 14,
+          "ts": "2026-06-02T06:46:46.525Z",
+          "text": "\"I would have told you that I was engaged to Cat if you would have asked\" oh sorry xzaydËn but come on my man",
+          "name": "kathi"
+        }
+      },
+      "LpeJXo8GMrKDiyzuWKAO": {
+        "_data": {
+          "text": "Why the hell is she choosing this battle ? It makes no sense…",
+          "name": "marine",
+          "room": 15,
+          "ts": "2026-06-02T12:42:34.123Z"
+        }
+      },
+      "LulIdt5NxfnlhJXjeX2f": {
+        "_data": {
+          "name": "marine",
+          "text": "Oh fuck “this is about me gnegnegne”",
+          "ts": "2026-06-02T10:16:04.540Z",
+          "room": 14
+        }
+      },
+      "MUZ1BhITyPB4FftlKVSs": {
+        "_data": {
+          "text": "Oooooh, wait I though Venins can only be for people that are not bound...",
+          "name": "marine",
+          "room": 17,
+          "ts": "2026-06-10T20:47:17.153Z"
+        }
+      },
+      "MUvLWCD3oUQIAmNNIreC": {
+        "_data": {
+          "text": "Seriously? “It’s flamme and what does it mean?” DRAGON YOU DUMBASS !",
+          "name": "marine",
+          "room": 15,
+          "ts": "2026-06-02T11:12:17.043Z"
+        }
+      },
+      "MdDfceJ3EppBW6ND1B5X": {
+        "_data": {
+          "room": 13,
+          "ts": "2026-06-01T13:47:37.301Z",
+          "text": "Hiiii Sawyer and Jesiniaaaa hihih",
+          "name": "marine"
+        }
+      },
+      "N2ylonlJVHrytNTOWxX0": {
+        "_data": {
+          "ts": "2026-05-28T16:35:53.489Z",
+          "room": 11,
+          "name": "marine",
+          "text": "I know that the bad are big bad… But it would be so much more interesting to have someone still be on the bad side from the close people"
+        }
+      },
+      "NU855o7ojPCE77vWtcBc": {
+        "_data": {
+          "text": "Who is Louelle again ?",
+          "name": "marine",
+          "room": 13,
+          "ts": "2026-06-01T13:27:25.585Z"
+        }
+      },
+      "Nf0DNXM9ewxd5cOu7z8F": {
+        "_data": {
+          "ts": "2026-05-31T13:08:42.468Z",
+          "room": 13,
+          "name": "kathi",
+          "text": "I like the sounds the griffins make in the audiobook KAKAAAAAAW"
+        }
+      },
+      "NxJI03cv9MKrQZKbvfYE": {
+        "_data": {
+          "name": "marine",
+          "text": "I hate that the griffin people are so smart and for some reason not the one making decision",
+          "ts": "2026-06-02T11:44:06.862Z",
+          "room": 15
+        }
+      },
+      "O1vfs8AoA3AnbzXF1DPi": {
+        "_data": {
+          "text": "miss violet even makes zayden's second signate about her. she is not subtle, she has never kept a secret and she has no self-control. zayden doesn't need his signate to read her intentions, everyone can.",
+          "name": "kathi",
+          "room": 15,
+          "ts": "2026-06-03T06:21:29.137Z"
+        }
+      },
+      "Oc5Uyx5JdDNeIuZ7ZFsF": {
+        "_data": {
+          "room": 18,
+          "ts": "2026-06-12T09:33:33.707Z",
+          "text": "Does the power make you mad and that's why venins are bad ? Could Xayden so eaasily turn Venn because he has 2 signets ? What do Venins want actually ? Because Jack just seems insane and power hungry. Is the raw power in the Veil ?",
+          "name": "marine"
+        }
+      },
+      "Ov9IBjGPh3SI4OijL3X1": {
+        "_data": {
+          "ts": "2026-06-12T07:26:05.676Z",
+          "room": 18,
+          "name": "marine",
+          "text": "Seriously ? So many people said to you \"he wants you, he wants you\" and now you're like \"what he wants me like in my dreams ?\" \nYes dumbass !!"
+        }
+      },
+      "PYDNzKU22PhSDCS2nWNX": {
+        "_data": {
+          "name": "marine",
+          "text": "Okay I will try and remember some of my comments : \n- Finally she acknowledges he loves her \n- Her brother can here god damn it, protect Brenan\n- The dream venin guy is gonna be a real dude, he is trying to read her mind or something\n- Why the fuck is she feeling responsible for bringing the cadets to the secret place ? As if it was her idea \n- Did he carve himself for her because #trauma or because it was a weird way to prove her loyalty ?",
+          "ts": "2026-05-28T14:38:52.915Z",
+          "room": 11
+        }
+      },
+      "PrAxhraXPDEZYHGljaIg": {
+        "_data": {
+          "text": "Bahahaha Cat is a BIATCH",
+          "name": "kathi",
+          "room": 12,
+          "ts": "2026-05-29T07:16:49.079Z"
+        }
+      },
+      "PuDE0c7yxVl844wh8HDK": {
+        "_data": {
+          "room": 18,
+          "ts": "2026-06-12T07:22:54.658Z",
+          "text": "Yeah, Cat is nice",
+          "name": "marine"
+        }
+      },
+      "Q9BUl59MTpWLJkR5SPjk": {
+        "_data": {
+          "text": "Ooooh the marks ! Finally, ok ok",
+          "name": "marine",
+          "room": 14,
+          "ts": "2026-06-02T10:02:33.915Z"
+        }
+      },
+      "QnpamaMfZpQohBeggJ91": {
+        "_data": {
+          "room": 17,
+          "ts": "2026-06-03T11:26:13.858Z",
+          "text": "what is a lure box? what's happening aaah",
+          "name": "kathi"
+        }
+      },
+      "Qo5aPoi9gx7riKEY9Gs2": {
+        "_data": {
+          "text": "oh will we have a dramatic xyz mommy reveal in the next book?",
+          "name": "kathi",
+          "room": 15,
+          "ts": "2026-06-03T09:33:55.021Z"
+        }
+      },
+      "RGafcVTP74E9QCREdBaI": {
+        "_data": {
+          "ts": "2026-06-12T09:21:59.948Z",
+          "room": 18,
+          "name": "marine",
+          "text": "Is xyz turning Venin ? Noooo"
+        }
+      },
+      "Rz8dc3uJJ9dPVPMpModK": {
+        "_data": {
+          "room": 13,
+          "ts": "2026-05-31T13:08:12.681Z",
+          "text": "Rebecca, we need to talk. I understand, that you had an image in your head about what you want these characters to be able to do with magic and then you had to scramble for laws for the magic that explain how the magic works. This is the wrong way around. You should have thought about the foundation of how the magic works, which gives the limitations for what they can and cannot do with their magic. That's why nothing in this book makes sense and that's why for the life of me I don't understand the magic.",
+          "name": "kathi"
+        }
+      },
+      "SGbDrlmB8gpc96dHqrHQ": {
+        "_data": {
+          "ts": "2026-06-10T20:46:07.727Z",
+          "room": 17,
+          "name": "marine",
+          "text": "Whaaat ? Jack killed his own dragon ? What the uck ?"
+        }
+      },
+      "SGm6qU9aTEakPWeg6don": {
+        "_data": {
+          "name": "kathi",
+          "text": "oh we're gonna have Cat vs Violet fist fight showdown!!",
+          "ts": "2026-06-02T06:05:55.374Z",
+          "room": 14
+        }
+      },
+      "SUeUIH0mRKBqWoEexOXY": {
+        "_data": {
+          "room": 13,
+          "ts": "2026-05-30T09:38:41.379Z",
+          "text": "Since when does Dane also have a sexy voice",
+          "name": "kathi"
+        }
+      },
+      "SgLVcwxlTePhkx1TuB7a": {
+        "_data": {
+          "text": "Whose dragon died now ?",
+          "name": "marine",
+          "room": 17,
+          "ts": "2026-06-10T20:45:24.062Z"
+        }
+      },
+      "ShtKbtleFVNvdbROspnN": {
+        "_data": {
+          "ts": "2026-06-12T09:20:50.994Z",
+          "room": 18,
+          "name": "marine",
+          "text": "He's dead right ?"
+        }
+      },
+      "SsdCqe7d5U2LJJlCpJUm": {
+        "_data": {
+          "text": "I love when villains spill all their secrets and plans",
+          "name": "kathi",
+          "room": 17,
+          "ts": "2026-06-03T10:13:19.269Z"
+        }
+      },
+      "T3IRSaIZqXhbgzbT9mPM": {
+        "_data": {
+          "ts": "2026-06-12T07:45:28.426Z",
+          "room": 18,
+          "name": "marine",
+          "text": "But... If Vi dies it kills Xyz ? Stop changing the rules Rebecca !"
+        }
+      },
+      "TThTufzAR5KH9QLkZDBv": {
+        "_data": {
+          "ts": "2026-06-02T17:01:26.408Z",
+          "room": 14,
+          "name": "kathi",
+          "text": "Every time violet talks I want to slap some sense into her"
+        }
+      },
+      "TZmJCkd6tfimLb2UWb3o": {
+        "_data": {
+          "room": 18,
+          "ts": "2026-06-12T07:26:31.806Z",
+          "text": "Also, she wielded so much, she should be exhausted",
+          "name": "marine"
+        }
+      },
+      "TZzfduUykNizDpbjFUmb": {
+        "_data": {
+          "name": "marine",
+          "text": "For 600 years ? What ?",
+          "ts": "2026-06-02T12:41:32.921Z",
+          "room": 15
+        }
+      },
+      "U65qLwa7fYkmB7Vv1fga": {
+        "_data": {
+          "name": "marine",
+          "text": "I hate that this is so badly written, no rules are clear or properly explained. One day Vi has to be protected at all cost because otherwise 3 dragons and a powerful dude dies. But then se has to sacrifice herself and she can just say \"choose to live\" to her dragon and that's fine ? Was this all a lie then ? To control her ?",
+          "ts": "2026-06-12T09:35:40.033Z",
+          "room": 18
+        }
+      },
+      "UTTVxMP8wZ0TYJ712K79": {
+        "_data": {
+          "room": 14,
+          "ts": "2026-06-02T09:59:04.425Z",
+          "text": "I dont get it ! How was the power invisible until now ?",
+          "name": "marine"
+        }
+      },
+      "VHRvgs2CF3DQolBwgixm": {
+        "_data": {
+          "ts": "2026-05-29T06:49:34.229Z",
+          "room": 12,
+          "name": "marine",
+          "text": "I hate the joleousy over Cat, come on... This is again, just to have tension between them... You know people in love and happy can also have crazy and satisfying sex, right Rebecca ?!? Stop with the stoopidity !"
+        }
+      },
+      "VQUEZrlT5dYhEmF8ib4C": {
+        "_data": {
+          "text": "I was like “why remove the people from the room he has a room” and now I hate that he wants to fuck her in the throne room… People work here ! Stop it",
+          "name": "marine",
+          "room": 14,
+          "ts": "2026-06-02T10:27:03.950Z"
+        }
+      },
+      "W7epEXwTYJQmDs39E8N1": {
+        "_data": {
+          "ts": "2026-06-03T09:36:36.580Z",
+          "room": 15,
+          "name": "kathi",
+          "text": "why is she surprised that even though she barely understands the concepts of runes, she can't get the huge ass runes of the wards to work? jesus"
+        }
+      },
+      "WNqbELgxTOmBWiSgIlCM": {
+        "_data": {
+          "ts": "2026-06-02T17:01:12.521Z",
+          "room": 14,
+          "name": "kathi",
+          "text": "How would she NOT KNOW that XYZ is basically the king of tierandor!!!!!!!!"
+        }
+      },
+      "Wr9p4Ue0E5PFJoTvZM4s": {
+        "_data": {
+          "name": "marine",
+          "text": "Is it that easy to be venin ? You just have to reach for more power ? Then why do riders die of burn out then ? Why are they are not all turning into venins ? Are the venins all burn out riders ? What do you meaaaaaan",
+          "ts": "2026-06-12T09:25:37.271Z",
+          "room": 18
+        }
+      },
+      "X4XD7aVuoJC8C6Gy6RAX": {
+        "_data": {
+          "text": "Jesus Christ… If he is a mind reader this is gonna be bad…",
+          "name": "marine",
+          "room": 15,
+          "ts": "2026-06-02T12:05:37.842Z"
+        }
+      },
+      "XHY1o8839CADjY1ieNVt": {
+        "_data": {
+          "ts": "2026-06-10T20:52:58.243Z",
+          "room": 17,
+          "name": "marine",
+          "text": "Kathi, I am so confused... What the fuck is happening... I thing I stopped too long and it's too late... But what the fuck is this plot ?"
+        }
+      },
+      "XK1nCXQVkgXFOoTPxBxh": {
+        "_data": {
+          "room": 15,
+          "ts": "2026-06-02T11:39:05.753Z",
+          "text": "Why does a hug in front of everyone surprises her… He curled finger fucked you in the throne room !",
+          "name": "marine"
+        }
+      },
+      "ZTD2lgDc3xHzJF25fiIs": {
+        "_data": {
+          "text": "Also: why oh why Rebecca did you drop us into this book in a BJ scene 🤌🤌🤌",
+          "name": "kathi",
+          "room": 11,
+          "ts": "2026-05-29T06:49:10.796Z"
+        }
+      },
+      "ZVFA9AtzN10ZFLlnXqfc": {
+        "_data": {
+          "ts": "2026-06-02T12:22:14.343Z",
+          "room": 15,
+          "name": "marine",
+          "text": "I don’t understand who is talking to who they all sound the same"
+        }
+      },
+      "Zq1f6Nq1vykWKyZJyJdP": {
+        "_data": {
+          "name": "marine",
+          "text": "Okay so the wards killed the wyverns and they could not get 3 dudes running with no powers ?",
+          "ts": "2026-06-12T09:18:05.084Z",
+          "room": 18
+        }
+      },
+      "ZvldJCcvpald77wQ0tgC": {
+        "_data": {
+          "name": "marine",
+          "text": "I like Felix",
+          "ts": "2026-05-28T16:53:43.269Z",
+          "room": 12
+        }
+      },
+      "a4xGqWbBomwYI1Ul42Aq": {
+        "_data": {
+          "text": "Sibling fight!!!!",
+          "name": "kathi",
+          "room": 12,
+          "ts": "2026-05-29T08:37:40.137Z"
+        }
+      },
+      "aE3Ahxtb94zTvcJKIEff": {
+        "_data": {
+          "name": "kathi",
+          "text": "How do they keep the vennon as a prisoner? This feels weird",
+          "ts": "2026-05-29T08:38:09.577Z",
+          "room": 12
+        }
+      },
+      "aLA8gapZIddTllTxGgD6": {
+        "_data": {
+          "text": "if it is common knowledge that zayden is bonded to seagull, and it's common knowledge that seagull was also bonded to his grandfather, and it's common knowledge that you either go mad or develop a second signate when you're bonded to the same dragon as someone in your direct family line, how is she the first one to think about the fact that zayden has a second signate?",
+          "name": "kathi",
+          "room": 15,
+          "ts": "2026-06-03T06:05:40.489Z"
+        }
+      },
+      "agwUINs10NGYPFTz3rKO": {
+        "_data": {
+          "room": 15,
+          "ts": "2026-06-03T09:48:51.753Z",
+          "text": "bahaha did Andarna just call Tairn a boomer?",
+          "name": "kathi"
+        }
+      },
+      "bNTiWCVC7SgJj6YB5am2": {
+        "_data": {
+          "ts": "2026-06-02T12:37:31.187Z",
+          "room": 15,
+          "name": "marine",
+          "text": "But can he control this signet ? Cause Dain can’t… And then is it always on or can he pin point it to someone ?"
+        }
+      },
+      "bQWGQxDBosgMLbE2UFcL": {
+        "_data": {
+          "ts": "2026-06-02T10:24:43.784Z",
+          "room": 14,
+          "name": "marine",
+          "text": "Okay I love Cat. She is a super controlling bitch who wants a crown, she knows emotions cloud judgment so she uses that to destabilise her enemies. This is a smart and cunning women and Violet is no match for her 👏"
+        }
+      },
+      "bdYd6BckaElTA8MzOWMV": {
+        "_data": {
+          "text": "Yeah ! Griffon/Dragon army !",
+          "name": "marine",
+          "room": 12,
+          "ts": "2026-05-29T06:48:30.434Z"
+        }
+      },
+      "cS4HITNrhP4OLyKJRxmI": {
+        "_data": {
+          "room": 13,
+          "ts": "2026-05-30T07:06:28.620Z",
+          "text": "Wait the griffin and Dragon cadets are going to train together? When did that happen 😂I feel like I jumped something",
+          "name": "kathi"
+        }
+      },
+      "cUAwBv43xpUii28niyD5": {
+        "_data": {
+          "text": "Hihi Dain I think Bodhi already loves xyz",
+          "name": "marine",
+          "room": 14,
+          "ts": "2026-06-02T10:47:47.750Z"
+        }
+      },
+      "cXrjAR4ysTCAbHc1GgMz": {
+        "_data": {
+          "ts": "2026-05-30T09:35:21.650Z",
+          "room": 13,
+          "name": "kathi",
+          "text": "Why are they on this cliff what happened?"
+        }
+      },
+      "cs2AYoS8ckgNRkP8Fnuv": {
+        "_data": {
+          "name": "marine",
+          "text": "Ah and also, please someone explain how the mark works, I don't understand and wyh does it block the vision dude ?",
+          "ts": "2026-05-28T14:39:23.078Z",
+          "room": 11
+        }
+      },
+      "d0IgtUV7YpCVvmxtWlqc": {
+        "_data": {
+          "room": 12,
+          "ts": "2026-05-28T16:47:31.447Z",
+          "text": "Who’s felix ?",
+          "name": "marine"
+        }
+      },
+      "dAmJWny9oxaS4zK9d57j": {
+        "_data": {
+          "ts": "2026-06-02T11:50:42.818Z",
+          "room": 15,
+          "name": "marine",
+          "text": "Oh really? The burning feathers must have been exposed to flames ? No shit Sherlock"
+        }
+      },
+      "dBu4ZXUOMPA3uqtW4AwI": {
+        "_data": {
+          "name": "kathi",
+          "text": "Okay they need to stop making out in rooms full of people",
+          "ts": "2026-05-29T07:22:49.688Z",
+          "room": 12
+        }
+      },
+      "dwOh58YAG7XmIdj3xifV": {
+        "_data": {
+          "text": "And the mom dragon then ? It's Coda then ? The big black that knows that Andarna is purple ? Again, what do you mean ?",
+          "name": "marine",
+          "room": 18,
+          "ts": "2026-06-12T09:39:27.608Z"
+        }
+      },
+      "dx6vlWmAflwUXRiFAnei": {
+        "_data": {
+          "name": "marine",
+          "text": "The mom is weird...",
+          "ts": "2026-06-12T07:49:29.244Z",
+          "room": 18
+        }
+      },
+      "eVM4sar1p6Al3Q80u4qH": {
+        "_data": {
+          "ts": "2026-06-02T10:41:50.089Z",
+          "room": 14,
+          "name": "marine",
+          "text": "I was so sure she was gonna flip out when he curled his fingers, can you imagine from moan to “I will cut your fingers”"
+        }
+      },
+      "eX9jKDPfArmcbWAiagj7": {
+        "_data": {
+          "ts": "2026-06-12T07:11:16.897Z",
+          "room": 17,
+          "name": "marine",
+          "text": "They should say “the strongest pair” not rider… I feel like having a society where the riders disappear or become so much lime dragons would make more sense ? I don’t know…"
+        }
+      },
+      "elIJsByBsJd1O8if70Yt": {
+        "_data": {
+          "text": "EEEEEWWWWWW cat describing what she has done to xyz is taking me OUT",
+          "name": "kathi",
+          "room": 14,
+          "ts": "2026-06-02T06:13:39.821Z"
+        }
+      },
+      "emGD4JaAgZVvsL5iS51c": {
+        "_data": {
+          "room": 11,
+          "ts": "2026-05-28T16:31:48.577Z",
+          "text": "What is a luminary ? I thought it was a someone, but now I think it’s a something ?",
+          "name": "marine"
+        }
+      },
+      "emlnJlOnenR4zwxMAJZk": {
+        "_data": {
+          "room": 14,
+          "ts": "2026-06-02T10:16:40.572Z",
+          "text": "Eeeeew !!! “I know how he tastes like” This is disgustingly disgusting",
+          "name": "marine"
+        }
+      },
+      "fhfb1AiJiTElYTWugYR7": {
+        "_data": {
+          "room": 12,
+          "ts": "2026-05-29T06:44:44.151Z",
+          "text": "Oh you stupid lady, you really thought he's not gonna know your plan",
+          "name": "kathi"
+        }
+      },
+      "fqEiEZttmtyG6PgxAq9H": {
+        "_data": {
+          "ts": "2026-06-03T10:13:38.450Z",
+          "room": 17,
+          "name": "kathi",
+          "text": "who else is a vennon? and none of them have the blood shot eyes?"
+        }
+      },
+      "fzR5kPyOhcTH0yzTfjDn": {
+        "_data": {
+          "name": "marine",
+          "text": "Why is Vi surprised that Xayden the diplomat did a lot of diplomaticing ?",
+          "ts": "2026-05-29T06:21:13.926Z",
+          "room": 12
+        }
+      },
+      "gXxmaxelkkObTbImqNOm": {
+        "_data": {
+          "text": "Fully agree with this prediction, it's so clear that the translation is not complete",
+          "name": "marine",
+          "room": 12,
+          "ts": "2026-05-29T06:53:02.828Z"
+        }
+      },
+      "gnuXpwMZxryBemreW1v2": {
+        "_data": {
+          "text": "“The world doesn’t exist beyond you” so the kids you’ve been guarding your whole life and the rebellion you are sheltering were nothing ?",
+          "name": "marine",
+          "room": 17,
+          "ts": "2026-06-12T07:07:12.340Z"
+        }
+      },
+      "gw8HNsHEHkzjcaaHJouI": {
+        "_data": {
+          "room": 11,
+          "ts": "2026-05-28T16:32:27.249Z",
+          "text": "Haha “can you carry one while being offended ?”",
+          "name": "marine"
+        }
+      },
+      "hUeDeZTqpPHEpQBxC35k": {
+        "_data": {
+          "ts": "2026-06-01T13:56:39.715Z",
+          "room": 13,
+          "name": "marine",
+          "text": "Where does prof Trissa come from ? Because she has a dragon apparently but knows about the runes, so she must by tyreeshnianian \nBut she0s an adult and I thought they killed all the adults. Or they only killed the rebellion adults (because 107 kids is not a lot for a full region) \nBut then where have the rest of the tyreenshianian people been ? Still there ? Then they have dragon but no wards right ?"
+        }
+      },
+      "heVv3ReGKkdswTSDzs90": {
+        "_data": {
+          "ts": "2026-05-28T16:34:19.900Z",
+          "room": 11,
+          "name": "marine",
+          "text": "Ugh"
+        }
+      },
+      "hqQNXEN6aZ82gmS5ZSjI": {
+        "_data": {
+          "name": "marine",
+          "text": "So Venins magic attracts the elctricity...",
+          "ts": "2026-06-01T13:38:52.485Z",
+          "room": 13
+        }
+      },
+      "iga8bpQ7Vdy1EmUmYgiY": {
+        "_data": {
+          "name": "marine",
+          "text": "What the fuck is the den ? The dragons are also in squad like stuff and we don’t know ?",
+          "ts": "2026-06-02T12:43:24.134Z",
+          "room": 15
+        }
+      },
+      "j05wPh6Wym4oxQYjh920": {
+        "_data": {
+          "text": "or it's not common knowledge that seagull bonded his grandpa? but that seems like something the scribes would record",
+          "name": "kathi",
+          "room": 15,
+          "ts": "2026-06-03T06:11:14.382Z"
+        }
+      },
+      "jfsrqJTWznUVfh5QNU91": {
+        "_data": {
+          "ts": "2026-06-02T10:17:22.288Z",
+          "room": 14,
+          "name": "marine",
+          "text": "(So you have a visual, I am jumping and ewewewing in my apartment)"
+        }
+      },
+      "jkI2SjKRbqTxUIiEkYgk": {
+        "_data": {
+          "name": "kathi",
+          "text": "jack is a vennoooooon, that's why he doesn't die when his dragon dies",
+          "ts": "2026-06-03T10:09:14.447Z",
+          "room": 17
+        }
+      },
+      "jqqBcTM3xpRCb71YJmgv": {
+        "_data": {
+          "name": "marine",
+          "text": "I can feel the change in the venin/wiverns magic and I am not happy",
+          "ts": "2026-06-02T10:51:25.899Z",
+          "room": 14
+        }
+      },
+      "kCrFXxojMFc8W1Yi8dzK": {
+        "_data": {
+          "name": "marine",
+          "text": "Ha I was right her electric power makes the alloy !",
+          "ts": "2026-06-01T13:42:35.101Z",
+          "room": 13
+        }
+      },
+      "kTGTFdDxH71U2tUkstcD": {
+        "_data": {
+          "name": "marine",
+          "text": "Without Tayrn little voice, she would have been dead a while back…",
+          "ts": "2026-06-12T07:10:05.512Z",
+          "room": 17
+        }
+      },
+      "kYb68JPBz2aPuCbAiYCq": {
+        "_data": {
+          "text": "Okay never mind about what I said about Rebecca skipping the sexy scenes",
+          "name": "kathi",
+          "room": 14,
+          "ts": "2026-06-02T06:33:42.796Z"
+        }
+      },
+      "kzgSgWHdAyyieBcWbnpD": {
+        "_data": {
+          "ts": "2026-05-29T06:46:53.059Z",
+          "room": 12,
+          "name": "marine",
+          "text": "I hate the trope of the rage fuelled male that can only be calmed down by the now safe female he loves. At it's even worse when the man is supposed to be once again, a great diplomat... This makes no sense to me, they fought together already, we saw him control himself in worst situations..."
+        }
+      },
+      "l81In9Yrjlb2jc0gT2UG": {
+        "_data": {
+          "text": "Since when ?",
+          "name": "marine",
+          "room": 13,
+          "ts": "2026-06-01T13:50:37.416Z"
+        }
+      },
+      "lMZeMXhCLX8sHFko6f5P": {
+        "_data": {
+          "room": 17,
+          "ts": "2026-06-03T10:08:04.448Z",
+          "text": "welp, that was easy to take down the wards",
+          "name": "kathi"
+        }
+      },
+      "lp22Q2i71B63IOp36yg8": {
+        "_data": {
+          "room": 15,
+          "ts": "2026-06-03T06:15:13.050Z",
+          "text": "uuuh is he a mind reader?",
+          "name": "kathi"
+        }
+      },
+      "lskVjrUFOTDhgpryNdqr": {
+        "_data": {
+          "text": "She's bad at history and solid in math ? That's the opposite of last year ??",
+          "name": "marine",
+          "room": 13,
+          "ts": "2026-06-01T13:52:13.195Z"
+        }
+      },
+      "m20F8VGvOPwK1oEacV7M": {
+        "_data": {
+          "name": "marine",
+          "text": "Oh naaaaoooo, I can feel the \"don't look at me, I'm a hiddeous monster !\" trope with Vi being \"no, you are my Xayden, my heart and you will come back to me\" and then true loves kiss",
+          "ts": "2026-06-12T09:41:44.006Z",
+          "room": 18
+        }
+      },
+      "m7QSTRRvMIlhoT7OGtGW": {
+        "_data": {
+          "text": "Why will the flyers loose their powers if they do the wards ?",
+          "name": "marine",
+          "room": 15,
+          "ts": "2026-06-02T11:32:38.097Z"
+        }
+      },
+      "mmWnTCFmzhSVP6Y3YWAG": {
+        "_data": {
+          "name": "kathi",
+          "text": "All I hear from violett is me me me me I I I I I I my my my my my get off of your ego trip girl",
+          "ts": "2026-06-02T17:01:49.979Z",
+          "room": 14
+        }
+      },
+      "nWJFgQxMl195wqRLeN93": {
+        "_data": {
+          "name": "kathi",
+          "text": "aha, so the tierish weaving book xyz gave her was not coincidental",
+          "ts": "2026-05-31T13:10:35.994Z",
+          "room": 13
+        }
+      },
+      "o5PQaG1lLYBz1VJf2cVk": {
+        "_data": {
+          "text": "Wait, there is a Felix? 😂😂😂",
+          "name": "kathi",
+          "room": 12,
+          "ts": "2026-05-29T18:21:56.799Z"
+        }
+      },
+      "oYr8K4ARLEORgwlEmZVJ": {
+        "_data": {
+          "room": 12,
+          "ts": "2026-05-29T06:24:13.327Z",
+          "text": "Hehehe “you sound like Dain” that’s brutal",
+          "name": "marine"
+        }
+      },
+      "opKjSA5PfC6IfLfykmE0": {
+        "_data": {
+          "name": "marine",
+          "text": "She hated Dain for the memories, that’s worse",
+          "ts": "2026-06-02T12:10:52.700Z",
+          "room": 15
+        }
+      },
+      "oyDHkSutRTVGaBxbTZwt": {
+        "_data": {
+          "text": "was jack a vennon from the beginning? before coming to besgiath? I don't get it",
+          "name": "kathi",
+          "room": 17,
+          "ts": "2026-06-03T10:12:43.268Z"
+        }
+      },
+      "pK3Cr8UcCXN7RciS71jP": {
+        "_data": {
+          "room": 18,
+          "ts": "2026-06-12T07:37:01.660Z",
+          "text": "What the fuck",
+          "name": "marine"
+        }
+      },
+      "pW1beFu1gA6iGBNUal1Z": {
+        "_data": {
+          "room": 13,
+          "ts": "2026-06-01T07:44:29.326Z",
+          "text": "*rant over*",
+          "name": "kathi"
+        }
+      },
+      "pexkNg3IRoKNFEFCHugV": {
+        "_data": {
+          "ts": "2026-05-29T06:51:28.980Z",
+          "room": 12,
+          "name": "kathi",
+          "text": "My prediction: she's gonna have to learn to shoot lightning from her hands into the rune stones and that's how they'll activate the wards. The ability professor said something about weaving the runes Blabla siphoning the power Blabla and the translation said that they first need to put the blood and then \"set the runes ablaze\" which has to be lightning"
+        }
+      },
+      "psvymIZRuOpX6FHg8aji": {
+        "_data": {
+          "ts": "2026-06-03T09:59:18.356Z",
+          "room": 17,
+          "name": "kathi",
+          "text": "someone is gonna take down Besgiaths wards? we have a vennon spy!! it must be Jack!!!!"
+        }
+      },
+      "pv2mIK3FYGIuLDama0gk": {
+        "_data": {
+          "text": "Seriously ? Jack's just a petty jaleous dude ? And Nolan was trying to shift him back...",
+          "name": "marine",
+          "room": 17,
+          "ts": "2026-06-10T20:52:01.851Z"
+        }
+      },
+      "qdxj2Eod70tzX5sikq6r": {
+        "_data": {
+          "text": "\"I remember him from last night in my swollen limbs and sore muscles\" swollen lips what? 👁️👄👁️",
+          "name": "kathi",
+          "room": 12,
+          "ts": "2026-05-29T06:24:23.162Z"
+        }
+      },
+      "r7S4fFroofK4SJE0f7jz": {
+        "_data": {
+          "name": "marine",
+          "text": "Oh god not the jaleousy once again and the stupidity of teenagers that are 20",
+          "ts": "2026-05-29T06:23:31.083Z",
+          "room": 12
+        }
+      },
+      "rHPByidUQWc1rOdBqzCs": {
+        "_data": {
+          "text": "I just realized that I'm also halfway through chunk 16 without noticing, so I understand why you wrote everything in here. I'm just gonna finish chunk 16 in this section too",
+          "name": "kathi",
+          "room": 15,
+          "ts": "2026-06-03T09:33:31.016Z"
+        }
+      },
+      "rRmRVaToHESeFgpLAsPR": {
+        "_data": {
+          "ts": "2026-06-02T12:10:34.522Z",
+          "room": 15,
+          "name": "marine",
+          "text": "Ok ok… Intentions… Mhmmmm"
+        }
+      },
+      "revMGgjj0liQ8qcqm60W": {
+        "_data": {
+          "name": "marine",
+          "text": "There you go, it kills them right? So that’s why it hot forgotten",
+          "ts": "2026-06-02T11:14:38.996Z",
+          "room": 15
+        }
+      },
+      "s1arp92B6JH8s9Pq1COq": {
+        "_data": {
+          "name": "kathi",
+          "text": "the voice actors are committed AF, I have to give them that",
+          "ts": "2026-06-03T09:35:50.899Z",
+          "room": 15
+        }
+      },
+      "sDl3reJHuvcLnjVJ7jh1": {
+        "_data": {
+          "ts": "2026-05-29T07:20:00.869Z",
+          "room": 12,
+          "name": "kathi",
+          "text": "\"what is it about cat that brings out the irrational in me?\" Really girl, you don't know?"
+        }
+      },
+      "sPP0Hpt8weSbmikA70XW": {
+        "_data": {
+          "text": "somewhere down the line, we transitioned from explicitely describing every movement and moment of the spicy scenes to just implying that there was spicy time. I guess this is done to focus on \"the plot\" and even though I don't need the spicy scenes, the plot is even worse :D",
+          "name": "kathi",
+          "room": 14,
+          "ts": "2026-06-02T05:58:57.380Z"
+        }
+      },
+      "sUiomT47W09W6Qsjoe5y": {
+        "_data": {
+          "ts": "2026-06-01T07:44:18.488Z",
+          "room": 13,
+          "name": "kathi",
+          "text": "Okay, so since in parallel I always read Harry Potter in french whenever I have the brain capacity for it, I noticed a couple of things that really show that Rebecca sucks as a writer and that JK Rowling for example did correct from the start which is pretty impressive. So first of all, JK Rowling introduces concepts and characters WAY before they become relevant. For example, she introduces Sirius Black already in the first book because he gives Hagrid the motor bike before he becomes relevant in the third book. She casually introduces that Harry can talk to snakes in the first book as well and it only becomes relevant in the next book. Same with the same with the Whipping Willow (is that was it's called in English haha?) in which they crash in the second book, but it only becomes relevant in the third. Rebecca only introduces things that are relevant either in the scene that makes it relevant or maybe a couple of chaptera before MAX. also, all she writes is like movie scenes where something happens. She doesn't give us any dialogue from violett apart from reactions to things that happen in the moment, which makes her character flat as hell. In Harry Potter, we regularly get bits where Harry is just lying in his bed staring at the ceiling thinking about stuff, or in class staring out the window thinking about stuff etc and that gives us also a feeling about his ups and downs. We absolutely now whether chapters in his life he's depressed or happy etc. violet is just always the same flavor of annoying. also JK Rowling is great at setting the mood for a scene and making us feel like the characters and gives Hogwarts as a place a personality. I know exactly how the mood is in different rooms/locations in Hogwarts throughout the year. I don't know at all what it's like at besgiath except depressing, so I don't want to be there"
+        }
+      },
+      "sV735aVDroXgVU6hLHs2": {
+        "_data": {
+          "ts": "2026-06-02T17:32:01.323Z",
+          "room": 15,
+          "name": "kathi",
+          "text": "oh so the iron rain is now an iron flaaaaaame, we have a title name drop (I hate when books and movies do that :D)"
+        }
+      },
+      "u7l7TGTuSrLlrzOR4agX": {
+        "_data": {
+          "name": "marine",
+          "text": "Is the sage his dad ?",
+          "ts": "2026-06-12T09:20:37.407Z",
+          "room": 18
+        }
+      },
+      "u9dRa0sf83v0CYYWrfgx": {
+        "_data": {
+          "name": "marine",
+          "text": "Vi is covered in runes ? What ?",
+          "ts": "2026-06-01T13:49:25.979Z",
+          "room": 13
+        }
+      },
+      "uyeswT9BAkUb1I6HWWVe": {
+        "_data": {
+          "room": 18,
+          "ts": "2026-06-12T09:23:09.068Z",
+          "text": "Why are scars silver in this world ? Aren't they white or pink or red usually ?",
+          "name": "marine"
+        }
+      },
+      "v5nG1fN0AKQw5F3EfXU0": {
+        "_data": {
+          "room": 14,
+          "ts": "2026-06-02T06:28:06.699Z",
+          "text": "\"you think I would be so petty to fight over man?\" Well clearly you are miss cat",
+          "name": "kathi"
+        }
+      },
+      "vEnaz8brNraLJsPX2ftN": {
+        "_data": {
+          "room": 17,
+          "ts": "2026-06-12T06:58:35.998Z",
+          "text": "If they don’t use the projector guy as distraction in battle they are officially the dumbest army ever",
+          "name": "marine"
+        }
+      },
+      "vT8jaxKaHdITyERMLs5E": {
+        "_data": {
+          "ts": "2026-06-12T07:41:08.713Z",
+          "room": 18,
+          "name": "marine",
+          "text": "But it took them days to imbue the ward stone and she wants to do this in seconds ? This makes no sense !! What is this ?!"
+        }
+      },
+      "vb1sZHclU7T5HSTzPwIW": {
+        "_data": {
+          "name": "marine",
+          "text": "She did not bring the conduit to the meeting ? You finally get a emntor and you just, pfiou, ignore him ? Why Vi ? Why ?",
+          "ts": "2026-05-29T06:47:30.339Z",
+          "room": 12
+        }
+      },
+      "wVJyxGS81Ma29X0xvJa5": {
+        "_data": {
+          "ts": "2026-06-02T06:03:40.945Z",
+          "room": 14,
+          "name": "kathi",
+          "text": "I don't understand if weaving the runes is like an ancient art that the tierish people kept secretly running and are now teaching the cadets OR if everyone in Navarre knows about the runes, but they were just gonna teach the cadets later? because in Besgiath they still also utilized stuff with runes in it right? like the mage lights?"
+        }
+      },
+      "wePe7w5Yu4MkG0Wjal5z": {
+        "_data": {
+          "text": "Why not change the rules ? Make a mix of both values ? All the riders here, are here because they acknowledge how crappy their system is ? And who are the professors then ? If it’s old rebels why are they inforcing the violence ? What the fuck Rebecca ! \nIf you want tension, make one for real ! Political conflicts between the two or something ! Not a “gnegne she stole my man and I can punch her legally now”",
+          "name": "marine",
+          "room": 14,
+          "ts": "2026-06-02T10:07:39.735Z"
+        }
+      },
+      "xBDAhwx5ZjujEa2w3EmB": {
+        "_data": {
+          "name": "marine",
+          "text": "Sawyer is gonna be hiccup",
+          "ts": "2026-06-12T09:23:45.295Z",
+          "room": 18
+        }
+      },
+      "xQkxZsCCc9NlnTJdoVJt": {
+        "_data": {
+          "ts": "2026-05-28T16:33:36.542Z",
+          "room": 11,
+          "name": "marine",
+          "text": "Come on ! Dain and Mira ratted them out please ! I need a square"
+        }
+      },
+      "xc1ipmPXphxvXim5nP6v": {
+        "_data": {
+          "ts": "2026-05-29T06:23:46.459Z",
+          "room": 12,
+          "name": "marine",
+          "text": "Cat is gonna over dress her"
+        }
+      },
+      "xixSUTfOimFbfii3jtH4": {
+        "_data": {
+          "text": "Since when does lightning come from the ground?",
+          "name": "kathi",
+          "room": 12,
+          "ts": "2026-05-29T06:27:32.476Z"
+        }
+      },
+      "yXzaPWATJt4GZRbdHICI": {
+        "_data": {
+          "name": "kathi",
+          "text": "bro BROOOOO zayden is making so many comments like \"we're entangled....for the rest of our lives\" .... \"we both now, our relationship is end game\" ... \"i will love you..... forever\" .....\"you are my woman\", he is gonna propose in the last chapter, i swear to friggin god!",
+          "ts": "2026-06-02T17:30:04.167Z",
+          "room": 15
+        }
+      },
+      "zCnpwCa1ZCJ3O724JUQr": {
+        "_data": {
+          "text": "Haaaaaa the convo about the conduit and shit, makes me feel for her, because I know what it is to have useless mentors",
+          "name": "marine",
+          "room": 12,
+          "ts": "2026-05-28T16:51:09.005Z"
+        }
+      },
+      "zEo60dyfj0mF7oeFXmnq": {
+        "_data": {
+          "room": 18,
+          "ts": "2026-06-12T07:38:02.647Z",
+          "text": "Who is Coda ?",
+          "name": "marine"
+        }
+      },
+      "zHuRbl90H0r7K5pYwZ21": {
+        "_data": {
+          "ts": "2026-06-12T07:22:11.347Z",
+          "room": 17,
+          "name": "marine",
+          "text": "What the fuck happened ? They were jumping on the dragons back ? What ?"
+        }
+      },
+      "zNUrfpXSv0WDwn2nNYtp": {
+        "_data": {
+          "ts": "2026-06-12T07:08:25.995Z",
+          "room": 17,
+          "name": "marine",
+          "text": "It’s time to play the “who will Rebecca kill today?” \nI am thinking one of Imogen’s friend or Cat and she will be like “I wish I had time to know her” or and I really hope not, Sawyer"
+        }
+      }
+    },
+    "progress_spoiler": {
+      "kathi": {
+        "_data": {
+          "chapter": 1,
+          "room": 18
+        }
+      },
+      "marine": {
+        "_data": {
+          "chapter": 1,
+          "room": 18
+        }
+      }
+    }
+  }
+}
