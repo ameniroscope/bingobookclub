@@ -15,207 +15,95 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
   radial-gradient(ellipse 60% 70% at 85% 75%,rgba(160,110,40,0.10) 0%,transparent 55%),
   radial-gradient(ellipse 100% 100% at 50% 50%,transparent 60%,rgba(80,40,5,0.18) 100%);}
 
-.player-header {
-    position: fixed;
-    top: 24px;
-    left: 24px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    z-index: 100;
-}
+.player-header{position:fixed;top:24px;left:24px;display:flex;align-items:center;gap:16px;z-index:100;}
+.img-frame{position:relative;width:90px;height:90px;}
+.img-frame img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:3px solid var(--gold);
+  box-shadow:0 0 20px rgba(201,168,76,0.4);}
+.player-header .player-name{font-family:'Cinzel',serif;font-size:2.8rem;font-weight:600;color:#3f220a;
+  text-shadow:0 0 20px rgba(201,168,76,0.3);letter-spacing:2px;white-space:nowrap;}
 
-.img-frame {
-    position: relative;
-    width: 90px;
-    height: 90px;
-}
+.home-btn{position:fixed;top:1.5rem;right:1.5rem;z-index:100;background:#3f220a;color:var(--gold-lt);
+  font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:2px;padding:0.6rem 1.2rem;border-radius:6px;
+  border:2px solid var(--gold);text-decoration:none;text-transform:uppercase;transition:all 0.3s ease;
+  box-shadow:0 2px 8px rgba(0,0,0,0.3);}
+.home-btn:hover{background:rgba(59,30,6,0.95);transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.4);}
 
-.img-frame img {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid var(--gold);
-    box-shadow: 0 0 20px rgba(201, 168, 76, 0.4);
-}
+.wrap{position:relative;z-index:1;min-height:100vh;max-width:1100px;margin:0 auto;padding:2rem 1.5rem;
+  display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center;justify-content:center;}
 
-.player-header .player-name {
-    font-family: 'Cinzel', serif;
-    font-size: 2.8rem;
-    font-weight: 600;
-    color: #3f220a;
-    text-shadow: 0 0 20px rgba(201, 168, 76, 0.3);
-    letter-spacing: 2px;
-    white-space: nowrap;
-}
-  
-.home-btn{
-  position:fixed;
-  top:1.5rem;
-  right:1.5rem;
-  z-index:100;
-  background:#3f220a;
-  color:var(--gold-lt);
-  font-family:'Cinzel',serif;
-  font-size:0.75rem;
-  letter-spacing:2px;
-  padding:0.6rem 1.2rem;
-  border-radius:6px;
-  border:2px solid var(--gold);
-  text-decoration:none;
-  text-transform:uppercase;
-  transition:all 0.3s ease;
-  box-shadow:0 2px 8px rgba(0,0,0,0.3);
-}
-.home-btn:hover{
-  background:rgba(59,30,6,0.95);
-  transform:translateY(-2px);
-  box-shadow:0 4px 12px rgba(0,0,0,0.4);
-}
-
-.wrap{
-  position:relative;
-  z-index:1;
-  min-height:100vh;
-  max-width:1100px;
-  margin:0 auto;
-  padding:2rem 1.5rem;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:2rem;
-  align-items:center;
-  justify-content:center;
-}
-
-.section-title{
-  font-family:'Cinzel',serif;
-  font-size:1.1rem;
-  letter-spacing:5px;
-  color:var(--gold);
-  text-transform:uppercase;
-  text-align:center;
-  margin-bottom:0.5rem;
-}
+.section-title{font-family:'Cinzel',serif;font-size:1.1rem;letter-spacing:5px;color:var(--gold);
+  text-transform:uppercase;text-align:center;margin-bottom:0.5rem;}
 
 .bingo-section{display:flex;flex-direction:column;}
-
-.bingo-controls{
-  position:absolute;
-  left:-50px;
-  top:50%;
-  transform:translateY(-50%);
-  display:flex;
-  flex-direction:column;
-  gap:0.5rem;
-}
-
-.bingo-lock-btn{background:none;border:1.5px solid var(--worn);border-radius:50%;
-  width:36px;height:36px;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;
-  justify-content:center;transition:all 0.2s;flex-shrink:0;padding:0;}
+.bingo-controls{position:absolute;left:-50px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:0.5rem;}
+.bingo-lock-btn{background:none;border:1.5px solid var(--worn);border-radius:50%;width:36px;height:36px;cursor:pointer;
+  font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;padding:0;}
 .bingo-lock-btn:hover{border-color:var(--gold);}
 .bingo-lock-btn.unlocked{border-color:var(--gold);background:rgba(139,105,20,0.15);}
 
-.bingo-badge{
-  background:#3b1e06;
-  color:var(--gold-lt);
-  font-size:11px;
-  font-family:'Cinzel',serif;
-  letter-spacing:1px;
-  padding:3px 10px;
-  border-radius:3px;
-  border:1px solid var(--gold-lt);
-  display:none;
-  position:absolute;
-  top:-35px;
-  left:50%;
-  transform:translateX(-50%);
-}
+.bingo-badge{background:#3b1e06;color:var(--gold-lt);font-size:11px;font-family:'Cinzel',serif;letter-spacing:1px;
+  padding:3px 10px;border-radius:3px;border:1px solid var(--gold-lt);display:none;position:absolute;top:-35px;
+  left:50%;transform:translateX(-50%);}
 .bingo-badge.show{display:inline;}
 
-.lock-modal-wrap{display:none;position:fixed;inset:0;z-index:400;background:rgba(20,10,4,0.95);
-  align-items:center;justify-content:center;}
+.lock-modal-wrap{display:none;position:fixed;inset:0;z-index:400;background:rgba(20,10,4,0.95);align-items:center;justify-content:center;}
 .lock-modal-wrap.open{display:flex;}
-.lock-modal{background:var(--parch);border:2px solid var(--worn);border-radius:10px;
-  padding:1.5rem;display:flex;flex-direction:column;gap:0.75rem;min-width:240px;
-  box-shadow:0 8px 30px rgba(0,0,0,0.5);}
+.lock-modal{background:var(--parch);border:2px solid var(--worn);border-radius:10px;padding:1.5rem;display:flex;
+  flex-direction:column;gap:0.75rem;min-width:240px;box-shadow:0 8px 30px rgba(0,0,0,0.5);}
 .lock-modal h3{font-family:'Cinzel',serif;font-size:1rem;letter-spacing:1px;color:var(--gold);margin:0;}
-.lock-modal input[type="text"]{
-  width:100%;background:rgba(255,252,244,0.9);border:1px solid var(--worn);border-radius:4px;
-  color:var(--ink);font-family:'IM Fell English',serif;font-size:1.1rem;padding:0.5rem 0.7rem;
-  text-align:center;outline:none;}
+.lock-modal input[type="text"]{width:100%;background:rgba(255,252,244,0.9);border:1px solid var(--worn);border-radius:4px;
+  color:var(--ink);font-family:'IM Fell English',serif;font-size:1.1rem;padding:0.5rem 0.7rem;text-align:center;outline:none;}
 .lock-modal input[type="text"]:focus{border-color:var(--gold);}
 .lock-error{color:#c0392b;font-size:0.9rem;min-height:1em;text-align:center;}
 .lock-modal-btns{display:flex;gap:0.5rem;}
-.lock-modal-btns button{flex:1;font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:1.5px;
-  text-transform:uppercase;padding:0.55rem;background:#3b1e06;color:var(--gold-lt);
-  border:1px solid var(--gold-lt);border-radius:4px;cursor:pointer;transition:background 0.2s;}
+.lock-modal-btns button{flex:1;font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:1.5px;text-transform:uppercase;
+  padding:0.55rem;background:#3b1e06;color:var(--gold-lt);border:1px solid var(--gold-lt);border-radius:4px;cursor:pointer;transition:background 0.2s;}
 .lock-modal-btns button:hover{background:#5a3010;}
 
-.bingo-card-wrap{
-  position:relative;
-  width:100%;
-  aspect-ratio:1024/1536;
-  background-image:url('shouty_bingo.png');
-  background-size:100% 100%;
-}
-
-.bingo-grid{position:absolute;left:50%;top:34.8%;width:73%;aspect-ratio:1/1;
-  transform:translateX(-50%);display:grid;
+.bingo-card-wrap{position:relative;width:100%;aspect-ratio:1024/1536;background-image:url('shouty_bingo.png');background-size:100% 100%;}
+.bingo-grid{position:absolute;left:50%;top:34.8%;width:73%;aspect-ratio:1/1;transform:translateX(-50%);display:grid;
   grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(5,1fr);}
-
-.bingo-cell{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;
-  font-size:clamp(8px,1.4vw,12px);line-height:1.2;text-align:center;
-  padding:2px;overflow:hidden;cursor:pointer;transition:background 0.15s;}
+.bingo-cell{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-size:clamp(8px,1.4vw,12px);
+  line-height:1.2;text-align:center;padding:2px;overflow:hidden;cursor:pointer;transition:background 0.15s;}
 .bingo-cell.marked{background:rgba(212,175,55,0.55);}
 .bingo-cell.free{font-weight:600;color:var(--gold);cursor:default;}
-
-.cell-text{width:100%;height:100%;display:flex;align-items:center;justify-content:center;
-  text-align:center;font-family:'IM Fell English',Georgia,serif;font-size:inherit;
-  line-height:1.2;color:#2a1a0a;padding:2px;overflow-wrap:break-word;word-break:break-word;}
-
-.bingo-cell textarea{width:100%;height:100%;border:none;background:rgba(255,252,240,0.7);
-  outline:none;resize:none;text-align:center;font-family:'IM Fell English',Georgia,serif;
-  font-size:inherit;line-height:1.2;color:#2a1a0a;padding:2px;overflow:hidden;
+.cell-text{width:100%;height:100%;display:flex;align-items:center;justify-content:center;text-align:center;
+  font-family:'IM Fell English',Georgia,serif;font-size:inherit;line-height:1.2;color:#2a1a0a;padding:2px;
   overflow-wrap:break-word;word-break:break-word;}
-
+.bingo-cell textarea{width:100%;height:100%;border:none;background:rgba(255,252,240,0.7);outline:none;resize:none;
+  text-align:center;font-family:'IM Fell English',Georgia,serif;font-size:inherit;line-height:1.2;color:#2a1a0a;
+  padding:2px;overflow:hidden;overflow-wrap:break-word;word-break:break-word;}
 .bingo-hint{font-size:10px;color:var(--gold);margin-top:5px;font-style:italic;text-align:center;}
 .bingo-status{font-size:10px;color:var(--ink-faded);font-style:italic;text-align:center;margin-top:3px;min-height:1em;}
 
 .rooms-col{display:flex;flex-direction:column;}
-
 .rooms-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;max-height:none;padding-right:4px;}
-.room-btn{position:relative;height:70px;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;gap:0.25rem;border-radius:6px;cursor:pointer;transition:all 0.2s;border:1.5px solid;}
+.room-btn{position:relative;height:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:0.25rem;border-radius:6px;cursor:pointer;transition:all 0.2s;border:1.5px solid;}
 .room-btn:hover{transform:translateY(-2px);box-shadow:0 5px 18px rgba(0,0,0,0.28);}
 .room-btn.general{background:rgba(242,232,208,0.92);border-color:var(--gold);color:var(--ink);}
 .room-btn.unlocked{background:rgba(139,105,20,0.18);border-color:var(--gold);color:var(--ink);}
 .room-btn.locked{background:rgba(59,30,6,0.88);border-color:var(--gold-lt);color:var(--parch);}
 .room-btn:hover.locked{background:#5a3010;}
-.btn-label{font-family:'Cinzel',serif;font-size:0.85rem;letter-spacing:1px;font-weight:600;margin-top: 1.1rem;}
+.btn-label{font-family:'Cinzel',serif;font-size:0.85rem;letter-spacing:1px;font-weight:600;margin-top:1.1rem;}
 .btn-sub{font-size:0.75rem;font-style:italic;opacity:0.75;}
-.btn-badge{position:absolute;top:6px;right:8px;font-family:'Cinzel',serif;font-size:0.6rem;
-  letter-spacing:1px;padding:0.15rem 0.4rem;border-radius:3px;}
+.btn-badge{position:absolute;top:6px;right:8px;font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:1px;padding:0.15rem 0.4rem;border-radius:3px;}
 .room-btn.general .btn-badge,.room-btn.unlocked .btn-badge{background:var(--gold);color:var(--parch);}
 .room-btn.locked .btn-badge{background:rgba(201,168,76,0.18);color:var(--gold-lt);}
 
-.overlay{position:fixed;inset:0;z-index:200;background:rgba(20,10,4,0.72);
-  display:flex;align-items:center;justify-content:center;padding:1rem;
-  opacity:0;pointer-events:none;transition:opacity 0.2s;}
+.overlay{position:fixed;inset:0;z-index:200;background:rgba(20,10,4,0.72);display:flex;align-items:center;justify-content:center;
+  padding:1rem;opacity:0;pointer-events:none;transition:opacity 0.2s;}
 .overlay.open{opacity:1;pointer-events:all;}
-.chat-modal{background:var(--parch);border:2px solid var(--worn);border-radius:10px;width:100%;
-  max-width:650px;height:88vh;max-height:88vh;display:flex;flex-direction:column;
-  box-shadow:0 8px 40px rgba(0,0,0,0.55),inset 0 1px 10px rgba(100,60,10,0.1);
+.chat-modal{background:var(--parch);border:2px solid var(--worn);border-radius:10px;width:100%;max-width:650px;height:88vh;
+  max-height:88vh;display:flex;flex-direction:column;box-shadow:0 8px 40px rgba(0,0,0,0.55),inset 0 1px 10px rgba(100,60,10,0.1);
   transform:translateY(12px);transition:transform 0.2s;}
 .overlay.open .chat-modal{transform:translateY(0);}
-.chat-hdr{padding:1rem 1.25rem 0.85rem;border-bottom:1px solid var(--worn);
-  background:rgba(201,175,130,0.3);border-radius:8px 8px 0 0;
-  display:flex;align-items:flex-start;justify-content:space-between;gap:0.5rem;}
+.chat-hdr{padding:1rem 1.25rem 0.85rem;border-bottom:1px solid var(--worn);background:rgba(201,175,130,0.3);
+  border-radius:8px 8px 0 0;display:flex;align-items:flex-start;justify-content:space-between;gap:0.5rem;}
 .chat-room-label{font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:2px;color:var(--gold);}
 .chat-title{font-family:'Cinzel',serif;font-size:1.2rem;font-weight:600;color:var(--ink);}
 .chat-sub{font-size:0.9rem;color:var(--ink-faded);font-style:italic;margin-top:0.1rem;}
-.chat-status{display:inline-block;margin-top:4px;font-family:'Cinzel',serif;font-size:0.65rem;
-  letter-spacing:1px;padding:0.22rem 0.6rem;border-radius:3px;}
+.chat-status{display:inline-block;margin-top:4px;font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:1px;padding:0.22rem 0.6rem;border-radius:3px;}
 .chat-status.open,.chat-status.unlocked{background:var(--gold);color:var(--parch);}
 .chat-status.locked{background:#3b1e06;color:var(--gold-lt);border:1px solid var(--gold-lt);}
 .close-btn{background:none;border:none;cursor:pointer;color:var(--ink-faded);font-size:1.5rem;line-height:1;padding:0.1rem;transition:color 0.15s;}
@@ -228,100 +116,50 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 .msg-text{font-size:1rem;color:var(--ink);line-height:1.65;}
 .compose{border-top:1px solid var(--worn);padding:0.65rem 1rem;display:flex;gap:0.45rem;align-items:flex-end;
   background:rgba(201,175,130,0.18);border-radius:0 0 8px 8px;}
-.compose textarea{flex:1;resize:none;min-height:40px;max-height:100px;background:rgba(255,252,244,0.85);
-  border:1px solid var(--worn);border-radius:4px;padding:0.42rem 0.6rem;
-  font-family:'IM Fell English',serif;font-size:1rem;color:var(--ink);line-height:1.5;}
+.compose textarea{flex:1;resize:none;min-height:40px;max-height:100px;background:rgba(255,252,244,0.85);border:1px solid var(--worn);
+  border-radius:4px;padding:0.42rem 0.6rem;font-family:'IM Fell English',serif;font-size:1rem;color:var(--ink);line-height:1.5;}
 .compose textarea::placeholder{color:var(--worn);font-style:italic;}
 .compose textarea:focus{outline:none;border-color:var(--gold);}
-.send-btn{height:40px;padding:0 1rem;background:#3b1e06;border:1px solid var(--gold-lt);border-radius:4px;
-  color:var(--gold-lt);font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:1.5px;
-  text-transform:uppercase;cursor:pointer;transition:background 0.2s;white-space:nowrap;}
+.send-btn{height:40px;padding:0 1rem;background:#3b1e06;border:1px solid var(--gold-lt);border-radius:4px;color:var(--gold-lt);
+  font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:background 0.2s;white-space:nowrap;}
 .send-btn:hover{background:#5a3010;}
 
-@media (max-width: 800px) {
-    body {
-        padding: 15px;
-        padding-top: 20px;
-    }
-
-    .player-header {
-        position: static;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        margin-bottom: 30px;
-        z-index: 10;
-    }
-    
-    .player-header .player-name {
-        font-size: 2rem;
-    }
-    
-    .img-frame {
-        width: 70px;
-        height: 70px;
-    }
-
-    .wrap {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-        padding: 1rem;
-    }
-    
-    .bingo-controls {
-        position: static;
-        flex-direction: row;
-        left: auto;
-        top: auto;
-        transform: none;
-        justify-content: center;
-        margin-top: 0.5rem;
-    }
-    
-    .home-btn {
-        top: 1rem;
-        right: 1rem;
-        font-size: 0.65rem;
-        padding: 0.5rem 0.8rem;
-    }
-    
-    .rooms-grid {
-        max-height: none;
-    }
+@media (max-width:800px){
+  body{padding:15px;padding-top:20px;}
+  .player-header{position:static;flex-direction:column;align-items:center;text-align:center;margin-bottom:30px;z-index:10;}
+  .player-header .player-name{font-size:2rem;}
+  .img-frame{width:70px;height:70px;}
+  .wrap{grid-template-columns:1fr;gap:2rem;padding:1rem;}
+  .bingo-controls{position:static;flex-direction:row;left:auto;top:auto;transform:none;justify-content:center;margin-top:0.5rem;}
+  .home-btn{top:1rem;right:1rem;font-size:0.65rem;padding:0.5rem 0.8rem;}
+  .rooms-grid{max-height:none;}
 }
-  
 </style>
 </head>
 <body>
-<!-- PASSWORD MODAL - shown first -->
+<!-- PASSWORD MODAL -->
 <div class="lock-modal-wrap open" id="initialLockModal">
   <div class="lock-modal">
     <h3>🔐 Welcome to Book Club</h3>
     <input type="text" id="initialPasswordInput" placeholder="Enter password" autocomplete="off">
     <div class="lock-error" id="initialLockError"></div>
-    <div class="lock-modal-btns">
-      <button id="initialUnlockSubmit">Enter</button>
-    </div>
+    <div class="lock-modal-btns"><button id="initialUnlockSubmit">Enter</button></div>
   </div>
 </div>
 
-<!-- Main content - hidden until password entered -->
 <div id="mainContent" style="display:none;">
 <div id="bg"></div>
 
 <a href="shouty_index.html" class="home-btn">🦖 Shouty Book Club</a>
 
 <div class="player-header">
-    <div class="img-frame">
-        <img id="playerPhoto" src="marine.png" alt="Player Photo">
-    </div>
-    <div class="player-name" id="playerHeaderName"></div>
+  <div class="img-frame"><img id="playerPhoto" src="marine.png" alt="Player Photo"></div>
+  <div class="player-name" id="playerHeaderName"></div>
 </div>
 
 <div class="wrap">
   <div class="bingo-section">
     <div class="section-title">READING BINGO</div>
-    
     <div class="bingo-card-wrap">
       <span class="bingo-badge" id="bingoBadge">BINGO!</span>
       <div class="bingo-controls">
@@ -329,7 +167,6 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
       </div>
       <div class="bingo-grid" id="bingoGrid"></div>
     </div>
-
     <div class="bingo-hint" id="bingoHint">Click squares to mark them</div>
     <div class="bingo-status" id="bingoStatus"></div>
   </div>
@@ -365,8 +202,7 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import {
   getFirestore, collection, addDoc, onSnapshot,
-  query, where, orderBy, serverTimestamp,
-  doc, setDoc, getDoc
+  query, where, orderBy, serverTimestamp, doc, setDoc, getDoc
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const PID      = "marine";
@@ -374,7 +210,6 @@ const PEMOJI   = "🧜‍♀️";
 const PNAME    = "Marine";
 const PASSWORD = "marinara";
 
-const OTHER       = { marine:"kathi",   kathi:"marine" };
 const OTHER_EMOJI = { marine:"🍄",      kathi:"🧜‍♀️" };
 const OTHER_NAME  = { marine:"Kathi",   kathi:"Marine" };
 
@@ -388,27 +223,27 @@ const fb = initializeApp({
 });
 const db = getFirestore(fb);
 
+// ch = room number (chat room id) · unlock = chapter you must reach to open it
 const ROOMS = [
-  {ch:0,  label:"General"},
-  {ch:1,  label:"Ch 1–3"},
-  {ch:2,  label:"Ch 4–6"},
-  {ch:3,  label:"Ch 7–9"},
-  {ch:4,  label:"Ch 10–12"},
-  {ch:5,  label:"Ch 13–15"},
-  {ch:6,  label:"Ch 16–18"},
-  {ch:7,  label:"Ch 19–21"},
-  {ch:8,  label:"Ch 22–24"},
-  {ch:9,  label:"Ch 25–27"},
-  {ch:10, label:"Ch 28–30"},
-  {ch:11, label:"Ch 31–33"},
-  {ch:12, label:"Ch 34–36"},
-  {ch:13, label:"Ch 37–39"},
-  {ch:14, label:"End"},
+  {ch:0,  label:"General",            unlock:0},
+  {ch:1,  label:"Ch 1–3",             unlock:3},
+  {ch:2,  label:"Ch 4–6",             unlock:6},
+  {ch:3,  label:"Ch 7–9",             unlock:9},
+  {ch:4,  label:"Ch 10–12",           unlock:12},
+  {ch:5,  label:"Ch 13–15",           unlock:15},
+  {ch:6,  label:"Ch 16–18",           unlock:18},
+  {ch:7,  label:"Ch 19–21",           unlock:21},
+  {ch:8,  label:"Ch 22–24",           unlock:24},
+  {ch:9,  label:"Ch 25–27",           unlock:27},
+  {ch:10, label:"Ch 28–30",           unlock:30},
+  {ch:11, label:"Ch 31–33",           unlock:33},
+  {ch:12, label:"Ch 34–36",           unlock:36},
+  {ch:13, label:"Ch 37–39",           unlock:39},
+  {ch:14, label:"Ch 40–42 + Epilogue", unlock:43},
 ];
 
 const GRID_SIZE = 25;
 
-// Initial password check
 const initialLockModal = document.getElementById('initialLockModal');
 const initialPasswordInput = document.getElementById('initialPasswordInput');
 const initialUnlockSubmit = document.getElementById('initialUnlockSubmit');
@@ -427,11 +262,8 @@ function checkInitialPassword() {
     initialPasswordInput.focus();
   }
 }
-
 initialUnlockSubmit.addEventListener('click', checkInitialPassword);
-initialPasswordInput.addEventListener('keydown', e => {
-  if (e.key === 'Enter') checkInitialPassword();
-});
+initialPasswordInput.addEventListener('keydown', e => { if (e.key === 'Enter') checkInitialPassword(); });
 
 document.title = `Book Club — ${PNAME}`;
 document.getElementById('playerHeaderName').textContent = PNAME;
@@ -441,11 +273,11 @@ let markedSet  = new Set([12]);
 let isEditMode = false;
 let isSaving   = false;
 
-const bingoGrid    = document.getElementById('bingoGrid');
-const bingoBadge   = document.getElementById('bingoBadge');
-const bingoHint    = document.getElementById('bingoHint');
-const bingoStatus  = document.getElementById('bingoStatus');
-const editBtn      = document.getElementById('bingoEditBtn');
+const bingoGrid   = document.getElementById('bingoGrid');
+const bingoBadge  = document.getElementById('bingoBadge');
+const bingoHint   = document.getElementById('bingoHint');
+const bingoStatus = document.getElementById('bingoStatus');
+const editBtn     = document.getElementById('bingoEditBtn');
 
 editBtn.addEventListener('click', () => {
   isEditMode = !isEditMode;
@@ -469,7 +301,6 @@ function renderBingo() {
     const isFree = i === 12;
     const cell = document.createElement('div');
     cell.className = 'bingo-cell' + (isFree ? ' free' : markedSet.has(i) ? ' marked' : '');
-
     if (isFree) {
       cell.style.cursor = 'default';
     } else if (isEditMode) {
@@ -501,10 +332,7 @@ async function saveToFirebase() {
   isSaving = true;
   bingoStatus.textContent = 'Saving…';
   try {
-    await setDoc(doc(db, 'shouty_bingo', PID), {
-      cells:  cells,
-      marked: [...markedSet]
-    });
+    await setDoc(doc(db, 'shouty_bingo', PID), { cells, marked: [...markedSet] });
     bingoStatus.textContent = 'Saved ✓';
   } catch(e) {
     console.error(e);
@@ -534,12 +362,14 @@ async function init() {
   renderRooms();
 }
 
-let myProgress = 0;
+let myProgress = 0;   // now the CHAPTER reached (0–43)
 let activeRoom = null, activeUnsub = null;
 
+// Read the chapter the map saved, fall back to legacy `room` if present
 onSnapshot(doc(db,'progress_spoiler',PID), d=>{
   if(d.exists()) {
-    myProgress = d.data().room || 0;
+    const data = d.data();
+    myProgress = (data.chapter ?? data.room ?? 0);
   }
   renderRooms();
 }, err=>console.error(err));
@@ -549,7 +379,7 @@ function renderRooms(){
   grid.innerHTML='';
   ROOMS.forEach(r=>{
     const isGeneral = r.ch===0;
-    const unlocked  = isGeneral || myProgress >= r.ch;
+    const unlocked  = isGeneral || myProgress >= r.unlock;
     const cls = isGeneral?'general':unlocked?'unlocked':'locked';
     const badge = isGeneral?'Open':unlocked?'Unlocked':'Write only';
     const btn = document.createElement('div');
@@ -567,7 +397,7 @@ const chatSend  = document.getElementById('chatSend');
 
 function openChat(room){
   activeRoom=room;
-  const canRead = room.ch===0 || myProgress>=room.ch;
+  const canRead = room.ch===0 || myProgress>=room.unlock;
   document.getElementById('chatRoomLabel').textContent = room.ch===0?'General Room':`Room — ${room.label}`;
   document.getElementById('chatTitle').textContent = room.label;
   document.getElementById('chatSub').textContent   = '';
@@ -600,7 +430,7 @@ function subscribeChat(room){
   msgDiv.innerHTML='<span class="empty-msg">Loading…</span>';
   const q=query(collection(db,'shouty_messages'),where('room','==',room.ch),orderBy('ts','asc'));
   activeUnsub=onSnapshot(q,snap=>{
-    const canRead=room.ch===0||myProgress>=room.ch;
+    const canRead=room.ch===0||myProgress>=room.unlock;
     let msgs=[]; snap.forEach(d=>msgs.push({id:d.id,...d.data()}));
     if(!canRead) msgs=msgs.filter(m=>m.name===PID);
     msgDiv.innerHTML='';
