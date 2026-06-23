@@ -257,7 +257,7 @@ const db = getFirestore(fb);
 /* ════════ ALL PLAYER CONFIGS (Firestore: accessCode collection, doc id = pid) ════════ */
 const PLAYERS = {};
 try {
-  const accessSnap = await getDocs(collection(db,'accessCode'));
+  const accessSnap = await getDocs(collection(db,'accessCodes'));
   accessSnap.forEach(d => PLAYERS[d.id] = d.data());
 } catch (e) {
   console.error(e);
