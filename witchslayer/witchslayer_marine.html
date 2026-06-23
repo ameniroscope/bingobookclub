@@ -218,8 +218,14 @@ const db = getFirestore(fb);
 
 /* ── PLAYER CONFIGS (Firestore: accessCode collection, doc id = pid) ── */
 const ALL_PLAYERS = {};
-const accessSnap = await getDocs(collection(db,'accessCode'));
-accessSnap.forEach(d => ALL_PLAYERS[d.id] = d.data());
+try {
+  const accessSnap = await getDocs(collection(db,'accessCode'));
+  accessSnap.forEach(d => ALL_PLAYERS[d.id] = d.data());
+} catch (e) {
+  console.error(e);
+  document.getElementById('initialLockError').textContent = 'Connection error — please refresh the page';
+  throw e;
+}
 
 const { name: PNAME, emoji: PEMOJI, password: PASSWORD } = ALL_PLAYERS[PID];
 
