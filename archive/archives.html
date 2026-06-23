@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bingo Book Club — Archive</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;600&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--ink:#2b1d0e;--ink-faded:#5c3d1e;--gold:#8b6914;--gold-lt:#c9a84c;--parch:#f2e8d0;--parch-dark:#e0ceaa;--worn:#c9af82;}
+html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var(--ink);}
+#bg{position:fixed;inset:0;z-index:0;background:#e4d0ac;}
+#bg::after{content:'';position:absolute;inset:0;background:
+  radial-gradient(ellipse 70% 50% at 15% 20%,rgba(180,130,60,0.13) 0%,transparent 55%),
+  radial-gradient(ellipse 60% 70% at 85% 75%,rgba(160,110,40,0.10) 0%,transparent 55%),
+  radial-gradient(ellipse 100% 100% at 50% 50%,transparent 60%,rgba(80,40,5,0.18) 100%);}
+
+.page-title{position:relative;z-index:1;text-align:center;padding:2.5rem 1rem 0.5rem;}
+.page-title h1{font-family:'Cinzel',serif;font-size:2.2rem;font-weight:600;color:#3f220a;letter-spacing:2px;
+  text-shadow:0 0 20px rgba(201,168,76,0.3);}
+.page-title .archive-tag{display:inline-block;margin-top:0.6rem;font-family:'Cinzel',serif;font-size:0.7rem;
+  letter-spacing:3px;text-transform:uppercase;color:var(--parch);background:#3b1e06;border:1px solid var(--gold-lt);
+  padding:0.3rem 1rem;border-radius:4px;}
+
+/* ── Shelf ── */
+.shelf{position:relative;z-index:1;max-width:1000px;margin:2rem auto 0;padding:0 1.5rem;
+  display:flex;flex-wrap:wrap;gap:1.5rem;justify-content:center;}
+.shelf-book{display:flex;flex-direction:column;align-items:center;gap:0.6rem;cursor:pointer;
+  transition:transform 0.2s;width:140px;}
+.shelf-book:hover{transform:translateY(-4px);}
+.cover-wrap{position:relative;width:140px;height:210px;border-radius:4px;overflow:hidden;
+  box-shadow:0 4px 16px rgba(0,0,0,0.35);border:2px solid var(--gold);}
+.cover-wrap img{width:100%;height:100%;object-fit:cover;display:block;}
+.cover-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+  font-size:3rem;background:rgba(59,30,6,0.9);color:var(--gold-lt);}
+.shelf-book.active .cover-wrap{border-color:var(--gold-lt);box-shadow:0 0 22px rgba(201,168,76,0.6);}
+.shelf-title{font-family:'Cinzel',serif;font-size:0.85rem;font-weight:600;color:#3f220a;text-align:center;
+  letter-spacing:0.5px;line-height:1.25;}
+
+.notice{position:relative;z-index:1;max-width:600px;margin:2rem auto;padding:1.2rem 1.5rem;text-align:center;
+  background:rgba(242,232,208,0.85);border:1px solid var(--worn);border-radius:8px;color:var(--ink-faded);
+  font-style:italic;line-height:1.6;}
+
+.cards-wrap{position:relative;z-index:1;max-width:1100px;margin:2.5rem auto 0;padding:0 1.5rem;
+  display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:start;}
+
+.player-col{display:flex;flex-direction:column;align-items:center;}
+.player-head{display:flex;flex-direction:column;align-items:center;gap:0.6rem;margin-bottom:1rem;}
+.img-frame{position:relative;width:80px;height:80px;}
+.img-frame img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:3px solid var(--gold);
+  box-shadow:0 0 20px rgba(201,168,76,0.4);}
+.img-frame .emoji-badge{position:absolute;bottom:-4px;right:-4px;font-size:1.6rem;
+  filter:drop-shadow(0 0 6px rgba(201,168,76,0.8));}
+.player-col .player-name{font-family:'Cinzel',serif;font-size:1.7rem;font-weight:600;color:#3f220a;letter-spacing:2px;}
+  .img-frame .crown {
+  position: absolute;
+  top: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.4rem;
+  filter: drop-shadow(0 0 6px rgba(201,168,76,0.9));
+  z-index: 2;
+}
+
+/*Bingo card */
+.bingo-card-wrap{position:relative;width:100%;aspect-ratio:1024/1536;
+  background-size:100% 100%;background-repeat:no-repeat;background-color:rgba(59,30,6,0.06);}
+.bingo-badge{background:#3b1e06;color:var(--gold-lt);font-size:11px;font-family:'Cinzel',serif;letter-spacing:1px;
+  padding:3px 10px;border-radius:3px;border:1px solid var(--gold-lt);display:none;position:absolute;top:-30px;
+  left:50%;transform:translateX(-50%);z-index:5;}
+.bingo-badge.show{display:inline;}
+.bingo-grid{position:absolute;left:50%;top:35.8%;width:73%;aspect-ratio:1/1;transform:translateX(-50%);
+  display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(5,1fr);}
+.bingo-cell{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;
+  font-size:clamp(8px,1.1vw,12px);line-height:1.2;text-align:center;padding:2px;overflow:hidden;}
+.bingo-cell.marked{background:rgba(212,175,55,0.55);}
+.cell-text{width:100%;height:100%;display:flex;align-items:center;justify-content:center;text-align:center;
+  font-family:'IM Fell English',Georgia,serif;font-size:inherit;line-height:1.2;color:#2a1a0a;padding:2px;
+  overflow-wrap:break-word;word-break:break-word;}
+
+  .pts-display {
+  font-family: 'Cinzel', serif;
+  color: #3f220a;
+  text-align: center;
+  margin-bottom: 0.6rem;
+}
+.pts-display .pts-big {
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: var(--gold);
+  line-height: 1;
+}
+.pts-display .pts-label {
+  font-size: 0.65rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--ink-faded);
+}
+.pts-display .pts-breakdown {
+  font-size: 0.75rem;
+  color: var(--ink-faded);
+  font-style: italic;
+  margin-top: 0.2rem;
+}
+
+.rooms-section{position:relative;z-index:1;max-width:1100px;margin:3rem auto 4rem;padding:0 1.5rem;}
+.section-title{font-family:'Cinzel',serif;font-size:1.1rem;letter-spacing:5px;color:var(--gold);
+  text-transform:uppercase;text-align:center;margin-bottom:1.2rem;}
+.rooms-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;}
+.room-btn{position:relative;height:64px;display:flex;align-items:center;justify-content:center;
+  border-radius:6px;cursor:pointer;transition:all 0.2s;border:1.5px solid var(--gold);
+  background:rgba(242,232,208,0.92);color:var(--ink);}
+.room-btn:hover{transform:translateY(-2px);box-shadow:0 5px 18px rgba(0,0,0,0.28);}
+.room-btn.empty{opacity:0.55;}
+.btn-label{font-family:'Cinzel',serif;font-size:0.85rem;letter-spacing:1px;font-weight:600;}
+.btn-count{position:absolute;top:5px;right:8px;font-size:0.65rem;font-style:italic;color:var(--ink-faded);}
+
+.overlay{position:fixed;inset:0;z-index:200;background:rgba(20,10,4,0.72);display:flex;align-items:center;
+  justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity 0.2s;}
+.overlay.open{opacity:1;pointer-events:all;}
+.chat-modal{background:var(--parch);border:2px solid var(--worn);border-radius:10px;width:100%;max-width:650px;
+  height:88vh;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 8px 40px rgba(0,0,0,0.55),inset 0 1px 10px rgba(100,60,10,0.1);
+  transform:translateY(12px);transition:transform 0.2s;}
+.overlay.open .chat-modal{transform:translateY(0);}
+.chat-hdr{padding:1rem 1.25rem 0.85rem;border-bottom:1px solid var(--worn);background:rgba(201,175,130,0.3);
+  border-radius:8px 8px 0 0;display:flex;align-items:flex-start;justify-content:space-between;gap:0.5rem;}
+.chat-room-label{font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:2px;color:var(--gold);}
+.chat-title{font-family:'Cinzel',serif;font-size:1.2rem;font-weight:600;color:var(--ink);}
+.chat-status{display:inline-block;margin-top:4px;font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:1px;
+  padding:0.22rem 0.6rem;border-radius:3px;background:#3b1e06;color:var(--gold-lt);border:1px solid var(--gold-lt);}
+.close-btn{background:none;border:none;cursor:pointer;color:var(--ink-faded);font-size:1.5rem;line-height:1;padding:0.1rem;transition:color 0.15s;}
+.close-btn:hover{color:var(--ink);}
+.messages{flex:1;overflow-y:auto;padding:0.9rem 1.1rem;display:flex;flex-direction:column;gap:0.7rem;}
+.empty-msg{font-size:1rem;color:var(--ink-faded);font-style:italic;text-align:center;margin:auto;}
+.msg-name{font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:1px;color:var(--gold);display:block;margin-bottom:0.1rem;}
+.msg-text{font-size:1rem;color:var(--ink);line-height:1.65;}
+.msg-time{font-size:0.7rem;color:var(--worn);font-style:italic;margin-left:0.4rem;}
+
+@media (max-width:800px){
+  .cards-wrap{grid-template-columns:1fr;gap:2.5rem;}
+}
+</style>
+</head>
+<body>
+<div id="bg"></div>
+
+<a href="../index.html" class="home-btn">🏠 Home</a>
+
+<div class="page-title">
+  <h1>Bingo Book Club - Archive</h1>
+  <span class="archive-tag">Read Only</span>
+</div>
+
+<div class="shelf" id="shelf"></div>
+<div id="content"></div>
+
+<!-- CHAT MODAL -->
+<div class="overlay" id="overlay">
+  <div class="chat-modal">
+    <div class="chat-hdr">
+      <div>
+        <div class="chat-room-label" id="chatRoomLabel"></div>
+        <div class="chat-title" id="chatTitle"></div>
+        <span class="chat-status">Archived</span>
+      </div>
+      <button class="close-btn" id="chatClose">✕</button>
+    </div>
+    <div class="messages" id="chatMessages"></div>
+  </div>
+</div>
+
+<script type="module">
+// ─────────────────────────────────────────────────────────────
+//  ARCHIVED READS — file based, no Firebase
+//  Each read is one JSON file exported from Firestore. To add a
+//  new read later: export it, drop the .json in this folder, and
+//  append one line below with its title, filename, and image.
+// ─────────────────────────────────────────────────────────────
+const BOOKS = [
+  { title: "Iron Flame", file: "archive_ironflame.json", image: "archive_ironflame.png" },
+  // { title: "Onyx Storm", file: "bingo_archive_onyx_storm.json", image: "archive_onyx_storm.png" },
+];
+
+const PLAYERS = [
+  { pid:"marine", name:"Marine", emoji:"🧜‍♀️", photo:"../pdp_marine.png" },
+  { pid:"kathi",  name:"Kathi",  emoji:"🍄",   photo:"../pdp_kathi.png"  },
+];
+const NAME_BY_PID  = { marine:"Marine", kathi:"Kathi" };
+const EMOJI_BY_PID = { marine:"🧜‍♀️",  kathi:"🍄"     };
+
+const ROOMS = Array.from({length:19},(_,i)=>({ch:i,label:i===0?"General":`Chunk ${i}`}));
+const GRID_SIZE = 25;
+
+let activeBook = null;
+let archiveData = null;   // parsed JSON for the active book
+const cache = {};         // filename -> parsed JSON
+
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
+
+//Find the bingo squares and calculate points
+function checkBingo(marked){
+  const m = new Set(marked); m.add(12);
+  for(let r=0;r<5;r++) if([0,1,2,3,4].every(c=>m.has(r*5+c))) return true;
+  for(let c=0;c<5;c++) if([0,1,2,3,4].every(r=>m.has(r*5+c))) return true;
+  if([0,1,2,3,4].every(i=>m.has(i*5+i))) return true;
+  if([0,1,2,3,4].every(i=>m.has(i*5+(4-i)))) return true;
+  return false;
+}
+  
+function calcPoints(marked) {
+  const m = new Set(marked); m.add(12);
+  let cells = 0, lines = 0;
+  for (const i of m) { if (i !== 12) cells++; }
+  // rows
+  for (let r = 0; r < 5; r++) if ([0,1,2,3,4].every(c => m.has(r*5+c))) lines++;
+  // cols
+  for (let c = 0; c < 5; c++) if ([0,1,2,3,4].every(r => m.has(r*5+c))) lines++;
+  // diagonals
+  if ([0,1,2,3,4].every(i => m.has(i*5+i)))     lines++;
+  if ([0,1,2,3,4].every(i => m.has(i*5+(4-i)))) lines++;
+  return { total: cells + lines * 5, cells, lines };
+}
+
+// ── Cover fetching: Google Books primary, Open Library fallback ──
+async function fetchCover(title){
+  try{
+    const r = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(title)}&maxResults=1`);
+    const j = await r.json();
+    const img = j.items?.[0]?.volumeInfo?.imageLinks;
+    if(img){
+      let url = img.thumbnail || img.smallThumbnail;
+      if(url) return url.replace('http://','https://').replace('&edge=curl','');
+    }
+  }catch(e){ console.warn('Google Books cover failed',e); }
+  try{
+    const r = await fetch(`https://openlibrary.org/search.json?title=${encodeURIComponent(title)}&limit=1`);
+    const j = await r.json();
+    const id = j.docs?.[0]?.cover_i;
+    if(id) return `https://covers.openlibrary.org/b/id/${id}-L.jpg`;
+  }catch(e){ console.warn('Open Library cover failed',e); }
+  return null;
+}
+
+// ── Load a book's JSON file (cached) ──
+async function loadBookData(book){
+  if(cache[book.file]) return cache[book.file];
+  const r = await fetch(book.file);
+  if(!r.ok) throw new Error(`Could not load ${book.file} (${r.status})`);
+  const json = await r.json();
+  cache[book.file] = json;
+  return json;
+}
+
+// Pull a collection's documents out of the export, unwrapping `_data`
+function getCollection(json, name){
+  const col = json?.collections?.[name];
+  if(!col) return {};
+  const out = {};
+  for(const [id,entry] of Object.entries(col)){
+    out[id] = entry._data || entry;   // tolerate both wrapped and flat
+  }
+  return out;
+}
+
+// ── Shelf ──
+async function buildShelf(){
+  const shelf = document.getElementById('shelf');
+  shelf.innerHTML = '';
+  if(BOOKS.length < 2) shelf.style.display = 'none';
+
+  BOOKS.forEach((book,idx)=>{
+    const el = document.createElement('div');
+    el.className = 'shelf-book' + (idx===0?' active':'');
+    el.innerHTML = `
+      <div class="cover-wrap"><div class="cover-placeholder">📖</div></div>
+      <div class="shelf-title">${esc(book.title)}</div>`;
+    el.addEventListener('click',()=>selectBook(book,el));
+    shelf.appendChild(el);
+
+    fetchCover(book.title).then(url=>{
+      if(!url) return;
+      const wrap = el.querySelector('.cover-wrap');
+      const img = document.createElement('img');
+      img.alt = book.title;
+      img.onload = ()=>{ wrap.innerHTML=''; wrap.appendChild(img); };
+      img.src = url;
+    });
+  });
+}
+
+async function selectBook(book, el){
+  activeBook = book;
+  document.querySelectorAll('.shelf-book').forEach(b=>b.classList.remove('active'));
+  if(el) el.classList.add('active');
+
+  const content = document.getElementById('content');
+  content.innerHTML = `<div class="notice">Loading ${esc(book.title)}…</div>`;
+
+  try{
+    archiveData = await loadBookData(book);
+  }catch(e){
+    content.innerHTML = `<div class="notice">Couldn't load this read's data file.<br>${esc(e.message)}<br><br>
+      If you opened this page by double-clicking it, your browser may block local file loading.
+      Push it to GitHub Pages (or run a local server) and it'll work.</div>`;
+    return;
+  }
+  renderContent();
+}
+
+function renderContent(){
+  const content = document.getElementById('content');
+  content.innerHTML = `
+    <div class="cards-wrap" id="cardsWrap"></div>
+    <div class="rooms-section">
+      <div class="section-title">Chunk Room Archive</div>
+      <div class="rooms-grid" id="roomsGrid"></div>
+    </div>`;
+  renderCards();
+  renderRooms();
+}
+
+function renderCards(){
+  const wrap = document.getElementById('cardsWrap');
+  const bingo = getCollection(archiveData, 'shouty_bingo');
+  const bgStyle = activeBook && activeBook.image
+    ? ` style="background-image:url('${esc(activeBook.image)}')"` : '';
+
+  // ── compute pts for all players first to find the winner ──
+  const playerPts = PLAYERS.map(p => {
+    let marked = [12];
+    const rec = bingo[p.pid];
+    if(rec && Array.isArray(rec.marked)) marked = rec.marked;
+    return calcPoints(marked).total;
+  });
+  const maxPts = Math.max(...playerPts);
+
+  for(let pi=0; pi<PLAYERS.length; pi++){
+    const p = PLAYERS[pi];
+    let cells = Array(GRID_SIZE).fill('');
+    let marked = [12];
+    const rec = bingo[p.pid];
+    if(rec){
+      if(Array.isArray(rec.cells))  cells  = rec.cells;
+      if(Array.isArray(rec.marked)) marked = rec.marked;
+    }
+    const markedSet = new Set(marked); markedSet.add(12);
+    const hasBingo = checkBingo(marked);
+    const pts = calcPoints(marked);
+    const isWinner = pts.total === maxPts && maxPts > 0;
+
+    const col = document.createElement('div');
+    col.className = 'player-col';
+
+    let cellsHtml = '';
+    for(let i=0;i<GRID_SIZE;i++){
+      const isFree = i===12;
+      const cls = 'bingo-cell' + (isFree?' free':markedSet.has(i)?' marked':'');
+      cellsHtml += `<div class="${cls}"><div class="cell-text">${isFree?' ':esc(cells[i])}</div></div>`;
+    }
+
+    col.innerHTML = `
+      <div class="player-head">
+        <div class="img-frame">
+          ${isWinner ? '<span class="crown">👑</span>' : ''}
+          <img src="${p.photo}" alt="${p.name}">
+          <span class="emoji-badge">${p.emoji}</span>
+        </div>
+        <div class="player-name">${p.name}</div>
+      </div>
+      <div class="pts-display">
+        <div><span class="pts-big">${pts.total}</span> <span class="pts-label">pts</span></div>
+        <div class="pts-breakdown">${pts.cells} cell${pts.cells!==1?'s':''} + ${pts.lines} line${pts.lines!==1?'s':''}</div>
+      </div>
+      <div class="bingo-card-wrap"${bgStyle}>
+        <span class="bingo-badge${hasBingo?' show':''}">BINGO!</span>
+        <div class="bingo-grid">${cellsHtml}</div>
+      </div>`;
+    wrap.appendChild(col);
+  }
+}
+
+function renderRooms(){
+  const msgs = getCollection(archiveData, 'shouty_messages');
+  const counts = {};
+  for(const m of Object.values(msgs)){ counts[m.room] = (counts[m.room]||0)+1; }
+
+  const grid = document.getElementById('roomsGrid');
+  ROOMS.forEach(r=>{
+    const n = counts[r.ch]||0;
+    const btn = document.createElement('div');
+    btn.className = 'room-btn' + (n===0?' empty':'');
+    btn.innerHTML = `<span class="btn-count">${n||''}</span><span class="btn-label">${r.label}</span>`;
+    btn.addEventListener('click',()=>openChat(r));
+    grid.appendChild(btn);
+  });
+}
+
+const overlay = document.getElementById('overlay');
+document.getElementById('chatClose').addEventListener('click',closeChat);
+overlay.addEventListener('click',e=>{ if(e.target===overlay) closeChat(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&overlay.classList.contains('open')) closeChat(); });
+function closeChat(){ overlay.classList.remove('open'); document.body.style.overflow=''; }
+
+function openChat(room){
+  document.getElementById('chatRoomLabel').textContent = room.ch===0?'General Room':`Room — ${room.label}`;
+  document.getElementById('chatTitle').textContent = room.label;
+  overlay.classList.add('open');
+  document.body.style.overflow='hidden';
+  const msgDiv = document.getElementById('chatMessages');
+
+  const all = getCollection(archiveData, 'shouty_messages');
+  let msgs = Object.values(all).filter(m=>m.room===room.ch);
+  // sort by timestamp string (ISO sorts correctly as text)
+  msgs.sort((a,b)=> (a.ts||'').localeCompare(b.ts||''));
+
+  if(msgs.length===0){ msgDiv.innerHTML='<span class="empty-msg">No thoughts recorded here.</span>'; return; }
+  msgDiv.innerHTML='';
+  msgs.forEach(m=>{
+    const emoji = EMOJI_BY_PID[m.name]||'';
+    const name  = NAME_BY_PID[m.name]||m.name;
+    let time='';
+    if(m.ts){ const d=new Date(m.ts); if(!isNaN(d)) time=d.toLocaleDateString(undefined,{month:'short',day:'numeric'}); }
+    const el=document.createElement('div');
+    el.className='msg';
+    el.innerHTML=`<span class="msg-name">${emoji} ${name}<span class="msg-time">${time}</span></span><span class="msg-text">${esc(m.text)}</span>`;
+    msgDiv.appendChild(el);
+  });
+}
+
+// Init — show the first read
+buildShelf();
+selectBook(BOOKS[0], document.querySelector('.shelf-book'));
+</script>
+</body>
+</html>

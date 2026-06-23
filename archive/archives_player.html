@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Player History · Bingo Book Club</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;600&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--ink:#2b1d0e;--ink-faded:#5c3d1e;--gold:#8b6914;--gold-lt:#c9a84c;--parch:#f2e8d0;--parch-dark:#e0ceaa;--worn:#c9af82;}
+html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var(--ink);}
+#bg{position:fixed;inset:0;z-index:0;background:#e4d0ac;}
+#bg::after{content:'';position:absolute;inset:0;background:
+  radial-gradient(ellipse 70% 50% at 15% 20%,rgba(180,130,60,0.13) 0%,transparent 55%),
+  radial-gradient(ellipse 60% 70% at 85% 75%,rgba(160,110,40,0.10) 0%,transparent 55%),
+  radial-gradient(ellipse 100% 100% at 50% 50%,transparent 60%,rgba(80,40,5,0.18) 100%);}
+
+/* ── page layout ── */
+.page-wrap{position:relative;z-index:1;margin:0 5rem;padding:2rem 1.5rem 4rem;}
+
+/* ── player header ── */
+.player-header{display:flex;align-items:center;gap:1.4rem;margin-bottom:1.8rem;}
+.img-frame{position:relative;width:90px;height:90px;flex-shrink:0;}
+.img-frame::before{content:'';position:absolute;inset:-4px;border-radius:50%;
+  background:conic-gradient(var(--ring-color, var(--gold-lt)) 0deg,transparent 120deg,var(--ring-color, var(--gold-lt)) 240deg,transparent 360deg);
+  animation:spin 12s linear infinite;z-index:0;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.img-frame img{position:relative;z-index:1;width:100%;height:100%;border-radius:50%;
+  object-fit:cover;}
+.player-title h1{font-family:'Cinzel',serif;font-size:2rem;font-weight:600;color:#3f220a;letter-spacing:2px;line-height:1.1;}
+.player-title .subtitle{font-size:0.9rem;color:var(--ink-faded);font-style:italic;margin-top:0.3rem;}
+
+.gold-divider{border:none;border-top:1px solid var(--gold);opacity:0.35;margin:0 0 2.2rem;}
+
+/* ── book section ── */
+.book-section{margin-bottom:3rem;}
+
+/* ── score ── */
+.pts-display{font-family:'Cinzel',serif;color:#3f220a;margin-bottom:1rem;}
+.pts-display .pts-big{font-size:2.2rem;font-weight:600;color:var(--gold);line-height:1;}
+.pts-display .pts-label{font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;color:var(--ink-faded);}
+.pts-display .pts-breakdown{font-size:0.75rem;color:var(--ink-faded);font-style:italic;margin-top:0.2rem;}
+
+/* ── bingo card ── */
+.bingo-card-wrap{position:relative;width:100%;max-width:460px;
+  aspect-ratio:1024/1536;background-size:100% 100%;background-repeat:no-repeat;
+  border-radius:6px;box-shadow:0 4px 20px rgba(0,0,0,0.3);border:2px solid var(--gold);}
+.bingo-grid{position:absolute;left:50%;top:35.8%;width:73%;aspect-ratio:1/1;
+  transform:translateX(-50%);display:grid;
+  grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(5,1fr);}
+.bingo-cell{display:flex;align-items:center;justify-content:center;padding:2px;}
+.bingo-cell.marked{background:rgba(212,175,55,0.55);}
+.cell-text{width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+  text-align:center;font-family:'IM Fell English',Georgia,serif;
+  font-size:clamp(6px,1.2vw,11px);line-height:1.2;color:#2a1a0a;padding:2px;
+  overflow-wrap:break-word;word-break:break-word;
+  display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;}
+
+/* ── empty states ── */
+.empty-state{text-align:center;padding:3rem 2rem;color:var(--ink-faded);font-style:italic;
+  background:rgba(242,232,208,0.7);border:1px solid var(--worn);border-radius:8px;line-height:1.7;}
+.empty-icon{font-size:2rem;display:block;margin-bottom:0.6rem;}
+
+.error-state{text-align:center;padding:5rem 2rem;color:var(--ink-faded);font-style:italic;}
+</style>
+</head>
+<body>
+<div id="bg"></div>
+<a class="home-btn" href="../index.html">🏠 Home</a>
+
+<div class="page-wrap">
+  <div id="app"></div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// CONFIG
+// ─────────────────────────────────────────────
+const PLAYERS = {
+  elana:  { name:'Elana',  emoji:'🐉', color:'#c9a84c', photo:'../pdp_elana.png',  pid:'elana'  },
+  lena:   { name:'Lena',   emoji:'🌙', color:'#1f3a36', photo:'../pdp_lena.png',   pid:'lena'   },
+  kathi:  { name:'Kathi',  emoji:'🍄', color:'#24152b', photo:'../pdp_kathi.png',  pid:'kathi'  },
+  marine: { name:'Marine', emoji:'🧜‍♀️', color:'#172838', photo:'../pdp_marine.png', pid:'marine' }
+};
+
+const BOOKS = [
+  { title:'Iron Flame', file:'archive_ironflame.json', image:'archive_ironflame.png',
+    year:'2023', collection:'shouty_bingo', pidKey:(pid)=>pid },
+  // { title:'Onyx Storm', file:'bingo_archive_onyx_storm.json', image:'archive_onyx_storm.png',
+  //   year:'2025', collection:'first_bingo', pidKey:(pid)=>pid },
+];
+
+const GRID_SIZE = 25;
+
+// ─────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────
+function esc(s){
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function calcPoints(marked){
+  const m = new Set(marked); m.add(12);
+  let cells=0, lines=0;
+  for(const i of m){ if(i!==12) cells++; }
+  for(let r=0;r<5;r++) if([0,1,2,3,4].every(c=>m.has(r*5+c))) lines++;
+  for(let c=0;c<5;c++) if([0,1,2,3,4].every(r=>m.has(r*5+c))) lines++;
+  if([0,1,2,3,4].every(i=>m.has(i*5+i)))     lines++;
+  if([0,1,2,3,4].every(i=>m.has(i*5+(4-i)))) lines++;
+  return { total:cells+lines*5, cells, lines };
+}
+
+function extractPlayerData(json, collectionName, pidKey){
+  try{
+    const doc = json.collections?.[collectionName]?.[pidKey];
+    if(!doc) return null;
+    const data = doc._data || doc;
+    const cells  = Array.isArray(data.cells)  ? data.cells  : Array(GRID_SIZE).fill('');
+    const marked = Array.isArray(data.marked) ? data.marked : [];
+    return { cells, marked: marked.filter(v=>Number.isInteger(v)&&v>=0&&v<GRID_SIZE) };
+  }catch(e){ return null; }
+}
+
+// Google Books then Open Library fallback
+async function fetchCover(title){
+  try{
+    const r = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(title)}&maxResults=3`);
+    const j = await r.json();
+    for(const item of (j.items||[])){
+      const links = item.volumeInfo?.imageLinks;
+      if(links){
+        const url = links.extraLarge||links.large||links.medium||links.thumbnail||links.smallThumbnail;
+        if(url) return url.replace('http://','https://').replace('&edge=curl','').replace('zoom=1','zoom=3');
+      }
+    }
+  }catch(e){}
+  try{
+    const r = await fetch(`https://openlibrary.org/search.json?title=${encodeURIComponent(title)}&limit=1`);
+    const j = await r.json();
+    const id = j.docs?.[0]?.cover_i;
+    if(id) return `https://covers.openlibrary.org/b/id/${id}-L.jpg`;
+  }catch(e){}
+  return null;
+}
+
+// ─────────────────────────────────────────────
+// RENDER
+// ─────────────────────────────────────────────
+function renderBingoCard(cells, marked, bgImage){
+  const markedSet = new Set(marked);
+  let cellsHtml = '';
+  for(let i=0;i<GRID_SIZE;i++){
+    const isFree = i===12;
+    const cls = 'bingo-cell'+(isFree?' free':markedSet.has(i)?' marked':'');
+    cellsHtml += `<div class="${cls}"><div class="cell-text">${isFree?' ':esc(cells[i])}</div></div>`;
+  }
+  return `<div class="bingo-card-wrap" style="background-image:url('${esc(bgImage)}')">
+    <div class="bingo-grid">${cellsHtml}</div>
+  </div>`;
+}
+
+function renderBookSection(book, playerData, coverUrl){
+  const coverHtml = coverUrl
+    ? `<img class="book-cover" src="${coverUrl}" alt="${esc(book.title)}">`
+    : `<div class="book-cover-placeholder">📖</div>`;
+
+  if(!playerData){
+    return `<div class="book-section">
+      <div class="book-heading">
+        ${coverHtml}
+        <div class="book-heading-text">
+          <h2>${esc(book.title)}</h2>
+          ${book.year?`<div class="book-year">${esc(book.year)}</div>`:''}
+        </div>
+      </div>
+      <div class="empty-state"><span class="empty-icon">📖</span>No bingo card found for this book.</div>
+    </div>`;
+  }
+
+  const { cells, marked } = playerData;
+  const pts = calcPoints(marked);
+  return `<div class="pts-display">
+      <div><span class="pts-big">${pts.total}</span> <span class="pts-label">pts</span></div>
+      <div class="pts-breakdown">${pts.cells} guess${pts.cells!==1?'es':''} + ${pts.lines} line${pts.lines!==1?'s':''}</div>
+    </div>
+    ${renderBingoCard(cells, marked, book.image)}
+  </div>`;
+}
+
+async function init(){
+  const app = document.getElementById('app');
+  const pid = new URLSearchParams(location.search).get('pid')?.toLowerCase();
+  const player = pid ? PLAYERS[pid] : null;
+
+  if(!player){
+    app.innerHTML = `<div class="error-state">Player not found. <a href="../index.html" style="color:var(--gold)">← Go home</a></div>`;
+    return;
+  }
+
+  document.title = `${player.name}'s History · Bingo Book Club`;
+
+  app.innerHTML = `
+    <div class="player-header">
+      <div class="img-frame" style="--ring-color:${player.color}"><img src="${player.photo}" alt="${player.name}"></div>
+      <div class="player-title">
+        <h1 style="color:${player.color}">${player.emoji} ${player.name}</h1>
+        <div class="subtitle">Bingo history across all books</div>
+      </div>
+    </div>
+    <hr class="gold-divider">
+    <div id="books-container"></div>`;
+
+  const container = document.getElementById('books-container');
+  let hasAnyBook = false;
+
+  const sections = await Promise.all(BOOKS.map(async (book)=>{
+    try{
+      const [res, coverUrl] = await Promise.all([
+        fetch(book.file),
+        fetchCover(book.title)
+      ]);
+      if(!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json = await res.json();
+      const data = extractPlayerData(json, book.collection, book.pidKey(player.pid));
+      if(data) hasAnyBook = true;
+      return renderBookSection(book, data, coverUrl);
+    }catch(e){
+      console.warn(`Could not load ${book.file}:`, e);
+      return '';
+    }
+  }));
+
+  if(!hasAnyBook){
+    container.innerHTML = `<div class="empty-state">
+      <span class="empty-icon">✨</span>
+      No books archived yet for ${esc(player.name)}.<br>Check back after finishing a read together!
+    </div>`;
+  } else {
+    container.innerHTML = sections.join('');
+  }
+}
+
+init();
+</script>
+</body>
+</html>

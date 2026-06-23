@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Shouty Book Club — Onyx Storm</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;600&display=swap');
+:root{
+  --ink:#1a1a24;--ink-faded:#3d3d52;
+  --silver:#8a9ab5;--silver-lt:#c2cfe0;--silver-dim:#6b7a91;
+  --parch:#ede8df;--parch-dark:#d9d2c5;--worn:#b0a898;
+  --storm:#2a3040;
+}
+html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var(--ink);display:flex;justify-content:center;align-items:center;}
+#bg{position:fixed;inset:0;z-index:0;background:#ddd8cd;}
+#bg::after{content:'';position:absolute;inset:0;background:
+  radial-gradient(ellipse 70% 50% at 15% 20%,rgba(100,120,160,0.12) 0%,transparent 55%),
+  radial-gradient(ellipse 60% 70% at 85% 75%,rgba(80,100,140,0.09) 0%,transparent 55%),
+  radial-gradient(ellipse 100% 100% at 50% 50%,transparent 60%,rgba(20,25,40,0.2) 100%);}
+
+.wrap {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    display: grid;
+    gap: 3rem;
+    align-items: center;
+    justify-content: center;
+    grid-template-columns:420px 1fr
+}
+
+.map-col{position:sticky;top:3rem;display:flex;flex-direction:column;align-items:center;gap:0.75rem;}
+.map-wrap{position:relative;width:100%;max-width:460px;overflow:hidden;
+  border:2px solid rgba(194,207,224,0.35);box-shadow:0 0 40px rgba(138,154,181,0.25),0 0 80px rgba(138,154,181,0.08);
+  user-select:none;background:#0d0e14;}
+.map-wrap img{display:block;width:100%;height:auto;}
+.map-hint{font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:1px;color:var(--ink-faded);font-style:italic;text-align:center;}
+
+.marker{position:absolute;width:36px;height:36px;display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;transform:translate(-50%,-50%);z-index:10;filter:drop-shadow(0 1px 4px rgba(0,0,0,0.8));
+  transition:left 0.4s ease,top 0.4s ease;pointer-events:none;}
+.marker.draggable{cursor:grab;pointer-events:all;}
+.marker.draggable:active{cursor:grabbing;}
+.map-tooltip{position:absolute;z-index:30;background:rgba(13,14,20,0.95);color:var(--silver-lt);
+  font-family:'Cinzel',serif;font-size:0.72rem;letter-spacing:1px;padding:0.3rem 0.6rem;border-radius:4px;
+  border:1px solid rgba(194,207,224,0.25);pointer-events:none;white-space:nowrap;transform:translate(-50%,-150%);
+  opacity:0;transition:opacity 0.15s;}
+.map-tooltip.show{opacity:1;}
+
+.right-col {
+    max-width: 700px;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+.kicker{font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:5px;color:var(--silver-dim);text-transform:uppercase;margin-bottom:0.35rem;text-align:center;}
+.big-title{font-family:'Cinzel',serif;font-size:3.2rem;font-weight:600;letter-spacing:3px;color:var(--ink);line-height:1.1;text-align:center;}
+
+.ornament{display:flex;align-items:center;gap:0.6rem;margin:0.25rem 0;}
+.orn-line{flex:1;height:1px;background:linear-gradient(to right,transparent,var(--silver-dim),transparent);}
+.orn-gem{color:var(--silver);font-size:0.8rem;}
+
+.intro-text{font-size:1.15rem;line-height:1.85;color:var(--ink-faded);max-width:700px;margin:0 auto;text-align:justify;}
+.intro-text p+p{margin-top:0.9rem;}
+.intro-bold{font-family:'Cinzel',serif;display:block;margin-top:12px;margin-bottom:12px;text-align:center;font-size:1.25rem;letter-spacing:2px;color:var(--ink);}
+
+.player-btns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem 1.5rem;justify-content:center;}
+.player-btn{display:flex;flex-direction:column;align-items:center;gap:0;text-decoration:none;
+  color:var(--ink);font-family:'Cinzel',serif;letter-spacing:1px;transition:transform 0.3s ease;}
+.player-btn:hover{transform:translateY(-5px);}
+.player-img-frame{position:relative;width:120px;height:120px;margin:0 auto;}
+.player-img-frame::before{content:'';position:absolute;inset:-8px;border-radius:50%;
+  background:conic-gradient(from 0deg,transparent 0%,rgba(138,154,181,0.15) 20%,rgba(194,207,224,0.5) 50%,rgba(138,154,181,0.15) 80%,transparent 100%);
+  animation:spin 12s linear infinite;z-index:0;}
+.player-img-frame::after{content:'';position:absolute;inset:-4px;border-radius:50%;background:var(--parch);z-index:1;}
+.player-img-frame .avatar{position:relative;z-index:2;width:100%;height:100%;object-fit:cover;
+  border-radius:50%;border:2px solid rgba(194,207,224,0.3);}
+.player-btn:hover .avatar{border-color:var(--silver-lt);box-shadow:0 0 25px rgba(194,207,224,0.45);}
+.player-btn .pname{display:block;margin-top:14px;font-size:1.1rem;letter-spacing:2px;color:var(--ink);}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+
+.map-placeholder{width:100%;aspect-ratio:3/4;background:linear-gradient(160deg,#0d0e14 0%,#1a1d2a 40%,#0f1118 100%);
+  display:flex;align-items:center;justify-content:center;border-radius:10px;}
+.map-placeholder-inner{text-align:center;color:rgba(194,207,224,0.4);font-family:'Cinzel',serif;font-size:0.8rem;letter-spacing:2px;}
+.map-placeholder-inner .map-icon{font-size:3rem;display:block;margin-bottom:0.75rem;opacity:0.4;}
+
+@media(max-width:860px){
+  .wrap{grid-template-columns:1fr;min-width:unset;padding:1.5rem 1rem;}
+  .map-col{position:static;max-width:460px;width:100%;margin:0 auto;}
+  .big-title{font-size:2.2rem;}
+  .intro-text{font-size:1rem;}
+  .player-btns{grid-template-columns:1fr 1fr 1fr;gap:1rem;}
+  .player-img-frame{width:80px;height:80px;}
+  .player-btn .pname{font-size:0.9rem;margin-top:8px;}
+}
+</style>
+</head>
+<body>
+<div id="bg"></div>
+
+<a href="../index.html" class="home-btn">🏠 Home</a>
+
+<div class="wrap">
+  <aside class="map-col">
+    <div class="map-wrap" id="mapEl">
+      <img src="onyxstorm_map.png" alt="Reading map">
+      <div class="map-tooltip" id="mapTooltip"></div>
+    </div>
+    <div class="map-hint">Drag your marker to update your progress</div>
+  </aside>
+
+  <div class="right-col">
+    <div>
+      <div class="kicker">The Shouty Book Club</div>
+      <div class="big-title">Hey Amelia,</div>
+    </div>
+
+    <div class="intro-text">
+      <p>We're back in the Empyrean, armed with absolutely nothing but unresolved trauma, mounting questions, and a concerning amount of emotional investment in fictional dragons.</p>
+      <div class="intro-bold">Where the hell is Rebecca going to bring us this time ?</div>
+      <p>Because that ending. <em>That</em> ending. We need answers, we need closure, and we will absolutely not get either — but we'll scream about it together in real time.</p>
+      <p>This is your spoiler-gated sanctuary for chaos, cursed commentary, and the deeply unhinged literary discussions we deserve.</p>
+    </div>
+
+    <div class="ornament">
+      <div class="orn-line"></div>
+      <div class="orn-gem">◇</div>
+      <div class="orn-line"></div>
+    </div>
+
+    <div>
+      <div class="kicker" style="margin-bottom:0.85rem;">Choose your reader</div>
+      <div class="player-btns">
+        <a class="player-btn" href="onyxstorm_player.html?p=kathi">
+          <div class="player-img-frame">
+            <img class="avatar" src="../pdp_kathi.png" alt="Kathi">
+          </div>
+          <span class="pname">Kathi</span>
+        </a>
+        <a class="player-btn" href="onyxstorm_player.html?p=lena">
+          <div class="player-img-frame">
+            <img class="avatar" src="../pdp_lena.png" alt="Lena">
+          </div>
+          <span class="pname">Lena</span>
+        </a>
+        <a class="player-btn" href="onyxstorm_player.html?p=marine">
+          <div class="player-img-frame">
+            <img class="avatar" src="../pdp_marine.png" alt="Marine">
+          </div>
+          <span class="pname">Marine</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, setDoc, onSnapshot, collection }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAIQTe-QGQmwqTVmIyJZZ_qlDNsD6GUskY",
+  authDomain: "bingobookclub-2144e.firebaseapp.com",
+  projectId: "bingobookclub-2144e",
+  storageBucket: "bingobookclub-2144e.firebasestorage.app",
+  messagingSenderId: "294177836341",
+  appId: "1:294177836341:web:6d5f11e64737fbe3aad07c"
+};
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+const PLAYERS = {
+  kathi:  { emoji:"🍄",   color:"#9b6fb0" },
+  lena:   { emoji:"🌙",   color:"#9caf88" },
+  marine: { emoji:"🧜‍♀️", color:"#5a9bd4" },
+};
+
+const POS = {
+   0: { x: 9.43, y:29.55 }, // START
+   1: { x:20.62, y:30.34 },  2: { x:29.43, y:30.34 },  3: { x:36.81, y:30.34 },
+   4: { x:45.62, y:30.50 },  5: { x:54.43, y:30.34 },  6: { x:62.76, y:30.34 },
+   7: { x:70.62, y:30.18 },  8: { x:78.95, y:30.50 },  9: { x:87.29, y:30.34 },
+  10: { x:12.76, y:36.39 }, 11: { x:21.10, y:36.71 }, 12: { x:28.95, y:36.71 },
+  13: { x:37.29, y:36.71 }, 14: { x:45.62, y:37.18 }, 15: { x:55.14, y:36.71 },
+  16: { x:62.52, y:36.71 }, 17: { x:71.33, y:36.87 }, 18: { x:78.95, y:37.02 },
+  19: { x:86.81, y:36.87 },
+  20: { x:12.05, y:43.07 }, 21: { x:20.86, y:43.23 }, 22: { x:29.43, y:43.23 },
+  23: { x:36.57, y:42.91 }, 24: { x:45.62, y:43.07 }, 25: { x:53.95, y:43.23 },
+  26: { x:61.57, y:43.23 }, 27: { x:70.62, y:43.55 }, 28: { x:79.19, y:43.07 },
+  29: { x:87.52, y:43.55 },
+  30: { x:11.57, y:49.44 }, 31: { x:20.86, y:49.76 }, 32: { x:28.71, y:49.44 },
+  33: { x:37.52, y:49.91 }, 34: { x:46.33, y:49.76 }, 35: { x:55.14, y:49.60 },
+  36: { x:62.76, y:49.76 }, 37: { x:70.86, y:49.76 }, 38: { x:78.48, y:50.07 },
+  39: { x:86.81, y:49.76 },
+  40: { x:12.29, y:56.12 }, 41: { x:20.38, y:56.92 }, 42: { x:30.14, y:55.96 },
+  43: { x:38.00, y:56.28 }, 44: { x:45.86, y:56.12 }, 45: { x:54.43, y:56.12 },
+  46: { x:62.05, y:56.44 }, 47: { x:70.38, y:56.28 }, 48: { x:79.43, y:56.44 },
+  49: { x:87.52, y:56.28 },
+  50: { x:12.29, y:62.65 }, 51: { x:21.10, y:62.80 }, 52: { x:28.71, y:62.49 },
+  53: { x:37.05, y:62.96 }, 54: { x:46.10, y:62.80 }, 55: { x:54.67, y:62.33 },
+  56: { x:62.76, y:62.80 }, 57: { x:70.38, y:62.49 }, 58: { x:78.71, y:62.80 },
+  59: { x:86.81, y:62.80 },
+  60: { x:28.71, y:69.01 }, 61: { x:37.05, y:69.01 }, 62: { x:45.38, y:69.17 },
+  63: { x:53.95, y:69.33 }, 64: { x:61.57, y:69.49 }, 65: { x:70.38, y:69.33 },
+  66: { x:79.43, y:69.17 }, 67: { x:90.14, y:69.81 }, // END
+};
+const END_POS = 67;
+
+const PLAYER_OFFSET = {
+  kathi:  { x: -2.5, y: -2.5 },
+  lena:   { x:  2.5, y: -2.5 },
+  marine: { x:  0,   y:  2.5 },
+};
+
+const mapEl  = document.getElementById('mapEl');
+const tooltip = document.getElementById('mapTooltip');
+
+function markerFor(pid) {
+  let m = document.getElementById('marker-' + pid);
+  if (!m) {
+    m = document.createElement('div');
+    m.id = 'marker-' + pid;
+    m.className = 'marker';
+    m.textContent = PLAYERS[pid].emoji;
+    mapEl.appendChild(m);
+  }
+  return m;
+}
+
+function placeMarker(pid, ch) {
+  if (!Object.keys(POS).length) return; // no positions yet
+  const m = markerFor(pid);
+  const clamped = Math.min(Math.max(ch, 0), END_POS);
+  const p = POS[clamped] || POS[0];
+  const o = PLAYER_OFFSET[pid] || { x:0, y:0 };
+  m.style.left = (p.x + o.x) + '%';
+  m.style.top  = (p.y + o.y) + '%';
+}
+
+function snapNearest(cx, cy) {
+  const r = mapEl.getBoundingClientRect();
+  const xp = (cx - r.left) / r.width  * 100;
+  const yp = (cy - r.top)  / r.height * 100;
+  let best = 0, bestD = Infinity;
+  for (const [ch, p] of Object.entries(POS)) {
+    const d = Math.hypot(xp - p.x, yp - p.y);
+    if (d < bestD) { bestD = d; best = +ch; }
+  }
+  return best;
+}
+
+let dragging = false, dragPid = null;
+
+function tryStartDrag(cx, cy) {
+  for (const pid of Object.keys(PLAYERS)) {
+    const m = document.getElementById('marker-' + pid);
+    if (!m) continue;
+    const r = m.getBoundingClientRect();
+    if (Math.hypot(cx - (r.left + r.width/2), cy - (r.top + r.height/2)) < 24) {
+      dragging = true; dragPid = pid;
+      m.classList.add('draggable');
+      m.style.transition = 'none';
+      return;
+    }
+  }
+}
+
+mapEl.addEventListener('mousedown', e => tryStartDrag(e.clientX, e.clientY));
+mapEl.addEventListener('touchstart', e => tryStartDrag(e.touches[0].clientX, e.touches[0].clientY), { passive:true });
+
+function onMove(cx, cy) {
+  if (!dragging || !dragPid) return;
+  const r = mapEl.getBoundingClientRect();
+  const xp = Math.min(Math.max((cx - r.left) / r.width  * 100, 2), 98);
+  const yp = Math.min(Math.max((cy - r.top)  / r.height * 100, 2), 98);
+  const m = document.getElementById('marker-' + dragPid);
+  if (m) { m.style.left = xp + '%'; m.style.top = yp + '%'; }
+  if (Object.keys(POS).length) {
+    const ch = snapNearest(cx, cy);
+    tooltip.textContent = ch === 0 ? 'Start' : ch >= END_POS ? 'Finished' : 'Chapter ' + ch;
+    tooltip.style.left = xp + '%';
+    tooltip.style.top  = yp + '%';
+    tooltip.classList.add('show');
+  }
+}
+
+window.addEventListener('mousemove', e => { if (dragging) onMove(e.clientX, e.clientY); });
+window.addEventListener('touchmove', e => { if (dragging) onMove(e.touches[0].clientX, e.touches[0].clientY); }, { passive:true });
+
+async function endDrag(cx, cy) {
+  if (!dragging) return;
+  dragging = false;
+  tooltip.classList.remove('show');
+  const m = document.getElementById('marker-' + dragPid);
+  if (m) { m.style.transition = ''; m.classList.remove('draggable'); }
+  if (Object.keys(POS).length) {
+    const snap = snapNearest(cx, cy);
+    placeMarker(dragPid, snap);
+    try {
+      await setDoc(doc(db, 'onyxstorm_bingo', dragPid), { mapPos: snap, chapterProgress: Math.min(snap, END_POS) }, { merge:true });
+    } catch(e) { console.error(e); }
+  }
+  dragPid = null;
+}
+
+window.addEventListener('mouseup',  e => endDrag(e.clientX, e.clientY));
+window.addEventListener('touchend', e => endDrag(e.changedTouches[0].clientX, e.changedTouches[0].clientY));
+
+// Init markers at start
+Object.keys(PLAYERS).forEach(pid => placeMarker(pid, 0));
+
+// Live sync from Firestore
+onSnapshot(collection(db, 'onyxstorm_bingo'), snap => {
+  snap.forEach(d => {
+    if (!PLAYERS[d.id]) return;
+    if (dragging && dragPid === d.id) return;
+    const data = d.data();
+    const spot = data.mapPos != null ? Number(data.mapPos) : Number(data.chapterProgress || 0);
+    placeMarker(d.id, spot);
+  });
+}, err => console.error(err));
+
+// Position finder helper — call findMapPosition() in the console
+window.findMapPosition = function() {
+  mapEl.style.cursor = "crosshair";
+  console.clear();
+  console.log("Position finder ON. Click the map to print x/y percentages.");
+  mapEl.addEventListener("click", function finderClick(e) {
+    const rect = mapEl.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width  * 100).toFixed(2);
+    const y = ((e.clientY - rect.top)  / rect.height * 100).toFixed(2);
+    console.log(`{ x:${x}, y:${y} }`);
+    const dot = document.createElement("div");
+    dot.style.cssText = `position:absolute;left:${x}%;top:${y}%;width:12px;height:12px;background:red;
+      border:2px solid white;border-radius:50%;transform:translate(-50%,-50%);z-index:99999;pointer-events:none;`;
+    mapEl.appendChild(dot);
+  });
+};
+</script>
+
+</body>
+</html>

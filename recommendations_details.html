@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Bingo Book Club - Book Details</title>
+<link rel="stylesheet" href="style.css">
+<style>
+:root {
+  --base: 20px;
+}
+
+html {
+  font-size: var(--base);
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: 5rem;
+}
+
+/* SCROLL AREA */
+.card-scroll {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 1rem 5rem;
+}
+
+/* CARD */
+.card {
+  background: linear-gradient(170deg,#1a1020 0%,#110d14 50%,#0f0a10 100%);
+  border: 1px solid #c9a84c55;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.card::before,
+.card::after {
+  content: '';
+  position: absolute;
+  width: 1.875rem;
+  height: 1.875rem;
+  border-color: #c9a84c55;
+  border-style: solid;
+  border-width: 0;
+}
+
+.card::before {
+  top: 0.5rem;
+  left: 0.5rem;
+  border-top-width: 1px;
+  border-left-width: 1px;
+}
+
+.card::after {
+  top: 0.5rem;
+  right: 0.5rem;
+  border-top-width: 1px;
+  border-right-width: 1px;
+}
+
+.corner-bl,
+.corner-br {
+  position: absolute;
+  width: 1.875rem;
+  height: 1.875rem;
+  border-color: #c9a84c55;
+  border-style: solid;
+  border-width: 0;
+}
+
+.corner-bl {
+  bottom: 0.5rem;
+  left: 0.5rem;
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+}
+
+.corner-br {
+  bottom: 0.5rem;
+  right: 0.5rem;
+  border-bottom-width: 1px;
+  border-right-width: 1px;
+}
+
+.accent-bar {
+  height: 0.25rem;
+}
+
+.header {
+  padding: 1.125rem 1.25rem 0.75rem;
+  text-align: center;
+}
+
+.crown {
+  font-size: 1.25rem;
+  color: #c9a84c;
+  margin-bottom: 0.25rem;
+  display: block;
+}
+
+.book-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: #f0e6c8;
+  line-height: 1.2;
+  letter-spacing: 0.0625rem;
+}
+
+.author-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.author-line .rule {
+  flex: 1;
+  height: 1px;
+  max-width: 3.125rem;
+}
+
+.author-line .rule.l {
+  background: linear-gradient(to right,transparent,#c9a84c66);
+}
+
+.author-line .rule.r {
+  background: linear-gradient(to left,transparent,#c9a84c66);
+}
+
+.author {
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.15625rem;
+  color: #c9a84c;
+  text-transform: uppercase;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 1.25rem;
+  margin: 0.25rem 0;
+}
+
+.divider .line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right,transparent,#c9a84c33,transparent);
+}
+
+.divider .dot {
+  color: #c9a84c;
+  font-size: 0.5rem;
+}
+
+/* COVER + STATS */
+.mid {
+  display: flex;
+  gap: 0.875rem;
+  padding: 0.75rem 1rem 0.5rem;
+  align-items: flex-start;
+}
+
+.cover {
+  width: 6.875rem;
+  min-width: 6.875rem;
+  height: 10.3125rem;
+  border-radius: 0.375rem;
+  border: 1px solid #c9a84c22;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* STATS */
+.mid-right {
+  flex: 1;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 1px;
+  background: #c9a84c11;
+  border: 1px solid #c9a84c11;
+  border-radius: 0.375rem;
+  overflow: hidden;
+}
+
+.stat-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0.5rem 0.25rem;
+  background: #0f0b12;
+}
+
+.stat-icon {
+  font-size: 0.9375rem;
+  margin-bottom: 0.1875rem;
+}
+
+.stat-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.4375rem;
+  letter-spacing: 0.0625rem;
+  color: #c9a84c88;
+  text-transform: uppercase;
+  margin-bottom: 0.125rem;
+}
+
+.stat-val {
+  font-size: 0.625rem;
+  color: #f0e6c8;
+  line-height: 1.3;
+}
+
+.stat-sub {
+  font-size: 0.5625rem;
+  color: #8a7060;
+  font-style: italic;
+  line-height: 1.3;
+  margin-top: 0.0625rem;
+}
+
+/* IF LIKED */
+.if-liked-full {
+  margin: 0 1rem 0.5rem;
+  padding: 0.375rem 0.625rem;
+  border: 1px solid #c9a84c22;
+  border-radius: 0.3125rem;
+  background: rgba(201,168,76,0.03);
+}
+
+.if-liked-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.4375rem;
+  letter-spacing: 0.0625rem;
+  color: #c9a84c88;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 0.1875rem;
+}
+
+.if-liked-val {
+  font-size: 0.6875rem;
+  color: #c8b89a;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+/* SUMMARY */
+.summary {
+  padding: 0.625rem 1rem;
+}
+
+.summary p {
+  font-size: 0.8125rem;
+  color: #c8b89a;
+  line-height: 1.8;
+  text-align: justify;
+}
+
+/* BARS */
+.bars-section {
+  padding: 0.625rem 1rem;
+  border-bottom: 1px solid #c9a84c22;
+}
+
+.bars-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.5625rem;
+  letter-spacing: 0.125rem;
+  color: #c9a84c;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-bottom: 0.625rem;
+}
+
+.bars-title::before,
+.bars-title::after {
+  content: '✦';
+  font-size: 0.4375rem;
+  opacity: 0.6;
+}
+
+.bar-row {
+  margin-bottom: 0.375rem;
+}
+
+.bar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.1875rem;
+}
+
+.bar-label {
+  font-size: 0.6875rem;
+  color: #a89070;
+}
+
+.bar-val {
+  font-size: 0.5625rem;
+  color: #c9784c;
+  font-weight: 600;
+}
+
+.bar-track {
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(201,168,76,0.1);
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 2px;
+}
+
+/* TROPES */
+.tropes {
+  display: flex;
+  border-top: 1px solid #c9a84c22;
+}
+
+.trope {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0.625rem 0.375rem;
+  border-right: 1px solid #c9a84c22;
+}
+
+.trope:last-child {
+  border-right: none;
+}
+
+.trope-icon {
+  font-size: 1.125rem;
+  margin-bottom: 0.25rem;
+}
+
+.trope-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.4375rem;
+  letter-spacing: 0.0625rem;
+  color: #c9a84c;
+  text-transform: uppercase;
+  margin-bottom: 0.1875rem;
+}
+
+.trope-desc {
+  font-size: 0.59375rem;
+  color: #c8b89a;
+  line-height: 1.4;
+}
+
+/* MOBILE */
+@media (max-width: 480px) {
+  :root {
+    --base: 18px;
+  }
+
+  .mid {
+    gap: 0.65rem;
+  }
+
+  .cover {
+    width: 6.2rem;
+    min-width: 6.2rem;
+    height: 9.3rem;
+  }
+}
+
+/* ── Back Button ── */
+.back-btn {
+  position: fixed;
+  bottom: 1.2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+
+  padding: 0.65rem 1.5rem;
+
+  font-size: 0.65rem;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 6px;
+
+  background: #1a0f1f;
+  border: 1px solid #c9a84c66;
+  color: #f5ecd9;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+  box-shadow: 0 0 12px rgba(201,168,76,0.12);
+
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  background: #24152b;
+  border-color: #c9a84c;
+  box-shadow: 0 0 20px rgba(201,168,76,0.25);
+  transform: translateX(-50%) translateY(-2px);
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-family: 'Cinzel', serif;
+  color: #c9a84c;
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+}
+
+.no-card-msg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: 2rem;
+  text-align: center;
+  font-family: 'Cinzel', serif;
+  color: #c9a84c88;
+  line-height: 1.8;
+}
+
+.construction-icon {
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.construction-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #c9a84c;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.5rem;
+}
+
+.construction-book {
+  font-size: 0.9rem;
+  color: #f0e6c8;
+  font-style: italic;
+  margin-bottom: 1rem;
+}
+
+.construction-text {
+  font-size: 0.75rem;
+  color: #7a6a58;
+  max-width: 380px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+.construction-recommender {
+  margin-top: 1.5rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #c9a84c22;
+  border-radius: 0.5rem;
+  background: rgba(201,168,76,0.03);
+  font-size: 0.7rem;
+  color: #a89070;
+}
+
+.construction-emoji {
+  font-size: 1rem;
+  margin-right: 0.3rem;
+}
+  
+</style>
+</head>
+<body>
+
+<div id="loading" class="loading">Loading book details...</div>
+
+<div id="app" style="display:none;">
+  <div class="card-scroll" id="content"></div>
+</div>
+
+<a class="back-btn" href="recommendations.html">← Back to Books</a>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, getDocs }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAIQTe-QGQmwqTVmIyJZZ_qlDNsD6GUskY",
+  authDomain: "bingobookclub-2144e.firebaseapp.com",
+  projectId: "bingobookclub-2144e",
+  storageBucket: "bingobookclub-2144e.firebasestorage.app",
+  messagingSenderId: "294177836341",
+  appId: "1:294177836341:web:6d5f11e64737fbe3aad07c"
+};
+
+// Card data for books with detailed information
+const BOOK_CARDS = {
+  'one-dark-window': {
+    crown: '🕯️',
+    accent: 'linear-gradient(to right,#1a4a3a,#2d7a5a,#1a4a3a)',
+    genre: 'Gothic dark fantasy',
+    pages: '~430 pages',
+    audio: '~13h audio',
+    series: 'Duology',
+    seriesSub: 'Finished',
+    spice: '🌶️',
+    spiceLabel: 'Low',
+    spiceSub: 'No explicit content',
+    ifLiked: 'Uprooted · For the Wolf · The Ten Thousand Doors of January',
+    summary: 'Elspeth Spindle has a secret — she shares her mind with an ancient, mercurial demon she calls the Nightmare. In the kingdom of Blunder, magic is punishable by death, and Elspeth has spent her whole life hiding. But when a mysterious captain pulls her into a dangerous quest to reunite a scattered deck of magical Providence Cards — the only hope of lifting a killer mist that plagues the land — she has no choice but to follow. The deeper she goes, the harder it becomes to tell where she ends and the Nightmare begins.',
+    vibes: [
+      { label: 'Political intrigue', val: 'med-high', width: 60 },
+      { label: 'Plot twists', val: 'high', width: 78 },
+      { label: 'Character', val: 'high', width: 78 },
+      { label: 'Magic', val: 'very high', width: 92 }
+    ],
+    tropes: [
+      { icon: '🃏', label: 'Magic system', desc: 'Unique card-based magic' },
+      { icon: '🖤', label: 'Slow burn', desc: 'Romance with a monster in her head' },
+      { icon: '🌫️', label: 'Atmosphere', desc: 'Gothic, eerie and haunting' }
+    ]
+  },
+  'the-shadows-between-us': {
+    crown: '🗡️',
+    accent: 'linear-gradient(to right,#6b1515,#c9784c,#6b1515)',
+    genre: 'Dark fantasy romance',
+    pages: '336 pages',
+    audio: '~10h audio',
+    series: 'Standalone',
+    seriesSub: '+ optional companion',
+    spice: '🌶️🌶️',
+    spiceLabel: 'Medium',
+    spiceSub: 'Some explicit scenes',
+    ifLiked: 'The Cruel Prince · Caraval · Fourth Wing',
+    summary: 'Alessandra has a plan: seduce the newly crowned Shadow King, marry him, then kill him and take his throne. She has done it before — no one has ever found the body. But the king is nothing like she expected. He can command shadows and read the whispers of his enemies. And as assassination attempts mount from other quarters, Alessandra finds herself in the impossible position of keeping him alive long enough to be her victim — all while trying not to lose her heart.',
+    vibes: [
+      { label: 'Political intrigue', val: 'high', width: 80 },
+      { label: 'Plot twists', val: 'high', width: 78 },
+      { label: 'Character', val: 'very high', width: 92 },
+      { label: 'Magic', val: 'medium', width: 50 }
+    ],
+    tropes: [
+      { icon: '😈', label: 'Villain heroine', desc: 'Morally grey with a murder plan' },
+      { icon: '👑', label: 'Court intrigue', desc: 'Schemes and power plays' },
+      { icon: '🔥', label: 'Enemies to lovers', desc: 'Unhinged slow burn tension' }
+    ]
+  },
+  'daughter-of-no-worlds': {
+    crown: '⚔️',
+    accent: 'linear-gradient(to right,#3a1a5a,#8a4ab0,#3a1a5a)',
+    genre: 'Epic high fantasy',
+    pages: '~450 pages',
+    audio: '~15h30 audio',
+    series: 'Trilogy',
+    seriesSub: 'Finished',
+    spice: '🌶️🌶️',
+    spiceLabel: 'Medium',
+    spiceSub: 'Open door scenes',
+    ifLiked: 'Fourth Wing · The Serpent & the Wings of Night · An Ember in the Ashes',
+    summary: 'Tisaanah was ripped from her homeland as a child and has survived on nothing but wit and a touch of forbidden magic. When she finally buys her freedom, she loses it again almost immediately — this time, to the Orders, the world\'s most powerful magic wielders. To join their ranks and save the friend she left behind, she must apprentice under Maxantarius Farlione, a reclusive fire wielder with a brutal past and a deep distrust of everything the Orders stand for. Looming war, dark magic, and feelings neither of them can afford.',
+    vibes: [
+      { label: 'Political intrigue', val: 'high', width: 75 },
+      { label: 'Plot twists', val: 'high', width: 80 },
+      { label: 'Character', val: 'very high', width: 90 },
+      { label: 'Magic', val: 'very high', width: 92 }
+    ],
+    tropes: [
+      { icon: '🤝', label: 'Slow burn', desc: 'Mentor-student to lovers' },
+      { icon: '👥', label: 'Found family', desc: 'Will absolutely wreck you' },
+      { icon: '🎭', label: 'Morally grey', desc: 'Real, lasting consequences' }
+    ]
+  },
+  'the-winners-curse': {
+    crown: '♟️',
+    accent: 'linear-gradient(to right,#5a1a1a,#c94c4c,#5a1a1a)',
+    genre: 'YA political fantasy',
+    pages: '~355 pages',
+    audio: '~9h30 audio',
+    series: 'Trilogy',
+    seriesSub: 'Finished',
+    spice: '🌶️',
+    spiceLabel: 'Low',
+    spiceSub: 'No explicit content',
+    ifLiked: 'An Ember in the Ashes · Graceling · The Bridge Kingdom',
+    summary: 'Kestrel is a general\'s daughter in an empire built on conquest and slavery. When she buys a slave named Arin on a reckless impulse, she has no idea what she\'s set in motion. He is not what he seems. She is not as safe as she thinks. Their growing feelings for each other are a liability neither can afford — and a secret that could unravel everything. A story of strategy, rebellion and forbidden love where every move has a price, and loyalty to your heart may cost you everything else.',
+    vibes: [
+      { label: 'Political intrigue', val: 'very high', width: 95 },
+      { label: 'Plot twists', val: 'high', width: 80 },
+      { label: 'Character', val: 'very high', width: 90 },
+      { label: 'Magic', val: 'none', width: 5 }
+    ],
+    tropes: [
+      { icon: '🌹', label: 'Forbidden love', desc: 'Built on secrets and loyalty' },
+      { icon: '♟️', label: 'Power plays', desc: 'Political chess at its finest' },
+      { icon: '💔', label: 'Betrayal', desc: 'Twists that will break you' }
+    ]
+  },
+  'the-bridge-kingdom': {
+    crown: '🗝️',
+    accent: 'linear-gradient(to right,#1a3a5a,#4a8ab0,#1a3a5a)',
+    genre: 'Fantasy romance',
+    pages: '~400 pages',
+    audio: '~12h audio',
+    series: 'Duology',
+    seriesSub: 'Finished',
+    spice: '🌶️🌶️',
+    spiceLabel: 'Medium',
+    spiceSub: 'Some explicit scenes',
+    ifLiked: 'Fourth Wing · The Winner\'s Curse · An Ember in the Ashes',
+    summary: 'Lara has one thought as she walks down the aisle on her wedding day: I will bring your kingdom to its knees. Trained from childhood to be a lethal spy, she is sent to infiltrate the Bridge Kingdom — the most strategically powerful place in the world — as its new queen. Her husband Aren is the enemy. Her mission is to destroy him. But the kingdom is not what she was told, and neither is the man she married. And the secrets she uncovers may change everything she thought she knew about loyalty, truth and love.',
+    vibes: [
+      { label: 'Political intrigue', val: 'very high', width: 92 },
+      { label: 'Plot twists', val: 'very high', width: 90 },
+      { label: 'Character', val: 'high', width: 80 },
+      { label: 'Magic', val: 'low', width: 20 }
+    ],
+    tropes: [
+      { icon: '🕵️', label: 'Spies & secrets', desc: 'Both sent to destroy each other' },
+      { icon: '💞', label: 'Enemies to lovers', desc: 'So slow it physically hurts' },
+      { icon: '⚡', label: 'Betrayal', desc: 'Throw-the-book twists' }
+    ]
+  },
+  'a-touch-of-darkness': {
+    crown: '🌙',
+    accent: 'linear-gradient(to right,#2a1a4a,#7a4aa0,#2a1a4a)',
+    genre: 'Mythology romantasy',
+    pages: '~350 pages',
+    audio: '~11h audio',
+    series: '4 + 3 Hades POV',
+    seriesSub: 'All finished',
+    spice: '🌶️🌶️🌶️',
+    spiceLabel: 'High',
+    spiceSub: 'Explicit content',
+    ifLiked: 'ACOTAR · Neon Gods · From Blood and Ash',
+    summary: 'Persephone is the Goddess of Spring in title only — flowers shrivel at her touch. Living undercover as a mortal journalist in New Athens, she makes a reckless bet at a nightclub with Hades, God of the Dead. The terms are impossible: grow something living in the Underworld or lose her freedom forever. But as she descends into his world, she begins to wonder if the real danger isn\'t the bet — it\'s the god himself, and the feelings neither of them can afford to have.',
+    vibes: [
+      { label: 'Political intrigue', val: 'medium', width: 45 },
+      { label: 'Plot twists', val: 'medium', width: 50 },
+      { label: 'Character', val: 'high', width: 78 },
+      { label: 'Magic', val: 'high', width: 80 }
+    ],
+    tropes: [
+      { icon: '🌑', label: 'Villain romance', desc: 'Hades is everything' },
+      { icon: '🌸', label: 'Forbidden love', desc: 'A bet with a god' },
+      { icon: '🔮', label: 'Mythology', desc: 'Greek gods, modern world' }
+    ]
+  },
+'throne-of-glass': {
+    crown: '👑',
+    accent: 'linear-gradient(to right,#1a1410,#9a7b3a,#1a1410)',
+    genre: 'High fantasy romantasy',
+    pages: '~400 pages',
+    audio: '~13h audio',
+    series: '7 + Assassin\'s Blade prequel',
+    seriesSub: 'All finished',
+    spice: '🌶️🌶️',
+    spiceLabel: 'Medium',
+    spiceSub: 'Builds across the series',
+    ifLiked: 'ACOTAR · Fourth Wing · An Ember in the Ashes',
+    summary: 'Celaena Sardothien is the most feared assassin in the land — and she\'s been rotting in a death-camp salt mine for a year. When the Crown Prince offers her a deal, she takes it: compete against the kingdom\'s deadliest killers and thieves, and if she wins, she\'ll earn her freedom as the King\'s Champion. But as competitors start turning up brutally murdered and an ancient evil stirs beneath the glass castle, Celaena realizes the contest is the least of her worries. Something is hunting the champions one by one — and her own buried past may be the key to stopping it.',
+    vibes: [
+      { label: 'Political intrigue', val: 'high', width: 75 },
+      { label: 'Plot twists', val: 'high', width: 80 },
+      { label: 'Character', val: 'high', width: 90 },
+      { label: 'Magic', val: 'medium', width: 55 }
+    ],
+    tropes: [
+      { icon: '🗡️', label: 'Assassin heroine', desc: 'Deadly and unapologetic' },
+      { icon: '👑', label: 'Court intrigue', desc: 'A glass castle full of secrets' },
+      { icon: '💕', label: 'Love triangle', desc: 'Prince vs. Captain of the Guard' }
+    ]
+  },
+'the-traitor-queen': {
+    crown: '🌉',
+    accent: 'linear-gradient(to right,#0d1f2a,#3a7a8a,#0d1f2a)',
+    genre: 'Fantasy romance',
+    pages: '~370 pages',
+    audio: '~11h audio',
+    series: '5 (Bridge Kingdom)',
+    seriesSub: 'All finished',
+    spice: '🌶️🌶️🌶️',
+    spiceLabel: 'High',
+    spiceSub: 'Explicit, slow-burn angst',
+    ifLiked: 'From Blood and Ash · A Fate Inked in Blood · ACOTAR',
+    summary: 'Lara has watched Ithicana fall to her own father — the betrayal she set in motion. Now her husband Aren, king of the Bridge Kingdom, has been captured in battle, and her father is keeping him alive for one reason: as bait for his traitorous daughter. Lara takes it. Risking everything on the Tempest Seas, she returns to free Aren and liberate Ithicana using her father\'s own weapons — the sisters whose lives she spared. But the palace is inescapable, allies and enemies keep switching sides, and her greatest adversary may be the husband she betrayed, who can no longer tell her truth from her lies.',
+    vibes: [
+      { label: 'Political intrigue', val: 'high', width: 80 },
+      { label: 'Plot twists', val: 'high', width: 78 },
+      { label: 'Character', val: 'high', width: 82 },
+      { label: 'Magic', val: 'low', width: 20 }
+    ],
+    tropes: [
+      { icon: '💔', label: 'Second-chance romance', desc: 'Winning back the one she betrayed' },
+      { icon: '👑', label: 'Enemies-to-lovers', desc: 'Married across enemy kingdoms' },
+      { icon: '🗡️', label: 'Rescue mission', desc: 'A queen storms her own prison' }
+    ]
+  },
+'tress-of-the-emerald-sea': {
+    crown: '🍵',
+    accent: 'linear-gradient(to right,#0d3a2a,#2e8b57,#0d3a2a)',
+    genre: 'Cozy fantasy adventure',
+    pages: '~430 pages',
+    audio: '~12.5h audio',
+    series: 'Standalone (Cosmere)',
+    seriesSub: 'No prior reading needed',
+    spice: '🌶️',
+    spiceLabel: 'None',
+    spiceSub: 'Sweet, fade-to-nothing romance',
+    ifLiked: 'The Princess Bride · Stardust · Howl\'s Moving Castle',
+    summary: 'Tress has spent her whole life on a single island in the middle of the Emerald Sea — an ocean not of water but of green spores that grow explosively at a single drop of water. Her days are simple: chores, collecting cups from passing sailors, and the company of her friend Charlie, the duke\'s son. But when Charlie is shipped off to find a bride and instead ends up captured by the dreaded Sorceress of the Midnight Sea, Tress does the thing no one in a fairy tale expects of the girl: she goes after him herself. Stowing away on a smuggler\'s ship and falling in with a crew of pirates, she sails toward the deadliest sea in the world, discovering courage, cunning, and a knack for the impossible along the way.',
+    vibes: [
+      { label: 'Political intrigue', val: 'low', width: 25 },
+      { label: 'Plot twists', val: 'medium', width: 55 },
+      { label: 'Character', val: 'high', width: 88 },
+      { label: 'Magic', val: 'high', width: 75 }
+    ],
+    tropes: [
+      { icon: '🦋', label: 'Reluctant hero', desc: 'An ordinary girl on a quest' },
+      { icon: '🏴‍☠️', label: 'Found family', desc: 'A ragtag pirate crew' },
+      { icon: '🐀', label: 'Whimsical narrator', desc: 'Told by Hoid, à la Princess Bride' }
+    ]
+  },
+  'the-gilded-wolves': {
+    crown: '🐺',
+    accent: 'linear-gradient(to right,#1a1206,#b8860b,#1a1206)',
+    genre: 'Historical fantasy heist',
+    pages: '~400 pages',
+    audio: '~12h audio',
+    series: '3 (Gilded Wolves)',
+    seriesSub: 'All finished',
+    spice: '🌶️',
+    spiceLabel: 'Low',
+    spiceSub: 'Slow-burn, mostly off-page',
+    ifLiked: 'Six of Crows · Caraval · Strange the Dreamer',
+    summary: 'Paris, 1889. The Exposition Universelle has lit up the city and dredged up ancient secrets, and no one tracks those secrets better than treasure-hunter and hotelier Séverin Montagnet-Alarie. When the all-powerful Order of Babel offers him the one thing he\'s always wanted — his stolen inheritance — in exchange for retrieving a dangerous artifact, Séverin assembles a crew of brilliant outcasts: an engineer who owes a debt, a historian who can\'t go home, a dancer hiding a sinister secret, and a brother in all but blood. Together they\'ll have to outwit a glittering, ruthless society in a heist that could remake their lives — or break the world.',
+    vibes: [
+      { label: 'Political intrigue', val: 'high', width: 78 },
+      { label: 'Plot twists', val: 'high', width: 85 },
+      { label: 'Character', val: 'high', width: 88 },
+      { label: 'Magic', val: 'medium', width: 60 }
+    ],
+    tropes: [
+      { icon: '💎', label: 'Heist crew', desc: 'Six outcasts, one impossible job' },
+      { icon: '🏛️', label: 'Found family', desc: 'A brother in all but blood' },
+      { icon: '🗝️', label: 'Puzzles & secrets', desc: 'Riddles, magic, and forging' }
+    ]
+  },
+  'ariadne': {
+    crown: '🪡',
+    accent: 'linear-gradient(to right,#1a2a3a,#4a90b8,#1a2a3a)',
+    genre: 'Mythology retelling',
+    pages: '~320 pages',
+    audio: '~11h audio',
+    series: 'Standalone',
+    seriesSub: 'No prior reading needed',
+    spice: '🌶️',
+    spiceLabel: 'Low',
+    spiceSub: 'Closed-door; heavy themes',
+    ifLiked: 'Circe · A Thousand Ships · The Silence of the Girls',
+    summary: 'Ariadne, Princess of Crete, grows up dancing at dawn while the hoofbeats of her brother — the Minotaur, a monster fed on human sacrifice — echo beneath her golden palace. When Theseus, Prince of Athens, arrives to slay the beast, Ariadne sees not a threat but a way out, and she betrays her family and defies the gods to help him through the labyrinth. But heroes write their own endings, and women like Ariadne are too often left out of them. Spanning her story and that of her younger sister Phaedra, this is a lyrical reckoning with the cost of loving heroes and gods — and with the forgotten women left in their wake.',
+    vibes: [
+      { label: 'Political intrigue', val: 'medium', width: 45 },
+      { label: 'Plot twists', val: 'low', width: 30 },
+      { label: 'Character', val: 'high', width: 90 },
+      { label: 'Magic', val: 'medium', width: 50 }
+    ],
+    tropes: [
+      { icon: '🐂', label: 'Myth retelling', desc: 'Theseus & the Minotaur, her way' },
+      { icon: '👭', label: 'Sisterhood', desc: 'Ariadne and Phaedra\'s bond' },
+      { icon: '🍇', label: 'Mortal meets god', desc: 'A union with Dionysus' }
+    ]
+  }
+  //add a comma above and paste here
+};
+
+function slugify(str) {
+  return str.toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .trim();
+}
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const booksCol = collection(db, "books");
+
+// Get URL parameters
+const params = new URLSearchParams(window.location.search);
+const targetBookId = params.get('id');
+
+async function loadBook() {
+  const snapshot = await getDocs(booksCol);
+  let book = null;
+  
+  snapshot.forEach(doc => {
+    if (doc.id === targetBookId) {
+      book = { id: doc.id, ...doc.data() };
+    }
+  });
+  
+  if (!book) {
+    document.getElementById('content').innerHTML = '<div class="no-card-msg">Book not found!</div>';
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    return;
+  }
+  
+  const slug = slugify(book.title);
+  const cardData = BOOK_CARDS[slug];
+  
+  if (!cardData) {
+    document.getElementById('content').innerHTML = `
+      <div class="no-card-msg">
+        <div class="construction-icon">🏗️</div>
+        <div class="construction-title">Card Under Construction</div>
+        <div class="construction-book">${book.title}</div>
+        <div class="construction-text">
+          The detailed information card for this book is being crafted with care. 
+          In the meantime, you can still vote for it on the main page!
+        </div>
+        <div class="construction-recommender">
+          <span class="construction-emoji">${book.recommenderEmoji}</span>
+          Recommended by ${book.recommender}
+        </div>
+      </div>
+    `;
+  } else {
+    const { crown, accent, genre, pages, audio, series, seriesSub, spice, spiceLabel, spiceSub, 
+            ifLiked, summary, vibes, tropes } = cardData;
+    
+    document.getElementById('content').innerHTML = `
+      <div class="card">
+        <div class="corner-bl"></div><div class="corner-br"></div>
+        <div class="accent-bar" style="background:${accent};"></div>
+        <div class="header">
+          <span class="crown">${crown}</span>
+          <div class="book-title">${book.title}</div>
+          <div class="author-line">
+            <div class="rule l"></div>
+            <span style="color:#c9a84c;font-size:0.625rem;">✦</span>
+            <span class="author">${book.author || 'Unknown Author'}</span>
+            <span style="color:#c9a84c;font-size:0.625rem;">✦</span>
+            <div class="rule r"></div>
+          </div>
+        </div>
+        <div class="mid">
+          <div class="cover">
+             ${book.cover ? `<img src="${book.cover}" alt="cover" onerror="this.outerHTML='📖'">` : '📖'}
+          </div>
+          <div class="mid-right">
+            <div class="stats-grid">
+              <div class="stat-row"><span class="stat-icon">🌑</span><span class="stat-label">Genre</span><span class="stat-val">${genre}</span></div>
+              <div class="stat-row"><span class="stat-icon">⏱️</span><span class="stat-label">Length</span><span class="stat-val">${pages}</span><span class="stat-sub">${audio}</span></div>
+              <div class="stat-row"><span class="stat-icon">📖</span><span class="stat-label">Series</span><span class="stat-val">${series}</span><span class="stat-sub">${seriesSub}</span></div>
+              <div class="stat-row"><span class="stat-icon">${spice}</span><span class="stat-label">Spice</span><span class="stat-val">${spiceLabel}</span><span class="stat-sub">${spiceSub}</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="if-liked-full">
+          <span class="if-liked-label">Perfect if you liked</span>
+          <span class="if-liked-val">${ifLiked}</span>
+        </div>
+        <div class="divider"><div class="line"></div><div class="dot">◆</div><div class="line"></div></div>
+        <div class="summary"><p>${summary}</p></div>
+        <div class="divider"><div class="line"></div><div class="dot">◆</div><div class="line"></div></div>
+        <div class="bars-section">
+          <div class="bars-title">Vibes</div>
+          ${vibes.map(v => `<div class="bar-row">
+            <div class="bar-header"><span class="bar-label">${v.label}</span><span class="bar-val">${v.val}</span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:${v.width}%;background:${accent};"></div></div>
+          </div>`).join('')}
+        </div>
+        <div class="tropes">
+          ${tropes.map(t => `<div class="trope">
+            <span class="trope-icon">${t.icon}</span>
+            <span class="trope-label">${t.label}</span>
+            <span class="trope-desc">${t.desc}</span>
+          </div>`).join('')}
+        </div>
+      </div>
+    `;
+  }
+  
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+}
+
+loadBook();
+</script>
+</body>
+</html>

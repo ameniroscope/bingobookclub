@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catch Up Before You Storm In</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;600&display=swap');
+:root{
+  --ink:#1a1a24;--ink-faded:#3d3d52;
+  --silver:#8a9ab5;--silver-lt:#c2cfe0;--silver-dim:#6b7a91;
+  --parch:#ede8df;--parch-dark:#d9d2c5;--worn:#b0a898;
+}
+html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var(--ink);}
+#bg{position:fixed;inset:0;z-index:0;background:#ddd8cd;}
+#bg::after{content:'';position:absolute;inset:0;background:
+  radial-gradient(ellipse 70% 50% at 15% 20%,rgba(100,120,160,0.12) 0%,transparent 55%),
+  radial-gradient(ellipse 60% 70% at 85% 75%,rgba(80,100,140,0.09) 0%,transparent 55%),
+  radial-gradient(ellipse 100% 100% at 50% 50%,transparent 60%,rgba(20,25,40,0.2) 100%);}
+
+.page{position:relative;z-index:1;max-width:1600px;margin:0 auto;padding:5rem 3rem 5rem;}
+
+/* ── SHARED ── */
+.ornament{display:flex;align-items:center;gap:0.6rem;margin:1.2rem auto;max-width:500px;}
+.orn-line{flex:1;height:1px;background:linear-gradient(to right,transparent,var(--silver-dim),transparent);}
+.orn-gem{color:var(--silver);font-size:0.8rem;}
+.section-label{font-family:'Cinzel',serif;font-size:1rem;letter-spacing:5px;color:#6b7a91;text-transform:uppercase;text-align:center;margin-bottom:2rem;}
+.section-label span{margin:0 0.75rem;}
+
+/* ── HERO ── */
+.hero{text-align:center;margin-bottom:4.5rem;}
+.big-title{font-family:'Cinzel',serif;font-size:3rem;font-weight:600;letter-spacing:3px;color:var(--ink);line-height:1.15;margin:0.4rem 0;}
+.kicker{font-family:'Cinzel',serif;font-size:0.72rem;letter-spacing:5px;color:var(--silver-dim);text-transform:uppercase;}
+.hero-text{font-size:1.1rem;line-height:1.9;color:var(--ink-faded);max-width:600px;margin:0 auto;}
+
+/* ── VIDEOS ── */
+.videos-section{margin-bottom:5rem;}
+.video-grid{display:grid;gap:1.5rem;}
+.video-card{background:rgba(20,25,40,0.06);border:1px solid rgba(138,154,181,0.25);border-radius:10px;overflow:hidden;}
+.video-embed{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;}
+.video-embed iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0;}
+.video-label{padding:0.6rem 1rem 0.75rem;font-family:'Cinzel',serif;font-size:0.72rem;letter-spacing:2px;color:var(--ink-faded);text-align:center;}
+
+/* ── PLOT TIMELINE ── */
+.plot-section{margin-bottom:5rem;}
+.recap-layout{display:grid;grid-template-columns:1.15fr 1fr;gap:2rem;align-items:start;}
+.plot-books{display:flex;flex-direction:column;gap:1.5rem;}
+.plot-book{background:rgba(20,25,40,0.05);border:1px solid rgba(138,154,181,0.2);border-radius:12px;overflow:hidden;}
+.plot-book-header{font-family:'Cinzel',serif;font-size:0.9rem;letter-spacing:3px;color:var(--ink);padding:1.1rem 1.4rem;border-bottom:1px solid rgba(138,154,181,0.15);display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;}
+.plot-book-header:hover{background:rgba(138,154,181,0.08);}
+.plot-toggle{font-size:0.7rem;color:var(--silver);letter-spacing:1px;font-family:'Cinzel',serif;}
+.plot-body{padding:1.2rem 1.4rem;display:none;}
+.plot-body.open{display:block;}
+.plot-event{display:flex;gap:0.9rem;margin-bottom:1rem;align-items:flex-start;}
+.plot-event:last-child{margin-bottom:0;}
+.plot-dot{width:7px;height:7px;border-radius:50%;background:var(--silver-dim);flex-shrink:0;margin-top:0.45rem;}
+.plot-text{font-size:0.87rem;line-height:1.65;color:var(--ink-faded);}
+.plot-text strong{color:var(--ink);font-style:normal;font-weight:600;}
+.recap-map{position:sticky;top:2rem;}
+.recap-map img{width:100%;height:auto;display:block;border-radius:10px;border:1px solid rgba(138,154,181,0.3);cursor:zoom-in;transition:opacity 0.2s;}
+.recap-map img:hover{opacity:0.88;}
+.lore-places-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;}
+@media(max-width:900px){.recap-layout{grid-template-columns:1fr;}.recap-map{position:static;}.lore-places-grid{grid-template-columns:1fr;}}
+
+/* ── CORKBOARD ── */
+.chars-section{margin-bottom:5rem;}
+.corkboard{
+  background-color:#b5813a;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='4' height='4' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E"),
+    repeating-linear-gradient(92deg, transparent, transparent 2px, rgba(90,50,10,0.04) 2px, rgba(90,50,10,0.04) 4px),
+    repeating-linear-gradient(2deg, transparent, transparent 3px, rgba(180,130,60,0.06) 3px, rgba(180,130,60,0.06) 5px),
+    radial-gradient(ellipse at 20% 30%, rgba(190,140,70,0.25) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 70%, rgba(140,90,20,0.2) 0%, transparent 55%);
+  border-radius:0;
+  padding:2rem 1.5rem;
+  border:8px solid #6b4418;
+  border-top-color:#7a5220;
+  border-left-color:#7a5220;
+  border-bottom-color:#4a2e0e;
+  border-right-color:#4a2e0e;
+  box-shadow:
+    inset 0 2px 6px rgba(0,0,0,0.35),
+    inset 0 -2px 4px rgba(255,200,100,0.08),
+    inset 2px 0 4px rgba(0,0,0,0.15),
+    0 6px 24px rgba(0,0,0,0.3);
+  box-sizing:border-box;width:100%;
+}
+.cork-row{display:flex;flex-direction:row;gap:10px;width:100%;}
+.cork-row+.cork-row{margin-top:10px;}
+.cc{flex:1;min-width:0;}
+.char-card{background:#faf6ed;border-radius:0;overflow:hidden;box-shadow:2px 3px 10px rgba(0,0,0,0.35);display:block;width:100%;
+  border-left:6px solid #faf6ed;border-right:6px solid #faf6ed;border-top:24px solid #faf6ed;}
+.pin{display:block;width:16px;height:16px;border-radius:50%;margin:0 auto -20px;position:relative;z-index:1;box-shadow:0 2px 4px rgba(0,0,0,0.4);}
+.char-art{width:100%;overflow:hidden;display:block;}
+.char-art img{width:100%;height:auto;display:block;object-fit:cover;}
+.char-info{padding:0.6rem 0.75rem 0.75rem;}
+.char-name{font-family:'Cinzel',serif;font-size:0.82rem;letter-spacing:1px;color:#2a1f0e;text-align:center;margin-bottom:10px;}
+.char-role{font-size:0.68rem;color:#7a6040;font-family:'Cinzel',serif;letter-spacing:0.5px;margin:0.1rem 0 0.35rem;}
+.char-desc{font-size:0.76rem;line-height:1.5;color:#4a3820;}
+.char-signet{display:block;margin-top:0.4rem;font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:1px;color:#7a6040;border-top:1px solid rgba(122,96,64,0.3);padding-top:0.35rem;}
+
+/* ── LORE ── */
+.place-card{background:rgba(20,25,40,0.05);border:1px solid rgba(138,154,181,0.2);border-radius:8px;padding:0.9rem 1.1rem;}
+.place-card .place-name{font-family:'Cinzel',serif;font-size:0.85rem;letter-spacing:2px;color:var(--ink);margin-bottom:0.3rem;}
+.place-card .place-desc{font-size:0.9rem;line-height:1.65;color:var(--ink-faded);}
+.lore-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;}
+.lore-card{background:rgba(20,25,40,0.05);border:1px solid rgba(138,154,181,0.2);border-radius:10px;padding:1.2rem 1.3rem;}
+.lore-card-title{font-family:'Cinzel',serif;font-size:0.85rem;letter-spacing:2px;color:var(--ink);margin-bottom:0.6rem;}
+.lore-card-body{font-size:0.9rem;line-height:1.7;color:var(--ink-faded);}
+
+/* ── SOURCES ── */
+.source-card{text-decoration:none;flex:1;min-width:220px;max-width:320px;
+  background:rgba(20,25,40,0.05);border:1px solid rgba(138,154,181,0.25);border-radius:10px;
+  padding:1.25rem 1.5rem;display:flex;flex-direction:column;gap:0.4rem;
+  transition:transform 0.25s,box-shadow 0.25s,border-color 0.25s;}
+.source-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(138,154,181,0.2);border-color:var(--silver-lt);}
+.source-eyebrow{font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:3px;color:var(--silver-dim);text-transform:uppercase;}
+.source-title{font-family:'Cinzel',serif;font-size:1rem;color:var(--ink);letter-spacing:1px;}
+.source-desc{font-size:0.85rem;font-style:italic;color:var(--ink-faded);line-height:1.6;}
+.source-arrow{margin-top:0.5rem;font-family:'Cinzel',serif;font-size:0.7rem;color:var(--silver);letter-spacing:2px;}
+
+/* ── ARCHIVE ── */
+.archive-section{text-align:center;}
+.archive-card{display:inline-flex;flex-direction:column;align-items:center;gap:0.85rem;
+  background:rgba(20,25,40,0.07);border:1px solid rgba(138,154,181,0.3);border-radius:12px;
+  padding:2.5rem 4rem;text-decoration:none;color:var(--ink);
+  transition:transform 0.3s,box-shadow 0.3s,border-color 0.3s;}
+.archive-card:hover{transform:translateY(-5px);box-shadow:0 10px 40px rgba(138,154,181,0.25);border-color:var(--silver-lt);}
+.arc-eyebrow{font-family:'Cinzel',serif;font-size:0.68rem;letter-spacing:4px;color:var(--silver-dim);text-transform:uppercase;}
+.arc-title{font-family:'Cinzel',serif;font-size:1.6rem;font-weight:600;color:var(--ink);letter-spacing:2px;}
+.arc-sub{font-size:0.95rem;color:var(--ink-faded);font-style:italic;}
+.arc-arrow{font-size:1.4rem;color:var(--silver);transition:transform 0.3s;}
+.archive-card:hover .arc-arrow{transform:translateX(5px);}
+
+/* map lightbox */
+.map-lightbox{display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.85);
+  align-items:center;justify-content:center;cursor:zoom-out;}
+.map-lightbox.open{display:flex;}
+.map-lightbox img{max-width:92vw;max-height:92vh;object-fit:contain;border:2px solid rgba(138,154,181,0.4);}
+
+@media(max-width:900px){
+  /* layout */
+  .page{padding:4rem 1.2rem 3rem;}
+  .big-title{font-size:2rem;}
+  .hero-text{font-size:1rem;}
+
+  /* videos */
+  .video-grid[style*="repeat(2,1fr)"]{grid-template-columns:1fr!important;max-width:100%!important;}
+  .video-grid[style*="repeat(4,1fr)"]{grid-template-columns:1fr 1fr!important;}
+
+  /* corkboard */
+  .cork-row{flex-wrap:nowrap;overflow-x:auto;gap:10px;padding-bottom:6px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;}
+  .cork-row .cc{flex:0 0 72%;scroll-snap-align:start;}
+  .cork-row[style*="max-width:80%"]{max-width:100%!important;}
+
+  /* lore */
+  .lore-grid{grid-template-columns:1fr;}
+
+  /* sources */
+  .source-card{min-width:100%;max-width:100%;}
+
+  /* archive */
+  .archive-card{padding:2rem 1.5rem;width:100%;box-sizing:border-box;}
+
+  /* section labels */
+  .section-label{font-size:0.7rem;letter-spacing:3px;}
+}
+
+@media(max-width:480px){
+  .big-title{font-size:1.6rem;}
+  .cork-row .cc{flex:0 0 85%;}
+  .video-grid[style*="repeat(4,1fr)"]{grid-template-columns:1fr!important;}
+}
+</style>
+</head>
+<body>
+<div id="bg"></div>
+
+<!-- MAP LIGHTBOX -->
+<div class="map-lightbox" id="mapLightbox">
+  <img src="https://static.wikia.nocookie.net/the-empyrean-rebecca-yarros/images/7/76/World_Map.png/revision/latest?cb=20230706003909" alt="Map of the Continent">
+</div>
+<a href="../index.html" class="home-btn">🏠 Home</a>
+
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="kicker">The Shouty Book Club</div>
+    <div class="big-title">Catch Up Before<br>You Storm In</div>
+    <div class="ornament"><div class="orn-line"></div><div class="orn-gem">◆</div><div class="orn-line"></div></div>
+    <p class="hero-text">Before we dive headfirst into whatever fresh chaos Rebecca has cooked up, let's make sure we're all equally traumatised by what came before. A little lore, a little recap, and proof that we have already been through so much.</p>
+  </div>
+
+  <!-- VIDEOS -->
+  <div class="videos-section">
+    <div class="section-label"><span>⟡</span> For a short and sweet recap <span>⟡</span></div>
+    <div class="video-grid" style="grid-template-columns:repeat(2,1fr);max-width:780px;margin:0 auto 2rem;">
+      <div class="video-card">
+        <div class="video-embed"><iframe src="https://www.youtube.com/embed/Fr6yWZzB8iA" allowfullscreen></iframe></div>
+        <div class="video-label">Fourth Wing Animated</div>
+      </div>
+      <div class="video-card">
+        <div class="video-embed"><iframe src="https://www.youtube.com/embed/XkKGMZQXVQM" allowfullscreen></iframe></div>
+        <div class="video-label">Iron Flame Animated</div>
+      </div>
+    </div>
+    <div class="section-label"><span>⟡</span> For recaps with all the deets <span>⟡</span></div>
+    <div class="video-grid" style="grid-template-columns:repeat(4,1fr);">
+      <div class="video-card">
+        <div class="video-embed"><iframe src="https://www.youtube.com/embed/R752D6_fQ3E?start=414" allowfullscreen></iframe></div>
+        <div class="video-label">Fourth Wing</div>
+      </div>
+      <div class="video-card">
+        <div class="video-embed"><iframe src="https://www.youtube.com/embed/IiujsfcJ_z8?start=2747" allowfullscreen></iframe></div>
+        <div class="video-label">Iron Flame I</div>
+      </div>
+      <div class="video-card">
+        <div class="video-embed"><iframe src="https://www.youtube.com/embed/_gDJ0PT1gCQ" allowfullscreen></iframe></div>
+        <div class="video-label">Iron Flame II</div>
+      </div>
+      <div class="video-card">
+        <div class="video-embed"><iframe src="https://www.youtube.com/embed/hZECVslXeDk" allowfullscreen></iframe></div>
+        <div class="video-label">Iron Flame III</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLOT TIMELINE + LORE + MAP -->
+  <div class="plot-section">
+    <div class="section-label"><span>⟡</span> What Actually Happened <span>⟡</span></div>
+    <div class="recap-layout">
+    <div class="plot-books">
+
+      <!-- FOURTH WING -->
+      <div class="plot-book">
+        <div class="plot-book-header" onclick="this.nextElementSibling.classList.toggle('open');this.querySelector('.plot-toggle').textContent=this.nextElementSibling.classList.contains('open')?'▲ collapse':'▼ expand'">
+          <span>Fourth Wing</span>
+          <span class="plot-toggle">▼ expand</span>
+        </div>
+        <div class="plot-body">
+          <div class="plot-event"><div class="plot-dot"></div><div class="plot-text"><strong>The Parapet.</strong> Violet is forced into the Riders Quadrant by General Sorrengail against Mira's wishes. She crosses the Parapet — a crumbling walkway above a lethal drop — on her first day. Jack Barlowe chases her across trying to kill her. She survives and threatens him with her daggers.</div></div>
+          <div class="plot-event"><div class="plot-dot"></div><div class="plot-text"><strong>Dain & the squad.</strong> Violet reunites with her childhood friend Dain, now a second-year squad leader. He takes her and Rhiannon into his squad. Xaden Riorson, wingleader and son of the rebellion's executed leader, is placed above Dain's squad.</div></div>
+          <div class="plot-event"><div class="plot-dot"></div><div class="plot-text"><strong>Training & survival.</strong> Violet is physically weaker than her peers due to a connective tissue disorder. She tutors Rhiannon on history in exchange for combat training. She begins poisoning opponents before fights to level the playing field.</div></div>
+          <div class="plot-event"><div class="plot-dot"></div><div class="plot-text"><strong>Threshing.</strong> At the dragon bonding ceremony, Violet spots the golden feathertail being targeted by Jack and two others. She fights to protect it. A massive black dragon — Tairn — arrives and bonds with Violet. The golden dragon, Andarna, then claims Violet as a second bond. No one has ever bonded two dragons. The dragon council approves it.</div></div>
+          <div class="plot-event"><div class="plot-dot"></div><div class="plot-text"><strong>The mating bond problem.</strong> Tairn is mated to Sgaeyl — Xaden's dragon. This permanently entangles Violet and Xaden: they can sense each other's emotions and if one dies, both may. Xaden assigns Liam Mairi to protect Violet and wards her door against intruders.</div></div>
+          <div class="plot-event"><div class="plot-dot"></div><div class="plot-text"><strong>Signet & Xaden.</strong> Violet's signet manifests as lightning. She and Xaden begin a relationship. Dain reads her memories without full consent — something she doesn't forgive easily.</div></div>
+          <div class="plot-event"><div class="plot-dot"></div><div class="plot-text"><strong>War Games & Athebyne.</strong> During the final War Games, Xaden pulls Violet to Athebyne where gryphon fliers are waiting. She learns that Xaden and the marked ones have been secretly supplying the fliers with weapons — the only things that can kill venin. Violet feels betrayed. She had no idea venin were real.</div></div>
+          <div class="plot-event"><div class="plot-dot"></div><div class="plot-text"><strong>Battle of Athebyne.</strong> Four venin are heading to the village of Resson. The group goes to fight them. Liam's dragon is killed protecting Violet; Liam dies minutes later. Andarna stops time so Violet can strike the venin with lightning. Violet is poisoned but survives. When she recovers, Brennan — reported dead for six years — is revealed to be alive. He is the mender who healed her. He welcomes her to the rebellion.</div></div>
+        </div>
+      </div>
+
+      <!-- IRON FLAME -->
+      <div class="plot-book">
+        <div class="plot-book-header" onclick="this.nextElementSibling.classList.toggle('open');this.querySelector('.plot-toggle').textContent=this.nextElementSibling.classList.contains('open')?'▲ collapse':'▼ expand'">
+          <span>Iron Flame</span>
+          <span class="plot-toggle">▼ expand</span>
+        </div>
+        <div class="plot-body">
+          <div class="plot-event"><div class="plot-dot"></div><div class="plot-text"><strong>Back to Basgiath.</strong> The cadets return to the War College and lie about what happened at Athebyne. A new Vice Commandant, Varrish, arrives with a personal mission to break Violet. Colonel Aetos actively tries to have her killed. Liam's sister Sloane transfers in and blames Violet for his death.</div></div>
+          <div class="plot-event"><div class="plot-dot"></div><div class="plot-text"><strong>The wards mystery.</strong> Violet learns Aretia has a non-working wardstone and starts secretly researching how wards were originally powered using restricted Archive records — with Jesinia's help. She discovers the knowledge may only exist in the personal journals of the First Six, locked in a vault only accessible by the king's bloodline.</div></div>
+          <div class="plot-event"><div class="plot-dot"></div><div class="plot-text"><strong>Aaric Graycastle.</strong> A new cadet named Cam Tauri is actually Aaric Graycastle — the king's younger brother, second in line to the throne. Violet and Dain recognise him and keep his identity secret. He is eventually recruited to access the vault.</div></div>
+          <div class="plot-event"><div class="plot-dot"></div><div class="plot-text"><strong>Varrish's torture.</strong> Varrish kidnaps Violet and has her tortured in a sealed chamber for five days, cutting off her bond with Tairn. She does not break. Dain is brought in to read her memories — and finally sees the truth. He tears down Varrish. Xaden arrives, kills the guards, and he and Violet execute Varrish together. General Sorrengail arrives: she had no idea. She reveals she made a deal with Xaden in first year to protect Violet.</div></div>
+          <div class="plot-event"><div class="plot-dot"></div><div class="plot-text"><strong>Leaving Basgiath.</strong> Violet gives all students the choice. About half — including Dain, Jesinia, and several professors — join the revolution. They fly to Aretia. Mira arrives and discovers Brennan is alive. She punches him first.</div></div>
+          <div class="plot-event"><div class="plot-dot"></div><div class="plot-text"><strong>Xaden's second signet.</strong> Violet learns Xaden has a second signet — inntinnsic: the ability to read intentions and compel minds. It is a signet people are usually killed for. He has hidden it from everyone.</div></div>
+          <div class="plot-event"><div class="plot-dot"></div><div class="plot-text"><strong>Andarna's secret.</strong> When the wards are raised, it becomes clear seven dragon types are needed — not six. Andarna is the seventh breed, thought extinct, who waited 650 years to bond with Violet specifically. Her iridescent scales let her camouflage. She cannot bond another rider after Violet.</div></div>
+          <div class="plot-event"><div class="plot-dot"></div><div class="plot-text"><strong>Battle of Basgiath & the ending.</strong> Jack Barlowe — now fully venin — destroys the Basgiath wardstone by killing his own dragon. The wards fall. Violet, the riders, the gryphon fliers, and General Sorrengail fight back. Sawyer loses his leg; Violet saves him. General Sorrengail sacrifices herself to power the wardstone and dies. The wards are restored. Xaden draws power directly from the earth to save Violet during the battle. When she finds him afterwards, his eyes are red. He is turning venin. The book ends with him asking a captive Jack Barlowe if there is a cure. There is not.</div></div>
+        </div>
+      </div>
+
+      <!-- LORE -->
+      <div class="plot-book">
+        <div class="plot-book-header" onclick="this.nextElementSibling.classList.toggle('open');this.querySelector('.plot-toggle').textContent=this.nextElementSibling.classList.contains('open')?'▲ collapse':'▼ expand'">
+          <span>Lore (All The Sections)</span>
+          <span class="plot-toggle">▼ expand</span>
+        </div>
+        <div class="plot-body">
+          <div class="lore-places-grid">
+            <div class="place-card">
+              <div class="place-name">🗺 Navarre</div>
+              <div class="place-desc">The western kingdom and home of the dragon riders. Protected by magical wards that draw power from the earth. Its War College trains riders at Basgiath — and its government has been lying to its people for centuries about what actually threatens them.</div>
+            </div>
+            <div class="place-card">
+              <div class="place-name">🏰 Aretia & Tyrrendor</div>
+              <div class="place-desc">Xaden's home province and the seat of the Six Years War rebellion. After the rebellion failed, 107 children of the leaders were conscripted into Basgiath with rebellion relics branded onto their skin. Aretia is slowly being rebuilt as a hidden base.</div>
+            </div>
+            <div class="place-card">
+              <div class="place-name">⚔ Basgiath War College</div>
+              <div class="place-desc">Four quadrants: Riders, Scribes, Healers, and Infantry. First-years must cross the Parapet — a narrow, crumbling walkway high above a chasm — just to enter. No safety net. No exceptions. Many don't make it.</div>
+            </div>
+            <div class="place-card">
+              <div class="place-name">🌊 Poromiel</div>
+              <div class="place-desc">The eastern kingdom, home to gryphon fliers — Navarre's supposed enemy. In reality, Poromiel has been fighting the venin on the front lines for years while Navarre hid behind its wards. They are not enemies. They just weren't allowed to talk.</div>
+            </div>
+          </div>
+
+          <div class="lore-grid">
+            <div class="lore-card">
+              <div class="lore-card-title">🐉 Dragons & Bonding</div>
+              <div class="lore-card-body">Dragons choose their riders at Threshing — a ceremony where unbonded dragons arrive and cadets either bond or are killed. A dragon can reject or kill a cadet at any point. They are not pets; they are partners with their own opinions, politics, and grudges. They communicate telepathically with their rider and sometimes with each other's riders through the bond.</div>
+            </div>
+            <div class="lore-card">
+              <div class="lore-card-title">✨ Signets</div>
+              <div class="lore-card-body">When a rider bonds a dragon, they eventually develop a signet — a unique magical power tied to their dragon's abilities. Violet's is lightning through Tairn. Xaden's is shadows. Some are subtle (Dain reads memories through touch), some overwhelming (Violet can pull lightning from the sky). A second bond can grant a second signet.</div>
+            </div>
+            <div class="lore-card">
+              <div class="lore-card-title">📜 The Six Years War</div>
+              <div class="lore-card-body">A rebellion led by Fen Riorson (Xaden's father) and others against the Navarrian crown — crushed by General Sorrengail (Violet's mother). The leaders were executed. Their children were conscripted into Basgiath as marked ones. What the rebels actually knew — and why they really fought — is more complicated than Navarre admits.</div>
+            </div>
+            <div class="lore-card">
+              <div class="lore-card-title">🌑 The Venin</div>
+              <div class="lore-card-body">Ancient wielders who turned dark by drawing power directly from the earth rather than through a dragon bond. This drains and kills the land around them. They have been building an army of venin, wyvern, and controlled humans — attacking the wards from outside. They are the real enemy.</div>
+            </div>
+            <div class="lore-card">
+              <div class="lore-card-title">🔮 The Wards</div>
+              <div class="lore-card-body">Magical barriers protecting Navarre from venin incursion, powered by wardstones. The government kept their existence — and deterioration — secret from everyone. By the end of Iron Flame, the wards have been rebuilt using the riders' combined power. The cost was catastrophic. The situation is far from over.</div>
+            </div>
+            <div class="lore-card">
+              <div class="lore-card-title">💀 The Iron Flame Ending</div>
+              <div class="lore-card-body">The wards fell. Violet and the riders used their combined power to restore them — at enormous cost. Xaden, in a moment of desperation during battle, drew power directly from the earth to save Violet's life. This is how venin are made. By the final pages, Xaden's eyes have gone red. He is turning. Violet knows. Yes, we are fine.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="recap-map">
+      <img src="https://static.wikia.nocookie.net/the-empyrean-rebecca-yarros/images/7/76/World_Map.png/revision/latest?cb=20230706003909" alt="Map of the Continent" onclick="document.getElementById('mapLightbox').classList.add('open')" title="Click to expand">
+    </div>
+    </div>
+  </div>
+
+  <!-- CORKBOARD -->
+  <div class="chars-section">
+    <div class="section-label"><span>⟡</span> The People We Are Emotionally Attached To And The Ones We Hate <span>⟡</span></div>
+    <div class="corkboard">
+
+      <!-- Row 1: Violet, Xaden, Tairn, Andarna, Sgaeyl -->
+      <div class="cork-row">
+        <div class="cc"><div class="pin" style="background:#c03030;"></div><div class="char-card"><div class="char-art"><img src="chars/char_violet.webp" alt="Violet"></div><div class="char-info">
+          <div class="char-name">Violet Sorrengail</div>
+          <div class="char-role">Rider · Fourth Wing · Protagonist</div>
+          <div class="char-desc">Entered Basgiath as a first-year despite a connective tissue disorder that makes her physically fragile. Survived Threshing by bonding Tairn — the most powerful dragon alive — then unexpectedly bonded Andarna as a second dragon, which should be impossible. Her signet is lightning. Spends both books uncovering the truth about the venin, the failing wards, and her own family's role in keeping those secrets from Navarre.</div>
+          <span class="char-signet">⚡ Signet: lightning · Bonded to Tairn & Andarna · General Sorrengail's daughter</span>
+        </div></div></div>
+
+        <div class="cc"><div class="pin" style="background:#2244aa;"></div><div class="char-card"><div class="char-art"><img src="chars/char_xayden.webp" alt="Xaden"></div><div class="char-info">
+          <div class="char-name">Xaden Riorson</div>
+          <div class="char-role">Rider · Duke of Tyrrendor · Wing leader</div>
+          <div class="char-desc">Son of Fen Riorson, the rebel leader executed after the Six Years War. Bears a rebellion relic on his wrist and has been responsible for 107 marked ones since adolescence. His signets are shadows and inntinnsic — the ability to read and compel minds. Has been secretly supplying weapons to Poromiel to fight venin while Navarre denied their existence. At the end of Iron Flame, he drew power directly from the earth to save Violet's life. His eyes have gone red. He is turning venin.</div>
+          <span class="char-signet">🌑 Signets: shadows & inntinnsic · Bonded to Sgaeyl · Turning venin by IF end</span>
+        </div></div></div>
+
+        <div class="cc"><div class="pin" style="background:#333;"></div><div class="char-card"><div class="char-art"><img src="chars/char_tairn.webp" alt="Tairn"></div><div class="char-info">
+          <div class="char-name">Tairn</div>
+          <div class="char-role">Black morningstartail · Violet's primary dragon</div>
+          <div class="char-desc">The largest and most powerful dragon alive — hadn't bonded a rider in decades before choosing Violet at Threshing. His bond with Sgaeyl permanently entangles Violet and Xaden's fates. Channels his power through Violet as lightning. Fiercely protective; has killed without hesitation to keep her alive.</div>
+          <span class="char-signet">🔥 Mated to Sgaeyl · Violet's primary bond · Most powerful dragon alive</span>
+        </div></div></div>
+
+        <div class="cc"><div class="pin" style="background:#aa7700;"></div><div class="char-card"><div class="char-art"><img src="chars/char_andarna.webp" alt="Andarna"></div><div class="char-info">
+          <div class="char-name">Andarna</div>
+          <div class="char-role">Seventh breed · Violet's second dragon</div>
+          <div class="char-desc">The only seventh breed dragon, a kind thought to be extinct. Hid among the feathertails during a centuries-long sleep, waiting for the right rider. Bonded Violet at Threshing alongside Tairn — a double bond previously unheard of. Her gift is stopping time briefly, which she used to save Violet's life during the Battle of Basgiath. She is currently in her equivalent of teenage years and makes that everyone's problem.</div>
+          <span class="char-signet">✨ Gift: time-stopping · Only seventh breed dragon · Violet's second bond</span>
+        </div></div></div>
+
+        <div class="cc"><div class="pin" style="background:#1144aa;"></div><div class="char-card"><div class="char-art"><img src="chars/char_sgaeyl.webp" alt="Sgaeyl"></div><div class="char-info">
+          <div class="char-name">Sgaeyl</div>
+          <div class="char-role">Navy daggertail · Xaden's dragon</div>
+          <div class="char-desc">Mated to Tairn, which permanently links Violet and Xaden whether they chose it or not — they can sense each other's emotions through the bond. Blunt, ruthless, and entirely indifferent to human feelings. Communicates with Violet directly on occasion, which is an honour she makes clear she does not extend lightly.</div>
+          <span class="char-signet">💙 Mated to Tairn · Xaden's bond · Communicates directly with Violet</span>
+        </div></div></div>
+      </div>
+
+      <!-- Row 2: Rhiannon, Ridoc, Sawyer, Bodhi, Brennan & Mira -->
+      <div class="cork-row">
+        <div class="cc"><div class="pin" style="background:#b04520;"></div><div class="char-card"><div class="char-art"><img src="chars/char_rhiannon.webp" alt="Rhiannon"></div><div class="char-info">
+          <div class="char-name">Rhiannon Matthias</div>
+          <div class="char-role">Rider · Fourth Wing · Violet's best friend</div>
+          <div class="char-desc">Made friends with Violet on Parapet day before either of them knew if they'd survive the crossing. Rose to squad leader in Iron Flame. Her signet is teleportation. One of the few people Violet trusts with the full truth about the venin, the wards, and what is actually happening outside Navarre's borders.</div>
+          <span class="char-signet">✨ Signet: teleportation · Squad leader in IF · Sister of Raegan</span>
+        </div></div></div>
+
+        <div class="cc"><div class="pin" style="background:#2277aa;"></div><div class="char-card"><div class="char-art"><img src="chars/char_ridoc.webp" alt="Ridoc"></div><div class="char-info">
+          <div class="char-name">Ridoc Gamlyn</div>
+          <div class="char-role">Rider · Squad member · Chaos agent</div>
+          <div class="char-desc">Part of Violet's original squad from first year. Sarcastic and quick, with an instinct for saying the wrong thing at the exact right moment. His signet had not yet fully manifested by the end of Iron Flame. Fiercely loyal when it counts. Bonded to the brown dragon Aotrom.</div>
+          <span class="char-signet">❓ Signet: unmanifested by IF end · Bonded to Aotrom</span>
+        </div></div></div>
+
+        <div class="cc"><div class="pin" style="background:#555;"></div><div class="char-card"><div class="char-art"><img src="chars/char_swayer.webp" alt="Sawyer"></div><div class="char-info">
+          <div class="char-name">Sawyer Henrick</div>
+          <div class="char-role">Rider · Squad member · Metallurgist</div>
+          <div class="char-desc">His signet is metallurgy — the ability to manipulate metal. Lost his leg during the Battle of Basgiath saving Ridoc from a wyvern. Was fitted with a metal prosthetic and returned to active duty. Learned sign language entirely on his own initiative to communicate with Jesinia. Bonded to the green dragon Sliseag.</div>
+          <span class="char-signet">⚙ Signet: metallurgy · Lost leg at Battle of Basgiath · Bonded to Sliseag</span>
+        </div></div></div>
+
+        <div class="cc"><div class="pin" style="background:#442299;"></div><div class="char-card"><div class="char-art"><img src="chars/char_bodhi.webp" alt="Bodhi"></div><div class="char-info">
+          <div class="char-name">Bodhi Durran</div>
+          <div class="char-role">Rider · Marked one · Xaden's cousin</div>
+          <div class="char-desc">Xaden's closest family and one of the original marked ones. His signet is countering — he can neutralise other riders' signets. Has been running weapons and supplies to Poromiel alongside Xaden for years. Quietly essential to every operation the revolution runs out of Aretia.</div>
+          <span class="char-signet">🛡 Signet: countering signets · Marked one · Xaden's cousin & right hand</span>
+        </div></div></div>
+
+        <div class="cc"><div class="pin" style="background:#226644;"></div><div class="char-card"><div class="char-art"><img src="chars/char_brennan_mira.webp" alt="Brennan and Mira"></div><div class="char-info">
+          <div class="char-name">Brennan & Mira Sorrengail</div>
+          <div class="char-role">Violet's older siblings · Both riders</div>
+          <div class="char-desc">Brennan was reported killed in the Six Years War — he was not dead. A mender with the ability to heal near-fatal injuries, he faked his death and has been living in Aretia, secretly fighting venin and working with Xaden's revolution. Mira is a First Lieutenant who knew he was alive and passed his hidden notes to Violet. When Mira finally saw Brennan again, she punched him in the face first and hugged him second.</div>
+          <span class="char-signet">💚 Brennan: mending signet, based in Aretia · 🔥 Mira: rider, bonded to Teine</span>
+        </div></div></div>
+      </div>
+
+      <!-- Row 3: Imogen, Garrick, Liam, Sloane, Jack -->
+      <div class="cork-row">
+        <div class="cc"><div class="pin" style="background:#443388;"></div><div class="char-card"><div class="char-art"><img src="chars/char_imogen.webp" alt="Imogen"></div><div class="char-info">
+          <div class="char-name">Imogen Cardulo</div>
+          <div class="char-role">Rider · Marked one · Xaden's inner circle</div>
+          <div class="char-desc">One of the marked ones who has been with Xaden's operation from the start. Her signet is memory wiping — she can erase a specific recent window from someone's mind, which she has used operationally more than once. Blunt to the point of brutality, deeply loyal to those she has chosen, and entirely unbothered by what anyone else thinks of her.</div>
+          <span class="char-signet">🧠 Signet: memory wiping · Marked one · Xaden's inner circle</span>
+        </div></div></div>
+
+        <div class="cc"><div class="pin" style="background:#115533;"></div><div class="char-card"><div class="char-art"><img src="chars/char_garrick.webp" alt="Garrick"></div><div class="char-info">
+          <div class="char-name">Garrick Tavis</div>
+          <div class="char-role">Rider · Marked one · Xaden's closest ally</div>
+          <div class="char-desc">One of the original marked ones and the person Xaden trusts most after Bodhi. Present for every major operation run out of Aretia across both books. His signet is not confirmed on the page. Bonded to the brown scorpiontail Chradh. Steady and reliable in every situation that calls for someone to not panic — which in this series is constant.</div>
+          <span class="char-signet">⚔ Signet: unconfirmed · Bonded to Chradh · Marked one</span>
+        </div></div></div>
+
+        <div class="cc"><div class="pin" style="background:#996611;"></div><div class="char-card"><div class="char-art"><img src="chars/char_liam.webp" alt="Liam"></div><div class="char-info">
+          <div class="char-name">Liam Mairi</div>
+          <div class="char-role">Rider · Violet's assigned protector · Marked one</div>
+          <div class="char-desc">Assigned by Xaden in first year to keep Violet alive — and became a genuine friend rather than just a bodyguard. His signet is shielding: he can extend a protective barrier to those around him. Died during the Battle of Athebyne shielding his squadmates from a venin attack. His last request was for Violet to look after his younger sister Sloane.</div>
+          <span class="char-signet">🛡 Signet: shielding · Died at Battle of Athebyne · Brother of Sloane · Marked one</span>
+        </div></div></div>
+
+        <div class="cc"><div class="pin" style="background:#775511;"></div><div class="char-card"><div class="char-art"><img src="chars/char_sloane.webp" alt="Sloane"></div><div class="char-info">
+          <div class="char-name">Sloane Mairi</div>
+          <div class="char-role">Rider · Liam's sister · Marked one</div>
+          <div class="char-desc">Transferred into Fourth Wing in Iron Flame specifically to be placed under Violet's watch — per Liam's dying request. Her signet is siphoning: she can draw power from other wielders and redirect it. Angry, guarded, and carrying the weight of her brother's death in everything she does. Her relationship with Violet is complicated and unresolved by the end of Iron Flame.</div>
+          <span class="char-signet">⚡ Signet: siphoning power · Sister of Liam · Marked one · Transferred IF year 2</span>
+        </div></div></div>
+
+        <div class="cc"><div class="pin" style="background:#881111;"></div><div class="char-card"><div class="char-art"><img src="chars/char_jack.webp" alt="Jack"></div><div class="char-info">
+          <div class="char-name">Jack Barlowe</div>
+          <div class="char-role">Rider · Antagonist · Venin by Iron Flame</div>
+          <div class="char-desc">Targeted Violet from the start of first year, viewing her as weak and easy to eliminate. Presumed dead after Fourth Wing — he was not dead. Returns in Iron Flame as a full venin, having deliberately turned by drawing power from the earth. His signet was power drainage; as venin, his abilities are amplified and lethal. He is working for the enemy.</div>
+          <span class="char-signet">💀 Signet: power drainage · Deliberately turned venin · Bonded to Baide</span>
+        </div></div></div>
+      </div>
+
+      <!-- Row 4: Cat, Dain, Jesinia, Aaric — centered -->
+      <div class="cork-row" style="max-width:80%;margin-left:auto;margin-right:auto;">
+        <div class="cc"><div class="pin" style="background:#991144;"></div><div class="char-card"><div class="char-art"><img src="chars/char_catriona.webp" alt="Cat"></div><div class="char-info">
+          <div class="char-name">Catriona Cordella</div>
+          <div class="char-role">Gryphon flier · Poromiel · Xaden's former betrothed</div>
+          <div class="char-desc">Was formally betrothed to Xaden in a political arrangement between Tyrrendor and Poromiel — not a relationship of choice. Rides the gryphon Kiralair. Acts as an antagonist for much of the duology but is fighting the same war as everyone else; her hostility toward Violet is personal, not ideological. More complicated than she first appears.</div>
+          <span class="char-signet">🌊 Gryphon rider · Betrothed to Xaden by arrangement · Sister of Syrena & Drake</span>
+        </div></div></div>
+
+        <div class="cc"><div class="pin" style="background:#553322;"></div><div class="char-card"><div class="char-art"><img src="chars/char_dain.webp" alt="Dain"></div><div class="char-info">
+          <div class="char-name">Dain Aetos</div>
+          <div class="char-role">Rider · Squad leader · Childhood friend</div>
+          <div class="char-desc">Violet's childhood friend and former would-be love interest. His signet is psychometric memory reading — a touch to skin lets him see recent memories, which he used on Violet without her full consent more than once. Spent most of both books choosing duty and the chain of command over truth. In Iron Flame, he finally defects and sides with Violet's cause — after the damage was done.</div>
+          <span class="char-signet">🧠 Signet: memory reading via touch · Son of Colonel Aetos · Bonded to Cath</span>
+        </div></div></div>
+
+        <div class="cc"><div class="pin" style="background:#336644;"></div><div class="char-card"><div class="char-art"><img src="chars/char_jesinia.webp" alt="Jesinia"></div><div class="char-info">
+          <div class="char-name">Jesinia Neilwart</div>
+          <div class="char-role">Scribe · Archivist · Sawyer's person</div>
+          <div class="char-desc">A scribe working in the Basgiath Archives who helps Violet access restricted and classified historical records — at significant personal risk. Deaf; communicates through sign language, which Sawyer learned entirely for her. Has access to suppressed documents about Navarre's true history and the venin, and chooses to share them with Violet anyway.</div>
+          <span class="char-signet">📜 Scribe & archivist · Gave Violet access to classified records · Sister of Cerella</span>
+        </div></div></div>
+
+        <div class="cc"><div class="pin" style="background:#334488;"></div><div class="char-card"><div class="char-art"><img src="chars/char_aaric.webp" alt="Aaric"></div><div class="char-info">
+          <div class="char-name">Aaric Graycastle</div>
+          <div class="char-role">Rider · Fourth Wing · Enrolled as Cam Tauri</div>
+          <div class="char-desc">Enrolled in Basgiath in Iron Flame under the false name Cam Tauri to hide his identity. Quickly proves himself one of the most powerful cadets in years. His real name is Aaric Graycastle — he is the younger brother of King Halden, second in line to the Navarrian throne. His presence at the War College, and the reason he is hiding his identity, become significant by the end of Iron Flame.</div>
+          <span class="char-signet">⚡ Signet: manifesting · Prince of Navarre · Enrolled as "Cam Tauri"</span>
+        </div></div></div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- SOURCES -->
+  <div style="margin-bottom:4rem;">
+    <div class="section-label"><span>⟡</span> Want to Go Deeper? <span>⟡</span></div>
+    <div style="display:flex;gap:1.25rem;justify-content:center;flex-wrap:wrap;">
+      <a href="https://byclaudiacarlucci.com/fourth-wing-series/" target="_blank" class="source-card">
+        <span class="source-eyebrow">Blog</span>
+        <span class="source-title">By Claudia Carlucci</span>
+        <span class="source-desc">Fourth Wing series guides, character breakdowns and all the lore you need.</span>
+        <span class="source-arrow">Read →</span>
+      </a>
+      <a href="https://www.today.com/popculture/books/fourth-wing-iron-flame-recap-onyx-storm-empyrean-rcna187024" target="_blank" class="source-card">
+        <span class="source-eyebrow">Article</span>
+        <span class="source-title">Today.com Recap</span>
+        <span class="source-desc">Everything — literally everything — to know before Onyx Storm.</span>
+        <span class="source-arrow">Read →</span>
+      </a>
+      <a href="https://the-empyrean-series.fandom.com/wiki/The_Empyrean_Wiki" target="_blank" class="source-card">
+        <span class="source-eyebrow">Wiki</span>
+        <span class="source-title">The Empyrean Wiki</span>
+        <span class="source-desc">The full encyclopaedia of the series. Characters, lore, locations — all of it.</span>
+        <span class="source-arrow" style="color:#c05050;">⚠ Careful — spoilers for all books</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- ARCHIVE -->
+  <div class="archive-section">
+    <div class="section-label" style="margin-bottom:2rem;"><span>⟡</span> Our Legacy <span>⟡</span></div>
+    <a href="player_history.html?collection=shouty_bingo" class="archive-card">
+      <span class="arc-eyebrow">Bingo Archive</span>
+      <span class="arc-title">Iron Flame</span>
+      <span class="arc-sub">Revisit our cards, our marks, our suffering</span>
+      <span class="arc-arrow">→</span>
+    </a>
+  </div>
+
+</div>
+</body>
+<script>
+  document.getElementById('mapLightbox').addEventListener('click', function(){
+    this.classList.remove('open');
+  });
+  // Add Recaptains source cards
+  const sourcesWrap = document.querySelector('.source-card').parentElement;
+  const fwCard = document.createElement('a');
+  fwCard.href = 'https://recaptains.co.uk/2023/07/fourth-wing-by-rebecca-yarros/';
+  fwCard.target = '_blank';
+  fwCard.className = 'source-card';
+  fwCard.innerHTML = '<span class="source-eyebrow">Full Recap</span><span class="source-title">Recaptains — Fourth Wing</span><span class="source-desc">Complete plot summary of Fourth Wing, beat by beat.</span><span class="source-arrow">Read →</span>';
+  const ifCard = document.createElement('a');
+  ifCard.href = 'https://recaptains.co.uk/2023/11/iron-flame-by-rebecca-yarros/';
+  ifCard.target = '_blank';
+  ifCard.className = 'source-card';
+  ifCard.innerHTML = '<span class="source-eyebrow">Full Recap</span><span class="source-title">Recaptains — Iron Flame</span><span class="source-desc">Complete plot summary of Iron Flame, beat by beat.</span><span class="source-arrow">Read →</span>';
+  sourcesWrap.appendChild(fwCard);
+  sourcesWrap.appendChild(ifCard);
+</script>
+</html>

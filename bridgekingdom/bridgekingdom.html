@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Bridge Kingdom</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+.home-layout{position:relative;z-index:2;min-height:100vh;display:grid;grid-template-columns:0.85fr 1fr;gap:30px;align-items:center;justify-content:center;padding:40px 50px;max-width:1400px;margin:0 auto;}
+@media(max-width:900px){.home-layout{grid-template-columns:1fr;gap:40px;padding:35px 20px;}}
+
+/* ── MAP ── */
+.map-section{display:flex;flex-direction:column;align-items:center;gap:0.8rem;}
+.map-wrap{position:relative;width:100%;max-width:460px;border-radius:12px;overflow:hidden;
+  border:2px solid #c9a84c55;box-shadow:0 0 30px rgba(201,168,76,0.2);user-select:none;background:#0d0a0e;}
+.map-wrap img{display:block;width:100%;height:auto;}
+.marker{position:absolute;width:36px;height:36px;display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;transform:translate(-50%,-50%);z-index:10;filter:drop-shadow(0 1px 4px rgba(0,0,0,0.8));
+  transition:left 0.4s ease,top 0.4s ease;pointer-events:none;}
+.marker.draggable{cursor:grab;pointer-events:all;}
+.marker.draggable:active{cursor:grabbing;}
+.map-tooltip{position:absolute;z-index:30;background:rgba(13,10,14,0.95);color:#c9a84c;
+  font-family:'Cinzel',serif;font-size:0.72rem;letter-spacing:1px;padding:0.3rem 0.6rem;border-radius:4px;
+  border:1px solid #c9a84c;pointer-events:none;white-space:nowrap;transform:translate(-50%,-150%);
+  opacity:0;transition:opacity 0.15s;}
+.map-tooltip.show{opacity:1;}
+.map-hint{font-family:'Cinzel',serif;font-size:0.72rem;letter-spacing:1px;color:#c8b89a;font-style:italic;text-align:center;}
+
+/* ── PLAYERS / RANK GRID ── */
+.players-section{text-align:center;}
+.players-title{font-family:'Cinzel',serif;font-size:2rem;letter-spacing:2px;margin-top:0;margin-bottom:24px;color:#f0e6c8;text-shadow:0 0 20px rgba(201,168,76,0.25);}
+
+.rank-frame{
+  display:grid;
+  grid-template-columns:36px 1fr;
+  grid-template-rows:auto 36px;   /* match y-axis width */
+  gap:0;
+  max-width:620px;
+  margin:0 auto;
+}
+
+.y-axis{
+  grid-column:1;
+  grid-row:1;
+  position:relative;
+  align-self:stretch;
+}
+.y-axis svg{
+  width:100%;
+  height:100%;
+  display:block;
+}
+
+.x-axis{
+  grid-column:2;
+  grid-row:2;
+  position:relative;
+}
+.x-axis svg{
+  width:100%;
+  height:100%;
+  display:block;
+}
+
+.axis-banner{overflow:visible;}
+.banner-body{fill:#2f2533;}
+
+/* text overlaid on top of the SVG shape via absolute positioning */
+.y-axis, .x-axis { overflow: hidden; }
+
+.y-shape { position: absolute; inset: 0; width: 100%; height: 100%; }
+.y-label {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: 'Cinzel', serif;
+  font-size: clamp(9px, 1.1vw, 13px);
+  font-weight: 500;
+  letter-spacing: 2px;
+  color: #d8b75a;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.x-shape { position: absolute; inset: 0; width: 100%; height: 100%; }
+.x-label {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cinzel', serif;
+  font-size: clamp(9px, 1.1vw, 13px);
+  font-weight: 500;
+  letter-spacing: 2px;
+  color: #d8b75a;
+  white-space: nowrap;
+  pointer-events: none;
+  padding-right: 4%; /* nudge left of the arrow tip */
+}
+
+.rank-grid{grid-column:2;grid-row:1;position:relative;aspect-ratio:1/1;width:100%;}
+
+/* avatar plotted in a cell */
+.rank-avatar{position:absolute;text-decoration:none;color:#f0e6c8;font-family:'Cinzel',serif;
+  display:flex;flex-direction:column;align-items:center;gap:4px;transform:translate(-50%,-50%);
+  transition:left 0.5s ease,top 0.5s ease,transform 0.3s ease;z-index:5;}
+.rank-avatar:hover{transform:translate(-50%,-50%) scale(1.08);z-index:6;}
+.rank-img-frame{position:relative;width:120px;height:120px;}
+.rank-img-frame::before{content:'';position:absolute;inset:-5px;border-radius:50%;
+  background:conic-gradient(from 0deg,transparent 0%,var(--ring,#c9a84c33) 20%,var(--ring-bright,#c9a84c88) 50%,var(--ring,#c9a84c33) 80%,transparent 100%);
+  animation:spin 12s linear infinite;z-index:0;}
+.rank-img-frame::after{content:'';position:absolute;inset:-2px;border-radius:50%;background:#0d0a0e;z-index:1;}
+.rank-img-frame img{position:relative;z-index:2;width:100%;height:100%;object-fit:cover;border-radius:50%;border:2px solid #c9a84c55;}
+.rank-avatar:hover .rank-img-frame img{border-color:var(--pc,#c9a84c);box-shadow:0 0 18px var(--pc-glow,rgba(201,168,76,0.4));}
+.rank-badge{position:absolute;top:-2px;right:-2px;z-index:10;font-size:1.6rem;line-height:1;filter:drop-shadow(0 0 6px rgba(201,168,76,0.7));}
+.rank-name{font-size:0.95rem;letter-spacing:1.5px;text-shadow:0 1px 3px #000;}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+
+@media(max-width:800px){
+  .players-title{font-size:1.5rem;margin-bottom:24px;}
+  .rank-img-frame{width:64px;height:64px;}
+  .rank-name{font-size:0.75rem;}
+}
+
+.footer-section{position:relative;z-index:2;text-align:center;padding:1.5rem 1rem 3rem;}
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<main class="home-layout">
+
+  <section class="map-section">
+    <div class="map-wrap" id="mapEl">
+      <img src="bridgekingdom_map.png" alt="Reading map">
+      <div class="map-tooltip" id="mapTooltip"></div>
+    </div>
+    <div class="map-hint" id="mapHint">Drag your marker to update your progress</div>
+  </section>
+
+  <section class="players-section">
+    <h1 class="players-title">Choose Your Player</h1>
+    <div class="rank-frame">
+
+      <div class="y-axis">
+        <svg class="axis-banner y-shape" viewBox="0 0 10 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- full-width rectangle, small centred point at top -->
+          <polygon class="banner-body" points="0,100 10,100 10,6 5,0 0,6"/>
+        </svg>
+        <span class="y-label">Best Guesser</span>
+      </div>
+
+      <div class="rank-grid" id="rankGrid"></div>
+
+      <div class="x-axis">
+        <svg class="axis-banner x-shape" viewBox="0 0 100 10" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- full-height rectangle, small arrow point at right -->
+          <polygon class="banner-body" points="0,0 95,0 100,5 95,10 0,10"/>
+        </svg>
+        <span class="x-label">Fastest Reader</span>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<section class="footer-section">
+  <div class="ornament"><div class="line"></div><div class="gem">◆</div><div class="line"></div></div>
+  <a class="home-btn" href="../index.html"><span class="home-btn-icon">🏠</span> Home</a>
+  <div class="footer">✦ &nbsp; The Bingo Book Club &nbsp; ✦</div>
+</section>
+
+<script>
+const starsContainer=document.getElementById('stars');
+for(let i=0;i<80;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()>0.8?3:2;
+  s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--d:${2+Math.random()*4}s;--delay:${Math.random()*4}s;`;
+  starsContainer.appendChild(s);}
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, doc, setDoc, onSnapshot }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAIQTe-QGQmwqTVmIyJZZ_qlDNsD6GUskY",
+  authDomain: "bingobookclub-2144e.firebaseapp.com",
+  projectId: "bingobookclub-2144e",
+  storageBucket: "bingobookclub-2144e.firebasestorage.app",
+  messagingSenderId: "294177836341",
+  appId: "1:294177836341:web:6d5f11e64737fbe3aad07c"
+};
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
+
+const PLAYERS = {
+  elana:  { emoji:"🐉",   color:"#c9a84c", name:"Elana",  href:"bridgekingdom_player.html?p=elana",  img:"../pdp_elana.png"  },
+  lena:   { emoji:"🌙",   color:"#1f3a36", name:"Lena",   href:"bridgekingdom_player.html?p=lena",   img:"../pdp_lena.png"   },
+  kathi:  { emoji:"🍄",   color:"#24152b", name:"Kathi",  href:"bridgekingdom_player.html?p=kathi",  img:"../pdp_kathi.png"  },
+  marine: { emoji:"🧜‍♀️", color:"#172838", name:"Marine", href:"bridgekingdom_player.html?p=marine", img:"../pdp_marine.png" },
+};
+function hexA(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;}
+
+const rankGrid=document.getElementById('rankGrid');
+
+/* ── MAP MARKERS ── */
+const TOTAL_CHAPTERS=41;
+const END_POS=42;
+const POS={
+  0:{x:13.79,y:22.58},1:{x:33.41,y:21.56},2:{x:48.79,y:21.43},3:{x:63.60,y:21.56},4:{x:77.83,y:21.69},
+  5:{x:90.52,y:26.43},6:{x:77.64,y:30.41},7:{x:63.22,y:30.28},8:{x:49.75,y:30.28},9:{x:35.33,y:30.15},
+  10:{x:21.10,y:30.28},11:{x:12.83,y:38.48},12:{x:25.33,y:38.87},13:{x:38.79,y:38.61},14:{x:52.64,y:38.74},
+  15:{x:67.25,y:38.61},16:{x:81.29,y:38.61},17:{x:91.10,y:44.64},18:{x:81.29,y:47.20},19:{x:68.60,y:47.46},
+  20:{x:55.91,y:47.33},21:{x:42.64,y:47.33},22:{x:28.41,y:47.46},23:{x:18.60,y:55.28},24:{x:33.22,y:55.16},
+  25:{x:47.64,y:55.41},26:{x:61.87,y:55.41},27:{x:75.91,y:55.41},28:{x:90.72,y:61.44},29:{x:79.18,y:64.00},
+  30:{x:66.29,y:64.13},31:{x:53.02,y:64.13},32:{x:39.75,y:63.88},33:{x:26.68,y:64.13},34:{x:18.22,y:72.60},
+  35:{x:32.25,y:72.34},36:{x:46.29,y:72.34},37:{x:60.14,y:72.47},38:{x:73.60,y:72.34},39:{x:89.56,y:77.98},
+  40:{x:39.56,y:81.83},41:{x:26.29,y:81.83},42:{x:13.41,y:91.83},
+};
+const PLAYER_OFFSET={elana:{x:2.5,y:-2.5},lena:{x:2.5,y:2.5},kathi:{x:-2.5,y:2.5},marine:{x:-2.5,y:-2.5}};
+const mapEl=document.getElementById('mapEl'),tooltip=document.getElementById('mapTooltip');
+
+function markerFor(pid){
+  let m=document.getElementById('marker-'+pid);
+  if(!m){m=document.createElement('div');m.id='marker-'+pid;m.className='marker';m.textContent=PLAYERS[pid].emoji;mapEl.appendChild(m);}
+  return m;
+}
+function placeMarker(pid,ch){
+  const m=markerFor(pid);
+  const clamped=Math.min(Math.max(ch,0),END_POS);
+  const p=POS[clamped]||POS[0],o=PLAYER_OFFSET[pid]||{x:0,y:0};
+  m.style.left=(p.x+o.x)+'%';m.style.top=(p.y+o.y)+'%';
+}
+function snapNearest(cx,cy){
+  const r=mapEl.getBoundingClientRect();
+  const xp=(cx-r.left)/r.width*100,yp=(cy-r.top)/r.height*100;
+  let best=0,bestD=Infinity;
+  for(const [ch,p] of Object.entries(POS)){const d=Math.hypot(xp-p.x,yp-p.y);if(d<bestD){bestD=d;best=+ch;}}
+  return best;
+}
+let dragging=false,dragPid=null;
+function tryStartDrag(cx,cy){
+  for(const pid of Object.keys(PLAYERS)){
+    const m=document.getElementById('marker-'+pid);if(!m)continue;
+    const r=m.getBoundingClientRect();
+    if(Math.hypot(cx-(r.left+r.width/2),cy-(r.top+r.height/2))<24){
+      dragging=true;dragPid=pid;m.classList.add('draggable');m.style.transition='none';return;
+    }
+  }
+}
+mapEl.addEventListener('mousedown',e=>tryStartDrag(e.clientX,e.clientY));
+mapEl.addEventListener('touchstart',e=>tryStartDrag(e.touches[0].clientX,e.touches[0].clientY),{passive:true});
+function onMove(cx,cy){
+  if(!dragging||!dragPid)return;
+  const r=mapEl.getBoundingClientRect();
+  const xp=Math.min(Math.max((cx-r.left)/r.width*100,2),98),yp=Math.min(Math.max((cy-r.top)/r.height*100,2),98);
+  const m=document.getElementById('marker-'+dragPid);
+  if(m){m.style.left=xp+'%';m.style.top=yp+'%';}
+  const ch=snapNearest(cx,cy);
+  tooltip.textContent=ch===0?'Start':ch>=END_POS?'Finished':'Chapter '+ch;
+  tooltip.style.left=xp+'%';tooltip.style.top=yp+'%';tooltip.classList.add('show');
+}
+window.addEventListener('mousemove',e=>{if(dragging)onMove(e.clientX,e.clientY);});
+window.addEventListener('touchmove',e=>{if(dragging)onMove(e.touches[0].clientX,e.touches[0].clientY);},{passive:true});
+async function endDrag(cx,cy){
+  if(!dragging)return;dragging=false;tooltip.classList.remove('show');
+  const m=document.getElementById('marker-'+dragPid);
+  if(m){m.style.transition='';m.classList.remove('draggable');}
+  const snap=snapNearest(cx,cy);
+  placeMarker(dragPid,snap);
+  const progress=Math.min(snap,TOTAL_CHAPTERS);
+  try{await setDoc(doc(db,'first_bingo',dragPid),{mapPos:snap,chapterProgress:progress},{merge:true});}catch(e){console.error(e);}
+  dragPid=null;
+}
+window.addEventListener('mouseup',e=>endDrag(e.clientX,e.clientY));
+window.addEventListener('touchend',e=>endDrag(e.changedTouches[0].clientX,e.changedTouches[0].clientY));
+Object.keys(PLAYERS).forEach(pid=>placeMarker(pid,0));
+
+const stats={};
+Object.keys(PLAYERS).forEach(p=>stats[p]={chapterProgress:0,points:0});
+
+function computeRanks(metric,tieMetric){
+  const ids=Object.keys(PLAYERS);
+  ids.sort((a,b)=>{
+    if(stats[a][metric]!==stats[b][metric])return stats[a][metric]-stats[b][metric];
+    return stats[a][tieMetric]-stats[b][tieMetric];
+  });
+  const ranks={};
+  ids.forEach((id,i)=>ranks[id]=i+1);
+  return ranks;
+}
+
+function render(){
+  const xRank=computeRanks('chapterProgress','points');
+  const yRank=computeRanks('points','chapterProgress');
+
+  Object.keys(PLAYERS).forEach(pid=>{
+    const p=PLAYERS[pid];
+    let a=document.getElementById('rank-'+pid);
+    if(!a){
+      a=document.createElement('a');
+      a.id='rank-'+pid;
+      a.className='rank-avatar';
+      a.href=p.href;
+      a.style.setProperty('--ring',hexA(p.color,0.25));
+      a.style.setProperty('--ring-bright',hexA(p.color,0.7));
+      a.style.setProperty('--pc',p.color);
+      a.style.setProperty('--pc-glow',hexA(p.color,0.45));
+      a.innerHTML=`<div class="rank-img-frame"><img src="${p.img}" alt="${p.name}"><div class="rank-badge">${p.emoji}</div></div><div class="rank-name">${p.name}</div>`;
+      rankGrid.appendChild(a);
+    }
+    const col=xRank[pid];
+    const row=yRank[pid];
+    const leftPct=(col-0.5)/4*100;
+    const topPct=(4-row+0.5)/4*100;
+    a.style.left=leftPct+'%';
+    a.style.top=topPct+'%';
+  });
+}
+
+onSnapshot(collection(db,'first_bingo'),snap=>{
+  snap.forEach(d=>{
+    if(!PLAYERS[d.id])return;
+    const data=d.data();
+    stats[d.id]={
+      chapterProgress:Number(data.chapterProgress||0),
+      points:Number(data.points||0)
+    };
+    if(!(dragging&&dragPid===d.id)){
+      const spot=(data.mapPos!=null)?Number(data.mapPos):Number(data.chapterProgress||0);
+      placeMarker(d.id,spot);
+    }
+  });
+  render();
+},err=>console.error(err));
+
+render();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Shouty Book Club</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;600&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--ink:#2b1d0e;--ink-faded:#5c3d1e;--gold:#8b6914;--gold-lt:#c9a84c;--parch:#f2e8d0;--parch-dark:#e0ceaa;--worn:#c9af82;}
+html,body{background:none;min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var(--ink);display:flex;
+  justify-content:center;align-items:center;}
+#bg{position:fixed;inset:0;z-index:0;background:#e4d0ac;}
+#bg::after{content:'';position:absolute;inset:0;background:
+  radial-gradient(ellipse 70% 50% at 15% 20%,rgba(180,130,60,0.13) 0%,transparent 55%),
+  radial-gradient(ellipse 60% 70% at 85% 75%,rgba(160,110,40,0.10) 0%,transparent 55%),
+  radial-gradient(ellipse 100% 100% at 50% 50%,transparent 60%,rgba(80,40,5,0.18) 100%);}
+
+.wrap{position:relative;z-index:1;min-height:100vh;max-width:1100px;margin:0 auto;padding:2rem 1.5rem;
+  display:grid;grid-template-columns:420px 1fr;gap:3rem;align-items:center;justify-content:center;}
+
+.map-col{position:sticky;top:3rem;display:flex;flex-direction:column;align-items:center;gap:0.75rem;}
+.map-wrap{position:relative;width:100%;max-width:460px;border-radius:12px;overflow:hidden;
+  border:2px solid #c9a84c55;box-shadow:0 0 30px rgba(201,168,76,0.2);user-select:none;background:#0d0a0e;}
+.map-wrap img{display:block;width:100%;height:auto;}
+.marker{position:absolute;width:36px;height:36px;display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;transform:translate(-50%,-50%);z-index:10;
+  filter:drop-shadow(0 1px 3px rgba(0,0,0,0.7));transition:left 0.4s ease,top 0.4s ease;pointer-events:none;}
+.marker.draggable{cursor:grab;pointer-events:all;}
+.marker.draggable:active{cursor:grabbing;}
+.map-tooltip{position:absolute;z-index:30;background:rgba(59,30,6,0.92);color:var(--gold-lt);
+  font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:1px;padding:0.3rem 0.6rem;border-radius:3px;
+  border:1px solid var(--gold-lt);pointer-events:none;white-space:nowrap;transform:translate(-50%,-140%);
+  opacity:0;transition:opacity 0.15s;}
+.map-tooltip.show{opacity:1;}
+.map-hint{font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:1px;color:var(--ink-faded);font-style:italic;text-align:center;}
+
+.right-col{display:flex;flex-direction:column;gap:2rem;}
+.kicker{font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:5px;color:var(--gold);text-transform:uppercase;margin-bottom:0.35rem;text-align:center;}
+.big-title{font-family:'Cinzel',serif;font-size:3.2rem;font-weight:600;letter-spacing:3px;color:var(--ink);line-height:1.1;text-align:center;}
+.ornament{display:flex;align-items:center;gap:0.6rem;margin:0.75rem 0 0;}
+.orn-line{flex:1;height:1px;background:linear-gradient(to right,transparent,var(--worn),transparent);}
+.orn-gem{color:var(--gold);font-size:0.8rem;}
+.intro-text{font-size:1.15rem;line-height:1.85;color:var(--ink-faded);max-width:500px;margin:0 auto;text-align:justify;}
+.intro-text p+p{margin-top:0.9rem;}
+.intro-bold{font-family:'Cinzel',serif;display:block;margin-top:10px;margin-bottom:10px;text-align:center;font-size:1.3rem;letter-spacing:2px;color:var(--ink);}
+
+.player-btns{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem 2.5rem;justify-content:center;}
+.player-btn{display:flex;flex-direction:column;align-items:center;gap:0;text-decoration:none;
+  color:var(--ink);font-family:'Cinzel',serif;letter-spacing:1px;transition:transform 0.3s ease;}
+.player-btn:hover{transform:translateY(-5px);}
+.player-img-frame{position:relative;width:140px;height:140px;margin:0 auto;}
+.player-img-frame::before{content:'';position:absolute;inset:-8px;border-radius:50%;
+  background:conic-gradient(from 0deg,transparent 0%,rgba(201,168,76,0.2) 20%,rgba(201,168,76,0.55) 50%,rgba(201,168,76,0.2) 80%,transparent 100%);
+  animation:spin 12s linear infinite;z-index:0;}
+.player-img-frame::after{content:'';position:absolute;inset:-4px;border-radius:50%;background:var(--parch);z-index:1;}
+.player-img-frame .avatar{position:relative;z-index:2;width:100%;height:100%;object-fit:cover;
+  border-radius:50%;border:2px solid rgba(201,168,76,0.35);}
+.player-btn:hover .avatar{border-color:var(--gold-lt);box-shadow:0 0 25px rgba(201,168,76,0.4);}
+.player-btn .pname{display:block;margin-top:14px;font-size:1.2rem;letter-spacing:2px;color:var(--ink);}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+
+@media(max-width:860px){.wrap{grid-template-columns:1fr;}.map-col{position:static;max-width:460px;width:100%;margin:0 auto;}}
+</style>
+</head>
+<body>
+<div id="bg"></div>
+
+<a href="../index.html" class="home-btn">🏠 Home</a>
+
+<div class="wrap">
+  <aside class="map-col">
+    <div class="map-wrap" id="mapEl">
+      <img src="witchslayer_map.png" class="map-img" alt="Map of WitchSlayer">
+      <div class="map-tooltip" id="mapTooltip"></div>
+    </div>
+    <div class="map-hint" id="mapHint" style="display:none;">Drag your marker to update your progress</div>
+  </aside>
+
+  <div class="right-col">
+    <div>
+      <div class="kicker">The Shouty Book Club</div>
+      <div class="big-title">Hey Emilia,</div>
+    </div>
+
+    <div class="intro-text">
+      <p>Welcome to our bookclub, where we acknowledge that writting books must be hard. Yet reading a bad written book might be even harder. And the one question we want to answer is : </p>
+      <div class="intro-bold">Can they do better than Rebecca ?</div>
+      <p>For our first story, dragons are still main characters and this time, we know why the mingle with human and let's just say, we might be side eyeing a little with this one 👀</p>
+      <p>This is our spoiler-safe sanctuary for chaotic commentary, cursed observations, and the kind of book discussions that start sensible and end with keyboard smashing.</p>
+    </div>
+
+    <div class="ornament">
+      <div class="orn-line"></div>
+      <div class="orn-gem">◆</div>
+      <div class="orn-line"></div>
+    </div>
+
+    <div>
+      <div class="kicker" style="margin-bottom:0.75rem;">Choose your reader</div>
+      <div class="player-btns">
+        <a class="player-btn" href="witchslayer_marine.html">
+          <div class="player-img-frame">
+            <img class="avatar" src="../pdp_marine.png" alt="Marine">
+          </div>
+          <span class="pname">Marine</span>
+        </a>
+        <a class="player-btn" href="witchslayer_kathi.html">
+          <div class="player-img-frame">
+            <img class="avatar" src="../pdp_kathi.png" alt="Kathi">
+          </div>
+          <span class="pname">Kathi</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore, collection, onSnapshot, doc, setDoc }
+  from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const fb = initializeApp({
+  apiKey: "AIzaSyAIQTe-QGQmwqTVmIyJZZ_qlDNsD6GUskY",
+  authDomain: "bingobookclub-2144e.firebaseapp.com",
+  projectId: "bingobookclub-2144e",
+  storageBucket: "bingobookclub-2144e.firebasestorage.app",
+  messagingSenderId: "294177836341",
+  appId: "1:294177836341:web:6d5f11e64737fbe3aad07c"
+});
+const db = getFirestore(fb);
+
+const mapEl   = document.getElementById("mapEl");
+const tooltip = document.getElementById("mapTooltip");
+const mapHint = document.getElementById("mapHint");
+
+const PLAYERS = {
+  marine: { emoji:"🧜‍♀️", offset:{x:0,y:3} },
+  kathi:  { emoji:"🍄",   offset:{x:0,y:-3} },
+};
+
+const MIN_CH = 0, MAX_CH = 43;   // 0 = start, 1–42 = chapters, 43 = epilogue
+
+/* MAP POSITIONS — snake layout following the winding path on the map.
+   42 and the epilogue (43) share the final spot. */
+const POS = {
+  0:  { x:11.55, y:25.06 },
+  1:  { x:25.83, y:23.63 },
+  2:  { x:36.31, y:23.31 },
+  3:  { x:47.50, y:23.79 },
+  4:  { x:58.93, y:23.63 },
+  5:  { x:69.64, y:23.63 },
+  6:  { x:80.83, y:23.63 },
+  7:  { x:88.93, y:33.34 },
+  8:  { x:76.79, y:33.50 },
+  9:  { x:65.83, y:33.19 },
+  10: { x:55.36, y:33.19 },
+  11: { x:43.21, y:33.19 },
+  12: { x:30.12, y:33.03 },
+  13: { x:19.88, y:33.34 },
+  14: { x:12.74, y:43.44 },
+  15: { x:24.64, y:43.76 },
+  16: { x:35.83, y:43.44 },
+  17: { x:47.74, y:43.28 },
+  18: { x:59.88, y:43.44 },
+  19: { x:71.31, y:43.44 },
+  20: { x:82.50, y:43.44 },
+  21: { x:88.93, y:52.99 },
+  22: { x:77.26, y:53.15 },
+  23: { x:65.83, y:53.15 },
+  24: { x:54.40, y:53.15 },
+  25: { x:42.50, y:53.15 },
+  26: { x:30.83, y:53.15 },
+  27: { x:19.17, y:53.31 },
+  28: { x:11.79, y:62.87 },
+  29: { x:23.93, y:62.87 },
+  30: { x:35.60, y:62.87 },
+  31: { x:47.26, y:62.87 },
+  32: { x:59.17, y:62.87 },
+  33: { x:71.07, y:63.02 },
+  34: { x:82.50, y:62.71 },
+  35: { x:87.74, y:72.90 },
+  36: { x:76.55, y:72.58 },
+  37: { x:64.64, y:72.74 },
+  38: { x:52.50, y:72.74 },
+  39: { x:39.88, y:72.58 },
+  40: { x:28.21, y:72.58 },
+  41: { x:16.55, y:72.58 },
+  42: { x:81.31, y:83.73 },
+  43: { x:81.31, y:83.73 },
+};
+
+/* POSITION FINDER — run findMapPosition() in the console to grab x/y values */
+window.findMapPosition = function () {
+  mapEl.style.cursor = "crosshair";
+  console.clear();
+  console.log("Position finder ON. Click the map to print x/y percentages.");
+  mapEl.addEventListener("click", function finderClick(e) {
+    const rect = mapEl.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width  * 100).toFixed(2);
+    const y = ((e.clientY - rect.top)  / rect.height * 100).toFixed(2);
+    console.log(`{ x:${x}, y:${y} }`);
+    const dot = document.createElement("div");
+    dot.style.cssText = `position:absolute;left:${x}%;top:${y}%;width:12px;height:12px;background:red;
+      border:2px solid white;border-radius:50%;transform:translate(-50%,-50%);z-index:99999;pointer-events:none;`;
+    mapEl.appendChild(dot);
+  });
+};
+
+const progress = { marine:0, kathi:0 };
+
+function placeMarker(pid, chNum) {
+  let m = document.getElementById("marker-" + pid);
+  if (!m) {
+    m = document.createElement("div");
+    m.id = "marker-" + pid;
+    m.className = "marker";
+    m.textContent = PLAYERS[pid].emoji;
+    mapEl.appendChild(m);
+  }
+  const clamped = Math.min(Math.max(chNum, MIN_CH), MAX_CH);
+  const p = POS[clamped] || POS[0];
+  const o = PLAYERS[pid].offset;
+  m.style.left = (p.x + o.x) + "%";
+  m.style.top  = (p.y + o.y) + "%";
+}
+
+function snapNearest(cx, cy) {
+  const rect = mapEl.getBoundingClientRect();
+  const xp = (cx - rect.left) / rect.width  * 100;
+  const yp = (cy - rect.top)  / rect.height * 100;
+  let best = 0, bestD = Infinity;
+  for (const [ch, p] of Object.entries(POS)) {
+    const d = Math.hypot(xp - p.x, yp - p.y);
+    if (d < bestD) { bestD = d; best = +ch; }
+  }
+  return best;
+}
+
+/* Drag markers */
+let dragging = false, dragPid = null;
+
+function tryStartDrag(cx, cy) {
+  for (const pid of Object.keys(PLAYERS)) {
+    const m = document.getElementById("marker-" + pid);
+    if (!m) continue;
+    const r = m.getBoundingClientRect();
+    if (Math.hypot(cx - (r.left + r.width/2), cy - (r.top + r.height/2)) < 24) {
+      dragging = true; dragPid = pid;
+      m.classList.add("draggable");
+      m.style.transition = "none";
+      return;
+    }
+  }
+}
+mapEl.addEventListener("mousedown", e => tryStartDrag(e.clientX, e.clientY));
+mapEl.addEventListener("touchstart", e => tryStartDrag(e.touches[0].clientX, e.touches[0].clientY), {passive:true});
+
+function onMove(cx, cy) {
+  if (!dragging || !dragPid) return;
+  const rect = mapEl.getBoundingClientRect();
+  const xp = Math.min(Math.max((cx - rect.left) / rect.width  * 100, 2), 98);
+  const yp = Math.min(Math.max((cy - rect.top)  / rect.height * 100, 2), 98);
+  const m = document.getElementById("marker-" + dragPid);
+  if (m) { m.style.left = xp + "%"; m.style.top = yp + "%"; }
+  const ch = snapNearest(cx, cy);
+  tooltip.textContent = ch === 0 ? "Start" : ch === 43 ? "Epilogue" : "Chapter " + ch;
+  tooltip.style.left = xp + "%";
+  tooltip.style.top  = yp + "%";
+  tooltip.classList.add("show");
+}
+window.addEventListener("mousemove", e => { if (dragging) onMove(e.clientX, e.clientY); });
+window.addEventListener("touchmove", e => { if (dragging) onMove(e.touches[0].clientX, e.touches[0].clientY); }, {passive:true});
+
+async function endDrag(cx, cy) {
+  if (!dragging) return;
+  dragging = false;
+  tooltip.classList.remove("show");
+  const m = document.getElementById("marker-" + dragPid);
+  if (m) { m.style.transition = ""; m.classList.remove("draggable"); }
+
+  const chNum = snapNearest(cx, cy);
+  progress[dragPid] = chNum;
+  placeMarker(dragPid, chNum);
+
+  // Save the CHAPTER reached (0–43). Player pages unlock rooms by chapter threshold.
+  await setDoc(doc(db, "progress_spoiler", dragPid), { chapter: chNum }, { merge:true });
+  dragPid = null;
+}
+window.addEventListener("mouseup", e => endDrag(e.clientX, e.clientY));
+window.addEventListener("touchend", e => endDrag(e.changedTouches[0].clientX, e.changedTouches[0].clientY));
+
+/* Starting markers */
+placeMarker("marine", 0);
+placeMarker("kathi", 0);
+mapHint.style.display = "block";
+
+/* Live markers — listen to Firebase and update positions */
+onSnapshot(collection(db, "progress_spoiler"), snap => {
+  snap.forEach(d => {
+    if (!PLAYERS[d.id]) return;
+    const chNum = d.data().chapter ?? 0;   // chapter-based now
+    progress[d.id] = chNum;
+    placeMarker(d.id, chNum);
+  });
+  mapHint.style.display = "block";
+}, err => console.error(err));
+</script>
+</body>
+</html>

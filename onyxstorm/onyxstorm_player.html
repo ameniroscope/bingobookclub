@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="../style.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;600;700&display=swap');
+:root{
+  --player:#8a9ab5;--player-glow:rgba(138,154,181,0.35);
+  --ink:#1a1a24;--ink-faded:#3d3d52;
+  --silver:#8a9ab5;--silver-lt:#c2cfe0;--silver-dim:#6b7a91;
+  --parch:#ede8df;--parch-dark:#d9d2c5;--worn:#b0a898;
+  --storm:#2a3040;
+}
+html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var(--ink);}
+#bg{position:fixed;inset:0;z-index:0;background:#ddd8cd;}
+#bg::after{content:'';position:absolute;inset:0;background:
+  radial-gradient(ellipse 70% 50% at 15% 20%,rgba(100,120,160,0.12) 0%,transparent 55%),
+  radial-gradient(ellipse 60% 70% at 85% 75%,rgba(80,100,140,0.09) 0%,transparent 55%),
+  radial-gradient(ellipse 100% 100% at 50% 50%,transparent 60%,rgba(20,25,40,0.2) 100%);}
+
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+
+/* ── TOP-RIGHT: back to book hub ── */
+.players-btn{background:var(--storm);color:var(--silver-lt);border-color:var(--silver-dim);box-shadow:0 2px 8px rgba(0,0,0,0.3);}
+.players-btn:hover{background:#1a1d2a;border-color:var(--silver-lt);transform:translateY(-2px);box-shadow:0 0 18px rgba(138,154,181,0.3);}
+
+/* ── PLAYER HEADER ── */
+.player-header{display:flex;flex-direction:column;align-items:center;gap:0.6rem;position:relative;z-index:1;padding:2.2rem 1rem 0.5rem;}
+.img-frame{position:relative;width:110px;height:110px;}
+.img-frame::before{content:'';position:absolute;inset:-8px;border-radius:50%;
+  background:conic-gradient(from 0deg,transparent 0%,var(--ring,#8a9ab533) 20%,var(--ring-bright,#8a9ab588) 50%,var(--ring,#8a9ab533) 80%,transparent 100%);
+  animation:spin 12s linear infinite;z-index:0;}
+.img-frame::after{content:'';position:absolute;inset:-4px;border-radius:50%;background:var(--parch);z-index:1;}
+.img-frame img{position:relative;z-index:2;width:100%;height:100%;object-fit:cover;border-radius:50%;border:2px solid var(--player);}
+.player-name{font-family:'Cinzel',serif;font-size:2rem;font-weight:700;color:var(--ink);letter-spacing:2px;text-shadow:0 0 20px var(--player-glow);}
+
+/* ── LAYOUT ── */
+.wrap{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:1.5rem 2rem 4rem;
+  display:grid;grid-template-columns:1fr 1.15fr;gap:3rem;align-items:start;}
+@media(max-width:860px){.wrap{grid-template-columns:1fr;gap:2.5rem;padding:1.5rem 1.2rem 3rem;}}
+
+.section-title{font-family:'Cinzel',serif;font-size:1.5rem;letter-spacing:5px;color:var(--silver-dim);text-transform:uppercase;text-align:center;margin-bottom:1rem;}
+
+/* ── BINGO ── */
+.bingo-section{display:flex;flex-direction:column;}
+.points-line{display:flex;flex-direction:column;align-items:flex-start;gap:0.1rem;width:100%;max-width:440px;margin:0.1rem auto 0.9rem;padding-left:5px;
+  font-family:'Cinzel',serif;letter-spacing:1px;color:var(--ink);}
+.points-line .pts-row{display:flex;align-items:baseline;gap:0.4rem;}
+.points-line .pts-total{font-size:1.6rem;font-weight:700;color:var(--silver-dim);text-shadow:0 0 20px var(--player-glow);}
+.points-line .pts-label{font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--ink-faded);}
+.points-line .pts-break{display:block;width:100%;font-size:0.7rem;color:var(--ink-faded);font-style:italic;font-family:'IM Fell English',serif;letter-spacing:0;}
+.bingo-controls{position:absolute;left:-52px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:0.5rem;z-index:3;}
+.bingo-lock-btn{background:var(--parch);border:1px solid var(--worn);border-radius:50%;width:38px;height:38px;cursor:pointer;
+  font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;padding:0;}
+.bingo-lock-btn:hover{border-color:var(--silver-dim);}
+.bingo-lock-btn.unlocked{border-color:var(--silver-dim);background:rgba(138,154,181,0.15);}
+.bingo-card-wrap{position:relative;width:100%;max-width:440px;margin:0 auto;aspect-ratio:1024/1536;
+  background-image:url('onyxstorm_bingo.png');background-size:100% 100%;
+  box-shadow:0 0 30px rgba(138,154,181,0.18);}
+.bingo-grid{position:absolute;left:50%;top:34.7%;width:73%;aspect-ratio:1/1;transform:translateX(-50%);display:grid;
+  grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(5,1fr);}
+.bingo-cell{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-size:clamp(7px,1.3vw,11px);
+  line-height:1.2;text-align:center;padding:2px;overflow:hidden;cursor:pointer;transition:background 0.15s;border-radius:3px;}
+.bingo-cell.marked{background:var(--player-glow);box-shadow:inset 0 0 0 1px var(--player);}
+.bingo-cell.free{font-weight:600;color:var(--silver-dim);cursor:default;}
+.cell-text{width:100%;height:100%;display:flex;align-items:center;justify-content:center;text-align:center;
+  font-family:'IM Fell English',Georgia,serif;font-size:inherit;line-height:1.2;color:#2a1a0a;padding:2px;overflow-wrap:break-word;word-break:break-word;}
+.bingo-cell textarea{width:100%;height:100%;border:none;background:rgba(138,154,181,0.12);outline:none;resize:none;
+  text-align:center;font-family:'IM Fell English',Georgia,serif;font-size:inherit;line-height:1.2;color:#2a1a0a;padding:2px;overflow:hidden;overflow-wrap:break-word;word-break:break-word;}
+.bingo-hint{font-size:11px;color:var(--silver-dim);margin-top:8px;font-style:italic;text-align:center;}
+.bingo-status{font-size:11px;color:var(--ink-faded);font-style:italic;text-align:center;margin-top:4px;min-height:1em;}
+
+/* ── ROOMS ── */
+.rooms-col{display:flex;flex-direction:column;justify-content:center;align-self:center;}
+.legend{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap;color:var(--ink-faded);font-size:0.85rem;margin-bottom:1rem;}
+.legend span{display:flex;align-items:center;gap:0.35rem;}
+.legend .dot{width:11px;height:11px;border-radius:50%;display:inline-block;}
+.legend .dot.unlocked{background:rgba(138,154,181,0.2);border:1px solid var(--silver-dim);}
+.legend .dot.locked{background:var(--parch-dark);border:1px solid var(--worn);}
+.rooms-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.room-btn{position:relative;height:58px;display:flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;
+  transition:all 0.2s;font-family:'Cinzel',serif;font-size:1rem;letter-spacing:0.5px;text-align:center;padding:0 0.5rem;}
+.room-btn:hover{transform:translateY(-2px);}
+.room-btn.unlocked{background:rgba(138,154,181,0.12);border:1px solid var(--silver-dim);color:var(--ink);box-shadow:0 0 8px rgba(138,154,181,0.15);}
+.room-btn.unlocked:hover{background:rgba(138,154,181,0.22);box-shadow:0 0 14px rgba(138,154,181,0.3);}
+.room-btn.locked{background:var(--parch-dark);border:1px solid var(--worn);color:var(--ink-faded);}
+.room-btn.locked:hover{border-color:var(--silver-dim);}
+.room-btn .lock-ico{position:absolute;top:6px;right:6px;font-size:1rem;opacity:0.5;}
+.room-btn .unread-dot{position:absolute;top:6px;left:8px;width:8px;height:8px;border-radius:50%;
+  background:var(--silver-dim);box-shadow:0 0 6px rgba(138,154,181,0.7);display:none;}
+.room-btn.has-unread .unread-dot{display:block;}
+
+/* ── CHAT MODAL ── */
+.overlay{position:fixed;inset:0;z-index:200;background:rgba(20,20,28,0.78);backdrop-filter:blur(4px);
+  display:flex;align-items:center;justify-content:center;
+  padding:1rem;padding-bottom:max(1rem,env(safe-area-inset-bottom));
+  opacity:0;pointer-events:none;transition:opacity 0.2s;}
+.overlay.open{opacity:1;pointer-events:all;}
+.chat-modal{background:var(--parch);border:2px solid var(--worn);border-radius:12px;width:100%;max-width:600px;
+  height:80vh;height:80dvh;max-height:80vh;max-height:80dvh;
+  display:flex;flex-direction:column;box-shadow:0 8px 40px rgba(0,0,0,0.45);
+  transform:translateY(12px);transition:transform 0.2s;overflow:hidden;}
+.overlay.open .chat-modal{transform:translateY(0);}
+.chat-hdr{flex-shrink:0;padding:1rem 1.25rem;border-bottom:1px solid var(--worn);
+  display:flex;align-items:flex-start;justify-content:space-between;gap:0.5rem;}
+.chat-room-label{font-family:'Cinzel',serif;font-size:0.68rem;letter-spacing:2px;color:var(--silver-dim);text-transform:uppercase;}
+.chat-title{font-family:'Cinzel',serif;font-size:1.2rem;font-weight:600;color:var(--ink);letter-spacing:1px;}
+.chat-status{display:inline-block;margin-top:5px;font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:1px;padding:0.22rem 0.6rem;border-radius:3px;text-transform:uppercase;}
+.chat-status.unlocked{background:var(--silver-dim);color:var(--parch);}
+.chat-status.locked{background:var(--parch-dark);color:var(--ink-faded);border:1px solid var(--worn);}
+.close-btn{background:none;border:none;cursor:pointer;color:var(--ink-faded);font-size:1.5rem;line-height:1;padding:0.1rem;transition:color 0.15s;flex-shrink:0;}
+.close-btn:hover{color:var(--ink);}
+.messages{flex:1;min-height:0;overflow-y:auto;padding:1rem 1.2rem;display:flex;flex-direction:column;gap:0.7rem;}
+.empty-msg,.write-note{font-size:1rem;color:var(--ink-faded);font-style:italic;text-align:center;margin:auto;line-height:1.8;}
+.write-note strong{display:block;font-family:'Cinzel',serif;font-size:0.85rem;font-style:normal;letter-spacing:1px;margin-bottom:0.3rem;color:var(--ink);text-transform:uppercase;}
+.msg{display:flex;flex-direction:column;gap:0.15rem;align-items:flex-start;}
+.msg.mine{align-items:flex-end;}
+.msg-name{display:block;font-family:'Cinzel',serif;font-size:0.8rem;letter-spacing:1px;color:var(--ink);margin-bottom:0.15rem;}
+.msg-text{display:block;font-family:'IM Fell English',Georgia,serif;font-size:1rem;color:var(--ink);line-height:1.6;
+  max-width:min(85%,420px);background:rgba(138,154,181,0.12);border:1px solid var(--worn);
+  padding:0.5rem 0.75rem;border-radius:8px;word-break:break-word;}
+.msg.mine .msg-text{background:var(--player);border-color:var(--player);color:var(--parch);}
+.compose{flex-shrink:0;border-top:1px solid var(--worn);padding:0.7rem 1rem;
+  padding-bottom:max(0.7rem,env(safe-area-inset-bottom));display:flex;gap:0.5rem;align-items:flex-end;}
+.compose textarea{flex:1;resize:none;min-height:42px;max-height:110px;background:rgba(255,255,255,0.6);border:1px solid var(--worn);border-radius:8px;
+  padding:0.5rem 0.7rem;font-family:'IM Fell English',serif;font-size:1rem;color:var(--ink);line-height:1.5;}
+.compose textarea::placeholder{color:var(--worn);font-style:italic;}
+.compose textarea:focus{outline:none;border-color:var(--silver-dim);}
+.send-btn{height:42px;padding:0 1.1rem;background:var(--storm);border:1px solid var(--silver-dim);border-radius:8px;color:var(--silver-lt);
+  font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;white-space:nowrap;flex-shrink:0;}
+.send-btn:hover{background:#1a1d2a;border-color:var(--silver-lt);}
+
+/* ── PASSWORD MODAL ── */
+.lock-modal-wrap{display:none;position:fixed;inset:0;z-index:400;background:#11131c;align-items:center;justify-content:center;flex-direction:column;padding:2rem;text-align:center;}
+.lock-modal-wrap.open{display:flex;}
+.lock-club{font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:6px;color:var(--silver-dim);text-transform:uppercase;margin-bottom:0.4rem;}
+.lock-title{font-family:'Cinzel',serif;font-size:clamp(1.6rem,5vw,2.4rem);font-weight:700;color:var(--parch);letter-spacing:2px;margin-bottom:1.6rem;text-shadow:0 0 40px rgba(138,154,181,0.25);}
+.lock-modal-wrap input{width:min(320px,90vw);height:52px;text-align:center;font-family:'Cinzel',serif;font-size:1rem;letter-spacing:2px;
+  background:#1a1d2a;border:1px solid var(--silver-dim);border-radius:8px;color:var(--parch);margin-bottom:1rem;}
+.lock-modal-wrap input:focus{outline:none;border-color:var(--silver-lt);box-shadow:0 0 16px rgba(138,154,181,0.3);}
+.lock-modal-wrap button{width:min(320px,90vw);height:52px;cursor:pointer;font-family:'Cinzel',serif;text-transform:uppercase;letter-spacing:3px;
+  background:var(--storm);border:1px solid var(--silver-dim);border-radius:8px;color:var(--silver-lt);transition:all 0.25s ease;}
+.lock-modal-wrap button:hover{background:#1a1d2a;border-color:var(--silver-lt);box-shadow:0 0 20px rgba(138,154,181,0.25);}
+.lock-error{color:#d98a8a;font-size:0.9rem;min-height:1.2rem;margin-top:0.8rem;letter-spacing:1px;}
+
+/* ── UNKNOWN PLAYER ── */
+.unknown-wrap{display:none;position:fixed;inset:0;z-index:400;background:#11131c;align-items:center;justify-content:center;flex-direction:column;gap:1rem;padding:2rem;text-align:center;}
+.unknown-wrap.open{display:flex;}
+
+@media(max-width:860px){
+  .home-btn{bottom:1rem;left:1rem;font-size:0.62rem;padding:0.5rem 0.8rem;}
+  .rooms-grid{grid-template-columns:repeat(2,1fr);}
+  .bingo-controls{position:static;flex-direction:row;left:auto;top:auto;transform:none;justify-content:center;margin-bottom:0.7rem;}
+}
+@media(max-width:600px){
+  .overlay{padding:0;align-items:flex-end;}
+  .chat-modal{height:92vh;height:92dvh;max-height:92vh;max-height:92dvh;border-radius:16px 16px 0 0;border-bottom:none;}
+  .msg-text{max-width:90%;}
+}
+</style>
+</head>
+<body>
+<div id="bg"></div>
+
+<!-- UNKNOWN PLAYER FALLBACK -->
+<div class="unknown-wrap" id="unknownWrap">
+  <div style="font-family:'Cinzel',serif;font-size:1.2rem;color:var(--silver-lt);">Who goes there?</div>
+  <div style="color:var(--parch-dark);font-size:0.95rem;">No player found. Go back and choose your avatar.</div>
+  <a href="onyxstorm.html" style="margin-top:1rem;font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:2px;color:var(--silver-lt);text-decoration:none;border:1px solid var(--silver-dim);padding:0.6rem 1.2rem;border-radius:6px;">← Back</a>
+</div>
+
+<!-- PASSWORD MODAL -->
+<div class="lock-modal-wrap open" id="initialLockModal">
+  <div class="lock-club">The Bingo Book Club</div>
+  <div class="lock-title" id="lockTitle">Enter Your Code</div>
+  <input type="text" id="initialPasswordInput" placeholder="password" autocomplete="off">
+  <button id="initialUnlockSubmit" type="button">Enter</button>
+  <div class="lock-error" id="initialLockError"></div>
+</div>
+
+<div id="mainContent" style="display:none;">
+
+  <!-- TOP-RIGHT: back to players -->
+  <a href="onyxstorm.html" class="players-btn">📖 Onyx Storm</a>
+
+  <!-- BOTTOM-LEFT: home -->
+  <a href="../index.html" class="home-btn"><span class="home-btn-icon">🏠</span> Home</a>
+
+  <div class="player-header">
+    <div class="img-frame"><img id="playerPhoto" src="" alt="Player Photo"></div>
+    <div class="player-name" id="playerHeaderName"></div>
+  </div>
+
+  <div class="wrap">
+    <div class="bingo-section">
+      <div class="points-line">
+        <div class="pts-row"><span class="pts-total" id="ptsTotal">0</span><span class="pts-label">pts</span></div>
+        <span class="pts-break" id="ptsBreak"></span>
+      </div>
+      <div class="bingo-card-wrap">
+        <div class="bingo-controls">
+          <button class="bingo-lock-btn unlocked" id="bingoEditBtn" title="Toggle edit mode">✏️</button>
+        </div>
+        <div class="bingo-grid" id="bingoGrid"></div>
+      </div>
+      <div class="bingo-hint" id="bingoHint">Click squares to mark them</div>
+      <div class="bingo-status" id="bingoStatus"></div>
+    </div>
+
+    <div class="rooms-col">
+      <div class="section-title">Chapter Rooms</div>
+      <div class="legend">
+        <span><i class="dot locked"></i> Locked : post only, no spoilers !</span>
+        <span><i class="dot unlocked"></i> Unlocked : read &amp; post</span>
+      </div>
+      <div class="rooms-grid" id="roomsGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CHAT MODAL -->
+<div class="overlay" id="overlay">
+  <div class="chat-modal">
+    <div class="chat-hdr">
+      <div>
+        <div class="chat-room-label" id="chatRoomLabel"></div>
+        <div class="chat-title" id="chatTitle"></div>
+        <span class="chat-status" id="chatStatus"></span>
+      </div>
+      <button class="close-btn" id="chatClose">✕</button>
+    </div>
+    <div class="messages" id="chatMessages"></div>
+    <div class="compose">
+      <textarea id="chatTA" rows="1" placeholder="Leave a thought…"></textarea>
+      <button class="send-btn" id="chatSend">Post</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore, collection, getDocs, addDoc, onSnapshot, doc, setDoc, getDoc, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+/* ── chapter rooms grouped in chunks, matching the reading map (chapters 1–67) ── */
+const CHAPTER_GROUPS = [
+  { label:"Ch 1 – 8",   first:1,  last:8,  unlock:9  },
+  { label:"Ch 9 – 16",  first:9,  last:16, unlock:17 },
+  { label:"Ch 17 – 24", first:17, last:24, unlock:25 },
+  { label:"Ch 25 – 32", first:25, last:32, unlock:33 },
+  { label:"Ch 33 – 40", first:33, last:40, unlock:41 },
+  { label:"Ch 41 – 48", first:41, last:48, unlock:49 },
+  { label:"Ch 49 – 56", first:49, last:56, unlock:57 },
+  { label:"Ch 57 – 67", first:57, last:67, unlock:67 },
+];
+
+const POINTS_PER_CELL = 1;
+const POINTS_PER_LINE = 5;
+
+const fb = initializeApp({
+  apiKey:"AIzaSyAIQTe-QGQmwqTVmIyJZZ_qlDNsD6GUskY",
+  authDomain:"bingobookclub-2144e.firebaseapp.com",
+  projectId:"bingobookclub-2144e",
+  storageBucket:"bingobookclub-2144e.firebasestorage.app",
+  messagingSenderId:"294177836341",
+  appId:"1:294177836341:web:6d5f11e64737fbe3aad07c"
+});
+const db = getFirestore(fb);
+
+/* ════════ ALL PLAYER CONFIGS (Firestore: accessCode collection, doc id = pid) ════════ */
+const PLAYERS = {};
+const accessSnap = await getDocs(collection(db,'accessCode'));
+accessSnap.forEach(d => PLAYERS[d.id] = d.data());
+/* ═══════════════════════════════════════════════════════════════════════════════════ */
+
+/* ── RESOLVE PLAYER FROM URL ── */
+const params = new URLSearchParams(window.location.search);
+const PID = params.get('p') || '';
+const PCFG = PLAYERS[PID];
+
+if(!PCFG){
+  document.getElementById('initialLockModal').classList.remove('open');
+  document.getElementById('unknownWrap').classList.add('open');
+  throw new Error('Unknown player: '+PID);
+}
+
+const { name:PNAME, emoji:PEMOJI, color:PCOLOR, password:PASSWORD } = PCFG;
+
+function hexA(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;}
+document.documentElement.style.setProperty('--player',PCOLOR);
+document.documentElement.style.setProperty('--player-glow',hexA(PCOLOR,0.35));
+const frame=document.querySelector('.img-frame');
+if(frame){frame.style.setProperty('--ring',hexA(PCOLOR,0.25));frame.style.setProperty('--ring-bright',hexA(PCOLOR,0.7));}
+
+document.title=`${PNAME} – Onyx Storm`;
+document.getElementById('playerHeaderName').textContent=PNAME;
+document.getElementById('playerPhoto').src='../pdp_'+PID+'.png';
+document.getElementById('lockTitle').textContent=`Enter Your Code, ${PNAME}`;
+
+/* ── PASSWORD GATE ── */
+const initialLockModal=document.getElementById('initialLockModal');
+const initialPasswordInput=document.getElementById('initialPasswordInput');
+const initialUnlockSubmit=document.getElementById('initialUnlockSubmit');
+const initialLockError=document.getElementById('initialLockError');
+const mainContent=document.getElementById('mainContent');
+
+function checkInitialPassword(){
+  if(initialPasswordInput.value.trim()===PASSWORD){
+    initialLockModal.classList.remove('open');
+    mainContent.style.display='block';
+    init();
+  }else{
+    initialLockError.textContent='Incorrect password';
+    initialPasswordInput.value='';initialPasswordInput.focus();
+  }
+}
+initialUnlockSubmit.addEventListener('click',checkInitialPassword);
+initialPasswordInput.addEventListener('keydown',e=>{if(e.key==='Enter')checkInitialPassword();});
+
+/* ── BINGO ── */
+const GRID_SIZE=25;
+let cells=Array(GRID_SIZE).fill('');
+let markedSet=new Set([12]);
+let isEditMode=false,isSaving=false;
+
+const bingoGrid=document.getElementById('bingoGrid'),
+      bingoHint=document.getElementById('bingoHint'),
+      bingoStatus=document.getElementById('bingoStatus'),
+      editBtn=document.getElementById('bingoEditBtn');
+
+editBtn.addEventListener('click',()=>{
+  isEditMode=!isEditMode;
+  editBtn.textContent=isEditMode?'👁️':'✏️';
+  editBtn.title=isEditMode?'Switch to play mode':'Switch to edit mode';
+  bingoHint.textContent=isEditMode?'Edit mode — type in squares':'Click squares to mark them';
+  renderBingo();
+});
+
+function countLines(){
+  let lines=0;
+  for(let r=0;r<5;r++)if([0,1,2,3,4].every(c=>markedSet.has(r*5+c)))lines++;
+  for(let c=0;c<5;c++)if([0,1,2,3,4].every(r=>markedSet.has(r*5+c)))lines++;
+  if([0,1,2,3,4].every(i=>markedSet.has(i*5+i)))lines++;
+  if([0,1,2,3,4].every(i=>markedSet.has(i*5+(4-i))))lines++;
+  return lines;
+}
+function calcPoints(){
+  let cellCount=0;
+  markedSet.forEach(i=>{if(i!==12)cellCount++;});
+  return cellCount*POINTS_PER_CELL+countLines()*POINTS_PER_LINE;
+}
+function renderPoints(){
+  let cellCount=0;
+  markedSet.forEach(i=>{if(i!==12)cellCount++;});
+  const lines=countLines();
+  document.getElementById('ptsTotal').textContent=calcPoints();
+  document.getElementById('ptsBreak').textContent=
+    `${cellCount} cell${cellCount===1?'':'s'} + ${lines} line${lines===1?'':'s'}`;
+}
+function renderBingo(){
+  bingoGrid.innerHTML='';
+  for(let i=0;i<GRID_SIZE;i++){
+    const isFree=i===12;
+    const cell=document.createElement('div');
+    cell.className='bingo-cell'+(isFree?' free':markedSet.has(i)?' marked':'');
+    if(isFree){cell.style.cursor='default';}
+    else if(isEditMode){
+      const ta=document.createElement('textarea');
+      ta.value=cells[i];
+      ta.addEventListener('input',e=>{cells[i]=e.target.value;});
+      ta.addEventListener('blur',saveBingo);
+      cell.appendChild(ta);
+    }else{
+      const txt=document.createElement('div');txt.className='cell-text';txt.textContent=cells[i];cell.appendChild(txt);
+      cell.style.cursor='pointer';
+      cell.addEventListener('click',async()=>{
+        markedSet.has(i)?markedSet.delete(i):markedSet.add(i);
+        renderBingo();await saveBingo();
+      });
+    }
+    bingoGrid.appendChild(cell);
+  }
+  renderPoints();
+}
+async function saveBingo(){
+  if(isSaving)return;isSaving=true;bingoStatus.textContent='Saving…';
+  try{
+    await setDoc(doc(db,'onyxstorm_bingo',PID),{
+      cells,marked:[...markedSet],points:calcPoints(),lines:countLines(),name:PNAME,emoji:PEMOJI
+    },{merge:true});
+    bingoStatus.textContent='Saved ✓';
+  }catch(e){console.error(e);bingoStatus.textContent='Save failed';}
+  finally{isSaving=false;setTimeout(()=>{bingoStatus.textContent='';},2000);}
+}
+async function loadBingo(){
+  bingoStatus.textContent='Loading…';
+  try{
+    const d=await getDoc(doc(db,'onyxstorm_bingo',PID));
+    if(d.exists()){
+      const data=d.data();
+      if(Array.isArray(data.cells))cells=data.cells;
+      if(Array.isArray(data.marked)){
+        markedSet=new Set(data.marked.filter(v=>typeof v==='number'&&Number.isInteger(v)&&v>=0&&v<=24));
+        markedSet.add(12);
+      }
+    }
+  }catch(e){console.error(e);}
+  renderBingo();bingoStatus.textContent='';
+}
+
+/* ── PROGRESS + ROOMS ── */
+let myProgress=0,activeRoom=null,activeUnsub=null,globalMsgUnsub=null;
+
+const STORAGE_KEY=`os_lastread_${PID}`;
+function getLastRead(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');}catch{return {};}}
+function setLastRead(ch){
+  const lr=getLastRead();
+  lr[ch]=Math.floor(Date.now()/1000);
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(lr));
+}
+
+const unreadGroups=new Set();
+
+function init(){
+  loadBingo();
+  onSnapshot(doc(db,'onyxstorm_bingo',PID),d=>{
+    if(d.exists())myProgress=Number(d.data().chapterProgress||0);
+    renderRooms();
+  },err=>console.error(err));
+
+  // ONE global listener for unread tracking — never duplicated
+  globalMsgUnsub=onSnapshot(collection(db,'onyxstorm_messages'),snap=>{
+    const lr=getLastRead();
+    unreadGroups.clear();
+    snap.forEach(d=>{
+      const m=d.data();
+      if(!m.ts||!m.ts.seconds)return;
+      const ch=Number(String(m.chapter).replace(/chapter-?/i,'').replace(/chap/i,'').trim());
+      const grp=CHAPTER_GROUPS.find(g=>ch>=g.first&&ch<=g.last);
+      if(!grp)return;
+      if(myProgress<grp.unlock)return;
+      const lastSeen=lr[grp.first]||0;
+      if(m.ts.seconds>lastSeen&&m.name!==PNAME&&m.name!==PID){
+        unreadGroups.add(grp.first);
+      }
+    });
+    renderRooms();
+  },err=>console.error(err));
+}
+
+const roomsGrid=document.getElementById('roomsGrid');
+function renderRooms(){
+  roomsGrid.innerHTML='';
+  CHAPTER_GROUPS.forEach(grp=>{
+    const unlocked=myProgress>=grp.unlock;
+    const hasUnread=unlocked&&unreadGroups.has(grp.first);
+    const btn=document.createElement('div');
+    btn.className='room-btn '+(unlocked?'unlocked':'locked')+(hasUnread?' has-unread':'');
+    btn.innerHTML=`<span class="unread-dot"></span>`
+      +(unlocked?'':'<span class="lock-ico">🔒</span>')
+      +grp.label;
+    btn.addEventListener('click',()=>openChat(grp));
+    roomsGrid.appendChild(btn);
+  });
+}
+
+/* ── CHAT ── */
+const overlay=document.getElementById('overlay'),
+      chatClose=document.getElementById('chatClose'),
+      chatTA=document.getElementById('chatTA'),
+      chatSend=document.getElementById('chatSend');
+
+function openChat(grp){
+  activeRoom=grp;
+  const canRead=myProgress>=grp.unlock;
+  document.getElementById('chatRoomLabel').textContent='Chapter Room';
+  document.getElementById('chatTitle').textContent=grp.label;
+  const st=document.getElementById('chatStatus');
+  st.className='chat-status '+(canRead?'unlocked':'locked');
+  st.textContent=canRead?'Unlocked — all messages visible':'Write only';
+  overlay.classList.add('open');document.body.style.overflow='hidden';
+  chatTA.value='';chatTA.style.height='auto';
+  setLastRead(grp.first);
+  unreadGroups.delete(grp.first);
+  renderRooms();
+  subscribeChat(grp);
+}
+function closeChat(){
+  overlay.classList.remove('open');document.body.style.overflow='';
+  if(activeUnsub){activeUnsub();activeUnsub=null;}activeRoom=null;
+}
+chatClose.addEventListener('click',closeChat);
+overlay.addEventListener('click',e=>{if(e.target===overlay)closeChat();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&overlay.classList.contains('open'))closeChat();});
+chatTA.addEventListener('input',()=>{chatTA.style.height='auto';chatTA.style.height=chatTA.scrollHeight+'px';});
+chatTA.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}});
+chatSend.addEventListener('click',sendMsg);
+
+function msgInGroup(m,grp){
+  const n=Number(String(m.chapter).replace(/chapter-?/i,'').replace(/chap/i,'').trim());
+  return n>=grp.first&&n<=grp.last;
+}
+
+function subscribeChat(grp){
+  if(activeUnsub){activeUnsub();activeUnsub=null;}
+  const msgDiv=document.getElementById('chatMessages');
+  msgDiv.innerHTML='<span class="empty-msg">Loading…</span>';
+  activeUnsub=onSnapshot(collection(db,'onyxstorm_messages'),snap=>{
+    const canRead=myProgress>=grp.unlock;
+    let msgs=[];
+    snap.forEach(d=>{const m=d.data();if(msgInGroup(m,grp))msgs.push(m);});
+    msgs.sort((a,b)=>(a.ts?.seconds||0)-(b.ts?.seconds||0));
+    if(!canRead)msgs=msgs.filter(m=>m.name===PNAME||m.name===PID);
+    msgDiv.innerHTML='';
+    if(msgs.length===0){
+      msgDiv.innerHTML=(!canRead)
+        ?`<div class="write-note"><strong>Write mode</strong>Post freely — you'll see everyone's thoughts once you reach chapter ${grp.unlock}.</div>`
+        :`<span class="empty-msg">No thoughts yet. Be the first!</span>`;
+      return;
+    }
+    msgs.forEach(m=>{
+      const isMine=m.name===PNAME||m.name===PID;
+      const pid=Object.keys(PLAYERS).find(k=>PLAYERS[k].name===m.name||k===m.name);
+      const info=pid?PLAYERS[pid]:null;
+      const emoji=info?info.emoji:'✦';
+      const name=info?info.name:String(m.name||'?');
+      const color=info?info.color:'#8a9ab5';
+      const el=document.createElement('div');
+      el.className='msg'+(isMine?' mine':'');
+      el.innerHTML=`<span class="msg-name">${emoji} ${esc(name)}</span>`
+        +`<span class="msg-text" style="${isMine?`background:${PCOLOR};border-color:${PCOLOR}`:`background:${color}22;border-color:${color}44`}">${esc(String(m.text||''))}</span>`;
+      msgDiv.appendChild(el);
+    });
+    msgDiv.scrollTop=msgDiv.scrollHeight;
+  },err=>{
+    msgDiv.innerHTML=`<span class="empty-msg">Could not load messages: ${esc(err.message)}</span>`;
+  });
+}
+
+async function sendMsg(){
+  const text=chatTA.value.trim();
+  if(!text||activeRoom===null)return;
+  chatSend.disabled=true;
+  chatTA.disabled=true;
+  try{
+    await addDoc(collection(db,'onyxstorm_messages'),{
+      chapter:activeRoom.first,name:PNAME,text,ts:serverTimestamp()
+    });
+    chatTA.value='';chatTA.style.height='auto';
+    setLastRead(activeRoom.first);
+  }catch(e){console.error(e);}
+  finally{
+    chatSend.disabled=false;
+    chatTA.disabled=false;
+    chatTA.focus();
+  }
+}
+
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
+</script>
+</body>
+</html>
