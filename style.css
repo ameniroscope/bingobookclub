@@ -138,11 +138,14 @@ html, body {
     font-size: 1rem;
 }
 
-/* Mobile: Home button in flow */
+/* Mobile: keep Home button floating, just smaller */
 @media (max-width: 767px) {
     .home-btn {
-        position: static;
-        margin: 20px auto 0;
+        bottom: 0.8rem;
+        left: 0.8rem;
+        width: 84px;
+        height: 36px;
+        font-size: 0.6rem;
     }
 }
 
