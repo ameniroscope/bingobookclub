@@ -247,14 +247,20 @@ import { getFirestore, collection, getDocs, addDoc, onSnapshot, doc, setDoc, get
 
 /* ── chapter rooms grouped in chunks, matching the reading map (chapters 1–67) ── */
 const CHAPTER_GROUPS = [
-  { label:"Ch 1 – 8",   first:1,  last:8,  unlock:9  },
-  { label:"Ch 9 – 16",  first:9,  last:16, unlock:17 },
-  { label:"Ch 17 – 24", first:17, last:24, unlock:25 },
-  { label:"Ch 25 – 32", first:25, last:32, unlock:33 },
-  { label:"Ch 33 – 40", first:33, last:40, unlock:41 },
-  { label:"Ch 41 – 48", first:41, last:48, unlock:49 },
-  { label:"Ch 49 – 56", first:49, last:56, unlock:57 },
-  { label:"Ch 57 – 67", first:57, last:67, unlock:67 },
+  { label:"Ch 1 – 5",   first:1,  last:5,  unlock:6  },
+  { label:"Ch 6 – 10",  first:6,  last:10, unlock:11 },
+  { label:"Ch 11 – 15", first:11, last:15, unlock:16 },
+  { label:"Ch 16 – 20", first:16, last:20, unlock:21 },
+  { label:"Ch 21 – 25", first:21, last:25, unlock:26 },
+  { label:"Ch 26 – 30", first:26, last:30, unlock:31 },
+  { label:"Ch 31 – 35", first:31, last:35, unlock:36 },
+  { label:"Ch 36 – 40", first:36, last:40, unlock:41 },
+  { label:"Ch 41 – 45", first:41, last:45, unlock:46 },
+  { label:"Ch 46 – 50", first:46, last:50, unlock:51 },
+  { label:"Ch 51 – 55", first:51, last:55, unlock:56 },
+  { label:"Ch 56 – 60", first:56, last:60, unlock:61 },
+  { label:"Ch 61 – 65", first:61, last:65, unlock:66 },
+  { label:"Ch 66 – 67", first:66, last:67, unlock:67 },
 ];
 
 const POINTS_PER_CELL = 1;
