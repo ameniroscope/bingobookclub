@@ -138,11 +138,13 @@ html, body {
     font-size: 1rem;
 }
 
-/* Mobile: keep Home button floating, just smaller */
+/* Mobile: move Home button to top-left so it doesn't sit on top of
+   the chat compose box, which docks to the bottom of the screen */
 @media (max-width: 767px) {
     .home-btn {
-        bottom: 0.8rem;
+        top: 0.8rem;
         left: 0.8rem;
+        bottom: auto;
         width: 84px;
         height: 36px;
         font-size: 0.6rem;
