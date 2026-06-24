@@ -52,16 +52,15 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 .plot-toggle{font-size:0.7rem;color:var(--silver);letter-spacing:1px;font-family:'Cinzel',serif;}
 .plot-body{padding:1.2rem 1.4rem;display:none;}
 .plot-body.open{display:block;}
-.plot-event{display:flex;gap:0.9rem;margin-bottom:1rem;align-items:flex-start;}
-.plot-event:last-child{margin-bottom:0;}
-.plot-dot{width:7px;height:7px;border-radius:50%;background:var(--silver-dim);flex-shrink:0;margin-top:0.45rem;}
+.plot-event{padding-bottom:1rem;margin-bottom:1rem;border-bottom:1px solid rgba(138,154,181,0.15);}
+.plot-event:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none;}
+.plot-title{font-family:'Cinzel',serif;font-size:0.85rem;letter-spacing:2px;color:var(--ink);margin-bottom:0.3rem;}
 .plot-text{font-size:0.87rem;line-height:1.65;color:var(--ink-faded);}
-.plot-text strong{color:var(--ink);font-style:normal;font-weight:600;}
 .recap-map{position:sticky;top:2rem;}
 .recap-map img{width:100%;height:auto;display:block;border-radius:10px;border:1px solid rgba(138,154,181,0.3);cursor:zoom-in;transition:opacity 0.2s;}
 .recap-map img:hover{opacity:0.88;}
-.lore-places-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;}
-@media(max-width:900px){.recap-layout{grid-template-columns:1fr;}.recap-map{position:static;}.lore-places-grid{grid-template-columns:1fr;}}
+.lore-places-grid{display:flex;flex-direction:column;margin-bottom:1.25rem;}
+@media(max-width:900px){.recap-layout{grid-template-columns:1fr;}.recap-map{position:static;}}
 
 /* ── CORKBOARD ── */
 .chars-section{margin-bottom:5rem;}
@@ -102,12 +101,14 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 .char-signet{display:block;margin-top:0.4rem;font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:1px;color:#7a6040;border-top:1px solid rgba(122,96,64,0.3);padding-top:0.35rem;}
 
 /* ── LORE ── */
-.place-card{background:rgba(20,25,40,0.05);border:1px solid rgba(138,154,181,0.2);border-radius:8px;padding:0.9rem 1.1rem;}
+.place-card{padding:0.7rem 0;border-bottom:1px solid rgba(138,154,181,0.15);}
+.place-card:last-child{border-bottom:none;}
 .place-card .place-name{font-family:'Cinzel',serif;font-size:0.85rem;letter-spacing:2px;color:var(--ink);margin-bottom:0.3rem;}
 .place-card .place-desc{font-size:0.9rem;line-height:1.65;color:var(--ink-faded);}
-.lore-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;}
-.lore-card{background:rgba(20,25,40,0.05);border:1px solid rgba(138,154,181,0.2);border-radius:10px;padding:1.2rem 1.3rem;}
-.lore-card-title{font-family:'Cinzel',serif;font-size:0.85rem;letter-spacing:2px;color:var(--ink);margin-bottom:0.6rem;}
+.lore-grid{display:flex;flex-direction:column;}
+.lore-card{padding:0.9rem 0;border-bottom:1px solid rgba(138,154,181,0.15);}
+.lore-card:last-child{border-bottom:none;}
+.lore-card-title{font-family:'Cinzel',serif;font-size:0.85rem;letter-spacing:2px;color:var(--ink);margin-bottom:0.4rem;}
 .lore-card-body{font-size:0.9rem;line-height:1.7;color:var(--ink-faded);}
 
 /* ── SOURCES ── */
@@ -154,9 +155,6 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
   .cork-row{flex-wrap:nowrap;overflow-x:auto;gap:10px;padding-bottom:6px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;}
   .cork-row .cc{flex:0 0 72%;scroll-snap-align:start;}
   .cork-row[style*="max-width:80%"]{max-width:100%!important;}
-
-  /* lore */
-  .lore-grid{grid-template-columns:1fr;}
 
   /* sources */
   .source-card{min-width:100%;max-width:100%;}
@@ -237,43 +235,43 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
       <!-- FOURTH WING -->
       <div class="plot-book">
         <div class="plot-book-header" onclick="this.nextElementSibling.classList.toggle('open');this.querySelector('.plot-toggle').textContent=this.nextElementSibling.classList.contains('open')?'▲ collapse':'▼ expand'">
-          <span>Fourth Wing</span>
+          <span>🐉 Fourth Wing</span>
           <span class="plot-toggle">▼ expand</span>
         </div>
         <div class="plot-body">
-          <div class="plot-event"><div class="plot-dot"></div><div class="plot-text"><strong>The Parapet.</strong> Violet is forced into the Riders Quadrant by General Sorrengail against Mira's wishes. She crosses the Parapet — a crumbling walkway above a lethal drop — on her first day. Jack Barlowe chases her across trying to kill her. She survives and threatens him with her daggers.</div></div>
-          <div class="plot-event"><div class="plot-dot"></div><div class="plot-text"><strong>Dain & the squad.</strong> Violet reunites with her childhood friend Dain, now a second-year squad leader. He takes her and Rhiannon into his squad. Xaden Riorson, wingleader and son of the rebellion's executed leader, is placed above Dain's squad.</div></div>
-          <div class="plot-event"><div class="plot-dot"></div><div class="plot-text"><strong>Training & survival.</strong> Violet is physically weaker than her peers due to a connective tissue disorder. She tutors Rhiannon on history in exchange for combat training. She begins poisoning opponents before fights to level the playing field.</div></div>
-          <div class="plot-event"><div class="plot-dot"></div><div class="plot-text"><strong>Threshing.</strong> At the dragon bonding ceremony, Violet spots the golden feathertail being targeted by Jack and two others. She fights to protect it. A massive black dragon — Tairn — arrives and bonds with Violet. The golden dragon, Andarna, then claims Violet as a second bond. No one has ever bonded two dragons. The dragon council approves it.</div></div>
-          <div class="plot-event"><div class="plot-dot"></div><div class="plot-text"><strong>The mating bond problem.</strong> Tairn is mated to Sgaeyl — Xaden's dragon. This permanently entangles Violet and Xaden: they can sense each other's emotions and if one dies, both may. Xaden assigns Liam Mairi to protect Violet and wards her door against intruders.</div></div>
-          <div class="plot-event"><div class="plot-dot"></div><div class="plot-text"><strong>Signet & Xaden.</strong> Violet's signet manifests as lightning. She and Xaden begin a relationship. Dain reads her memories without full consent — something she doesn't forgive easily.</div></div>
-          <div class="plot-event"><div class="plot-dot"></div><div class="plot-text"><strong>War Games & Athebyne.</strong> During the final War Games, Xaden pulls Violet to Athebyne where gryphon fliers are waiting. She learns that Xaden and the marked ones have been secretly supplying the fliers with weapons — the only things that can kill venin. Violet feels betrayed. She had no idea venin were real.</div></div>
-          <div class="plot-event"><div class="plot-dot"></div><div class="plot-text"><strong>Battle of Athebyne.</strong> Four venin are heading to the village of Resson. The group goes to fight them. Liam's dragon is killed protecting Violet; Liam dies minutes later. Andarna stops time so Violet can strike the venin with lightning. Violet is poisoned but survives. When she recovers, Brennan — reported dead for six years — is revealed to be alive. He is the mender who healed her. He welcomes her to the rebellion.</div></div>
+          <div class="plot-event"><div class="plot-title">✦ The Parapet.</div><div class="plot-text">Violet is forced into the Riders Quadrant by General Sorrengail against Mira's wishes. She crosses the Parapet — a crumbling walkway above a lethal drop — on her first day. Jack Barlowe chases her across trying to kill her. She survives and threatens him with her daggers.</div></div>
+          <div class="plot-event"><div class="plot-title">✦ Dain & the squad.</div><div class="plot-text">Violet reunites with her childhood friend Dain, now a second-year squad leader. He takes her and Rhiannon into his squad. Xaden Riorson, wingleader and son of the rebellion's executed leader, is placed above Dain's squad.</div></div>
+          <div class="plot-event"><div class="plot-title">✦ Training & survival.</div><div class="plot-text">Violet is physically weaker than her peers due to a connective tissue disorder. She tutors Rhiannon on history in exchange for combat training. She begins poisoning opponents before fights to level the playing field.</div></div>
+          <div class="plot-event"><div class="plot-title">✦ Threshing.</div><div class="plot-text">At the dragon bonding ceremony, Violet spots the golden feathertail being targeted by Jack and two others. She fights to protect it. A massive black dragon — Tairn — arrives and bonds with Violet. The golden dragon, Andarna, then claims Violet as a second bond. No one has ever bonded two dragons. The dragon council approves it.</div></div>
+          <div class="plot-event"><div class="plot-title">✦ The mating bond problem.</div><div class="plot-text">Tairn is mated to Sgaeyl — Xaden's dragon. This permanently entangles Violet and Xaden: they can sense each other's emotions and if one dies, both may. Xaden assigns Liam Mairi to protect Violet and wards her door against intruders.</div></div>
+          <div class="plot-event"><div class="plot-title">✦ Signet & Xaden.</div><div class="plot-text">Violet's signet manifests as lightning. She and Xaden begin a relationship. Dain reads her memories without full consent — something she doesn't forgive easily.</div></div>
+          <div class="plot-event"><div class="plot-title">✦ War Games & Athebyne.</div><div class="plot-text">During the final War Games, Xaden pulls Violet to Athebyne where gryphon fliers are waiting. She learns that Xaden and the marked ones have been secretly supplying the fliers with weapons — the only things that can kill venin. Violet feels betrayed. She had no idea venin were real.</div></div>
+          <div class="plot-event"><div class="plot-title">✦ Battle of Athebyne.</div><div class="plot-text">Four venin are heading to the village of Resson. The group goes to fight them. Liam's dragon is killed protecting Violet; Liam dies minutes later. Andarna stops time so Violet can strike the venin with lightning. Violet is poisoned but survives. When she recovers, Brennan — reported dead for six years — is revealed to be alive. He is the mender who healed her. He welcomes her to the rebellion.</div></div>
         </div>
       </div>
 
       <!-- IRON FLAME -->
       <div class="plot-book">
         <div class="plot-book-header" onclick="this.nextElementSibling.classList.toggle('open');this.querySelector('.plot-toggle').textContent=this.nextElementSibling.classList.contains('open')?'▲ collapse':'▼ expand'">
-          <span>Iron Flame</span>
+          <span>🔥 Iron Flame</span>
           <span class="plot-toggle">▼ expand</span>
         </div>
         <div class="plot-body">
-          <div class="plot-event"><div class="plot-dot"></div><div class="plot-text"><strong>Back to Basgiath.</strong> The cadets return to the War College and lie about what happened at Athebyne. A new Vice Commandant, Varrish, arrives with a personal mission to break Violet. Colonel Aetos actively tries to have her killed. Liam's sister Sloane transfers in and blames Violet for his death.</div></div>
-          <div class="plot-event"><div class="plot-dot"></div><div class="plot-text"><strong>The wards mystery.</strong> Violet learns Aretia has a non-working wardstone and starts secretly researching how wards were originally powered using restricted Archive records — with Jesinia's help. She discovers the knowledge may only exist in the personal journals of the First Six, locked in a vault only accessible by the king's bloodline.</div></div>
-          <div class="plot-event"><div class="plot-dot"></div><div class="plot-text"><strong>Aaric Graycastle.</strong> A new cadet named Cam Tauri is actually Aaric Graycastle — the king's younger brother, second in line to the throne. Violet and Dain recognise him and keep his identity secret. He is eventually recruited to access the vault.</div></div>
-          <div class="plot-event"><div class="plot-dot"></div><div class="plot-text"><strong>Varrish's torture.</strong> Varrish kidnaps Violet and has her tortured in a sealed chamber for five days, cutting off her bond with Tairn. She does not break. Dain is brought in to read her memories — and finally sees the truth. He tears down Varrish. Xaden arrives, kills the guards, and he and Violet execute Varrish together. General Sorrengail arrives: she had no idea. She reveals she made a deal with Xaden in first year to protect Violet.</div></div>
-          <div class="plot-event"><div class="plot-dot"></div><div class="plot-text"><strong>Leaving Basgiath.</strong> Violet gives all students the choice. About half — including Dain, Jesinia, and several professors — join the revolution. They fly to Aretia. Mira arrives and discovers Brennan is alive. She punches him first.</div></div>
-          <div class="plot-event"><div class="plot-dot"></div><div class="plot-text"><strong>Xaden's second signet.</strong> Violet learns Xaden has a second signet — inntinnsic: the ability to read intentions and compel minds. It is a signet people are usually killed for. He has hidden it from everyone.</div></div>
-          <div class="plot-event"><div class="plot-dot"></div><div class="plot-text"><strong>Andarna's secret.</strong> When the wards are raised, it becomes clear seven dragon types are needed — not six. Andarna is the seventh breed, thought extinct, who waited 650 years to bond with Violet specifically. Her iridescent scales let her camouflage. She cannot bond another rider after Violet.</div></div>
-          <div class="plot-event"><div class="plot-dot"></div><div class="plot-text"><strong>Battle of Basgiath & the ending.</strong> Jack Barlowe — now fully venin — destroys the Basgiath wardstone by killing his own dragon. The wards fall. Violet, the riders, the gryphon fliers, and General Sorrengail fight back. Sawyer loses his leg; Violet saves him. General Sorrengail sacrifices herself to power the wardstone and dies. The wards are restored. Xaden draws power directly from the earth to save Violet during the battle. When she finds him afterwards, his eyes are red. He is turning venin. The book ends with him asking a captive Jack Barlowe if there is a cure. There is not.</div></div>
+          <div class="plot-event"><div class="plot-title">✦ Back to Basgiath.</div><div class="plot-text">The cadets return to the War College and lie about what happened at Athebyne. A new Vice Commandant, Varrish, arrives with a personal mission to break Violet. Colonel Aetos actively tries to have her killed. Liam's sister Sloane transfers in and blames Violet for his death.</div></div>
+          <div class="plot-event"><div class="plot-title">✦ The wards mystery.</div><div class="plot-text">Violet learns Aretia has a non-working wardstone and starts secretly researching how wards were originally powered using restricted Archive records — with Jesinia's help. She discovers the knowledge may only exist in the personal journals of the First Six, locked in a vault only accessible by the king's bloodline.</div></div>
+          <div class="plot-event"><div class="plot-title">✦ Aaric Graycastle.</div><div class="plot-text">A new cadet named Cam Tauri is actually Aaric Graycastle — the king's younger brother, second in line to the throne. Violet and Dain recognise him and keep his identity secret. He is eventually recruited to access the vault.</div></div>
+          <div class="plot-event"><div class="plot-title">✦ Varrish's torture.</div><div class="plot-text">Varrish kidnaps Violet and has her tortured in a sealed chamber for five days, cutting off her bond with Tairn. She does not break. Dain is brought in to read her memories — and finally sees the truth. He tears down Varrish. Xaden arrives, kills the guards, and he and Violet execute Varrish together. General Sorrengail arrives: she had no idea. She reveals she made a deal with Xaden in first year to protect Violet.</div></div>
+          <div class="plot-event"><div class="plot-title">✦ Leaving Basgiath.</div><div class="plot-text">Violet gives all students the choice. About half — including Dain, Jesinia, and several professors — join the revolution. They fly to Aretia. Mira arrives and discovers Brennan is alive. She punches him first.</div></div>
+          <div class="plot-event"><div class="plot-title">✦ Xaden's second signet.</div><div class="plot-text">Violet learns Xaden has a second signet — inntinnsic: the ability to read intentions and compel minds. It is a signet people are usually killed for. He has hidden it from everyone.</div></div>
+          <div class="plot-event"><div class="plot-title">✦ Andarna's secret.</div><div class="plot-text">When the wards are raised, it becomes clear seven dragon types are needed — not six. Andarna is the seventh breed, thought extinct, who waited 650 years to bond with Violet specifically. Her iridescent scales let her camouflage. She cannot bond another rider after Violet.</div></div>
+          <div class="plot-event"><div class="plot-title">✦ Battle of Basgiath & the ending.</div><div class="plot-text">Jack Barlowe — now fully venin — destroys the Basgiath wardstone by killing his own dragon. The wards fall. Violet, the riders, the gryphon fliers, and General Sorrengail fight back. Sawyer loses his leg; Violet saves him. General Sorrengail sacrifices herself to power the wardstone and dies. The wards are restored. Xaden draws power directly from the earth to save Violet during the battle. When she finds him afterwards, his eyes are red. He is turning venin. The book ends with him asking a captive Jack Barlowe if there is a cure. There is not.</div></div>
         </div>
       </div>
 
       <!-- LORE -->
       <div class="plot-book">
         <div class="plot-book-header" onclick="this.nextElementSibling.classList.toggle('open');this.querySelector('.plot-toggle').textContent=this.nextElementSibling.classList.contains('open')?'▲ collapse':'▼ expand'">
-          <span>Lore (All The Sections)</span>
+          <span>📚 Lore (All The Sections)</span>
           <span class="plot-toggle">▼ expand</span>
         </div>
         <div class="plot-body">
@@ -447,7 +445,7 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
         <div class="cc"><div class="pin" style="background:#881111;"></div><div class="char-card"><div class="char-art"><img src="chars/char_jack.webp" alt="Jack"></div><div class="char-info">
           <div class="char-name">Jack Barlowe</div>
           <div class="char-role">Rider · Antagonist · Venin by Iron Flame</div>
-          <div class="char-desc">Targeted Violet from the start of first year, viewing her as weak and easy to eliminate. Presumed dead after Fourth Wing — he was not dead. Returns in Iron Flame as a full venin, having deliberately turned by drawing power from the earth. His signet was power drainage; as venin, his abilities are amplified and lethal. He is working for the enemy.</div>
+          <div class="char-desc">Targeted Violet from the start of first year, viewing her as weak and easy to eliminate. Presumed dead after Fourth Wing — he had actually survived in hiding. Returns in Iron Flame as a full venin, having deliberately turned by drawing power from the earth. His signet was power drainage; as venin, his abilities are amplified and lethal. He is working for the enemy.</div>
           <span class="char-signet">💀 Signet: power drainage · Deliberately turned venin · Bonded to Baide</span>
         </div></div></div>
       </div>
@@ -536,12 +534,6 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
   fwCard.target = '_blank';
   fwCard.className = 'source-card';
   fwCard.innerHTML = '<span class="source-eyebrow">Full Recap</span><span class="source-title">Recaptains — Fourth Wing</span><span class="source-desc">Complete plot summary of Fourth Wing, beat by beat.</span><span class="source-arrow">Read →</span>';
-  const ifCard = document.createElement('a');
-  ifCard.href = 'https://recaptains.co.uk/2023/11/iron-flame-by-rebecca-yarros/';
-  ifCard.target = '_blank';
-  ifCard.className = 'source-card';
-  ifCard.innerHTML = '<span class="source-eyebrow">Full Recap</span><span class="source-title">Recaptains — Iron Flame</span><span class="source-desc">Complete plot summary of Iron Flame, beat by beat.</span><span class="source-arrow">Read →</span>';
   sourcesWrap.appendChild(fwCard);
-  sourcesWrap.appendChild(ifCard);
 </script>
 </html>

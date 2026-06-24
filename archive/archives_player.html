@@ -64,6 +64,10 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 .empty-icon{font-size:2rem;display:block;margin-bottom:0.6rem;}
 
 .error-state{text-align:center;padding:5rem 2rem;color:var(--ink-faded);font-style:italic;}
+.spinner{display:inline-block;width:18px;height:18px;border:2px solid var(--worn);border-top-color:var(--gold);
+  border-radius:50%;animation:spin-load 0.8s linear infinite;vertical-align:middle;margin-right:0.6rem;}
+@keyframes spin-load{to{transform:rotate(360deg);}}
+.loading-state{text-align:center;padding:3rem 2rem;color:var(--ink-faded);font-style:italic;}
 </style>
 </head>
 <body>
@@ -210,7 +214,7 @@ async function init(){
       </div>
     </div>
     <hr class="gold-divider">
-    <div id="books-container"></div>`;
+    <div id="books-container"><div class="loading-state"><span class="spinner"></span>Loading bingo history…</div></div>`;
 
   const container = document.getElementById('books-container');
   let hasAnyBook = false;
