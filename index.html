@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Bingo Book Club</title>
 <link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
 .page{
     position:relative;z-index:1;
@@ -25,6 +26,60 @@
   }
   .layout > div{min-width:0;}
 
+/* ════════ HORNY JAIL ════════ */
+    .horny-jail-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 1.4rem;
+  gap: 0.5rem;
+}
+
+.jail-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.4rem;
+  letter-spacing: 5px;
+  color: #cc1a1a;
+  text-shadow: 0 0 10px rgba(180, 20, 20, 0.6), 0 0 2px #000;
+  text-transform: uppercase;
+  text-align: center;
+  border: 1px solid #cc1a1a55;
+  border-radius: 6px;
+  padding: 0.3rem 0.8rem;
+  background: rgba(150, 20, 20, 0.1);
+}
+
+.jail-cover-link {
+  position: relative;
+  display: block;
+  width: 90%;
+  max-width: 160px;
+}
+
+.jail-cover-link img:first-child {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid #c9a84c55;
+  transition: .3s;
+  display: block;
+}
+
+.jail-cover-link:hover img:first-child {
+  transform: translateY(-4px);
+  box-shadow: 0 0 20px rgba(201, 168, 76, .25);
+}
+
+.jail-bars {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  pointer-events: none;
+  opacity: 0.85;
+}
+    
   /* ════════ SCOREBOARD ════════ */
   .scoreboard{
     display:flex;
@@ -332,8 +387,14 @@
       <div class="current-books">
         <a href="bridgekingdom/bridgekingdom.html"><img src="bridgekingdom/bridgekingdom_cover.jpg" alt="The Bridge Kingdom"></a>
         <a href="traitorqueen/traitorqueen.html"><img src="traitorqueen/traitorqueen_cover.jpg" alt="The Traitor Queen"></a>
-        <h2 class="section-title">HORNY JAIL</h2>
-        <a href="witchslayer/witchslayer.html"><img src="witchslayer/witchslayer_cover.jpg" alt="The Witchslayer"></a>
+      </div>
+    
+      <div class="horny-jail-block">
+        <div class="jail-title">🔒 HORNY JAIL 🔒</div>
+        <a href="witchslayer/witchslayer.html" class="jail-cover-link">
+          <img src="witchslayer/witchslayer_cover.jpg" alt="The Witchslayer">
+          <img src="jail_bars.png" alt="" class="jail-bars" aria-hidden="true">
+        </a>
       </div>
     </div>
 
