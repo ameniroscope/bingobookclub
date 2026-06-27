@@ -141,7 +141,7 @@ const PLAYERS = {
   kathi:  { emoji:"🍄",   offset:{x:0,y:-3} },
 };
 
-const MIN_CH = 0, MAX_CH = 43;   // 0 = start, 1–42 = chapters, 43 = epilogue
+const MIN_CH = 0, MAX_CH = 42;   // 0 = start, 1–42 = chapters, 43 = epilogue
 
 /* MAP POSITIONS — snake layout following the winding path on the map.
    42 and the epilogue (43) share the final spot. */
@@ -234,7 +234,7 @@ function snapNearest(cx, cy) {
   let best = 0, bestD = Infinity;
   for (const [ch, p] of Object.entries(POS)) {
     const d = Math.hypot(xp - p.x, yp - p.y);
-    if (d < bestD) { bestD = d; best = +ch; }
+    if (d <= bestD) { bestD = d; best = +ch; }
   }
   return best;
 }
@@ -287,6 +287,9 @@ async function endDrag(cx, cy) {
 
   // Save the CHAPTER reached (0–43). Player pages unlock rooms by chapter threshold.
   await setDoc(doc(db, "progress_spoiler", dragPid), { chapter: chNum }, { merge:true });
+  // Also mirror progress into shouty_bingo so the homepage scoreboard (which reads
+  // mapPos/chapterProgress from the *_bingo collections) picks up finished books.
+  await setDoc(doc(db, "shouty_bingo", dragPid), { mapPos: chNum, chapterProgress: Math.min(chNum, MAX_CH) }, { merge:true });
   dragPid = null;
 }
 window.addEventListener("mouseup", e => endDrag(e.clientX, e.clientY));

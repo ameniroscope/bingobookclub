@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Curse Carved in Bone</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+@font-face{font-family:'Norse';src:url('../fonts/Norse.otf') format('opentype');font-weight:400;font-display:swap;}
+@font-face{font-family:'Norse';src:url('../fonts/Norse-Bold.otf') format('opentype');font-weight:700;font-display:swap;}
+:root{
+  --player:#a8430f;--player-glow:rgba(168,67,15,0.35);
+  --accent:#a8430f;--accent-lt:#d97a3c;--accent-dim:#4a1a0c;
+  --ink:#fff3e6;--ink-faded:#d9b89a;
+  --bg-deep:#170d06;--bg-mid:#231406;
+}
+html,body{min-height:100vh;font-family:'Crimson Text',Georgia,serif;color:var(--ink);background:var(--bg-deep);}
+#bg{position:fixed;inset:0;z-index:0;background:var(--bg-deep) url('background.png') center/420px repeat;}
+#bg::after{content:'';position:absolute;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='4' height='4' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");}
+
+/* ── TOP-RIGHT: back to book hub ── */
+.players-btn{background:#231406;color:var(--accent-lt);border-color:var(--accent-dim);box-shadow:0 2px 8px rgba(0,0,0,0.3);}
+.players-btn:hover{background:#102a2f;border-color:var(--accent-lt);transform:translateY(-2px);}
+
+/* ── PLAYER HEADER ── */
+.player-header{display:flex;flex-direction:column;align-items:center;gap:0.6rem;position:relative;z-index:1;padding:2.2rem 1rem 0.5rem;}
+.img-frame{position:relative;width:110px;height:110px;}
+.img-frame::before{content:'';position:absolute;inset:-8px;border-radius:50%;border:2px solid var(--ring,var(--accent-dim));z-index:0;}
+.img-frame::after{content:'';position:absolute;inset:-4px;border-radius:50%;background:var(--bg-deep);z-index:1;}
+.img-frame img{position:relative;z-index:2;width:100%;height:100%;object-fit:cover;border-radius:50%;border:2px solid var(--player);}
+.player-name{font-family:'Norse',serif;font-size:2.5rem;font-weight:400;color:var(--ink);letter-spacing:2px;text-shadow:0 1px 3px rgba(0,0,0,0.6);}
+
+/* ── LAYOUT ── */
+.wrap{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:1.5rem 2rem 4rem;
+  display:grid;grid-template-columns:1fr 1.15fr;gap:3rem;align-items:start;}
+@media(max-width:860px){.wrap{grid-template-columns:1fr;gap:2.5rem;padding:1.5rem 1.2rem 3rem;}}
+
+.section-title{font-family:'Norse',serif;font-size:1.7rem;letter-spacing:3px;color:var(--accent-lt);text-transform:uppercase;text-align:center;margin-bottom:1rem;}
+
+/* ── BINGO ── */
+.bingo-section{display:flex;flex-direction:column;}
+.points-line{display:flex;flex-direction:column;align-items:flex-start;gap:0.1rem;width:100%;max-width:440px;margin:0.1rem auto 0.9rem;padding-left:5px;
+  font-family:'Norse',serif;letter-spacing:1px;color:var(--ink);}
+.points-line .pts-row{display:flex;align-items:baseline;gap:0.4rem;}
+.points-line .pts-total{font-size:1.6rem;font-weight:700;color:var(--accent-lt);text-shadow:0 1px 3px rgba(0,0,0,0.6);}
+.points-line .pts-label{font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--ink-faded);}
+.points-line .pts-break{display:block;width:100%;font-size:0.7rem;color:var(--ink-faded);font-style:italic;font-family:'Crimson Text',serif;letter-spacing:0;}
+.bingo-controls{position:absolute;left:-52px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:0.5rem;z-index:3;}
+.bingo-lock-btn{background:var(--bg-mid);border:1px solid var(--accent-dim);border-radius:50%;width:38px;height:38px;cursor:pointer;
+  font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;padding:0;}
+.bingo-lock-btn:hover{border-color:var(--accent-lt);}
+.bingo-lock-btn.unlocked{border-color:var(--accent-lt);background:rgba(168,67,15,0.15);}
+
+.bingo-card-wrap{position:relative;width:100%;max-width:440px;margin:0 auto;aspect-ratio:1023/1537;
+  background:url('cursecarvedinbone_bingo.png') center/contain no-repeat;border-radius:6px;
+  box-shadow:0 4px 14px rgba(0,0,0,0.4);}
+.bingo-grid {
+    position: absolute;
+    left: 5.6%;
+    top: 25.9%;
+    width: 88%;
+    height: 57%;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    gap: 2px;
+}
+.bingo-cell{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-size:clamp(8px,1.6vw,13px);
+  line-height:1.1;text-align:center;padding:1px;overflow:hidden;cursor:pointer;transition:background 0.15s;border-radius:3px;
+  background:transparent;}
+.bingo-cell.marked{background:var(--player-glow);box-shadow:inset 0 0 0 1px var(--accent);}
+.bingo-cell.free{font-weight:600;color:var(--accent-lt);cursor:default;}
+.cell-text{width:100%;height:100%;display:flex;align-items:center;justify-content:center;text-align:center;
+  font-family:'Crimson Text',Georgia,serif;font-weight:600;font-size:inherit;line-height:1.1;color:#fff;padding:1px;overflow-wrap:break-word;word-break:break-word;}
+.bingo-cell textarea{width:100%;height:100%;border:none;background:rgba(168,67,15,0.18);outline:none;resize:none;
+  text-align:center;font-family:'Crimson Text',Georgia,serif;font-weight:600;font-size:inherit;line-height:1.1;color:#fff;padding:1px;overflow:hidden;overflow-wrap:break-word;word-break:break-word;}
+.bingo-hint{font-size:11px;color:var(--accent-lt);margin-top:8px;font-style:italic;text-align:center;}
+.bingo-status{font-size:11px;color:var(--ink-faded);font-style:italic;text-align:center;margin-top:4px;min-height:1em;}
+
+/* ── ROOMS ── */
+.rooms-col{display:flex;flex-direction:column;justify-content:center;align-self:center;}
+.progress-control{display:flex;align-items:center;justify-content:center;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.9rem;}
+.progress-control label{font-family:'Norse',serif;font-size:0.8rem;letter-spacing:1px;color:var(--ink-faded);}
+.progress-control input{width:60px;height:34px;text-align:center;font-family:'Crimson Text',serif;font-size:1rem;
+  background:var(--bg-mid);border:1px solid var(--accent-dim);border-radius:6px;color:var(--ink);}
+.progress-control input:focus{outline:none;border-color:var(--accent-lt);}
+.progress-control button{height:34px;padding:0 0.8rem;cursor:pointer;font-family:'Norse',serif;font-size:0.8rem;letter-spacing:1px;
+  background:var(--bg-mid);border:1px solid var(--accent-lt);border-radius:6px;color:var(--accent-lt);transition:all 0.2s;}
+.progress-control button:hover{background:#102a2f;}
+.progress-status{font-size:0.75rem;color:var(--ink-faded);font-style:italic;}
+.legend{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap;color:var(--ink-faded);font-size:0.85rem;margin-bottom:1rem;}
+.legend span{display:flex;align-items:center;gap:0.35rem;}
+.legend .dot{width:11px;height:11px;border-radius:50%;display:inline-block;}
+.legend .dot.unlocked{background:rgba(168,67,15,0.25);border:1px solid var(--accent-lt);}
+.legend .dot.locked{background:var(--bg-mid);border:1px solid var(--accent-dim);}
+.rooms-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.room-btn{position:relative;height:58px;display:flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;
+  transition:all 0.2s;font-family:'Norse',serif;font-size:0.95rem;letter-spacing:0.5px;text-align:center;padding:0 0.5rem;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='4' height='4' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");}
+.room-btn:hover{transform:translateY(-2px);}
+.room-btn.unlocked{background-color:rgba(168,67,15,0.14);border:1px solid var(--accent-lt);color:var(--ink);box-shadow:inset 0 0 12px rgba(0,0,0,0.3);}
+.room-btn.unlocked:hover{background-color:rgba(168,67,15,0.24);}
+.room-btn.locked{background-color:var(--bg-mid);border:1px solid var(--accent-dim);color:var(--ink-faded);box-shadow:inset 0 0 12px rgba(0,0,0,0.4);}
+.room-btn.locked:hover{border-color:var(--accent-lt);}
+.room-btn .lock-ico{position:absolute;top:6px;right:6px;font-size:1rem;opacity:0.5;}
+.room-btn .unread-dot{position:absolute;top:6px;left:8px;width:8px;height:8px;border-radius:50%;
+  background:var(--accent-lt);display:none;}
+.room-btn.has-unread .unread-dot{display:block;}
+
+/* ── CHAT MODAL ── */
+.overlay{position:fixed;inset:0;z-index:200;background:rgba(10,6,2,0.78);backdrop-filter:blur(4px);
+  display:flex;align-items:center;justify-content:center;
+  padding:1rem;padding-bottom:max(1rem,env(safe-area-inset-bottom));
+  opacity:0;pointer-events:none;transition:opacity 0.2s;}
+.overlay.open{opacity:1;pointer-events:all;}
+.chat-modal{background-color:#5c3d22;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='4' height='4' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+  border:2px solid var(--accent-dim);border-radius:12px;width:100%;max-width:600px;
+  height:80vh;height:80dvh;max-height:80vh;max-height:80dvh;
+  display:flex;flex-direction:column;box-shadow:0 8px 40px rgba(0,0,0,0.45),inset 0 0 30px rgba(0,0,0,0.35);
+  transform:translateY(12px);transition:transform 0.2s;overflow:hidden;}
+.overlay.open .chat-modal{transform:translateY(0);}
+.chat-hdr{flex-shrink:0;padding:1rem 1.25rem;border-bottom:1px solid var(--accent-dim);
+  display:flex;align-items:flex-start;justify-content:space-between;gap:0.5rem;}
+.chat-room-label{font-family:'Norse',serif;font-size:0.68rem;letter-spacing:2px;color:var(--accent-lt);text-transform:uppercase;}
+.chat-title{font-family:'Norse',serif;font-size:1.6rem;font-weight:400;color:var(--ink);letter-spacing:1px;}
+.chat-status{display:inline-block;margin-top:5px;font-family:'Norse',serif;font-size:0.6rem;letter-spacing:1px;padding:0.22rem 0.6rem;border-radius:3px;text-transform:uppercase;}
+.chat-status.unlocked{background:var(--accent);color:#1a0e02;}
+.chat-status.locked{background:var(--bg-deep);color:var(--ink-faded);border:1px solid var(--accent-dim);}
+.close-btn{background:none;border:none;cursor:pointer;color:var(--ink-faded);font-size:1.5rem;line-height:1;padding:0.1rem;transition:color 0.15s;flex-shrink:0;}
+.close-btn:hover{color:var(--ink);}
+.messages{flex:1;min-height:0;overflow-y:auto;padding:1rem 1.2rem;display:flex;flex-direction:column;gap:0.7rem;}
+.empty-msg,.write-note{font-size:1rem;color:var(--ink-faded);font-style:italic;text-align:center;margin:auto;line-height:1.8;}
+.write-note strong{display:block;font-family:'Norse',serif;font-size:0.85rem;font-style:normal;letter-spacing:1px;margin-bottom:0.3rem;color:var(--ink);text-transform:uppercase;}
+.msg{display:flex;flex-direction:column;gap:0.15rem;align-items:flex-start;}
+.msg.mine{align-items:flex-end;}
+.msg-name{display:block;font-family:'Norse',serif;font-size:0.8rem;letter-spacing:1px;color:var(--accent-lt);margin-bottom:0.15rem;}
+.msg.mine .msg-name{color:var(--accent-lt);}
+.msg-text{display:block;font-family:'Crimson Text',Georgia,serif;font-size:1rem;color:var(--ink);line-height:1.6;
+  max-width:min(85%,420px);background:rgba(168,67,15,0.1);border:1px solid var(--accent-dim);
+  padding:0.5rem 0.75rem;border-radius:8px;word-break:break-word;}
+.msg.mine .msg-text{background:var(--accent-dim);border-color:var(--accent);color:#fff6ea;}
+.compose{flex-shrink:0;border-top:1px solid var(--accent-dim);padding:0.7rem 1rem;
+  padding-bottom:max(0.7rem,env(safe-area-inset-bottom));display:flex;gap:0.5rem;align-items:flex-end;}
+.compose textarea{flex:1;resize:none;min-height:42px;max-height:110px;background:rgba(255,255,255,0.05);border:1px solid var(--accent-dim);border-radius:8px;
+  padding:0.5rem 0.7rem;font-family:'Crimson Text',serif;font-size:1rem;color:var(--ink);line-height:1.5;}
+.compose textarea::placeholder{color:var(--ink-faded);font-style:italic;}
+.compose textarea:focus{outline:none;border-color:var(--accent-lt);}
+.send-btn{height:42px;padding:0 1.1rem;background:#231406;border:1px solid var(--accent-lt);border-radius:8px;color:var(--accent-lt);
+  font-family:'Norse',serif;font-size:0.7rem;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;white-space:nowrap;flex-shrink:0;}
+.send-btn:hover{background:#102a2f;}
+
+/* ── PASSWORD MODAL ── */
+.lock-modal-wrap{display:none;position:fixed;inset:0;z-index:400;background:#040d0f;align-items:center;justify-content:center;flex-direction:column;padding:2rem;text-align:center;}
+.lock-modal-wrap.open{display:flex;}
+.lock-club{font-family:'Norse',serif;font-size:0.7rem;letter-spacing:6px;color:var(--accent-lt);text-transform:uppercase;margin-bottom:0.4rem;}
+.lock-title{font-family:'Norse',serif;font-size:clamp(1.8rem,5vw,2.8rem);font-weight:400;color:var(--ink);letter-spacing:2px;margin-bottom:1.6rem;text-shadow:0 1px 3px rgba(0,0,0,0.6);}
+.lock-modal-wrap input{width:min(320px,90vw);height:52px;text-align:center;font-family:'Norse',serif;font-size:1rem;letter-spacing:2px;
+  background:#231406;border:1px solid var(--accent-dim);border-radius:8px;color:var(--ink);margin-bottom:1rem;}
+.lock-modal-wrap input:focus{outline:none;border-color:var(--accent-lt);}
+.lock-modal-wrap button{width:min(320px,90vw);height:52px;cursor:pointer;font-family:'Norse',serif;text-transform:uppercase;letter-spacing:3px;
+  background:#231406;border:1px solid var(--accent-lt);border-radius:8px;color:var(--accent-lt);transition:all 0.25s ease;}
+.lock-modal-wrap button:hover{background:#102a2f;}
+.lock-error{color:#d98a8a;font-size:0.9rem;min-height:1.2rem;margin-top:0.8rem;letter-spacing:1px;}
+
+/* ── UNKNOWN PLAYER ── */
+.unknown-wrap{display:none;position:fixed;inset:0;z-index:400;background:#040d0f;align-items:center;justify-content:center;flex-direction:column;gap:1rem;padding:2rem;text-align:center;}
+.unknown-wrap.open{display:flex;}
+
+@media(max-width:860px){
+  .home-btn{top:1rem;left:1rem;bottom:auto;font-size:0.62rem;padding:0.5rem 0.8rem;}
+  .rooms-grid{grid-template-columns:repeat(2,1fr);}
+  .bingo-controls{position:static;flex-direction:row;left:auto;top:auto;transform:none;justify-content:center;margin-bottom:0.7rem;}
+}
+@media(max-width:600px){
+  .overlay{padding:0;align-items:flex-end;}
+  .chat-modal{height:92vh;height:92dvh;max-height:92vh;max-height:92dvh;border-radius:16px 16px 0 0;border-bottom:none;}
+  .msg-text{max-width:90%;}
+}
+</style>
+</head>
+<body>
+<div id="bg"></div>
+
+<!-- UNKNOWN PLAYER FALLBACK -->
+<div class="unknown-wrap" id="unknownWrap">
+  <div style="font-family:'Norse',serif;font-size:1.7rem;color:var(--accent-lt);">Who goes there?</div>
+  <div style="color:var(--ink-faded);font-size:0.95rem;">No player found. Go back and choose your avatar.</div>
+  <a href="cursecarvedinbone.html" style="margin-top:1rem;font-family:'Norse',serif;font-size:0.75rem;letter-spacing:2px;color:var(--accent-lt);text-decoration:none;border:1px solid var(--accent-dim);padding:0.6rem 1.2rem;border-radius:6px;">← Back</a>
+</div>
+
+<!-- PASSWORD MODAL -->
+<div class="lock-modal-wrap open" id="initialLockModal">
+  <div class="lock-club">The Bingo Book Club</div>
+  <div class="lock-title" id="lockTitle">Enter Your Code</div>
+  <input type="text" id="initialPasswordInput" placeholder="password" autocomplete="off">
+  <button id="initialUnlockSubmit" type="button">Enter</button>
+  <div class="lock-error" id="initialLockError"></div>
+</div>
+
+<div id="mainContent" style="display:none;">
+
+  <!-- TOP-RIGHT: back to book hub -->
+  <a href="cursecarvedinbone.html" class="players-btn">🦴 A Curse Carved in Bone</a>
+
+  <!-- TOP-LEFT (mobile) / BOTTOM-LEFT (desktop): home -->
+  <a href="../index.html" class="home-btn"><span class="home-btn-icon">🏠</span> Home</a>
+
+  <div class="player-header">
+    <div class="img-frame"><img id="playerPhoto" src="" alt="Player Photo"></div>
+    <div class="player-name" id="playerHeaderName"></div>
+  </div>
+
+  <div class="wrap">
+    <div class="bingo-section">
+      <div class="points-line">
+        <div class="pts-row"><span class="pts-total" id="ptsTotal">0</span><span class="pts-label">pts</span></div>
+        <span class="pts-break" id="ptsBreak"></span>
+      </div>
+      <div class="bingo-card-wrap">
+        <div class="bingo-controls">
+          <button class="bingo-lock-btn unlocked" id="bingoEditBtn" title="Toggle edit mode">✏️</button>
+        </div>
+        <div class="bingo-grid" id="bingoGrid"></div>
+      </div>
+      <div class="bingo-hint" id="bingoHint">Click squares to mark them</div>
+      <div class="bingo-status" id="bingoStatus"></div>
+    </div>
+
+    <div class="rooms-col">
+      <div class="section-title">Chapter Rooms</div>
+      <div class="legend">
+        <span><i class="dot locked"></i> Locked : post only, no spoilers !</span>
+        <span><i class="dot unlocked"></i> Unlocked : read &amp; post</span>
+      </div>
+      <div class="rooms-grid" id="roomsGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CHAT MODAL -->
+<div class="overlay" id="overlay">
+  <div class="chat-modal">
+    <div class="chat-hdr">
+      <div>
+        <div class="chat-room-label" id="chatRoomLabel"></div>
+        <div class="chat-title" id="chatTitle"></div>
+        <span class="chat-status" id="chatStatus"></span>
+      </div>
+      <button class="close-btn" id="chatClose">✕</button>
+    </div>
+    <div class="messages" id="chatMessages"></div>
+    <div class="compose">
+      <textarea id="chatTA" rows="1" placeholder="Leave a thought…"></textarea>
+      <button class="send-btn" id="chatSend">Post</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore, collection, getDocs, addDoc, onSnapshot, doc, setDoc, getDoc, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const BINGO_COL = 'cursecarvedinbone_bingo';
+const MSG_COL = 'cursecarvedinbone_messages';
+
+/* ── chapter rooms (Part 1: 1-7, Part 2: 8-15, Part 3: 16-22, Part 4: 23-29, Part 5: 30-36) ── */
+const CHAPTER_GROUPS = [
+  { label:"Ch 1–7",   first:1,  last:7,  unlock:8  },
+  { label:"Ch 8–14",  first:8,  last:14, unlock:15 },
+  { label:"Ch 15–21", first:15, last:21, unlock:22 },
+  { label:"Ch 22–28", first:22, last:28, unlock:29 },
+  { label:"Ch 29–35", first:29, last:35, unlock:36 },
+  { label:"Ch 36–42", first:36, last:42, unlock:43 },
+  { label:"Ch 43–49", first:43, last:49, unlock:50 },
+  { label:"Ch 50–52", first:50, last:52, unlock:52 },
+];
+
+const POINTS_PER_CELL = 1;
+const POINTS_PER_LINE = 5;
+
+const fb = initializeApp({
+  apiKey:"AIzaSyAIQTe-QGQmwqTVmIyJZZ_qlDNsD6GUskY",
+  authDomain:"bingobookclub-2144e.firebaseapp.com",
+  projectId:"bingobookclub-2144e",
+  storageBucket:"bingobookclub-2144e.firebasestorage.app",
+  messagingSenderId:"294177836341",
+  appId:"1:294177836341:web:6d5f11e64737fbe3aad07c"
+});
+const db = getFirestore(fb);
+
+/* ════════ ALL PLAYER CONFIGS (Firestore: accessCodes collection, doc id = pid) ════════ */
+const PLAYERS = {};
+try {
+  const accessSnap = await getDocs(collection(db,'accessCodes'));
+  accessSnap.forEach(d => PLAYERS[d.id] = d.data());
+} catch (e) {
+  console.error(e);
+  document.getElementById('initialLockError').textContent = 'Connection error — please refresh the page';
+  throw e;
+}
+
+/* ── RESOLVE PLAYER FROM URL ── */
+const params = new URLSearchParams(window.location.search);
+const PID = params.get('p') || '';
+const PCFG = PLAYERS[PID];
+
+if(!PCFG){
+  document.getElementById('initialLockModal').classList.remove('open');
+  document.getElementById('unknownWrap').classList.add('open');
+  throw new Error('Unknown player: '+PID);
+}
+
+const { name:PNAME, emoji:PEMOJI, password:PASSWORD } = PCFG;
+
+document.title = `${PNAME} – A Curse Carved in Bone`;
+document.getElementById('playerHeaderName').textContent = PNAME;
+document.getElementById('playerPhoto').src = '../pdp_'+PID+'.png';
+document.getElementById('lockTitle').textContent = `Enter Your Code, ${PNAME}`;
+
+/* ── PASSWORD GATE ── */
+const initialLockModal = document.getElementById('initialLockModal');
+const initialPasswordInput = document.getElementById('initialPasswordInput');
+const initialUnlockSubmit = document.getElementById('initialUnlockSubmit');
+const initialLockError = document.getElementById('initialLockError');
+const mainContent = document.getElementById('mainContent');
+
+function checkInitialPassword(){
+  if(initialPasswordInput.value.trim()===PASSWORD){
+    initialLockModal.classList.remove('open');
+    mainContent.style.display='block';
+    init();
+  }else{
+    initialLockError.textContent='Incorrect password';
+    initialPasswordInput.value='';initialPasswordInput.focus();
+  }
+}
+initialUnlockSubmit.addEventListener('click',checkInitialPassword);
+initialPasswordInput.addEventListener('keydown',e=>{if(e.key==='Enter')checkInitialPassword();});
+
+/* ── BINGO ── */
+const GRID_SIZE=25;
+let cells=Array(GRID_SIZE).fill('');
+let markedSet=new Set([12]);
+let isEditMode=false,isSaving=false;
+
+const bingoGrid=document.getElementById('bingoGrid'),
+      bingoHint=document.getElementById('bingoHint'),
+      bingoStatus=document.getElementById('bingoStatus'),
+      editBtn=document.getElementById('bingoEditBtn');
+
+editBtn.addEventListener('click',()=>{
+  isEditMode=!isEditMode;
+  editBtn.textContent=isEditMode?'👁️':'✏️';
+  editBtn.title=isEditMode?'Switch to play mode':'Switch to edit mode';
+  bingoHint.textContent=isEditMode?'Edit mode — type in squares':'Click squares to mark them';
+  renderBingo();
+});
+
+function countLines(){
+  let lines=0;
+  for(let r=0;r<5;r++)if([0,1,2,3,4].every(c=>markedSet.has(r*5+c)))lines++;
+  for(let c=0;c<5;c++)if([0,1,2,3,4].every(r=>markedSet.has(r*5+c)))lines++;
+  if([0,1,2,3,4].every(i=>markedSet.has(i*5+i)))lines++;
+  if([0,1,2,3,4].every(i=>markedSet.has(i*5+(4-i))))lines++;
+  return lines;
+}
+function calcPoints(){
+  let cellCount=0;
+  markedSet.forEach(i=>{if(i!==12)cellCount++;});
+  return cellCount*POINTS_PER_CELL+countLines()*POINTS_PER_LINE;
+}
+function renderPoints(){
+  let cellCount=0;
+  markedSet.forEach(i=>{if(i!==12)cellCount++;});
+  const lines=countLines();
+  document.getElementById('ptsTotal').textContent=calcPoints();
+  document.getElementById('ptsBreak').textContent=
+    `${cellCount} cell${cellCount===1?'':'s'} + ${lines} line${lines===1?'':'s'}`;
+}
+function renderBingo(){
+  bingoGrid.innerHTML='';
+  for(let i=0;i<GRID_SIZE;i++){
+    const isFree=i===12;
+    const cell=document.createElement('div');
+    cell.className='bingo-cell'+(isFree?' free':markedSet.has(i)?' marked':'');
+    if(isFree){cell.style.cursor='default';}
+    else if(isEditMode){
+      const ta=document.createElement('textarea');
+      ta.value=cells[i];
+      ta.addEventListener('input',e=>{cells[i]=e.target.value;});
+      ta.addEventListener('blur',saveBingo);
+      cell.appendChild(ta);
+    }else{
+      const txt=document.createElement('div');txt.className='cell-text';txt.textContent=cells[i];cell.appendChild(txt);
+      cell.style.cursor='pointer';
+      cell.addEventListener('click',async()=>{
+        markedSet.has(i)?markedSet.delete(i):markedSet.add(i);
+        renderBingo();await saveBingo();
+      });
+    }
+    bingoGrid.appendChild(cell);
+  }
+  renderPoints();
+}
+async function saveBingo(){
+  if(isSaving)return;isSaving=true;bingoStatus.textContent='Saving…';
+  try{
+    await setDoc(doc(db,BINGO_COL,PID),{
+      cells,marked:[...markedSet],points:calcPoints(),lines:countLines(),name:PNAME,emoji:PEMOJI
+    },{merge:true});
+    bingoStatus.textContent='Saved ✓';
+  }catch(e){console.error(e);bingoStatus.textContent='Save failed';}
+  finally{isSaving=false;setTimeout(()=>{bingoStatus.textContent='';},2000);}
+}
+async function loadBingo(){
+  bingoStatus.textContent='Loading…';
+  try{
+    const d=await getDoc(doc(db,BINGO_COL,PID));
+    if(d.exists()){
+      const data=d.data();
+      if(Array.isArray(data.cells))cells=data.cells;
+      if(Array.isArray(data.marked)){
+        markedSet=new Set(data.marked.filter(v=>typeof v==='number'&&Number.isInteger(v)&&v>=0&&v<=24));
+        markedSet.add(12);
+      }
+    }
+  }catch(e){console.error(e);}
+  renderBingo();bingoStatus.textContent='';
+}
+
+/* ── PROGRESS + ROOMS ── */
+const TOTAL_CHAPTERS=52;
+let myProgress=0,activeRoom=null,activeUnsub=null;
+
+const STORAGE_KEY=`ccib_lastread_${PID}`;
+function getLastRead(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');}catch{return {};}}
+function setLastRead(ch){
+  const lr=getLastRead();
+  lr[ch]=Math.floor(Date.now()/1000);
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(lr));
+}
+
+const unreadGroups=new Set();
+
+function init(){
+  loadBingo();
+  onSnapshot(doc(db,BINGO_COL,PID),d=>{
+    if(d.exists())myProgress=Number(d.data().mapPos??d.data().chapterProgress??0);
+    renderRooms();
+  },err=>console.error(err));
+
+  // ONE global listener for unread tracking — never duplicated
+  onSnapshot(collection(db,MSG_COL),snap=>{
+    const lr=getLastRead();
+    unreadGroups.clear();
+    snap.forEach(d=>{
+      const m=d.data();
+      if(!m.ts||!m.ts.seconds)return;
+      const ch=Number(String(m.chapter).replace(/chapter-?/i,'').replace(/chap/i,'').trim());
+      const grp=CHAPTER_GROUPS.find(g=>ch>=g.first&&ch<=g.last);
+      if(!grp)return;
+      if(myProgress<grp.unlock)return;
+      const lastSeen=lr[grp.first]||0;
+      if(m.ts.seconds>lastSeen&&m.name!==PNAME&&m.name!==PID){
+        unreadGroups.add(grp.first);
+      }
+    });
+    renderRooms();
+  },err=>console.error(err));
+}
+
+const roomsGrid=document.getElementById('roomsGrid');
+function renderRooms(){
+  roomsGrid.innerHTML='';
+  CHAPTER_GROUPS.forEach(grp=>{
+    const unlocked=myProgress>=grp.unlock;
+    const hasUnread=unlocked&&unreadGroups.has(grp.first);
+    const btn=document.createElement('div');
+    btn.className='room-btn '+(unlocked?'unlocked':'locked')+(hasUnread?' has-unread':'');
+    btn.innerHTML=`<span class="unread-dot"></span>`
+      +(unlocked?'':'<span class="lock-ico">🔒</span>')
+      +grp.label;
+    btn.addEventListener('click',()=>openChat(grp));
+    roomsGrid.appendChild(btn);
+  });
+}
+
+/* ── CHAT ── */
+const overlay=document.getElementById('overlay'),
+      chatClose=document.getElementById('chatClose'),
+      chatTA=document.getElementById('chatTA'),
+      chatSend=document.getElementById('chatSend');
+
+function openChat(grp){
+  activeRoom=grp;
+  const canRead=myProgress>=grp.unlock;
+  document.getElementById('chatRoomLabel').textContent='Chapter Room';
+  document.getElementById('chatTitle').textContent=grp.label;
+  const st=document.getElementById('chatStatus');
+  st.className='chat-status '+(canRead?'unlocked':'locked');
+  st.textContent=canRead?'Unlocked — all messages visible':'Write only';
+  overlay.classList.add('open');document.body.style.overflow='hidden';
+  chatTA.value='';chatTA.style.height='auto';
+  setLastRead(grp.first);
+  unreadGroups.delete(grp.first);
+  renderRooms();
+  subscribeChat(grp);
+}
+function closeChat(){
+  overlay.classList.remove('open');document.body.style.overflow='';
+  if(activeUnsub){activeUnsub();activeUnsub=null;}activeRoom=null;
+}
+chatClose.addEventListener('click',closeChat);
+overlay.addEventListener('click',e=>{if(e.target===overlay)closeChat();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&overlay.classList.contains('open'))closeChat();});
+chatTA.addEventListener('input',()=>{chatTA.style.height='auto';chatTA.style.height=chatTA.scrollHeight+'px';});
+chatTA.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}});
+chatSend.addEventListener('click',sendMsg);
+
+function msgInGroup(m,grp){
+  const n=Number(String(m.chapter).replace(/chapter-?/i,'').replace(/chap/i,'').trim());
+  return n>=grp.first&&n<=grp.last;
+}
+
+function subscribeChat(grp){
+  if(activeUnsub){activeUnsub();activeUnsub=null;}
+  const msgDiv=document.getElementById('chatMessages');
+  msgDiv.innerHTML='<span class="empty-msg">Loading…</span>';
+  activeUnsub=onSnapshot(collection(db,MSG_COL),snap=>{
+    const canRead=myProgress>=grp.unlock;
+    let msgs=[];
+    snap.forEach(d=>{const m=d.data();if(msgInGroup(m,grp))msgs.push(m);});
+    msgs.sort((a,b)=>(a.ts?.seconds||0)-(b.ts?.seconds||0));
+    if(!canRead)msgs=msgs.filter(m=>m.name===PNAME||m.name===PID);
+    msgDiv.innerHTML='';
+    if(msgs.length===0){
+      msgDiv.innerHTML=(!canRead)
+        ?`<div class="write-note"><strong>Write mode</strong>Post freely — you'll see everyone's thoughts once you reach chapter ${grp.unlock}.</div>`
+        :`<span class="empty-msg">No thoughts yet. Be the first!</span>`;
+      return;
+    }
+    msgs.forEach(m=>{
+      const isMine=m.name===PNAME||m.name===PID;
+      const pid=Object.keys(PLAYERS).find(k=>PLAYERS[k].name===m.name||k===m.name);
+      const info=pid?PLAYERS[pid]:null;
+      const emoji=info?info.emoji:'ᛟ';
+      const name=info?info.name:String(m.name||'?');
+      const color=info?.color||'#a8430f';
+      const el=document.createElement('div');
+      el.className='msg'+(isMine?' mine':'');
+      el.innerHTML=`<span class="msg-name" style="color:${color}">${emoji} ${esc(name)}</span><span class="msg-text" style="background:${hexA(color,isMine?0.6:0.45)};border-color:${color};color:#fff">${esc(String(m.text||''))}</span>`;
+      msgDiv.appendChild(el);
+    });
+    msgDiv.scrollTop=msgDiv.scrollHeight;
+  },err=>{
+    msgDiv.innerHTML=`<span class="empty-msg">Could not load messages: ${esc(err.message)}</span>`;
+  });
+}
+
+async function sendMsg(){
+  const text=chatTA.value.trim();
+  if(!text||activeRoom===null)return;
+  chatSend.disabled=true;
+  chatTA.disabled=true;
+  try{
+    await addDoc(collection(db,MSG_COL),{
+      chapter:activeRoom.first,name:PNAME,text,ts:serverTimestamp()
+    });
+    chatTA.value='';chatTA.style.height='auto';
+    setLastRead(activeRoom.first);
+  }catch(e){console.error(e);}
+  finally{
+    chatSend.disabled=false;
+    chatTA.disabled=false;
+    chatTA.focus();
+  }
+}
+
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
+function hexA(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;}
+</script>
+</body>
+</html>

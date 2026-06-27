@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Curse Carved in Bone</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+@font-face{font-family:'Norse';src:url('../fonts/Norse.otf') format('opentype');font-weight:400;font-display:swap;}
+@font-face{font-family:'Norse';src:url('../fonts/Norse-Bold.otf') format('opentype');font-weight:700;font-display:swap;}
+:root{
+  --accent:#8E3114;--accent-lt:#d97a3c;--accent-dim:#6e2008;
+  --ink:#efeae4;--ink-faded:#a8a09a;
+  --bg-deep:#181614;--bg-mid:#2d2a27;--bone:#efeae4;
+  --stone:#3d3a36;--stone-dk:#211f1d;--stone-lt:#59554f;
+}
+html,body{background:var(--bg-mid);color:var(--ink);}
+#bg-rune{position:fixed;inset:0;z-index:0;pointer-events:none;background:var(--bg-mid) url('background.png') center/cover no-repeat;}
+
+.home-layout{position:relative;z-index:2;min-height:100vh;display:grid;grid-template-columns:0.95fr 1fr;gap:36px;align-items:center;justify-content:center;padding:40px 50px;max-width:1280px;margin:0 auto;}
+@media(max-width:900px){.home-layout{grid-template-columns:1fr;gap:32px;padding:35px 20px;}}
+
+/* ── CHAPTER MAP ── */
+.map-section{display:flex;flex-direction:column;align-items:center;gap:0.6rem;}
+.map-wrap{position:relative;width:100%;max-width:420px;}
+.map-wrap img{display:block;width:100%;border-radius:6px;box-shadow:0 8px 22px rgba(0,0,0,0.4);}
+.map-hint{font-family:'Norse',serif;font-size:0.9rem;color:var(--accent-lt);letter-spacing:1px;font-style:italic;text-align:center;text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);}
+.map-marker{position:absolute;transform:translate(-50%,-50%);font-size:1.4rem;line-height:1;z-index:5;
+  filter:drop-shadow(0 1px 3px rgba(0,0,0,0.85));transition:left 0.25s ease,top 0.25s ease;
+  cursor:grab;touch-action:none;}
+.map-marker.dragging{cursor:grabbing;transition:none;z-index:6;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.95));}
+
+/* ── PLAYERS / RANK GRID ── */
+.players-section{text-align:center;width:100%;}
+.players-title{font-family:'Norse',serif;font-size:2.6rem;letter-spacing:2px;margin-top:0;margin-bottom:24px;color:var(--accent);
+  text-shadow:0 1px 3px rgba(0,0,0,0.6);}
+
+.rank-frame{position:relative;display:grid;grid-template-columns:70px 1fr;grid-template-rows:auto 56px;gap:10px;max-width:620px;margin:0 auto;padding:8px;}
+.y-axis{grid-column:1;grid-row:1;position:relative;display:flex;align-items:center;justify-content:center;}
+.y-arrow{width:auto;height:300px;flex-shrink:0;filter:url(#tintArrow);}
+.y-label{position:absolute;top:50%;left:10%;transform:translate(-50%,-50%) rotate(180deg);z-index:1;
+  font-family:'Norse',serif;font-size:clamp(11px,1.4vw,16px);font-weight:700;letter-spacing:2px;
+  writing-mode:vertical-rl;color:var(--accent-lt);white-space:nowrap;pointer-events:none;text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);}
+.x-axis{grid-column:2;grid-row:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;}
+.x-arrow-wrap{position:relative;width:100%;}
+.x-arrow{position:absolute;top:50%;left:50%;filter:url(#tintArrow);transform:translate(-50%,-50%) rotate(90deg);}
+.x-label{font-family:'Norse',serif;font-size:clamp(11px,1.4vw,16px);font-weight:700;letter-spacing:2px;
+  color:var(--accent-lt);white-space:nowrap;pointer-events:none;text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);}
+.rank-grid{grid-column:2;grid-row:1;position:relative;aspect-ratio:1/1;width:100%;margin: 10px;}
+.rank-avatar{position:absolute;text-decoration:none;color:var(--accent-lt);font-family:'Norse',serif;
+  display:flex;flex-direction:column;align-items:center;gap:4px;transform:translate(-50%,-50%);
+  transition:left 0.5s ease,top 0.5s ease,transform 0.3s ease;z-index:5;}
+.rank-avatar:hover{transform:translate(-50%,-50%) scale(1.08);z-index:6;}
+.rank-img-frame{position:relative;width:120px;height:120px;}
+.rank-img-frame::before{content:'';position:absolute;inset:-10px;border-radius:50%;
+  background:radial-gradient(circle,var(--pc-glow,var(--accent)) 0%,var(--pc-glow,var(--accent)) 40%,transparent 75%);
+  opacity:var(--pc-glow-op,0.4);filter:blur(8px);z-index:0;}
+.rank-img-frame::after{content:'';position:absolute;inset:-2px;border-radius:50%;background:var(--bg-mid);z-index:1;opacity:0;}
+.rank-img-frame img{position:relative;z-index:2;width:100%;height:100%;object-fit:cover;border-radius:50%;border:2px solid var(--accent);}
+.rank-avatar:hover .rank-img-frame img{border-color:var(--pc,var(--accent));}
+.rank-badge{position:absolute;top:-2px;right:-2px;z-index:10;font-size:1.6rem;line-height:1;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.6));}
+.rank-name{font-size:0.95rem;letter-spacing:1.5px;color:var(--accent-lt);text-shadow:0 1px 3px rgba(0,0,0,0.6);}
+
+@media(max-width:800px){
+  .players-title{font-size:1.6rem;margin-bottom:24px;}
+  .rank-img-frame{width:64px;height:64px;}
+  .rank-name{font-size:0.75rem;}
+  .rank-frame{grid-template-columns:46px 1fr;grid-template-rows:auto 44px;}
+}
+
+.footer-section{position:relative;z-index:2;text-align:center;padding:1.5rem 1rem 3rem;}
+.rune-ornament{display:flex;align-items:center;gap:0.6rem;width:100%;max-width:18rem;margin:1rem auto;}
+.rune-ornament .line{flex:1;height:1px;background:linear-gradient(to right,transparent,var(--accent-dim),transparent);}
+.rune-ornament .gem{color:var(--accent-lt);font-size:0.7rem;}
+</style>
+</head>
+<body>
+
+<div id="bg-rune"></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="tintArrow" color-interpolation-filters="sRGB">
+    <feFlood style="flood-color:var(--accent)" result="flood"/>
+    <feComposite in="flood" in2="SourceGraphic" operator="in"/>
+  </filter>
+</svg>
+
+<main class="home-layout">
+
+  <section class="map-section">
+    <div class="map-wrap" id="mapWrap">
+      <img src="cursecarvedinbone_map.png" alt="A Curse Carved in Bone chapter map">
+    </div>
+    <div class="map-hint">Drag your emoji across the map to mark your progress</div>
+  </section>
+
+  <section class="players-section">
+    <h1 class="players-title">Choose Your Player</h1>
+    <div class="rank-frame">
+
+      <div class="y-axis">
+        <span class="y-label">Best Guesser</span>
+        <img class="y-arrow" src="arrowY.png" alt="">
+      </div>
+
+      <div class="rank-grid" id="rankGrid"></div>
+
+      <div class="x-axis">
+        <div class="x-arrow-wrap" id="xArrowWrap"><img class="x-arrow" src="arrowx.png" alt=""></div>
+        <span class="x-label">Fastest Reader</span>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<section class="footer-section">
+  <div class="rune-ornament"><div class="line"></div><div class="gem">ᛟ</div><div class="line"></div></div>
+  <a class="home-btn" href="../index.html"><span class="home-btn-icon">🏠</span> Home</a>
+  <div class="footer">ᛟ &nbsp; The Bingo Book Club &nbsp; ᛟ</div>
+</section>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, doc, setDoc, onSnapshot }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAIQTe-QGQmwqTVmIyJZZ_qlDNsD6GUskY",
+  authDomain: "bingobookclub-2144e.firebaseapp.com",
+  projectId: "bingobookclub-2144e",
+  storageBucket: "bingobookclub-2144e.firebasestorage.app",
+  messagingSenderId: "294177836341",
+  appId: "1:294177836341:web:6d5f11e64737fbe3aad07c"
+};
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
+
+const BINGO_COL = 'cursecarvedinbone_bingo';
+
+/* ── chapter node positions on the map artwork (mapped via the position finder) ── */
+/* index 0 = Start, 1..52 = chapters, 53 = End */
+const CHAPTER_POS = [
+  {left:10.56,top:28.19}, // Start
+  {left:24.84,top:28.50}, {left:34.13,top:28.34}, {left:43.89,top:28.34}, {left:53.42,top:28.66},
+  {left:64.13,top:28.82}, {left:72.94,top:28.98}, {left:81.75,top:28.34}, {left:91.51,top:28.50},
+  {left:84.84,top:38.34}, {left:73.65,top:38.34}, {left:62.46,top:38.02}, {left:52.94,top:38.18},
+  {left:42.22,top:38.02}, {left:31.51,top:38.50}, {left:19.84,top:38.18}, {left:10.32,top:38.18},
+  {left:11.03,top:47.38}, {left:21.27,top:47.22}, {left:31.27,top:47.38}, {left:41.75,top:47.38},
+  {left:52.22,top:47.38}, {left:62.46,top:47.38}, {left:72.22,top:47.38}, {left:81.99,top:47.54},
+  {left:92.22,top:47.38}, {left:91.99,top:56.74}, {left:82.22,top:56.58}, {left:72.46,top:56.74},
+  {left:61.99,top:56.90}, {left:52.22,top:56.90}, {left:41.27,top:57.06}, {left:31.03,top:57.06},
+  {left:19.84,top:56.74}, {left:9.13,top:56.90}, {left:9.37,top:66.10}, {left:20.08,top:66.10},
+  {left:30.80,top:66.10}, {left:41.27,top:66.10}, {left:52.46,top:66.10}, {left:62.70,top:66.10},
+  {left:72.46,top:66.26}, {left:82.70,top:66.26}, {left:91.99,top:66.26}, {left:90.56,top:75.77},
+  {left:80.80,top:75.77}, {left:71.75,top:75.93}, {left:62.22,top:75.93}, {left:52.22,top:75.93},
+  {left:41.51,top:75.93}, {left:31.99,top:76.09}, {left:21.27,top:76.09}, {left:11.03,top:75.77},
+  {left:10.32,top:89.26}, // End
+];
+const MAP_END_IDX = CHAPTER_POS.length - 1;
+const END_POS = 53;
+
+const PLAYERS = {
+  elana:  { emoji:"🐉",   color:"#c9a84c", name:"Elana",  href:"cursecarvedinbone_player.html?p=elana",  img:"../pdp_elana.png"  },
+  lena:   { emoji:"🌙",   color:"#1f3a36", name:"Lena",   href:"cursecarvedinbone_player.html?p=lena",   img:"../pdp_lena.png"   },
+  kathi:  { emoji:"🍄",   color:"#24152b", name:"Kathi",  href:"cursecarvedinbone_player.html?p=kathi",  img:"../pdp_kathi.png"  },
+  marine: { emoji:"🧜‍♀️", color:"#172838", name:"Marine", href:"cursecarvedinbone_player.html?p=marine", img:"../pdp_marine.png" },
+};
+function hexA(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;}
+
+/* ── RANK GRID (best guesser / fastest reader) ── */
+const rankGrid=document.getElementById('rankGrid');
+const stats={};
+Object.keys(PLAYERS).forEach(p=>stats[p]={chapterProgress:0,points:0,mapPos:0});
+
+function computeRanks(metric,tieMetric){
+  const ids=Object.keys(PLAYERS);
+  ids.sort((a,b)=>{
+    if(stats[a][metric]!==stats[b][metric]) return stats[a][metric]-stats[b][metric];
+    return stats[a][tieMetric]-stats[b][tieMetric];
+  });
+  const ranks={};
+  ids.forEach((id,i)=>ranks[id]=i+1);
+  return ranks;
+}
+
+function render(){
+  const xRank=computeRanks('chapterProgress','points');
+  const yRank=computeRanks('points','chapterProgress');
+
+  Object.keys(PLAYERS).forEach(pid=>{
+    const p=PLAYERS[pid];
+    let a=document.getElementById('rank-'+pid);
+    if(!a){
+      a=document.createElement('a');
+      a.id='rank-'+pid;
+      a.className='rank-avatar';
+      a.href=p.href;
+      a.style.setProperty('--ring',hexA(p.color,0.25));
+      a.style.setProperty('--ring-bright',hexA(p.color,0.7));
+      a.style.setProperty('--pc',p.color);
+      a.style.setProperty('--pc-glow',p.color);
+      a.style.setProperty('--pc-glow-op',pid==='elana'?0.4:0.65);
+      a.innerHTML=`<div class="rank-img-frame"><img src="${p.img}" alt="${p.name}"><div class="rank-badge">${p.emoji}</div></div><div class="rank-name">${p.name}</div>`;
+      rankGrid.appendChild(a);
+    }
+    const col=xRank[pid];
+    const row=yRank[pid];
+    const leftPct=(col-0.5)/4*100;
+    const topPct=(4-row+0.5)/4*100;
+    a.style.left=leftPct+'%';
+    a.style.top=topPct+'%';
+  });
+
+  renderMapMarkers();
+}
+
+/* ── MAP MARKERS (each player's emoji at their current chapter progress) ── */
+const mapWrap=document.getElementById('mapWrap');
+const MARKER_OFFSET={ elana:{x:7,y:-7}, lena:{x:7,y:7}, kathi:{x:-7,y:7}, marine:{x:-7,y:-7} };
+function renderMapMarkers(){
+  Object.keys(PLAYERS).forEach(pid=>{
+    const p=PLAYERS[pid];
+    let m=document.getElementById('mapmarker-'+pid);
+    if(!m){
+      m=document.createElement('div');
+      m.id='mapmarker-'+pid;
+      m.className='map-marker';
+      m.textContent=p.emoji;
+      m.title=p.name;
+      const off=MARKER_OFFSET[pid]||{x:0,y:0};
+      m.style.transform=`translate(calc(-50% + ${off.x}px), calc(-50% + ${off.y}px))`;
+      mapWrap.appendChild(m);
+    }
+    if(dragging&&dragPid===pid)return; // don't fight the user's own drag
+    const idx=Math.max(0,Math.min(MAP_END_IDX,Math.round(stats[pid].mapPos||0)));
+    const pos=CHAPTER_POS[idx];
+    m.style.left=pos.left+'%';
+    m.style.top=pos.top+'%';
+  });
+}
+
+/* ── DRAG-TO-SET PROGRESS: drag any player's marker, snaps to nearest chapter node ── */
+function nearestChapterIdx(xPct,yPct,rect){
+  let best=0,bestD=Infinity;
+  CHAPTER_POS.forEach((pos,i)=>{
+    const dx=(pos.left-xPct)/100*rect.width, dy=(pos.top-yPct)/100*rect.height;
+    const d=dx*dx+dy*dy;
+    if(d<bestD){bestD=d;best=i;}
+  });
+  return best;
+}
+let dragging=false,dragPid=null;
+function tryStartDrag(cx,cy){
+  for(const pid of Object.keys(PLAYERS)){
+    const m=document.getElementById('mapmarker-'+pid); if(!m) continue;
+    const r=m.getBoundingClientRect();
+    if(Math.hypot(cx-(r.left+r.width/2),cy-(r.top+r.height/2))<24){
+      dragging=true;dragPid=pid;m.classList.add('dragging');m.style.transition='none';return;
+    }
+  }
+}
+mapWrap.addEventListener('mousedown',e=>tryStartDrag(e.clientX,e.clientY));
+mapWrap.addEventListener('touchstart',e=>tryStartDrag(e.touches[0].clientX,e.touches[0].clientY),{passive:true});
+function onMove(cx,cy){
+  if(!dragging||!dragPid)return;
+  const r=mapWrap.getBoundingClientRect();
+  const xPct=Math.min(Math.max((cx-r.left)/r.width*100,0),100);
+  const yPct=Math.min(Math.max((cy-r.top)/r.height*100,0),100);
+  const m=document.getElementById('mapmarker-'+dragPid);
+  if(m){m.style.left=xPct+'%';m.style.top=yPct+'%';}
+}
+window.addEventListener('mousemove',e=>onMove(e.clientX,e.clientY));
+window.addEventListener('touchmove',e=>onMove(e.touches[0].clientX,e.touches[0].clientY),{passive:true});
+async function endDrag(cx,cy){
+  if(!dragging)return;dragging=false;
+  const pid=dragPid;
+  const m=document.getElementById('mapmarker-'+pid);
+  if(m){m.style.transition='';m.classList.remove('dragging');}
+  const r=mapWrap.getBoundingClientRect();
+  const xPct=Math.min(Math.max((cx-r.left)/r.width*100,0),100);
+  const yPct=Math.min(Math.max((cy-r.top)/r.height*100,0),100);
+  const idx=nearestChapterIdx(xPct,yPct,r);
+  if(m){const pos=CHAPTER_POS[idx];m.style.left=pos.left+'%';m.style.top=pos.top+'%';}
+  dragPid=null;
+  const progress=Math.min(idx,END_POS);
+  try{await setDoc(doc(db,BINGO_COL,pid),{mapPos:idx,chapterProgress:progress},{merge:true});}catch(err){console.error(err);}
+}
+window.addEventListener('mouseup',e=>endDrag(e.clientX,e.clientY));
+window.addEventListener('touchend',e=>endDrag(e.changedTouches[0].clientX,e.changedTouches[0].clientY));
+
+onSnapshot(collection(db,BINGO_COL),snap=>{
+  snap.forEach(d=>{
+    if(!PLAYERS[d.id]) return;
+    const data=d.data();
+    const chapterProgress=Number(data.chapterProgress||0);
+    const mapPos=(data.mapPos!=null)?Number(data.mapPos):chapterProgress;
+    stats[d.id]={ chapterProgress, points:Number(data.points||0), mapPos };
+  });
+  render();
+},err=>console.error(err));
+
+render();
+
+/* ── AXIS ARROWS: size to actually match the rank-grid's rendered dimensions ── */
+const yArrow=document.querySelector('.y-arrow'), xArrow=document.querySelector('.x-arrow'),
+      xArrowWrap=document.getElementById('xArrowWrap');
+function sizeArrow(img,targetLong){
+  const ratio=(img.naturalWidth&&img.naturalHeight)?(img.naturalWidth/img.naturalHeight):0.34;
+  img.style.height=Math.round(targetLong)+'px';
+  img.style.width=Math.round(targetLong*ratio)+'px';
+  return Math.round(targetLong*ratio);
+}
+function syncAxisArrows(){
+  const r=rankGrid.getBoundingClientRect();
+  if(r.height>0)sizeArrow(yArrow,r.height*0.92);
+  if(r.width>0){
+    const thickness=sizeArrow(xArrow,r.width*0.92);
+    xArrowWrap.style.height=thickness+'px';
+  }
+}
+function syncAxisArrowsWhenReady(){
+  const ready=img=>img.complete?Promise.resolve():new Promise(res=>img.addEventListener('load',res,{once:true}));
+  Promise.all([ready(yArrow),ready(xArrow)]).then(syncAxisArrows);
+}
+syncAxisArrowsWhenReady();
+window.addEventListener('resize',syncAxisArrows);
+new ResizeObserver(syncAxisArrows).observe(rankGrid);
+
+</script>
+
+</body>
+</html>
