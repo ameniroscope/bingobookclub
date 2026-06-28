@@ -181,16 +181,18 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 //  append one line below with its title, filename, and image.
 // ─────────────────────────────────────────────────────────────
 const BOOKS = [
-  { title: "Iron Flame", file: "archive_ironflame.json", image: "archive_ironflame.png" },
-  // { title: "Onyx Storm", file: "bingo_archive_onyx_storm.json", image: "archive_onyx_storm.png" },
+  { title: "Iron Flame",  file: "archive_ironflame.json",  bingo: "ironflame_bingo.png", cover: "ironflame_cover.jpg" },
+  { title: "Witchslayer", file: "archive_witchslayer.json", bingo: "witchslayer_bingo.png", cover: "witchslayer_cover.jpg" },
 ];
 
 const PLAYERS = [
   { pid:"marine", name:"Marine", emoji:"🧜‍♀️", photo:"../pdp_marine.png" },
   { pid:"kathi",  name:"Kathi",  emoji:"🍄",   photo:"../pdp_kathi.png"  },
+  { pid:"lena", name:"Lena", emoji:"🌙️", photo:"../pdp_lena.png" },
+  { pid:"elana",  name:"Elana",  emoji:"🐉",   photo:"../pdp_elana.png"  },
 ];
-const NAME_BY_PID  = { marine:"Marine", kathi:"Kathi" };
-const EMOJI_BY_PID = { marine:"🧜‍♀️",  kathi:"🍄"     };
+const NAME_BY_PID  = { marine:"Marine", kathi:"Kathi", lena:"Lena", elana:"Elana"};
+const EMOJI_BY_PID = { marine:"🧜‍♀️",  kathi:"🍄", lena:"🌙️", elana:"🐉"     };
 
 const ROOMS = Array.from({length:19},(_,i)=>({ch:i,label:i===0?"General":`Chunk ${i}`}));
 const GRID_SIZE = 25;
@@ -223,26 +225,6 @@ function calcPoints(marked) {
   if ([0,1,2,3,4].every(i => m.has(i*5+i)))     lines++;
   if ([0,1,2,3,4].every(i => m.has(i*5+(4-i)))) lines++;
   return { total: cells + lines * 5, cells, lines };
-}
-
-// ── Cover fetching: Google Books primary, Open Library fallback ──
-async function fetchCover(title){
-  try{
-    const r = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(title)}&maxResults=1`);
-    const j = await r.json();
-    const img = j.items?.[0]?.volumeInfo?.imageLinks;
-    if(img){
-      let url = img.thumbnail || img.smallThumbnail;
-      if(url) return url.replace('http://','https://').replace('&edge=curl','');
-    }
-  }catch(e){ console.warn('Google Books cover failed',e); }
-  try{
-    const r = await fetch(`https://openlibrary.org/search.json?title=${encodeURIComponent(title)}&limit=1`);
-    const j = await r.json();
-    const id = j.docs?.[0]?.cover_i;
-    if(id) return `https://covers.openlibrary.org/b/id/${id}-L.jpg`;
-  }catch(e){ console.warn('Open Library cover failed',e); }
-  return null;
 }
 
 // ── Load a book's JSON file (cached) ──
@@ -281,14 +263,13 @@ async function buildShelf(){
     el.addEventListener('click',()=>selectBook(book,el));
     shelf.appendChild(el);
 
-    fetchCover(book.title).then(url=>{
-      if(!url) return;
+    if(book.cover){
       const wrap = el.querySelector('.cover-wrap');
       const img = document.createElement('img');
       img.alt = book.title;
       img.onload = ()=>{ wrap.innerHTML=''; wrap.appendChild(img); };
-      img.src = url;
-    });
+      img.src = book.cover;
+    }
   });
 }
 
@@ -326,8 +307,8 @@ function renderContent(){
 function renderCards(){
   const wrap = document.getElementById('cardsWrap');
   const bingo = getCollection(archiveData, 'shouty_bingo');
-  const bgStyle = activeBook && activeBook.image
-    ? ` style="background-image:url('${esc(activeBook.image)}')"` : '';
+  const bgStyle = activeBook && activeBook.bingo
+    ? ` style="background-image:url('${esc(activeBook.bingo)}')"` : '';
 
   // ── compute pts for all players first to find the winner ──
   const playerPts = PLAYERS.map(p => {

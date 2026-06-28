@@ -205,6 +205,10 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
   </div>
 </div>
 
+<!-- TEMP EXPORT BUTTON — remove this whole block (and its script handler below) when no longer needed -->
+<button id="tempExportBtn" type="button" style="position:fixed;bottom:10px;right:10px;z-index:9999;opacity:0.5;font-size:11px;padding:4px 8px;background:#222;color:#aaa;border:1px solid #555;border-radius:4px;cursor:pointer;">Export</button>
+<!-- END TEMP EXPORT BUTTON -->
+
 <!-- CHAT MODAL -->
 <div class="overlay" id="overlay">
   <div class="chat-modal">
@@ -244,6 +248,32 @@ const fb = initializeApp({
   appId: "1:294177836341:web:6d5f11e64737fbe3aad07c"
 });
 const db = getFirestore(fb);
+
+/* ── TEMP EXPORT BUTTON HANDLER — remove this whole block when no longer needed ── */
+document.getElementById('tempExportBtn').addEventListener('click', async () => {
+  try {
+    const output = { collections: {} };
+    for (const colName of ['shouty_bingo', 'shouty_messages']) {
+      const snap = await getDocs(collection(db, colName));
+      const colData = {};
+      snap.forEach(d => { colData[d.id] = { _data: d.data() }; });
+      output.collections[colName] = colData;
+    }
+    const blob = new Blob([JSON.stringify(output, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'archive_witchslayer.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch (e) {
+    console.error(e);
+    alert('Export failed: ' + e.message);
+  }
+});
+/* ── END TEMP EXPORT BUTTON HANDLER ── */
 
 /* ── PLAYER CONFIGS (Firestore: accessCodes collection, doc id = pid) ── */
 const ALL_PLAYERS = {};
