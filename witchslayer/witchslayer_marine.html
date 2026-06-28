@@ -256,7 +256,11 @@ document.getElementById('tempExportBtn').addEventListener('click', async () => {
     for (const colName of ['shouty_bingo', 'shouty_messages']) {
       const snap = await getDocs(collection(db, colName));
       const colData = {};
-      snap.forEach(d => { colData[d.id] = { _data: d.data() }; });
+      snap.forEach(d => {
+        const data = d.data();
+        if (data.ts && typeof data.ts.toDate === 'function') data.ts = data.ts.toDate().toISOString();
+        colData[d.id] = { _data: data };
+      });
       output.collections[colName] = colData;
     }
     const blob = new Blob([JSON.stringify(output, null, 2)], { type: 'application/json' });

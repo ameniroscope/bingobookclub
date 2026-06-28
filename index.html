@@ -421,13 +421,44 @@
   // ── Players ──
   const PLAYERS = ['lena', 'kathi', 'marine', 'elana'];
 
-  // ── Hardcoded archived points (Iron Flame) ──
-  const archived = {
+  // ── Fallback archived points, used only if the archive JSON can't be fetched
+  //    (e.g. opening the site via file:// instead of a real server) ──
+  const ARCHIVE_FALLBACK = {
     lena:   { points: 0,  books: 0 },
     kathi:  { points: 12, books: 1 },
     marine: { points: 8,  books: 1 },
     elana:  { points: 0,  books: 0 }
   };
+
+  // ── Archived books: read straight from the exported JSON used by the Archives page ──
+  // collection: which key inside the JSON's "collections" object holds the bingo docs.
+  const ARCHIVE_BOOKS = [
+    { file: 'archive/archive_ironflame.json', collection: 'shouty_bingo' },
+  ];
+
+  async function loadArchivedTotals() {
+    const totals = {};
+    PLAYERS.forEach(p => totals[p] = { points: 0, books: 0 });
+    try {
+      for (const book of ARCHIVE_BOOKS) {
+        const res = await fetch(book.file);
+        if (!res.ok) throw new Error(`${book.file}: ${res.status}`);
+        const data = await res.json();
+        const col = data.collections?.[book.collection] || {};
+        Object.keys(col).forEach(pid => {
+          if (!totals[pid]) return;
+          const rec = col[pid]._data || col[pid];
+          const marked = Array.isArray(rec.marked) ? rec.marked : [];
+          totals[pid].points += calcPoints(marked);
+          totals[pid].books += 1; // present in an archived snapshot = finished that book
+        });
+      }
+      return totals;
+    } catch (e) {
+      console.warn('Falling back to hardcoded archive totals', e);
+      return ARCHIVE_FALLBACK;
+    }
+  }
 
   // ── Live books config ──
   // collection: Firestore collection name
@@ -464,6 +495,7 @@
   // ── Main: fetch all live books, aggregate, render ──
   async function loadScores() {
     // Start from archived base
+    const archived = await loadArchivedTotals();
     const totals = {};
     PLAYERS.forEach(p => {
       totals[p] = { points: archived[p].points, books: archived[p].books };

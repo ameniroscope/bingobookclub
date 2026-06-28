@@ -203,6 +203,14 @@ const cache = {};         // filename -> parsed JSON
 
 function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
 
+// ts can be an ISO string (older exports) or a raw Firestore Timestamp {seconds,nanoseconds}
+function tsMillis(ts){
+  if(!ts) return 0;
+  if(typeof ts === 'string') return new Date(ts).getTime() || 0;
+  if(typeof ts === 'object' && typeof ts.seconds === 'number') return ts.seconds*1000 + Math.floor((ts.nanoseconds||0)/1e6);
+  return 0;
+}
+
 function calcPoints(marked) {
   const m = new Set(marked); m.add(12);
   let cells = 0, lines = 0;
@@ -377,8 +385,7 @@ function openChat(room){
 
   const all = getCollection(archiveData, 'shouty_messages');
   let msgs = Object.values(all).filter(m=>m.room===room.ch);
-  // sort by timestamp string (ISO sorts correctly as text)
-  msgs.sort((a,b)=> (a.ts||'').localeCompare(b.ts||''));
+  msgs.sort((a,b)=> tsMillis(a.ts) - tsMillis(b.ts));
 
   if(msgs.length===0){ msgDiv.innerHTML='<span class="empty-msg">No thoughts recorded here.</span>'; return; }
   msgDiv.innerHTML='';
@@ -386,7 +393,8 @@ function openChat(room){
     const emoji = EMOJI_BY_PID[m.name]||'';
     const name  = NAME_BY_PID[m.name]||m.name;
     let time='';
-    if(m.ts){ const d=new Date(m.ts); if(!isNaN(d)) time=d.toLocaleDateString(undefined,{month:'short',day:'numeric'}); }
+    const ms = tsMillis(m.ts);
+    if(ms) time=new Date(ms).toLocaleDateString(undefined,{month:'short',day:'numeric'});
     const el=document.createElement('div');
     el.className='msg';
     el.innerHTML=`<span class="msg-name">${emoji} ${name}<span class="msg-time">${time}</span></span><span class="msg-text">${esc(m.text)}</span>`;
