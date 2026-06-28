@@ -36,6 +36,11 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 
 /* ── book section ── */
 .book-section{margin-bottom:3rem;}
+#books-container{display:flex;flex-direction:column;}
+@media (min-width:1100px){
+  #books-container{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:2.5rem;align-items:start;}
+  #books-container .book-section{margin-bottom:0;}
+}
 
 /* ── score ── */
 .pts-display{font-family:'Cinzel',serif;color:#3f220a;margin-bottom:1rem;}
