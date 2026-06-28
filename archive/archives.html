@@ -203,16 +203,6 @@ const cache = {};         // filename -> parsed JSON
 
 function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
 
-//Find the bingo squares and calculate points
-function checkBingo(marked){
-  const m = new Set(marked); m.add(12);
-  for(let r=0;r<5;r++) if([0,1,2,3,4].every(c=>m.has(r*5+c))) return true;
-  for(let c=0;c<5;c++) if([0,1,2,3,4].every(r=>m.has(r*5+c))) return true;
-  if([0,1,2,3,4].every(i=>m.has(i*5+i))) return true;
-  if([0,1,2,3,4].every(i=>m.has(i*5+(4-i)))) return true;
-  return false;
-}
-  
 function calcPoints(marked) {
   const m = new Set(marked); m.add(12);
   let cells = 0, lines = 0;
@@ -254,9 +244,9 @@ async function buildShelf(){
   shelf.innerHTML = '';
   if(BOOKS.length < 2) shelf.style.display = 'none';
 
-  BOOKS.forEach((book,idx)=>{
+  BOOKS.forEach((book)=>{
     const el = document.createElement('div');
-    el.className = 'shelf-book' + (idx===0?' active':'');
+    el.className = 'shelf-book';
     el.innerHTML = `
       <div class="cover-wrap"><div class="cover-placeholder">📖</div></div>
       <div class="shelf-title">${esc(book.title)}</div>`;
@@ -310,26 +300,19 @@ function renderCards(){
   const bgStyle = activeBook && activeBook.bingo
     ? ` style="background-image:url('${esc(activeBook.bingo)}')"` : '';
 
-  // ── compute pts for all players first to find the winner ──
-  const playerPts = PLAYERS.map(p => {
-    let marked = [12];
-    const rec = bingo[p.pid];
-    if(rec && Array.isArray(rec.marked)) marked = rec.marked;
-    return calcPoints(marked).total;
-  });
+  // only players who actually have a record in this book's archive
+  const activePlayers = PLAYERS.filter(p => bingo[p.pid]);
+
+  // ── compute pts for active players first to find the winner ──
+  const playerPts = activePlayers.map(p => calcPoints(bingo[p.pid].marked || [12]).total);
   const maxPts = Math.max(...playerPts);
 
-  for(let pi=0; pi<PLAYERS.length; pi++){
-    const p = PLAYERS[pi];
-    let cells = Array(GRID_SIZE).fill('');
-    let marked = [12];
+  for(let pi=0; pi<activePlayers.length; pi++){
+    const p = activePlayers[pi];
     const rec = bingo[p.pid];
-    if(rec){
-      if(Array.isArray(rec.cells))  cells  = rec.cells;
-      if(Array.isArray(rec.marked)) marked = rec.marked;
-    }
+    let cells = Array.isArray(rec.cells) ? rec.cells : Array(GRID_SIZE).fill('');
+    let marked = Array.isArray(rec.marked) ? rec.marked : [12];
     const markedSet = new Set(marked); markedSet.add(12);
-    const hasBingo = checkBingo(marked);
     const pts = calcPoints(marked);
     const isWinner = pts.total === maxPts && maxPts > 0;
 
@@ -357,7 +340,6 @@ function renderCards(){
         <div class="pts-breakdown">${pts.cells} cell${pts.cells!==1?'s':''} + ${pts.lines} line${pts.lines!==1?'s':''}</div>
       </div>
       <div class="bingo-card-wrap"${bgStyle}>
-        <span class="bingo-badge${hasBingo?' show':''}">BINGO!</span>
         <div class="bingo-grid">${cellsHtml}</div>
       </div>`;
     wrap.appendChild(col);
@@ -412,9 +394,9 @@ function openChat(room){
   });
 }
 
-// Init — show the first read
+// Init — wait for the player to click a cover before loading anything
 buildShelf();
-selectBook(BOOKS[0], document.querySelector('.shelf-book'));
+document.getElementById('content').innerHTML = `<div class="notice">Click a cover above to open its archive.</div>`;
 </script>
 </body>
 </html>
