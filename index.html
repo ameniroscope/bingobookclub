@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Bingo Book Club</title>
 <link rel="stylesheet" href="style.css">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Caveat:wght@700&display=swap" rel="stylesheet">
 <style>
 .page{
     position:relative;z-index:1;
@@ -186,6 +186,12 @@
     letter-spacing:1.5px;
     text-shadow:0 0 40px rgba(201,168,76,0.25);
   }
+  .scratch-wrap{position:relative;display:inline-block;}
+  .scratch-svg{position:absolute;left:-4%;top:38%;width:108%;height:34%;pointer-events:none;}
+  .scratch-svg path{stroke:#cc1a1a;stroke-width:5;fill:none;stroke-linecap:round;}
+  .handwritten-sub{position:absolute;top:-0.85em;left:50%;transform:translateX(-50%) rotate(-7deg);
+    font-family:'Caveat',cursive;font-weight:700;font-size:0.6em;color:#cc1a1a;white-space:nowrap;pointer-events:none;}
+
   .title-rule{display:flex;align-items:center;gap:0.5rem;margin-top:0.7rem;width:100%;}
   .title-rule .line{flex:1;height:1px;background:linear-gradient(to right,transparent,#c9a84c55,transparent);}
   .title-rule .gem{color:#c9a84c;font-size:0.55rem;}
@@ -345,7 +351,7 @@
         </div>
         <div class="hero-text">
           <div class="club-title">✦ Est. 2026 · Welcome to ✦</div>
-          <div class="main-title">The Bingo Book Club</div>
+          <div class="main-title">The <span class="scratch-wrap">Bingo<span class="handwritten-sub">Danielle</span><svg class="scratch-svg" viewBox="0 0 100 20" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M2,12 Q25,3 50,11 T98,7"/></svg></span> Book Club</div>
           <div class="title-rule">
             <div class="line"></div><div class="gem">✦</div><div class="line"></div>
           </div>
