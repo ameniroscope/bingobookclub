@@ -137,7 +137,8 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 .messages{flex:1;overflow-y:auto;padding:0.9rem 1.1rem;display:flex;flex-direction:column;gap:0.7rem;}
 .empty-msg{font-size:1rem;color:var(--ink-faded);font-style:italic;text-align:center;margin:auto;}
 .msg-name{font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:1px;color:var(--gold);display:block;margin-bottom:0.1rem;}
-.msg-text{font-size:1rem;color:var(--ink);line-height:1.65;}
+.msg-text{display:inline-block;font-size:1rem;color:var(--ink);line-height:1.65;
+  border:1px solid transparent;border-radius:8px;padding:0.4rem 0.65rem;max-width:min(85%,420px);word-break:break-word;}
 .msg-time{font-size:0.7rem;color:var(--worn);font-style:italic;margin-left:0.4rem;}
 
 @media (max-width:800px){
@@ -195,6 +196,8 @@ const PLAYERS = [
 ];
 const NAME_BY_PID  = { marine:"Marine", kathi:"Kathi", lena:"Lena", elana:"Elana"};
 const EMOJI_BY_PID = { marine:"🧜‍♀️",  kathi:"🍄", lena:"🌙️", elana:"🐉"     };
+const COLOR_BY_PID = { elana:"#c9a84c", lena:"#1f3a36", kathi:"#24152b", marine:"#172838" };
+function hexA(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;}
 
 const ROOMS = Array.from({length:19},(_,i)=>({ch:i,label:i===0?"General":`Chunk ${i}`}));
 const GRID_SIZE = 25;
@@ -397,12 +400,13 @@ function openChat(room){
   msgs.forEach(m=>{
     const emoji = EMOJI_BY_PID[m.name]||'';
     const name  = NAME_BY_PID[m.name]||m.name;
+    const color = COLOR_BY_PID[m.name]||'#8b6914';
     let time='';
     const ms = tsMillis(m.ts);
     if(ms) time=new Date(ms).toLocaleDateString(undefined,{month:'short',day:'numeric'});
     const el=document.createElement('div');
     el.className='msg';
-    el.innerHTML=`<span class="msg-name">${emoji} ${name}<span class="msg-time">${time}</span></span><span class="msg-text">${esc(m.text)}</span>`;
+    el.innerHTML=`<span class="msg-name" style="color:${color}">${emoji} ${name}<span class="msg-time">${time}</span></span><span class="msg-text" style="background:${hexA(color,0.16)};border-color:${color}">${esc(m.text)}</span>`;
     msgDiv.appendChild(el);
   });
 }

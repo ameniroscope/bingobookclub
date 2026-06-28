@@ -90,10 +90,10 @@ const PLAYERS = {
 };
 
 const BOOKS = [
-  { title:'Iron Flame', file:'archive_ironflame.json', image:'archive_ironflame.png',
-    year:'2023', collection:'shouty_bingo', pidKey:(pid)=>pid },
-  // { title:'Onyx Storm', file:'bingo_archive_onyx_storm.json', image:'archive_onyx_storm.png',
-  //   year:'2025', collection:'first_bingo', pidKey:(pid)=>pid },
+  { title:'Iron Flame', file:'archive_ironflame.json', image:'ironflame_bingo.png',
+    year:'2023', collection:'shouty_bingo', pidKey:(pid)=>pid, gridTop:35.8, gridWidth:73 },
+  { title:'Witchslayer', file:'archive_witchslayer.json', image:'witchslayer_bingo.png',
+    year:'2026', collection:'shouty_bingo', pidKey:(pid)=>pid, gridTop:34.8, gridWidth:73 },
 ];
 
 const GRID_SIZE = 25;
@@ -152,7 +152,7 @@ async function fetchCover(title){
 // ─────────────────────────────────────────────
 // RENDER
 // ─────────────────────────────────────────────
-function renderBingoCard(cells, marked, bgImage){
+function renderBingoCard(cells, marked, bgImage, gridTop, gridWidth){
   const markedSet = new Set(marked);
   let cellsHtml = '';
   for(let i=0;i<GRID_SIZE;i++){
@@ -160,8 +160,9 @@ function renderBingoCard(cells, marked, bgImage){
     const cls = 'bingo-cell'+(isFree?' free':markedSet.has(i)?' marked':'');
     cellsHtml += `<div class="${cls}"><div class="cell-text">${isFree?' ':esc(cells[i])}</div></div>`;
   }
+  const gridStyle = `top:${gridTop ?? 35.8}%;width:${gridWidth ?? 73}%`;
   return `<div class="bingo-card-wrap" style="background-image:url('${esc(bgImage)}')">
-    <div class="bingo-grid">${cellsHtml}</div>
+    <div class="bingo-grid" style="${gridStyle}">${cellsHtml}</div>
   </div>`;
 }
 
@@ -189,7 +190,7 @@ function renderBookSection(book, playerData, coverUrl){
       <div><span class="pts-big">${pts.total}</span> <span class="pts-label">pts</span></div>
       <div class="pts-breakdown">${pts.cells} guess${pts.cells!==1?'es':''} + ${pts.lines} line${pts.lines!==1?'s':''}</div>
     </div>
-    ${renderBingoCard(cells, marked, book.image)}
+    ${renderBingoCard(cells, marked, book.image, book.gridTop, book.gridWidth)}
   </div>`;
 }
 
