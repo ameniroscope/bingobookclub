@@ -180,9 +180,11 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 //  new read later: export it, drop the .json in this folder, and
 //  append one line below with its title, filename, and image.
 // ─────────────────────────────────────────────────────────────
+// gridTop/gridWidth position the 5x5 overlay over each book's own bingo
+// artwork — they match the % values used on that book's live player page.
 const BOOKS = [
-  { title: "Iron Flame",  file: "archive_ironflame.json",  bingo: "ironflame_bingo.png", cover: "ironflame_cover.jpg" },
-  { title: "Witchslayer", file: "archive_witchslayer.json", bingo: "witchslayer_bingo.png", cover: "witchslayer_cover.jpg" },
+  { title: "Iron Flame",  file: "archive_ironflame.json",  bingo: "ironflame_bingo.png", cover: "ironflame_cover.jpg", gridTop: 35.8, gridWidth: 73 },
+  { title: "Witchslayer", file: "archive_witchslayer.json", bingo: "witchslayer_bingo.png", cover: "witchslayer_cover.jpg", gridTop: 34.8, gridWidth: 73 },
 ];
 
 const PLAYERS = [
@@ -307,6 +309,9 @@ function renderCards(){
   const bingo = getCollection(archiveData, 'shouty_bingo');
   const bgStyle = activeBook && activeBook.bingo
     ? ` style="background-image:url('${esc(activeBook.bingo)}')"` : '';
+  const gridTop = activeBook && activeBook.gridTop != null ? activeBook.gridTop : 35.8;
+  const gridWidth = activeBook && activeBook.gridWidth != null ? activeBook.gridWidth : 73;
+  const gridStyle = ` style="top:${gridTop}%;width:${gridWidth}%"`;
 
   // only players who actually have a record in this book's archive
   const activePlayers = PLAYERS.filter(p => bingo[p.pid]);
@@ -348,7 +353,7 @@ function renderCards(){
         <div class="pts-breakdown">${pts.cells} cell${pts.cells!==1?'s':''} + ${pts.lines} line${pts.lines!==1?'s':''}</div>
       </div>
       <div class="bingo-card-wrap"${bgStyle}>
-        <div class="bingo-grid">${cellsHtml}</div>
+        <div class="bingo-grid"${gridStyle}>${cellsHtml}</div>
       </div>`;
     wrap.appendChild(col);
   }
@@ -360,11 +365,11 @@ function renderRooms(){
   for(const m of Object.values(msgs)){ counts[m.room] = (counts[m.room]||0)+1; }
 
   const grid = document.getElementById('roomsGrid');
-  ROOMS.forEach(r=>{
-    const n = counts[r.ch]||0;
+  ROOMS.filter(r => counts[r.ch] > 0).forEach(r=>{
+    const n = counts[r.ch];
     const btn = document.createElement('div');
-    btn.className = 'room-btn' + (n===0?' empty':'');
-    btn.innerHTML = `<span class="btn-count">${n||''}</span><span class="btn-label">${r.label}</span>`;
+    btn.className = 'room-btn';
+    btn.innerHTML = `<span class="btn-count">${n}</span><span class="btn-label">${r.label}</span>`;
     btn.addEventListener('click',()=>openChat(r));
     grid.appendChild(btn);
   });
