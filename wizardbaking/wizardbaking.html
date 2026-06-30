@@ -77,6 +77,12 @@ html,body{background:none;min-height:100vh;font-family:'IM Fell English',Georgia
     box-shadow: 0 0 25px #391734;
 }
 .player-btn .pname{display:block;margin-top:14px;font-size:1.2rem;letter-spacing:2px;color:var(--ink);}
+.player-badge{position:absolute;top:-3px;right:-3px;z-index:10;
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--parch);border:2px solid #391734;
+  font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;
+  color:var(--ink);text-shadow:0 0 6px rgba(57,23,52,0.8);filter:drop-shadow(0 0 6px rgba(57,23,52,0.5));}
 @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
 
 @media(max-width:860px){.wrap{grid-template-columns:1fr;}.map-col{position:static;max-width:460px;width:100%;margin:0 auto;}}
@@ -121,12 +127,14 @@ html,body{background:none;min-height:100vh;font-family:'IM Fell English',Georgia
         <a class="player-btn" href="wizardbaking_player.html?p=marine">
           <div class="player-img-frame">
             <img class="avatar" src="../pdp_marine.png" alt="Marine">
+            <div class="player-badge" id="badge-marine"></div>
           </div>
           <span class="pname">Marine</span>
         </a>
         <a class="player-btn" href="wizardbaking_player.html?p=kathi">
           <div class="player-img-frame">
             <img class="avatar" src="../pdp_kathi.png" alt="Kathi">
+            <div class="player-badge" id="badge-kathi"></div>
           </div>
           <span class="pname">Kathi</span>
         </a>
@@ -315,9 +323,12 @@ mapHint.style.display = "block";
 onSnapshot(collection(db, "wizardbaking_bingo"), snap => {
   snap.forEach(d => {
     if (!PLAYERS[d.id]) return;
-    const chNum = d.data().chapter ?? 0;   // chapter-based now
+    const data = d.data();
+    const chNum = data.chapter ?? 0;   // chapter-based now
     progress[d.id] = chNum;
     placeMarker(d.id, chNum);
+    const badge = document.getElementById("badge-" + d.id);
+    if (badge) badge.textContent = data.points ?? 0;
   });
   mapHint.style.display = "block";
 }, err => console.error(err));

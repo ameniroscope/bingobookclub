@@ -58,7 +58,12 @@ html,body{background:var(--bg-mid);color:var(--ink);}
 .rank-img-frame::after{content:'';position:absolute;inset:-2px;border-radius:50%;background:var(--bg-mid);z-index:1;opacity:0;}
 .rank-img-frame img{position:relative;z-index:2;width:100%;height:100%;object-fit:cover;border-radius:50%;border:2px solid var(--accent);}
 .rank-avatar:hover .rank-img-frame img{border-color:var(--pc,var(--accent));}
-.rank-badge{position:absolute;top:-2px;right:-2px;z-index:10;font-size:1.6rem;line-height:1;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.6));}
+.rank-badge{position:absolute;top:-4px;right:-4px;z-index:10;
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:#0d0a0e;border:2px solid var(--pc,var(--accent));
+  font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;
+  color:#f0e6c8;text-shadow:0 0 6px rgba(0,0,0,0.8);filter:drop-shadow(0 1px 2px rgba(0,0,0,0.6));}
 .rank-name{font-size:0.95rem;letter-spacing:1.5px;color:var(--accent-lt);text-shadow:0 1px 3px rgba(0,0,0,0.6);}
 
 @media(max-width:800px){
@@ -290,9 +295,11 @@ function render(){
       a.style.setProperty('--pc',p.color);
       a.style.setProperty('--pc-glow',p.color);
       a.style.setProperty('--pc-glow-op',pid==='elana'?0.4:0.65);
-      a.innerHTML=`<div class="rank-img-frame"><img src="${p.img}" alt="${p.name}"><div class="rank-badge">${p.emoji}</div></div><div class="rank-name">${p.name}</div>`;
+      a.innerHTML=`<div class="rank-img-frame"><img src="${p.img}" alt="${p.name}"><div class="rank-badge" id="badge-${pid}"></div></div><div class="rank-name">${p.name}</div>`;
       rankGrid.appendChild(a);
     }
+    const badge=document.getElementById('badge-'+pid);
+    if(badge) badge.textContent = stats[pid].points;
     const col=xRank[pid];
     const row=yRank[pid];
     const leftPct=(col-0.5)/4*100;

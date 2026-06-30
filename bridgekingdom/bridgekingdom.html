@@ -111,7 +111,12 @@
 .rank-img-frame::after{content:'';position:absolute;inset:-2px;border-radius:50%;background:#0d0a0e;z-index:1;}
 .rank-img-frame img{position:relative;z-index:2;width:100%;height:100%;object-fit:cover;border-radius:50%;border:2px solid #c9a84c55;}
 .rank-avatar:hover .rank-img-frame img{border-color:var(--pc,#c9a84c);box-shadow:0 0 18px var(--pc-glow,rgba(201,168,76,0.4));}
-.rank-badge{position:absolute;top:-2px;right:-2px;z-index:10;font-size:1.6rem;line-height:1;filter:drop-shadow(0 0 6px rgba(201,168,76,0.7));}
+.rank-badge{position:absolute;top:-3px;right:-3px;z-index:10;
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:#0d0a0e;border:2px solid var(--pc,#c9a84c);
+  font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;
+  color:#f0e6c8;text-shadow:0 0 6px rgba(201,168,76,0.9);filter:drop-shadow(0 0 6px rgba(201,168,76,0.7));}
 .rank-name{font-size:0.95rem;letter-spacing:1.5px;text-shadow:0 1px 3px #000;}
 @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
 
@@ -307,9 +312,11 @@ function render(){
       a.style.setProperty('--ring-bright',hexA(p.color,0.7));
       a.style.setProperty('--pc',p.color);
       a.style.setProperty('--pc-glow',hexA(p.color,0.45));
-      a.innerHTML=`<div class="rank-img-frame"><img src="${p.img}" alt="${p.name}"><div class="rank-badge">${p.emoji}</div></div><div class="rank-name">${p.name}</div>`;
+      a.innerHTML=`<div class="rank-img-frame"><img src="${p.img}" alt="${p.name}"><div class="rank-badge" id="badge-${pid}"></div></div><div class="rank-name">${p.name}</div>`;
       rankGrid.appendChild(a);
     }
+    const badge=document.getElementById('badge-'+pid);
+    if(badge) badge.textContent = stats[pid].points;
     const col=xRank[pid];
     const row=yRank[pid];
     const leftPct=(col-0.5)/4*100;
