@@ -3,34 +3,43 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shouty Bingo - Kathi</title>
+
 <link rel="stylesheet" href="../style.css">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;600;700&display=swap');
-:root{--ink:#2b1d0e;--ink-faded:#5c3d1e;--gold:#8b6914;--gold-lt:#c9a84c;--parch:#f2e8d0;--parch-dark:#e0ceaa;--worn:#c9af82;
-  --player:#8b6914;--player-glow:rgba(201,168,76,0.35);}
+:root{
+  --ink:#391734;
+  --ink-faded:#5c3d1e;
+  --gold:#4a2545;        /* deep purple - kicker, accents, borders */
+  --gold-lt:#7a4a6e;      /* lighter plum - glows, highlights */
+  --parch:#f2e8d0;        /* cream */
+  --parch-dark:#e0ceaa;
+  --worn:#8b6f47;         /* warm brown - ornament lines */
+  --bg-base:#e4d0ac;       /* page background */
+  --tooltip-bg:#3b1e06;    /* tooltip background, brown */
+}
 html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var(--ink);}
 #bg{position:fixed;inset:0;z-index:0;background:#e4d0ac;}
 #bg::after{content:'';position:absolute;inset:0;background:
-  radial-gradient(ellipse 70% 50% at 15% 20%,rgba(180,130,60,0.13) 0%,transparent 55%),
-  radial-gradient(ellipse 60% 70% at 85% 75%,rgba(160,110,40,0.10) 0%,transparent 55%),
-  radial-gradient(ellipse 100% 100% at 50% 50%,transparent 60%,rgba(80,40,5,0.18) 100%);}
+  radial-gradient(ellipse 70% 50% at 15% 20%,rgba(110,55,140,0.13) 0%,transparent 55%),
+  radial-gradient(ellipse 60% 70% at 85% 75%,rgba(90,40,120,0.10) 0%,transparent 55%),
+  radial-gradient(ellipse 100% 100% at 50% 50%,transparent 60%,rgba(45,15,55,0.18) 100%);}
 
 @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
 
 /* ── TOP-RIGHT: back to book hub ── */
-.players-btn{background:#3f220a;color:var(--gold-lt);border-color:var(--gold);box-shadow:0 2px 8px rgba(0,0,0,0.3);}
-.players-btn:hover{background:rgba(59,30,6,0.95);transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.4);}
+.players-btn{background:#2e1338;color:#e0ceaa;border-color:var(--gold);box-shadow:0 2px 8px rgba(0,0,0,0.3);}
+.players-btn:hover{background:rgba(46,19,56,0.95);transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.4);}
 
 /* ── PLAYER HEADER ── */
 .player-header{display:flex;flex-direction:column;align-items:center;gap:0.6rem;position:relative;z-index:1;padding:2.2rem 1rem 0.5rem;}
 .img-frame{position:relative;width:110px;height:110px;}
 .img-frame::before{content:'';position:absolute;inset:-8px;border-radius:50%;
-  background:conic-gradient(from 0deg,transparent 0%,var(--ring,#c9a84c33) 20%,var(--ring-bright,#c9a84c88) 50%,var(--ring,#c9a84c33) 80%,transparent 100%);
+  background:conic-gradient(from 0deg,transparent 0%,var(--ring,#9b59c933) 20%,var(--ring-bright,#9b59c988) 50%,var(--ring,#9b59c933) 80%,transparent 100%);
   animation:spin 12s linear infinite;z-index:0;}
 .img-frame::after{content:'';position:absolute;inset:-4px;border-radius:50%;background:var(--parch);z-index:1;}
 .img-frame img{position:relative;z-index:2;width:100%;height:100%;object-fit:cover;border-radius:50%;border:2px solid var(--player);}
-.player-name{font-family:'Cinzel',serif;font-size:2rem;font-weight:700;color:#3f220a;letter-spacing:2px;text-shadow:0 0 20px var(--player-glow);}
+.player-name{font-family:'Cinzel',serif;font-size:2rem;font-weight:700;color:#2e1338;letter-spacing:2px;text-shadow:0 0 20px var(--player-glow);}
 
 /* ── LAYOUT ── */
 .wrap{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:1.5rem 2rem 4rem;
@@ -46,20 +55,28 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 .points-line .pts-row{display:flex;align-items:baseline;gap:0.4rem;}
 .points-line .pts-total{font-size:1.6rem;font-weight:700;color:var(--gold);text-shadow:0 0 20px var(--player-glow);}
 .points-line .pts-label{font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--ink-faded);}
-.points-line .pts-break{display:block;width:100%;font-size:0.7rem;color:var(--ink-faded);font-style:italic;font-family:'IM Fell English',serif;letter-spacing:0;}
+.points-line .pts-break{display:block;width:100%;font-size:0.9rem;color:var(--ink-faded);font-style:italic;font-family:'IM Fell English',serif;letter-spacing:0;}
 .bingo-controls{position:absolute;left:-52px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:0.5rem;z-index:3;}
 .bingo-lock-btn{background:var(--parch);border:1px solid var(--worn);border-radius:50%;width:38px;height:38px;cursor:pointer;
   font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;padding:0;}
 .bingo-lock-btn:hover{border-color:var(--gold);}
-.bingo-lock-btn.unlocked{border-color:var(--gold);background:rgba(139,105,20,0.15);}
+.bingo-lock-btn.unlocked{border-color:var(--gold);background:rgba(91,44,130,0.15);}
 .bingo-card-wrap{position:relative;width:100%;max-width:440px;margin:0 auto;aspect-ratio:1024/1536;
-  background-image:url('witchslayer_bingo.png');background-size:100% 100%;
-  box-shadow:0 0 30px rgba(201,168,76,0.18);}
-.bingo-grid{position:absolute;left:50%;top:34.8%;width:73%;aspect-ratio:1/1;transform:translateX(-50%);display:grid;
-  grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(5,1fr);}
+  background-image:url('wizardbaking_bingo.png');background-size:100% 100%; box-shadow: 0 0 20px #5c3d1e;}
+.bingo-grid {
+    position: absolute;
+    left: 50%;
+    top: 28.2%;
+    width: 79%;
+    aspect-ratio: 1 / 1;
+    transform: translateX(-50%);
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+}
 .bingo-cell{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-size:clamp(7px,1.3vw,11px);
   line-height:1.2;text-align:center;padding:2px;overflow:hidden;cursor:pointer;transition:background 0.15s;border-radius:3px;}
-.bingo-cell.marked{background:rgba(212,175,55,0.55);box-shadow:inset 0 0 0 1px var(--gold);}
+.bingo-cell.marked{background:var(--player-glow);box-shadow:inset 0 0 0 1px var(--player);}
 .bingo-cell.free{font-weight:600;color:var(--gold);cursor:default;}
 .cell-text{width:100%;height:100%;display:flex;align-items:center;justify-content:center;text-align:center;
   font-family:'IM Fell English',Georgia,serif;font-size:inherit;line-height:1.2;color:#2a1a0a;padding:2px;overflow-wrap:break-word;word-break:break-word;}
@@ -73,23 +90,23 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 .legend{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap;color:var(--ink-faded);font-size:0.85rem;margin-bottom:1rem;}
 .legend span{display:flex;align-items:center;gap:0.35rem;}
 .legend .dot{width:11px;height:11px;border-radius:50%;display:inline-block;}
-.legend .dot.unlocked{background:rgba(201,168,76,0.3);border:1px solid var(--gold);}
+.legend .dot.unlocked{background:rgba(91,44,130,0.3);border:1px solid var(--gold);}
 .legend .dot.locked{background:var(--parch-dark);border:1px solid var(--worn);}
 .rooms-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
 .room-btn{position:relative;height:58px;display:flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;
   transition:all 0.2s;font-family:'Cinzel',serif;font-size:1rem;letter-spacing:0.5px;text-align:center;padding:0 0.5rem;}
 .room-btn:hover{transform:translateY(-2px);}
-.room-btn.unlocked{background:rgba(201,168,76,0.15);border:1px solid var(--gold);color:var(--ink);box-shadow:0 0 8px rgba(201,168,76,0.15);}
-.room-btn.unlocked:hover{background:rgba(201,168,76,0.28);box-shadow:0 0 14px rgba(201,168,76,0.3);}
+.room-btn.unlocked{background:rgba(91,44,130,0.15);border:1px solid var(--gold);color:var(--ink);box-shadow:0 0 8px rgba(91,44,130,0.15);}
+.room-btn.unlocked:hover{background:rgba(91,44,130,0.28);box-shadow:0 0 14px rgba(91,44,130,0.3);}
 .room-btn.locked{background:var(--parch-dark);border:1px solid var(--worn);color:var(--ink-faded);}
 .room-btn.locked:hover{border-color:var(--gold);}
 .room-btn .lock-ico{position:absolute;top:6px;right:6px;font-size:1rem;opacity:0.5;}
 .room-btn .unread-dot{position:absolute;top:6px;left:8px;width:8px;height:8px;border-radius:50%;
-  background:var(--gold);box-shadow:0 0 6px rgba(201,168,76,0.7);display:none;}
+  background:var(--gold);box-shadow:0 0 6px rgba(91,44,130,0.7);display:none;}
 .room-btn.has-unread .unread-dot{display:block;}
 
 /* ── CHAT MODAL ── */
-.overlay{position:fixed;inset:0;z-index:200;background:rgba(20,10,4,0.78);backdrop-filter:blur(4px);
+.overlay{position:fixed;inset:0;z-index:200;background:rgba(20,8,24,0.78);backdrop-filter:blur(4px);
   display:flex;align-items:center;justify-content:center;
   padding:1rem;padding-bottom:max(1rem,env(safe-area-inset-bottom));
   opacity:0;pointer-events:none;transition:opacity 0.2s;}
@@ -114,33 +131,54 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 .msg{display:flex;flex-direction:column;gap:0.15rem;align-items:flex-start;}
 .msg.mine{align-items:flex-end;}
 .msg-name{display:block;font-family:'Cinzel',serif;font-size:0.8rem;letter-spacing:1px;color:var(--gold);margin-bottom:0.15rem;}
-.msg.mine .msg-name{color:#3b1e06;}
+.msg.mine .msg-name{color:#2e1338;}
 .msg-text{display:block;font-family:'IM Fell English',Georgia,serif;font-size:1rem;color:var(--ink);line-height:1.6;
-  max-width:min(85%,420px);background:rgba(201,168,76,0.12);border:1px solid var(--worn);
+  max-width:min(85%,420px);background:rgba(91,44,130,0.12);border:1px solid var(--worn);
   padding:0.5rem 0.75rem;border-radius:8px;word-break:break-word;}
-.msg.mine .msg-text{background:var(--gold);border-color:var(--gold);color:var(--parch);}
+.msg.mine .msg-text{background:var(--player);border-color:var(--player);color:var(--parch);}
 .compose{flex-shrink:0;border-top:1px solid var(--worn);padding:0.7rem 1rem;
   padding-bottom:max(0.7rem,env(safe-area-inset-bottom));display:flex;gap:0.5rem;align-items:flex-end;}
 .compose textarea{flex:1;resize:none;min-height:42px;max-height:110px;background:rgba(255,255,255,0.6);border:1px solid var(--worn);border-radius:8px;
   padding:0.5rem 0.7rem;font-family:'IM Fell English',serif;font-size:1rem;color:var(--ink);line-height:1.5;}
 .compose textarea::placeholder{color:var(--worn);font-style:italic;}
 .compose textarea:focus{outline:none;border-color:var(--gold);}
-.send-btn{height:42px;padding:0 1.1rem;background:#3b1e06;border:1px solid var(--gold-lt);border-radius:8px;color:var(--gold-lt);
+.send-btn{height:42px;padding:0 1.1rem;background:#2e1338;border:1px solid var(--gold-lt);border-radius:8px;color:var(--gold-lt);
   font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;white-space:nowrap;flex-shrink:0;}
-.send-btn:hover{background:#5a3010;}
+.send-btn:hover{background:#421c52;}
 
 /* ── PASSWORD MODAL ── */
-.lock-modal-wrap{display:none;position:fixed;inset:0;z-index:400;background:#1a0f06;align-items:center;justify-content:center;flex-direction:column;padding:2rem;text-align:center;}
+.lock-modal-wrap{display:none;position:fixed;inset:0;z-index:400;background:#160f18;align-items:center;justify-content:center;flex-direction:column;padding:2rem;text-align:center;}
 .lock-modal-wrap.open{display:flex;}
 .lock-club{font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:6px;color:var(--gold);text-transform:uppercase;margin-bottom:0.4rem;}
-.lock-title{font-family:'Cinzel',serif;font-size:clamp(1.6rem,5vw,2.4rem);font-weight:700;color:var(--parch);letter-spacing:2px;margin-bottom:1.6rem;text-shadow:0 0 40px rgba(201,168,76,0.25);}
+.lock-title{font-family:'Cinzel',serif;font-size:clamp(1.6rem,5vw,2.4rem);font-weight:700;color:var(--parch);letter-spacing:2px;margin-bottom:1.6rem;text-shadow:0 0 40px rgba(155,89,201,0.25);}
 .lock-modal-wrap input{width:min(320px,90vw);height:52px;text-align:center;font-family:'Cinzel',serif;font-size:1rem;letter-spacing:2px;
-  background:#2a1a0a;border:1px solid var(--gold);border-radius:8px;color:var(--parch);margin-bottom:1rem;}
-.lock-modal-wrap input:focus{outline:none;border-color:var(--gold-lt);box-shadow:0 0 16px rgba(201,168,76,0.3);}
+  background:#2a1430;border:1px solid var(--gold-lt);border-radius:8px;color:var(--parch);margin-bottom:1rem;}
+.lock-modal-wrap input:focus{outline:none;border-color:var(--gold-lt);box-shadow:0 0 16px rgba(155,89,201,0.3);}
 .lock-modal-wrap button{width:min(320px,90vw);height:52px;cursor:pointer;font-family:'Cinzel',serif;text-transform:uppercase;letter-spacing:3px;
-  background:#3b1e06;border:1px solid var(--gold-lt);border-radius:8px;color:var(--gold-lt);transition:all 0.25s ease;}
-.lock-modal-wrap button:hover{background:#5a3010;border-color:var(--gold-lt);box-shadow:0 0 20px rgba(201,168,76,0.25);}
+  background:#2e1338;border:1px solid var(--gold-lt);border-radius:8px;color:var(--gold-lt);transition:all 0.25s ease;}
+.lock-modal-wrap button:hover{background:#421c52;border-color:var(--gold-lt);box-shadow:0 0 20px rgba(155,89,201,0.25);}
 .lock-error{color:#d98a8a;font-size:0.9rem;min-height:1.2rem;margin-top:0.8rem;letter-spacing:1px;}
+
+/* ── FLOATING BREAD ── */
+.bread-float{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;}
+.bread-crumb{position:absolute;bottom:-10%;font-size:var(--sz,1.6rem);opacity:0;
+  animation:bread-rise var(--dur,28s) ease-in-out var(--delay,0s) infinite;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.35));}
+@keyframes bread-rise{
+  0%{transform:translate(0,0) rotate(0deg);opacity:0;}
+  8%{opacity:0.28;}
+  16%{transform:translate(var(--sway1,40px),-18vh) rotate(calc(var(--spin,200deg)*0.16));}
+  33%{transform:translate(var(--sway2,-30px),-37vh) rotate(calc(var(--spin,200deg)*0.33));}
+  50%{transform:translate(var(--sway1,40px),-55vh) rotate(calc(var(--spin,200deg)*0.5));opacity:0.28;}
+  66%{transform:translate(var(--sway2,-30px),-73vh) rotate(calc(var(--spin,200deg)*0.66));}
+  83%{transform:translate(var(--sway1,40px),-92vh) rotate(calc(var(--spin,200deg)*0.83));}
+  92%{opacity:0.28;}
+  100%{transform:translate(var(--drift,20px),-115vh) rotate(var(--spin,200deg));opacity:0;}
+}
+.lock-club,.lock-title,#initialPasswordInput,#initialUnlockSubmit,.lock-error{position:relative;z-index:1;}
+
+/* ── UNKNOWN PLAYER ── */
+.unknown-wrap{display:none;position:fixed;inset:0;z-index:400;background:#1a062c;align-items:center;justify-content:center;flex-direction:column;gap:1rem;padding:2rem;text-align:center;}
+.unknown-wrap.open{display:flex;}
 
 @media(max-width:860px){
   .rooms-grid{grid-template-columns:repeat(2,1fr);}
@@ -156,8 +194,16 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 <body>
 <div id="bg"></div>
 
+<!-- UNKNOWN PLAYER FALLBACK -->
+<div class="unknown-wrap" id="unknownWrap">
+  <div style="font-family:'Cinzel',serif;font-size:1.2rem;color:var(--gold-lt);">Who goes there?</div>
+  <div style="color:var(--parch);font-size:0.95rem;">No player found. Go back and choose your avatar.</div>
+  <a href="wizardbaking.html" style="margin-top:1rem;font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:2px;color:var(--gold-lt);text-decoration:none;border:1px solid var(--gold-lt);padding:0.6rem 1.2rem;border-radius:6px;">← Back</a>
+</div>
+
 <!-- PASSWORD MODAL -->
 <div class="lock-modal-wrap open" id="initialLockModal">
+  <div class="bread-float" id="breadFloat"></div>
   <div class="lock-club">The Bingo Book Club</div>
   <div class="lock-title" id="lockTitle">Enter Your Code</div>
   <input type="text" id="initialPasswordInput" placeholder="password" autocomplete="off">
@@ -168,13 +214,13 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 <div id="mainContent" style="display:none;">
 
   <!-- TOP-RIGHT: back to book hub -->
-  <a href="witchslayer.html" class="players-btn">🦖 Shouty Book Club</a>
+  <a href="wizardbaking.html" class="players-btn">🍞 Wizard Baking</a>
 
   <!-- BOTTOM-LEFT: home -->
   <a href="../index.html" class="home-btn"><span class="home-btn-icon">🏠</span> Home</a>
 
   <div class="player-header">
-    <div class="img-frame"><img id="playerPhoto" src="../pdp_kathi.png" alt="Player Photo"></div>
+    <div class="img-frame"><img id="playerPhoto" src="" alt="Player Photo"></div>
     <div class="player-name" id="playerHeaderName"></div>
   </div>
 
@@ -224,6 +270,28 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
   </div>
 </div>
 
+<script>
+(function(){
+  const BREADS = ['🍞','🥖','🥐','🥯'];
+  const wrap = document.getElementById('breadFloat');
+  const COUNT = 50;
+  for (let i = 0; i < COUNT; i++) {
+    const s = document.createElement('span');
+    s.className = 'bread-crumb';
+    s.textContent = BREADS[Math.floor(Math.random()*BREADS.length)];
+    s.style.left = (Math.random()*100) + '%';
+    s.style.setProperty('--sz', (1.1 + Math.random()*1.6) + 'rem');
+    s.style.setProperty('--dur', (24 + Math.random()*16) + 's');
+    s.style.setProperty('--delay', (-Math.random()*40) + 's');
+    s.style.setProperty('--sway1', (60 + Math.random()*40) + 'px');
+    s.style.setProperty('--sway2', (-(60 + Math.random()*40)) + 'px');
+    s.style.setProperty('--drift', (Math.random()*120 - 60) + 'px');
+    s.style.setProperty('--spin', (Math.random()*360 - 180) + 'deg');
+    wrap.appendChild(s);
+  }
+})();
+</script>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import {
@@ -231,7 +299,6 @@ import {
   query, where, orderBy, serverTimestamp, doc, setDoc, getDoc
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-const PID = "kathi";
 const POINTS_PER_CELL = 1;
 const POINTS_PER_LINE = 5;
 
@@ -245,40 +312,59 @@ const fb = initializeApp({
 });
 const db = getFirestore(fb);
 
-/* ── PLAYER CONFIGS (Firestore: accessCodes collection, doc id = pid) ── */
-const ALL_PLAYERS = {};
+/* ── ALL PLAYER CONFIGS (Firestore: accessCodes collection, doc id = pid) ── */
+const PLAYERS = {};
 try {
   const accessSnap = await getDocs(collection(db,'accessCodes'));
-  accessSnap.forEach(d => ALL_PLAYERS[d.id] = d.data());
+  accessSnap.forEach(d => PLAYERS[d.id] = d.data());
 } catch (e) {
   console.error(e);
   document.getElementById('initialLockError').textContent = 'Connection error — please refresh the page';
   throw e;
 }
 
-const { name: PNAME, emoji: PEMOJI, password: PASSWORD } = ALL_PLAYERS[PID];
+/* ── RESOLVE PLAYER FROM URL ── */
+const params = new URLSearchParams(window.location.search);
+const PID = params.get('p') || '';
+const PCFG = PLAYERS[PID];
 
-document.title = `Shouty Book Club — ${PNAME}`;
+if (!PCFG) {
+  document.getElementById('initialLockModal').classList.remove('open');
+  document.getElementById('unknownWrap').classList.add('open');
+  throw new Error('Unknown player: '+PID);
+}
+
+const { name: PNAME, emoji: PEMOJI, password: PASSWORD, color: PCOLOR } = PCFG;
+
+function hexA(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;}
+if (PCOLOR) {
+  document.documentElement.style.setProperty('--player', PCOLOR);
+  document.documentElement.style.setProperty('--player-glow', hexA(PCOLOR,0.35));
+  const frame = document.querySelector('.img-frame');
+  if (frame) { frame.style.setProperty('--ring', hexA(PCOLOR,0.25)); frame.style.setProperty('--ring-bright', hexA(PCOLOR,0.7)); }
+}
+
+document.title = `Wizard Baking — ${PNAME}`;
 document.getElementById('playerHeaderName').textContent = PNAME;
+document.getElementById('playerPhoto').src = '../pdp_'+PID+'.png';
 document.getElementById('lockTitle').textContent = `Enter Your Code, ${PNAME}`;
 
 // ch = room number (chat room id) · unlock = chapter you must reach to open it
 const ROOMS = [
-  {ch:0,  label:"General",            unlock:0},
-  {ch:1,  label:"Ch 1–3",             unlock:3},
-  {ch:2,  label:"Ch 4–6",             unlock:6},
-  {ch:3,  label:"Ch 7–9",             unlock:9},
-  {ch:4,  label:"Ch 10–12",           unlock:12},
-  {ch:5,  label:"Ch 13–15",           unlock:15},
-  {ch:6,  label:"Ch 16–18",           unlock:18},
-  {ch:7,  label:"Ch 19–21",           unlock:21},
-  {ch:8,  label:"Ch 22–24",           unlock:24},
-  {ch:9,  label:"Ch 25–27",           unlock:27},
-  {ch:10, label:"Ch 28–30",           unlock:30},
-  {ch:11, label:"Ch 31–33",           unlock:33},
-  {ch:12, label:"Ch 34–36",           unlock:36},
-  {ch:13, label:"Ch 37–39",           unlock:39},
-  {ch:14, label:"End",                unlock:43},
+  {ch:0,  label:"General",   unlock:0},
+  {ch:1,  label:"Ch 1–3",    unlock:3},
+  {ch:2,  label:"Ch 4–6",    unlock:6},
+  {ch:3,  label:"Ch 7–9",    unlock:9},
+  {ch:4,  label:"Ch 10–12",  unlock:12},
+  {ch:5,  label:"Ch 13–15",  unlock:15},
+  {ch:6,  label:"Ch 16–18",  unlock:18},
+  {ch:7,  label:"Ch 19–21",  unlock:21},
+  {ch:8,  label:"Ch 22–24",  unlock:24},
+  {ch:9,  label:"Ch 25–27",  unlock:27},
+  {ch:10, label:"Ch 28–30",  unlock:30},
+  {ch:11, label:"Ch 31–33",  unlock:33},
+  {ch:12, label:"Ch 34–36",  unlock:36},
+  {ch:13, label:"End",       unlock:38},
 ];
 
 const GRID_SIZE = 25;
@@ -380,7 +466,7 @@ async function saveToFirebase() {
   isSaving = true;
   bingoStatus.textContent = 'Saving…';
   try {
-    await setDoc(doc(db, 'shouty_bingo', PID), {
+    await setDoc(doc(db, 'wizardbaking_bingo', PID), {
       cells, marked: [...markedSet], points: calcPoints(), lines: countLines(), name: PNAME, emoji: PEMOJI
     }, { merge: true });
     bingoStatus.textContent = 'Saved ✓';
@@ -396,7 +482,7 @@ async function saveToFirebase() {
 async function loadBingo() {
   bingoStatus.textContent = 'Loading…';
   try {
-    const d = await getDoc(doc(db, 'shouty_bingo', PID));
+    const d = await getDoc(doc(db, 'wizardbaking_bingo', PID));
     if (d.exists()) {
       const data = d.data();
       if (Array.isArray(data.cells))  cells = data.cells;
@@ -410,7 +496,7 @@ async function loadBingo() {
 /* ── PROGRESS + ROOMS ── */
 let myProgress = 0, activeRoom = null, activeUnsub = null;
 
-const STORAGE_KEY = `ws_lastread_${PID}`;
+const STORAGE_KEY = `wb_lastread_${PID}`;
 function getLastRead(){ try { return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}'); } catch { return {}; } }
 function setLastRead(ch){
   const lr = getLastRead();
@@ -423,17 +509,17 @@ const unreadRooms = new Set();
 async function init() {
   await loadBingo();
 
-  // Read the chapter the reading map saved, fall back to legacy `room` if present
+  // Read the chapter the reading map saved
   onSnapshot(doc(db,'progress_spoiler',PID), d=>{
     if(d.exists()) {
       const data = d.data();
-      myProgress = (data.chapter ?? data.room ?? 0);
+      myProgress = (data.chapter ?? 0);
     }
     renderRooms();
   }, err=>console.error(err));
 
   // ONE global listener for unread tracking — never duplicated
-  onSnapshot(collection(db,'shouty_messages'), snap=>{
+  onSnapshot(collection(db,'wizardbaking_messages'), snap=>{
     const lr = getLastRead();
     unreadRooms.clear();
     snap.forEach(d=>{
@@ -507,7 +593,7 @@ function subscribeChat(room){
   if(activeUnsub) activeUnsub();
   const msgDiv = document.getElementById('chatMessages');
   msgDiv.innerHTML = '<span class="empty-msg">Loading…</span>';
-  const q = query(collection(db,'shouty_messages'), where('room','==',room.ch), orderBy('ts','asc'));
+  const q = query(collection(db,'wizardbaking_messages'), where('room','==',room.ch), orderBy('ts','asc'));
   activeUnsub = onSnapshot(q, snap=>{
     const canRead = room.ch===0 || myProgress>=room.unlock;
     let msgs = []; snap.forEach(d=>msgs.push(d.data()));
@@ -521,7 +607,7 @@ function subscribeChat(room){
     }
     msgs.forEach(m=>{
       const isMine = m.name===PID;
-      const sender = ALL_PLAYERS[m.name];
+      const sender = PLAYERS[m.name];
       const emoji = isMine ? PEMOJI : (sender ? sender.emoji : '✦');
       const name  = isMine ? PNAME  : (sender ? sender.name  : String(m.name||'?'));
       const el = document.createElement('div');
@@ -542,7 +628,7 @@ async function sendMsg(){
   chatSend.disabled = true;
   chatTA.disabled = true;
   try{
-    await addDoc(collection(db,'shouty_messages'), {room:activeRoom.ch, name:PID, text, ts:serverTimestamp()});
+    await addDoc(collection(db,'wizardbaking_messages'), {room:activeRoom.ch, name:PID, text, ts:serverTimestamp()});
     chatTA.value=''; chatTA.style.height='auto';
     setLastRead(activeRoom.ch);
   }catch(e){console.error(e);}

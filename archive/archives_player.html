@@ -21,7 +21,8 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 @media (max-width:700px){.page-wrap{margin:0;padding:1.5rem 1rem 3rem;}}
 
 /* ── player header ── */
-.player-header{display:flex;align-items:center;gap:1.4rem;margin-bottom:1.8rem;}
+.player-header{display:flex;align-items:center;justify-content:space-between;gap:1.4rem;margin-bottom:1.8rem;flex-wrap:wrap;}
+.player-header-main{display:flex;align-items:center;gap:1.4rem;}
 .img-frame{position:relative;width:90px;height:90px;flex-shrink:0;}
 .img-frame::before{content:'';position:absolute;inset:-4px;border-radius:50%;
   background:conic-gradient(var(--ring-color, var(--gold-lt)) 0deg,transparent 120deg,var(--ring-color, var(--gold-lt)) 240deg,transparent 360deg);
@@ -31,6 +32,21 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
   object-fit:cover;}
 .player-title h1{font-family:'Cinzel',serif;font-size:2rem;font-weight:600;color:#3f220a;letter-spacing:2px;line-height:1.1;}
 .player-title .subtitle{font-size:0.9rem;color:var(--ink-faded);font-style:italic;margin-top:0.3rem;}
+
+/* ── recap card ── */
+.recap-card{display:grid;grid-template-columns:repeat(4,1fr);gap:0;
+  background:rgba(242,232,208,0.85);border:1px solid var(--gold);border-radius:10px;
+  padding:0.7rem 0.4rem;box-shadow:0 4px 14px rgba(0,0,0,0.18);}
+.recap-stat{display:flex;flex-direction:column;align-items:center;gap:0.15rem;padding:0 0.6rem;
+  border-right:1px solid var(--worn);}
+.recap-stat:last-child{border-right:none;}
+.recap-num{font-family:'Cinzel',serif;font-size:1.3rem;font-weight:600;color:var(--gold);line-height:1;}
+.recap-label{font-size:0.55rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-faded);text-align:center;white-space:nowrap;}
+@media (max-width:560px){
+  .recap-card{grid-template-columns:repeat(2,1fr);gap:0.6rem;width:100%;}
+  .recap-stat{border-right:none;border-bottom:1px solid var(--worn);padding-bottom:0.4rem;}
+  .recap-stat:nth-child(2n){border-right:none;}
+}
 
 .gold-divider{border:none;border-top:1px solid var(--gold);opacity:0.35;margin:0 0 2.2rem;}
 
@@ -220,17 +236,21 @@ async function init(){
 
   app.innerHTML = `
     <div class="player-header">
-      <div class="img-frame" style="--ring-color:${player.color}"><img src="${player.photo}" alt="${player.name}"></div>
-      <div class="player-title">
-        <h1 style="color:${player.color}">${player.emoji} ${player.name}</h1>
-        <div class="subtitle">Bingo history across all books</div>
+      <div class="player-header-main">
+        <div class="img-frame" style="--ring-color:${player.color}"><img src="${player.photo}" alt="${player.name}"></div>
+        <div class="player-title">
+          <h1 style="color:${player.color}">${player.emoji} ${player.name}</h1>
+          <div class="subtitle">Bingo history across all books</div>
+        </div>
       </div>
+      <div class="recap-card" id="recapCard"></div>
     </div>
     <hr class="gold-divider">
     <div id="books-container"><div class="loading-state"><span class="spinner"></span>Loading bingo history…</div></div>`;
 
   const container = document.getElementById('books-container');
   let hasAnyBook = false;
+  let totalPoints = 0, totalLines = 0, totalBooks = 0;
 
   const sections = await Promise.all(BOOKS.map(async (book)=>{
     try{
@@ -241,13 +261,26 @@ async function init(){
       if(!res.ok) throw new Error(`HTTP ${res.status}`);
       const json = await res.json();
       const data = extractPlayerData(json, book.collection, book.pidKey(player.pid));
-      if(data) hasAnyBook = true;
+      if(data){
+        hasAnyBook = true;
+        totalBooks++;
+        const pts = calcPoints(data.marked);
+        totalPoints += pts.total;
+        totalLines += pts.lines;
+      }
       return renderBookSection(book, data, coverUrl);
     }catch(e){
       console.warn(`Could not load ${book.file}:`, e);
       return '';
     }
   }));
+
+  const avgPoints = totalBooks ? Math.round((totalPoints/totalBooks)*10)/10 : 0;
+  document.getElementById('recapCard').innerHTML = `
+    <div class="recap-stat"><span class="recap-num">${totalPoints}</span><span class="recap-label">Total Points</span></div>
+    <div class="recap-stat"><span class="recap-num">${totalBooks}</span><span class="recap-label">Books</span></div>
+    <div class="recap-stat"><span class="recap-num">${avgPoints}</span><span class="recap-label">Avg / Book</span></div>
+    <div class="recap-stat"><span class="recap-num">${totalLines}</span><span class="recap-label">Lines</span></div>`;
 
   if(!hasAnyBook){
     container.innerHTML = `<div class="empty-state">
