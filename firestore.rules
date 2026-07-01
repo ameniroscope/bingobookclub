@@ -1,0 +1,79 @@
+rules_version = '2';
+
+// ═══════════════════════════════════════════════════════════════
+//  BINGO BOOK CLUB — Firestore security rules
+//
+//  How to apply: Firebase console → Firestore Database → Rules →
+//  paste this whole file → Publish.
+//  (This file in the repo is documentation; Firebase only uses
+//  what's published in the console.)
+//
+//  The site has no Firebase Auth — players "log in" with secret
+//  codes checked in the browser — so these rules can't verify WHO
+//  is writing. What they do instead:
+//    · only the collections the site actually uses are reachable
+//    · nothing can ever be deleted
+//    · read-only data (accessCodes) can't be written
+//    · writes must roughly match the shape the site produces
+// ═══════════════════════════════════════════════════════════════
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Secret access codes: the site only ever reads these ──
+    match /accessCodes/{code} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // ── Next Read page: suggestions + votes ──
+    match /books/{book} {
+      allow read: if true;
+      allow create: if request.resource.data.title is string
+                    && request.resource.data.title.size() > 0
+                    && request.resource.data.title.size() <= 300;
+      allow update: if true;   // casting / changing votes
+      allow delete: if false;
+    }
+
+    // ── Verdicts page: CAWPILE ratings, one doc per archived book ──
+    match /cawpile/{book} {
+      allow read: if true;
+      allow create, update: if request.resource.data.ratings is map;
+      allow delete: if false;
+    }
+
+    // ── Fan art gallery: append only ──
+    match /fanart/{art} {
+      allow read: if true;
+      allow create: if true;
+      allow update, delete: if false;
+    }
+
+    // ── Wizard baking spoiler-progress flag ──
+    match /progress_spoiler/{docId} {
+      allow read, write: if true;
+    }
+
+    // ── Bingo cards & map progress: first_bingo, <book>_bingo… ──
+    //    doc id must be one of the four players
+    match /{bingoCol}/{player} {
+      allow read: if bingoCol == 'first_bingo' || bingoCol.matches('.*_bingo');
+      allow create, update: if (bingoCol == 'first_bingo' || bingoCol.matches('.*_bingo'))
+                            && player in ['marine', 'kathi', 'lena', 'elana'];
+      allow delete: if false;
+    }
+
+    // ── Chapter chat rooms: messages, <book>_messages… append only ──
+    match /{msgCol}/{msg} {
+      allow read: if msgCol == 'messages' || msgCol.matches('.*_messages');
+      allow create: if (msgCol == 'messages' || msgCol.matches('.*_messages'))
+                    && request.resource.data.text is string
+                    && request.resource.data.text.size() > 0
+                    && request.resource.data.text.size() <= 5000;
+      allow update, delete: if false;
+    }
+
+    // Anything not matched above is denied by default.
+  }
+}
