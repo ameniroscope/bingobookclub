@@ -510,7 +510,7 @@ async function init() {
   await loadBingo();
 
   // Read the chapter the reading map saved
-  onSnapshot(doc(db,'progress_spoiler',PID), d=>{
+  onSnapshot(doc(db,'wizardbaking_bingo',PID), d=>{
     if(d.exists()) {
       const data = d.data();
       myProgress = (data.chapter ?? 0);
