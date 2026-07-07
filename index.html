@@ -452,7 +452,7 @@
         const res = await fetch(book.file);
         if (!res.ok) throw new Error(`${book.file}: ${res.status}`);
         const data = await res.json();
-        const col = data.collections?.[book.collection] || {};
+        const col = data.collections?.[book.collection] || data[book.collection] || {};
         Object.keys(col).forEach(pid => {
           if (!totals[pid]) return;
           const rec = col[pid]._data || col[pid];
