@@ -115,10 +115,9 @@ const PLAYERS = {
 };
 
 const BOOKS = [
-  { title:'Iron Flame', file:'archive_ironflame.json', image:'ironflame_bingo.png',
-    year:'2023', collection:'shouty_bingo', pidKey:(pid)=>pid, gridTop:35.8, gridWidth:73 },
-  { title:'Witchslayer', file:'archive_witchslayer.json', image:'witchslayer_bingo.png',
-    year:'2026', collection:'shouty_bingo', pidKey:(pid)=>pid, gridTop:34.8, gridWidth:73 },
+  { title:'Iron Flame',    file:'archive_ironflame.json',    image:'ironflame_bingo.png',    year:'2023', collection:'shouty_bingo', gridTop:35.8, gridWidth:73 },
+  { title:'Witchslayer',   file:'archive_witchslayer.json',  image:'witchslayer_bingo.png',  year:'2026', collection:'shouty_bingo', gridTop:34.8, gridWidth:73 },
+  { title:'Bridge Kingdom',file:'archive_bridgekingdom.json',image:'bridgekingdom_bingo.png',year:'2026', collection:'shouty_bingo', gridTop:34.7, gridWidth:73 },
 ];
 
 const GRID_SIZE = 25;
@@ -141,11 +140,14 @@ function calcPoints(marked){
   return { total:cells+lines*5, cells, lines };
 }
 
-function extractPlayerData(json, collectionName, pidKey){
+function extractPlayerData(json, collectionName, pid){
   try{
-    const doc = json.collections?.[collectionName]?.[pidKey];
-    if(!doc) return null;
-    const data = doc._data || doc;
+    // New format: json.collections.shouty_bingo[pid]
+    let raw = json.collections?.[collectionName]?.[pid];
+    // Old format (Bridge Kingdom): json.first_bingo[pid]
+    if(!raw) raw = json.first_bingo?.[pid];
+    if(!raw) return null;
+    const data = raw._data || raw;
     const cells  = Array.isArray(data.cells)  ? data.cells  : Array(GRID_SIZE).fill('');
     const marked = Array.isArray(data.marked) ? data.marked : [];
     return { cells, marked: marked.filter(v=>Number.isInteger(v)&&v>=0&&v<GRID_SIZE) };
@@ -260,7 +262,7 @@ async function init(){
       ]);
       if(!res.ok) throw new Error(`HTTP ${res.status}`);
       const json = await res.json();
-      const data = extractPlayerData(json, book.collection, book.pidKey(player.pid));
+      const data = extractPlayerData(json, book.collection, player.pid);
       if(data){
         hasAnyBook = true;
         totalBooks++;

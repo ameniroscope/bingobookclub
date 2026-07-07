@@ -230,15 +230,37 @@ async function loadBookData(book){
   return json;
 }
 
-// Pull a collection's documents out of the export, unwrapping `_data`
+// Pull a collection's documents out of the export, unwrapping `_data`.
+// Handles two formats:
+//   New (Iron Flame, Witchslayer): json.collections.shouty_bingo / shouty_messages
+//   Old (Bridge Kingdom):          json.first_bingo / json.messages
 function getCollection(json, name){
   const col = json?.collections?.[name];
-  if(!col) return {};
-  const out = {};
-  for(const [id,entry] of Object.entries(col)){
-    out[id] = entry._data || entry;   // tolerate both wrapped and flat
+  if(col){
+    const out = {};
+    for(const [id,entry] of Object.entries(col)){
+      out[id] = entry._data || entry;
+    }
+    return out;
   }
-  return out;
+  // Old format fallback
+  if(name === 'shouty_bingo' && json?.first_bingo) return json.first_bingo;
+  if(name === 'shouty_messages' && json?.messages){
+    const out = {};
+    for(const [id, m] of Object.entries(json.messages)){
+      const norm = {...m};
+      // chapter: "chapter-6" → room: 6
+      if(typeof m.chapter === 'string'){
+        const n = parseInt(m.chapter.replace('chapter-',''));
+        norm.room = isNaN(n) ? 0 : n;
+      }
+      // createdAt → ts
+      if(!norm.ts && norm.createdAt) norm.ts = norm.createdAt;
+      out[id] = norm;
+    }
+    return out;
+  }
+  return {};
 }
 
 // ── Shelf ──
