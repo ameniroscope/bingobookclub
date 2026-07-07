@@ -437,10 +437,12 @@ function openChat(room){
 
   if(msgs.length===0){ msgDiv.innerHTML='<span class="empty-msg">No thoughts recorded here.</span>'; return; }
   msgDiv.innerHTML='';
+	// AFTER
   msgs.forEach(m=>{
-    const emoji = EMOJI_BY_PID[m.name]||'';
-    const name  = NAME_BY_PID[m.name]||m.name;
-    const color = COLOR_BY_PID[m.name]||'#8b6914';
+    const key   = (m.name||'').toLowerCase();
+    const emoji = EMOJI_BY_PID[key]||'';
+    const name  = NAME_BY_PID[key]||m.name;
+    const color = COLOR_BY_PID[key]||'#8b6914';
     let time='';
     const ms = tsMillis(m.ts);
     if(ms) time=new Date(ms).toLocaleDateString(undefined,{month:'short',day:'numeric'});
