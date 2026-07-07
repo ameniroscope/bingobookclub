@@ -383,14 +383,26 @@ function renderCards(){
 function renderRooms(){
   const msgs = getCollection(archiveData, 'shouty_messages');
   const counts = {};
-  for(const m of Object.values(msgs)){ counts[m.room] = (counts[m.room]||0)+1; }
+  for(const m of Object.values(msgs)){
+    const ch = parseInt(m.room);
+    if(!isNaN(ch)) counts[ch] = (counts[ch]||0)+1;
+  }
+
+  // Build room list from the data itself so books with more chapters (e.g. Bridge Kingdom)
+  // show all their rooms, not just the 0-18 hardcoded in ROOMS.
+  const rooms = Object.keys(counts)
+    .map(k => parseInt(k))
+    .sort((a,b) => a - b)
+    .map(ch => {
+      const staticRoom = ROOMS.find(r => r.ch === ch);
+      return { ch, label: staticRoom ? staticRoom.label : (ch === 0 ? 'General' : `Ch ${ch}`) };
+    });
 
   const grid = document.getElementById('roomsGrid');
-  ROOMS.filter(r => counts[r.ch] > 0).forEach(r=>{
-    const n = counts[r.ch];
+  rooms.forEach(r=>{
     const btn = document.createElement('div');
     btn.className = 'room-btn';
-    btn.innerHTML = `<span class="btn-count">${n}</span><span class="btn-label">${r.label}</span>`;
+    btn.innerHTML = `<span class="btn-count">${counts[r.ch]}</span><span class="btn-label">${r.label}</span>`;
     btn.addEventListener('click',()=>openChat(r));
     grid.appendChild(btn);
   });
