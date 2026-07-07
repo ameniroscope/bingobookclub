@@ -54,9 +54,12 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 .book-section{margin-bottom:3rem;display:flex;flex-direction:column;align-items:center;}
 .card-stack{position:relative;width:100%;max-width:460px;}
 #books-container{display:flex;flex-direction:column;}
-@media (min-width:900px){
-  #books-container{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;max-width:1100px;align-items:start;}
+@media (min-width:700px){
+  #books-container{display:grid;grid-template-columns:1fr 1fr;gap:2rem;max-width:1000px;align-items:start;}
   #books-container .book-section{margin-bottom:0;}
+}
+@media (min-width:1050px){
+  #books-container{grid-template-columns:1fr 1fr 1fr;max-width:1400px;}
 }
 
 /* ── score (overlaid on top of the bingo card) ── */
@@ -198,18 +201,7 @@ function renderBookSection(book, playerData, coverUrl){
     ? `<img class="book-cover" src="${coverUrl}" alt="${esc(book.title)}">`
     : `<div class="book-cover-placeholder">📖</div>`;
 
-  if(!playerData){
-    return `<div class="book-section">
-      <div class="book-heading">
-        ${coverHtml}
-        <div class="book-heading-text">
-          <h2>${esc(book.title)}</h2>
-          ${book.year?`<div class="book-year">${esc(book.year)}</div>`:''}
-        </div>
-      </div>
-      <div class="empty-state"><span class="empty-icon">📖</span>No bingo card found for this book.</div>
-    </div>`;
-  }
+  if(!playerData) return '';
 
   const { cells, marked } = playerData;
   const pts = calcPoints(marked);
