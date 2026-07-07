@@ -123,14 +123,12 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
   padding:0.22rem 0.6rem;border-radius:3px;background:#3b1e06;color:var(--parch);border:1px solid var(--gold-lt);}
 .close-btn{background:none;border:none;cursor:pointer;color:var(--ink-faded);font-size:1.5rem;line-height:1;padding:0.1rem;transition:color 0.15s;}
 .close-btn:hover{color:var(--ink);}
-.messages{flex:1;overflow-y:auto;padding:1rem 1.2rem;display:flex;flex-direction:column;gap:0.7rem;}
+.messages{flex:1;overflow-y:auto;padding:0.9rem 1.1rem;display:flex;flex-direction:column;gap:0.7rem;}
 .empty-msg{font-size:1rem;color:var(--ink-faded);font-style:italic;text-align:center;margin:auto;}
-.msg{display:flex;flex-direction:column;gap:0.15rem;align-items:flex-start;}
-.msg-name{display:block;font-family:'Cinzel',serif;font-size:0.8rem;letter-spacing:1px;color:var(--gold);margin-bottom:0.15rem;}
-.msg-text{display:block;font-family:'IM Fell English',Georgia,serif;font-size:1rem;color:var(--ink);line-height:1.6;
-  max-width:min(85%,420px);background:rgba(201,168,76,0.12);border:1px solid var(--worn);
-  padding:0.5rem 0.75rem;border-radius:8px;word-break:break-word;}
-.msg-time{font-size:0.68rem;color:var(--worn);font-style:italic;margin-left:0.4rem;}
+.msg-name{font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:1px;color:var(--gold);display:block;margin-bottom:0.1rem;}
+.msg-text{display:inline-block;font-size:1rem;color:var(--ink);line-height:1.65;
+  border:1px solid transparent;border-radius:8px;padding:0.4rem 0.65rem;max-width:min(85%,420px);word-break:break-word;}
+.msg-time{font-size:0.7rem;color:var(--worn);font-style:italic;margin-left:0.4rem;}
 
 @media(max-width:800px){.cards-wrap{grid-template-columns:1fr;gap:2.5rem;}}
 </style>
@@ -170,30 +168,34 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 //  ARCHIVED READS — file based, no Firebase
 //  Each read is one JSON file exported from Firestore. To add a
 //  new read later: export it, drop the .json in this folder, and
-//  append one line below with its title, filename, and image.
+//  append one line below with its title, filename, image, and
+//  the correct Firestore collection names for that read.
+//
+//  messagesField: 'room'    → messages already store a chunk-room number (0..N)
+//                 'chapter' → messages store a raw chapter number (or "chapter-N"
+//                             string on older reads); rooms are auto-grouped into
+//                             ranges of chapterRangeSize, up to maxChapter.
 // ─────────────────────────────────────────────────────────────
-// gridTop/gridWidth position the 5x5 overlay over each book's own bingo
-// artwork — they match the % values used on that book's live player page.
 const BOOKS = [
-  { title: "Iron Flame",       file: "archive_ironflame.json",      bingo: "ironflame_bingo.png",      cover: "ironflame_cover.jpg",      gridTop: 35.8, gridWidth: 73 },
-  { title: "Witchslayer",      file: "archive_witchslayer.json",     bingo: "witchslayer_bingo.png",     cover: "witchslayer_cover.jpg",     gridTop: 34.8, gridWidth: 73 },
-  { title: "Bridge Kingdom",   file: "archive_bridgekingdom.json",   bingo: "bridgekingdom_bingo.png",   cover: "bridgekingdom_cover.jpg",   gridTop: 34.7, gridWidth: 73 },
+  { title: "Iron Flame",  file: "archive_ironflame.json",  bingo: "ironflame_bingo.png", cover: "ironflame_cover.jpg", gridTop: 35.8, gridWidth: 73,
+    bingoCollection: "shouty_bingo", messagesCollection: "shouty_messages", messagesField: "room" },
+  { title: "Witchslayer", file: "archive_witchslayer.json", bingo: "witchslayer_bingo.png", cover: "witchslayer_cover.jpg", gridTop: 34.8, gridWidth: 73,
+    bingoCollection: "shouty_bingo", messagesCollection: "shouty_messages", messagesField: "room" },
+  { title: "The Bridge Kingdom", file: "archive_bridgekingdom.json", bingo: "bridgekingdom_bingo.png", cover: "bridgekingdom_cover.jpg", gridTop: 34.7, gridWidth: 73,
+    bingoCollection: "first_bingo", messagesCollection: "messages", messagesField: "chapter", chapterRangeSize: 7, maxChapter: 41 },
 ];
 
 const PLAYERS = [
-  { pid:"lena",   name:"Lena",   emoji:"🌙️", photo:"../pdp_lena.png"   },
-  { pid:"kathi",  name:"Kathi",  emoji:"🍄",   photo:"../pdp_kathi.png"  },
   { pid:"marine", name:"Marine", emoji:"🧜‍♀️", photo:"../pdp_marine.png" },
+  { pid:"kathi",  name:"Kathi",  emoji:"🍄",   photo:"../pdp_kathi.png"  },
+  { pid:"lena", name:"Lena", emoji:"🌙️", photo:"../pdp_lena.png" },
   { pid:"elana",  name:"Elana",  emoji:"🐉",   photo:"../pdp_elana.png"  },
 ];
 const NAME_BY_PID  = { marine:"Marine", kathi:"Kathi", lena:"Lena", elana:"Elana"};
 const EMOJI_BY_PID = { marine:"🧜‍♀️",  kathi:"🍄", lena:"🌙️", elana:"🐉"     };
-const COLOR_BY_PID = { elana:"#b07a10", lena:"#2d7a5a", kathi:"#8a4ab0", marine:"#4a8ab0" };
-// Resolve either a pid ("marine") or a display name ("Marine") to a pid
-function resolvePid(raw){ return NAME_BY_PID[raw] ? raw : (Object.entries(NAME_BY_PID).find(([,n])=>n===raw)?.[0] || raw); }
+const COLOR_BY_PID = { elana:"#c9a84c", lena:"#1f3a36", kathi:"#24152b", marine:"#172838" };
 function hexA(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;}
 
-const ROOMS = Array.from({length:19},(_,i)=>({ch:i,label:i===0?"General":`Chunk ${i}`}));
 const GRID_SIZE = 25;
 
 let activeBook = null;
@@ -210,18 +212,54 @@ function tsMillis(ts){
   return 0;
 }
 
+// Normalize a raw chapter value — handles numbers, and older "chapter-6" strings
+function normChapter(v){
+  if (typeof v === 'number') return v;
+  if (typeof v === 'string') {
+    const m = v.match(/(\d+)/);
+    if (m) return parseInt(m[1], 10);
+  }
+  return null;
+}
+
+// The raw bucket key for a message, given the book's messagesField setting
+function rawKeyFor(book, msg){
+  return book.messagesField === 'chapter' ? normChapter(msg.chapter) : msg.room;
+}
+
 function calcPoints(marked) {
   const m = new Set(marked); m.add(12);
   let cells = 0, lines = 0;
   for (const i of m) { if (i !== 12) cells++; }
-  // rows
   for (let r = 0; r < 5; r++) if ([0,1,2,3,4].every(c => m.has(r*5+c))) lines++;
-  // cols
   for (let c = 0; c < 5; c++) if ([0,1,2,3,4].every(r => m.has(r*5+c))) lines++;
-  // diagonals
   if ([0,1,2,3,4].every(i => m.has(i*5+i)))     lines++;
   if ([0,1,2,3,4].every(i => m.has(i*5+(4-i)))) lines++;
   return { total: cells + lines * 5, cells, lines };
+}
+
+// Build the room bucket list for a given book
+function getRoomsForBook(book){
+  if (book.messagesField !== 'chapter') {
+    // legacy: messages already carry a chunk-room index 0..18
+    return Array.from({length:19},(_,i)=>({ key:i, label:i===0?"General":`Chunk ${i}` }));
+  }
+  const size = book.chapterRangeSize || 7;
+  const max  = book.maxChapter || 40;
+  const rooms = [{ key:'general', label:'General' }];
+  for (let start=1; start<=max; start+=size){
+    const end = Math.min(start+size-1, max);
+    rooms.push({ key:`${start}-${end}`, label:`Ch ${start}–${end}`, start, end });
+  }
+  return rooms;
+}
+
+// Given a room bucket and a raw chapter/room value, does it belong?
+function matchesRoom(room, rawVal){
+  if (rawVal == null) return false;
+  if (room.key === 'general') return rawVal === 0;
+  if (room.start != null) return rawVal >= room.start && rawVal <= room.end;
+  return rawVal === room.key; // legacy numeric room match
 }
 
 // ── Load a book's JSON file (cached) ──
@@ -234,37 +272,16 @@ async function loadBookData(book){
   return json;
 }
 
-// Pull a collection's documents out of the export, unwrapping `_data`.
-// Handles two formats:
-//   New (Iron Flame, Witchslayer): json.collections.shouty_bingo / shouty_messages
-//   Old (Bridge Kingdom):          json.first_bingo / json.messages
+// Pull a collection's documents out of the export, unwrapping `_data` if present,
+// and tolerating exports with no top-level "collections" wrapper.
 function getCollection(json, name){
-  const col = json?.collections?.[name];
-  if(col){
-    const out = {};
-    for(const [id,entry] of Object.entries(col)){
-      out[id] = entry._data || entry;
-    }
-    return out;
+  const col = (json?.collections?.[name]) ?? json?.[name];
+  if(!col) return {};
+  const out = {};
+  for(const [id,entry] of Object.entries(col)){
+    out[id] = entry._data || entry;
   }
-  // Old format fallback
-  if(name === 'shouty_bingo' && json?.first_bingo) return json.first_bingo;
-  if(name === 'shouty_messages' && json?.messages){
-    const out = {};
-    for(const [id, m] of Object.entries(json.messages)){
-      const norm = {...m};
-      // chapter: "chapter-6" → room: 6
-      if(typeof m.chapter === 'string'){
-        const n = parseInt(m.chapter.replace('chapter-',''));
-        norm.room = isNaN(n) ? 0 : n;
-      }
-      // createdAt → ts
-      if(!norm.ts && norm.createdAt) norm.ts = norm.createdAt;
-      out[id] = norm;
-    }
-    return out;
-  }
-  return {};
+  return out;
 }
 
 // ── Shelf ──
@@ -276,7 +293,6 @@ async function buildShelf(){
   BOOKS.forEach((book)=>{
     const el = document.createElement('div');
     el.className = 'shelf-book';
-    // cawpile doc id: archive_ironflame.json → ironflame (same ids as the Verdicts page)
     el.dataset.cawpileId = book.file.replace(/^archive_/,'').replace(/\.json$/,'');
     el.innerHTML = `
       <div class="cover-wrap"><div class="cover-placeholder">📖</div></div>
@@ -327,19 +343,17 @@ function renderContent(){
 
 function renderCards(){
   const wrap = document.getElementById('cardsWrap');
-  const bingo = getCollection(archiveData, 'shouty_bingo');
+  const bingo = getCollection(archiveData, activeBook.bingoCollection || 'shouty_bingo');
   const bgStyle = activeBook && activeBook.bingo
     ? ` style="background-image:url('${esc(activeBook.bingo)}')"` : '';
   const gridTop = activeBook && activeBook.gridTop != null ? activeBook.gridTop : 35.8;
   const gridWidth = activeBook && activeBook.gridWidth != null ? activeBook.gridWidth : 73;
   const gridStyle = ` style="top:${gridTop}%;width:${gridWidth}%"`;
 
-  // only players who actually have a record in this book's archive
   const activePlayers = PLAYERS.filter(p => bingo[p.pid]);
 
-  // ── compute pts for active players first to find the winner ──
   const playerPts = activePlayers.map(p => calcPoints(bingo[p.pid].marked || [12]).total);
-  const maxPts = Math.max(...playerPts);
+  const maxPts = Math.max(...playerPts, 0);
 
   for(let pi=0; pi<activePlayers.length; pi++){
     const p = activePlayers[pi];
@@ -381,28 +395,24 @@ function renderCards(){
 }
 
 function renderRooms(){
-  const msgs = getCollection(archiveData, 'shouty_messages');
+  const msgs = getCollection(archiveData, activeBook.messagesCollection || 'shouty_messages');
+  const rooms = getRoomsForBook(activeBook);
+
   const counts = {};
+  for(const room of rooms) counts[room.key] = 0;
   for(const m of Object.values(msgs)){
-    const ch = parseInt(m.room);
-    if(!isNaN(ch)) counts[ch] = (counts[ch]||0)+1;
+    const raw = rawKeyFor(activeBook, m);
+    const room = rooms.find(r => matchesRoom(r, raw));
+    if(room) counts[room.key]++;
   }
 
-  // Build room list from the data itself so books with more chapters (e.g. Bridge Kingdom)
-  // show all their rooms, not just the 0-18 hardcoded in ROOMS.
-  const rooms = Object.keys(counts)
-    .map(k => parseInt(k))
-    .sort((a,b) => a - b)
-    .map(ch => {
-      const staticRoom = ROOMS.find(r => r.ch === ch);
-      return { ch, label: staticRoom ? staticRoom.label : (ch === 0 ? 'General' : `Ch ${ch}`) };
-    });
-
   const grid = document.getElementById('roomsGrid');
-  rooms.forEach(r=>{
+  grid.innerHTML = '';
+  rooms.filter(r => counts[r.key] > 0).forEach(r=>{
+    const n = counts[r.key];
     const btn = document.createElement('div');
     btn.className = 'room-btn';
-    btn.innerHTML = `<span class="btn-count">${counts[r.ch]}</span><span class="btn-label">${r.label}</span>`;
+    btn.innerHTML = `<span class="btn-count">${n}</span><span class="btn-label">${r.label}</span>`;
     btn.addEventListener('click',()=>openChat(r));
     grid.appendChild(btn);
   });
@@ -415,29 +425,28 @@ document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&overlay.classList.
 function closeChat(){ overlay.classList.remove('open'); document.body.style.overflow=''; }
 
 function openChat(room){
-  document.getElementById('chatRoomLabel').textContent = room.ch===0?'General Room':`Room — ${room.label}`;
+  document.getElementById('chatRoomLabel').textContent = room.key==='general'?'General Room':`Room — ${room.label}`;
   document.getElementById('chatTitle').textContent = room.label;
   overlay.classList.add('open');
   document.body.style.overflow='hidden';
   const msgDiv = document.getElementById('chatMessages');
 
-  const all = getCollection(archiveData, 'shouty_messages');
-  let msgs = Object.values(all).filter(m=>m.room===room.ch);
+  const all = getCollection(archiveData, activeBook.messagesCollection || 'shouty_messages');
+  let msgs = Object.values(all).filter(m => matchesRoom(room, rawKeyFor(activeBook, m)));
   msgs.sort((a,b)=> tsMillis(a.ts) - tsMillis(b.ts));
 
   if(msgs.length===0){ msgDiv.innerHTML='<span class="empty-msg">No thoughts recorded here.</span>'; return; }
   msgDiv.innerHTML='';
   msgs.forEach(m=>{
-    const pid   = resolvePid(m.name);
-    const emoji = EMOJI_BY_PID[pid]||'';
-    const name  = NAME_BY_PID[pid]||m.name;
-    const color = COLOR_BY_PID[pid]||'#8b6914';
+    const emoji = EMOJI_BY_PID[m.name]||'';
+    const name  = NAME_BY_PID[m.name]||m.name;
+    const color = COLOR_BY_PID[m.name]||'#8b6914';
     let time='';
     const ms = tsMillis(m.ts);
     if(ms) time=new Date(ms).toLocaleDateString(undefined,{month:'short',day:'numeric'});
     const el=document.createElement('div');
     el.className='msg';
-    el.innerHTML=`<span class="msg-name" style="color:${color}">${emoji} ${name}<span class="msg-time">${time}</span></span><span class="msg-text" style="background:${hexA(color,0.10)};border-color:${hexA(color,0.45)}">${esc(m.text)}</span>`;
+    el.innerHTML=`<span class="msg-name" style="color:${color}">${emoji} ${name}<span class="msg-time">${time}</span></span><span class="msg-text" style="background:${hexA(color,0.16)};border-color:${color}">${esc(m.text)}</span>`;
     msgDiv.appendChild(el);
   });
 }
