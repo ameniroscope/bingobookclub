@@ -173,14 +173,15 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 // gridTop/gridWidth position the 5x5 overlay over each book's own bingo
 // artwork — they match the % values used on that book's live player page.
 const BOOKS = [
-  { title: "Iron Flame",  file: "archive_ironflame.json",  bingo: "ironflame_bingo.png", cover: "ironflame_cover.jpg", gridTop: 35.8, gridWidth: 73 },
-  { title: "Witchslayer", file: "archive_witchslayer.json", bingo: "witchslayer_bingo.png", cover: "witchslayer_cover.jpg", gridTop: 34.8, gridWidth: 73 },
+  { title: "Iron Flame",       file: "archive_ironflame.json",      bingo: "ironflame_bingo.png",      cover: "ironflame_cover.jpg",      gridTop: 35.8, gridWidth: 73 },
+  { title: "Witchslayer",      file: "archive_witchslayer.json",     bingo: "witchslayer_bingo.png",     cover: "witchslayer_cover.jpg",     gridTop: 34.8, gridWidth: 73 },
+  { title: "Bridge Kingdom",   file: "archive_bridgekingdom.json",   bingo: "bridgekingdom_bingo.png",   cover: "bridgekingdom_cover.jpg",   gridTop: 34.7, gridWidth: 73 },
 ];
 
 const PLAYERS = [
-  { pid:"marine", name:"Marine", emoji:"🧜‍♀️", photo:"../pdp_marine.png" },
+  { pid:"lena",   name:"Lena",   emoji:"🌙️", photo:"../pdp_lena.png"   },
   { pid:"kathi",  name:"Kathi",  emoji:"🍄",   photo:"../pdp_kathi.png"  },
-  { pid:"lena", name:"Lena", emoji:"🌙️", photo:"../pdp_lena.png" },
+  { pid:"marine", name:"Marine", emoji:"🧜‍♀️", photo:"../pdp_marine.png" },
   { pid:"elana",  name:"Elana",  emoji:"🐉",   photo:"../pdp_elana.png"  },
 ];
 const NAME_BY_PID  = { marine:"Marine", kathi:"Kathi", lena:"Lena", elana:"Elana"};
