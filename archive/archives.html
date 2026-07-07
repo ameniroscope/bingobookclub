@@ -123,12 +123,14 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
   padding:0.22rem 0.6rem;border-radius:3px;background:#3b1e06;color:var(--parch);border:1px solid var(--gold-lt);}
 .close-btn{background:none;border:none;cursor:pointer;color:var(--ink-faded);font-size:1.5rem;line-height:1;padding:0.1rem;transition:color 0.15s;}
 .close-btn:hover{color:var(--ink);}
-.messages{flex:1;overflow-y:auto;padding:0.9rem 1.1rem;display:flex;flex-direction:column;gap:0.7rem;}
+.messages{flex:1;overflow-y:auto;padding:1rem 1.2rem;display:flex;flex-direction:column;gap:0.7rem;}
 .empty-msg{font-size:1rem;color:var(--ink-faded);font-style:italic;text-align:center;margin:auto;}
-.msg-name{font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:1px;color:var(--gold);display:block;margin-bottom:0.1rem;}
-.msg-text{display:inline-block;font-size:1rem;color:var(--ink);line-height:1.65;
-  border:1px solid transparent;border-radius:8px;padding:0.4rem 0.65rem;max-width:min(85%,420px);word-break:break-word;}
-.msg-time{font-size:0.7rem;color:var(--worn);font-style:italic;margin-left:0.4rem;}
+.msg{display:flex;flex-direction:column;gap:0.15rem;align-items:flex-start;}
+.msg-name{display:block;font-family:'Cinzel',serif;font-size:0.8rem;letter-spacing:1px;color:var(--gold);margin-bottom:0.15rem;}
+.msg-text{display:block;font-family:'IM Fell English',Georgia,serif;font-size:1rem;color:var(--ink);line-height:1.6;
+  max-width:min(85%,420px);background:rgba(201,168,76,0.12);border:1px solid var(--worn);
+  padding:0.5rem 0.75rem;border-radius:8px;word-break:break-word;}
+.msg-time{font-size:0.68rem;color:var(--worn);font-style:italic;margin-left:0.4rem;}
 
 @media(max-width:800px){.cards-wrap{grid-template-columns:1fr;gap:2.5rem;}}
 </style>
@@ -186,7 +188,9 @@ const PLAYERS = [
 ];
 const NAME_BY_PID  = { marine:"Marine", kathi:"Kathi", lena:"Lena", elana:"Elana"};
 const EMOJI_BY_PID = { marine:"🧜‍♀️",  kathi:"🍄", lena:"🌙️", elana:"🐉"     };
-const COLOR_BY_PID = { elana:"#c9a84c", lena:"#1f3a36", kathi:"#24152b", marine:"#172838" };
+const COLOR_BY_PID = { elana:"#b07a10", lena:"#2d7a5a", kathi:"#8a4ab0", marine:"#4a8ab0" };
+// Resolve either a pid ("marine") or a display name ("Marine") to a pid
+function resolvePid(raw){ return NAME_BY_PID[raw] ? raw : (Object.entries(NAME_BY_PID).find(([,n])=>n===raw)?.[0] || raw); }
 function hexA(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;}
 
 const ROOMS = Array.from({length:19},(_,i)=>({ch:i,label:i===0?"General":`Chunk ${i}`}));
@@ -412,15 +416,16 @@ function openChat(room){
   if(msgs.length===0){ msgDiv.innerHTML='<span class="empty-msg">No thoughts recorded here.</span>'; return; }
   msgDiv.innerHTML='';
   msgs.forEach(m=>{
-    const emoji = EMOJI_BY_PID[m.name]||'';
-    const name  = NAME_BY_PID[m.name]||m.name;
-    const color = COLOR_BY_PID[m.name]||'#8b6914';
+    const pid   = resolvePid(m.name);
+    const emoji = EMOJI_BY_PID[pid]||'';
+    const name  = NAME_BY_PID[pid]||m.name;
+    const color = COLOR_BY_PID[pid]||'#8b6914';
     let time='';
     const ms = tsMillis(m.ts);
     if(ms) time=new Date(ms).toLocaleDateString(undefined,{month:'short',day:'numeric'});
     const el=document.createElement('div');
     el.className='msg';
-    el.innerHTML=`<span class="msg-name" style="color:${color}">${emoji} ${name}<span class="msg-time">${time}</span></span><span class="msg-text" style="background:${hexA(color,0.16)};border-color:${color}">${esc(m.text)}</span>`;
+    el.innerHTML=`<span class="msg-name" style="color:${color}">${emoji} ${name}<span class="msg-time">${time}</span></span><span class="msg-text" style="background:${hexA(color,0.10)};border-color:${hexA(color,0.45)}">${esc(m.text)}</span>`;
     msgDiv.appendChild(el);
   });
 }
