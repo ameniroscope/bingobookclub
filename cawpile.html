@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 <title>The Verdicts</title>
-<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="style.css">
 <style>
 *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 18px; }
@@ -117,7 +117,7 @@ body {
 }
 .rate-cat-letter {
   font-family: 'Cinzel', serif; font-size: .95rem; font-weight: 700;
-  color: #c9a84c; line-height: 1;
+  color: #9f86c0; line-height: 1;
 }
 .rate-cat-name {
   font-family: 'Cinzel', serif; font-size: .68rem;
@@ -249,7 +249,7 @@ body {
 .bd-row { display: grid; grid-template-columns: 1rem 1fr; align-items: center; gap: .5rem; }
 .bd-letter {
   font-family: 'Cinzel', serif; font-size: .62rem; font-weight: 700;
-  color: #c9a84c88; text-align: center;
+  color: #c9a84c; text-align: center;
 }
 .bd-bar-track {
   height: 5px; border-radius: 3px; background: #241b2c;
@@ -257,7 +257,7 @@ body {
 }
 .bd-bar-fill {
   height: 100%; border-radius: 3px; display: block;
-  background: linear-gradient(to right, #8a6d2f, #c9a84c);
+  background:  rgba(159, 134, 192, 0.667);
   transition: width .4s;
 }
 .bd-mark {
@@ -327,7 +327,7 @@ body {
 }
 .info-letter {
   font-family: 'Cinzel', serif; font-size: .95rem; font-weight: 700;
-  color: #c9a84c; line-height: 1;
+  color: #9f86c0; line-height: 1;
 }
 .info-name {
   font-family: 'Cinzel', serif; font-size: .68rem;
@@ -497,7 +497,7 @@ body {
   <div class="page-footer">✦ &nbsp; The Bingo Book Club &nbsp; ✦</div>
 </div>
 
-<a class="home-btn" href="../index.html">🏠 Home</a>
+<a class="home-btn" href="index.html">🏠 Home</a>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -520,9 +520,9 @@ const firebaseConfig = {
 //  JSON file (used to know who actually read it).
 // ─────────────────────────────────────────────────────────────
 const BOOKS = [
-  { id: "ironflame",      title: "Iron Flame",      cover: "../archive/ironflame_cover.jpg",      file: "../archive/archive_ironflame.json" },
-  { id: "witchslayer",   title: "Witchslayer",      cover: "../archive/witchslayer_cover.jpg",    file: "../archive/archive_witchslayer.json" },
-  { id: "bridgekingdom", title: "Bridge Kingdom",   cover: "../archive/bridgekingdom_cover.jpg",  file: "../archive/archive_bridgekingdom.json" },
+  { id: "ironflame",      title: "Iron Flame",      cover: "archive/ironflame_cover.jpg",      file: "archive/archive_ironflame.json" },
+  { id: "witchslayer",   title: "Witchslayer",      cover: "archive/witchslayer_cover.jpg",    file: "archive/archive_witchslayer.json" },
+  { id: "bridgekingdom", title: "Bridge Kingdom",   cover: "archive/bridgekingdom_cover.jpg",  file: "archive/archive_bridgekingdom.json" },
 ];
 
 // pid = the id used in the archive JSONs / bingo records

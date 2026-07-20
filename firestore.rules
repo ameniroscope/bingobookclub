@@ -50,6 +50,16 @@ service cloud.firestore {
       allow update, delete: if false;
     }
 
+    // ── Five-Star Shelf: books loved outside the club (+ comments) ──
+    match /fivestars/{book} {
+      allow read: if true;
+      allow create: if request.resource.data.title is string
+                    && request.resource.data.title.size() > 0
+                    && request.resource.data.title.size() <= 300;
+      allow update: if true;   // appending comments
+      allow delete: if false;
+    }
+
     // ── Wizard baking spoiler-progress flag ──
     match /progress_spoiler/{docId} {
       allow read, write: if true;
