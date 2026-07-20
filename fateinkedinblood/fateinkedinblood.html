@@ -254,10 +254,16 @@ async function endDrag(cx,cy){
   const m=document.getElementById('mapmarker-'+pid);
   if(m){m.style.transition='';m.classList.remove('dragging');}
   const idx=nearestIdx(cx,cy);
+  const tileChanged=curPos[pid]==null||Number(curPos[pid])!==Number(idx);
   stats[pid].mapPos=idx;
+  curPos[pid]=idx;
+  if(tileChanged)arriveAt[pid]=Date.now();
   renderMapMarkers();
+  render();
   const progress=Math.min(idx,TOTAL_CHAPTERS);
-  try{await setDoc(doc(db,BINGO_COL,pid),{mapPos:idx,chapterProgress:progress},{merge:true});}catch(err){console.error(err);}
+  const payload={mapPos:idx,chapterProgress:progress};
+  if(tileChanged)payload.mapPosAt=arriveAt[pid];
+  try{await setDoc(doc(db,BINGO_COL,pid),payload,{merge:true});}catch(err){console.error(err);}
 }
 window.addEventListener('mouseup',e=>endDrag(e.clientX,e.clientY));
 window.addEventListener('touchend',e=>endDrag(e.changedTouches[0].clientX,e.changedTouches[0].clientY));
@@ -267,11 +273,20 @@ const rankGrid=document.getElementById('rankGrid');
 const stats={};
 Object.keys(PLAYERS).forEach(p=>stats[p]={chapterProgress:0,points:0,mapPos:0});
 
+/* ── ARRIVAL ORDER: first reader to reach a tile ranks ahead as faster ── */
+const arriveAt={};   // pid -> timestamp they reached their current tile
+const curPos={};     // pid -> current tile
+
 function computeRanks(metric,tieMetric){
   const ids=Object.keys(PLAYERS);
   ids.sort((a,b)=>{
     if(stats[a][metric]!==stats[b][metric]) return stats[a][metric]-stats[b][metric];
-    return stats[a][tieMetric]-stats[b][tieMetric];
+    if(metric==='chapterProgress'){                           // same tile → first to arrive is faster
+      const ta=arriveAt[a]??0,tb=arriveAt[b]??0;
+      if(ta!==tb) return tb-ta;                               // earlier arrival → higher rank
+    }
+    if(stats[a][tieMetric]!==stats[b][tieMetric]) return stats[a][tieMetric]-stats[b][tieMetric];
+    const ta=arriveAt[a]??0,tb=arriveAt[b]??0;return tb-ta;   // stable fallback: earlier arrival ahead
   });
   const ranks={};
   ids.forEach((id,i)=>ranks[id]=i+1);
@@ -316,6 +331,10 @@ onSnapshot(collection(db,BINGO_COL),snap=>{
     const chapterProgress=Number(data.chapterProgress||0);
     const mapPos=(data.mapPos!=null)?Number(data.mapPos):chapterProgress;
     stats[d.id]={ chapterProgress, points:Number(data.points||0), mapPos };
+    if(!(dragging&&dragPid===d.id)){
+      curPos[d.id]=mapPos;
+      arriveAt[d.id]=(data.mapPosAt!=null)?Number(data.mapPosAt):0;
+    }
   });
   render();
   renderMapMarkers();

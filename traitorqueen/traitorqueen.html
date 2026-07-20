@@ -300,7 +300,12 @@ async function endDrag(cx,cy){
   const snap=snapNearest(cx,cy);
   placeMarker(dragPid,snap);
   const progress=Math.min(snap,TOTAL_CHAPTERS);
-  try{await setDoc(doc(db,'traitorqueen_bingo',dragPid),{mapPos:snap,chapterProgress:progress},{merge:true});}catch(e){console.error(e);}
+  const tileChanged=curPos[dragPid]==null||Number(curPos[dragPid])!==Number(snap);
+  const payload={mapPos:snap,chapterProgress:progress};
+  if(tileChanged){payload.mapPosAt=Date.now();arriveAt[dragPid]=payload.mapPosAt;}
+  curPos[dragPid]=snap;
+  render();
+  try{await setDoc(doc(db,'traitorqueen_bingo',dragPid),payload,{merge:true});}catch(e){console.error(e);}
   dragPid=null;
 }
 window.addEventListener('mouseup',e=>endDrag(e.clientX,e.clientY));
@@ -310,11 +315,20 @@ Object.keys(PLAYERS).forEach(pid=>placeMarker(pid,0));
 const stats={};
 Object.keys(PLAYERS).forEach(p=>stats[p]={chapterProgress:0,points:0});
 
+/* ── ARRIVAL ORDER: first reader to reach a tile ranks ahead as faster ── */
+const arriveAt={};   // pid -> timestamp they reached their current tile
+const curPos={};     // pid -> current tile
+
 function computeRanks(metric,tieMetric){
   const ids=Object.keys(PLAYERS);
   ids.sort((a,b)=>{
     if(stats[a][metric]!==stats[b][metric])return stats[a][metric]-stats[b][metric];
-    return stats[a][tieMetric]-stats[b][tieMetric];
+    if(metric==='chapterProgress'){                           // same tile → first to arrive is faster
+      const ta=arriveAt[a]??0,tb=arriveAt[b]??0;
+      if(ta!==tb)return tb-ta;                                 // earlier arrival → higher rank
+    }
+    if(stats[a][tieMetric]!==stats[b][tieMetric])return stats[a][tieMetric]-stats[b][tieMetric];
+    const ta=arriveAt[a]??0,tb=arriveAt[b]??0;return tb-ta;    // stable fallback: earlier arrival ahead
   });
   const ranks={};ids.forEach((id,i)=>ranks[id]=i+1);return ranks;
 }
@@ -350,6 +364,8 @@ onSnapshot(collection(db,'traitorqueen_bingo'),snap=>{
     if(!(dragging&&dragPid===d.id)){
       const spot=(data.mapPos!=null)?Number(data.mapPos):Number(data.chapterProgress||0);
       placeMarker(d.id,spot);
+      curPos[d.id]=spot;
+      arriveAt[d.id]=(data.mapPosAt!=null)?Number(data.mapPosAt):0;
     }
   });
   render();
