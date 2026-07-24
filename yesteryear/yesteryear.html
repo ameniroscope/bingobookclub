@@ -6,7 +6,7 @@
 <title>Yesteryear</title>
 <link rel="stylesheet" href="../style.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Patrick+Hand&family=Yesteryear&display=swap" rel="stylesheet">
 <style>
 :root{
   --accent:#f7815c;--accent-lt:#b8d1a3;--accent-dim:#c8942f;
@@ -14,7 +14,7 @@
   --bg-deep:#fdf6e3;--bg-mid:#f7edc9;--bone:#fffaf0;
   --stone:#e6a822;--stone-dk:#e0d0a6;--stone-lt:#f5ecd2;
 }
-html,body{background:var(--bg-mid);color:var(--ink);font-family:'Patrick Hand',cursive;}
+html,body{background:var(--bg-mid);color:var(--ink);font-family:'Yesteryear',cursive;}
 #bg-rune{position:fixed;inset:0;z-index:0;pointer-events:none;background:var(--bg-mid) url('yesteryear_back.png') center/cover no-repeat;}
 
 .home-layout{position:relative;z-index:2;display:grid;grid-template-columns:0.7fr 1fr 0.7fr;gap:28px;align-items:center;justify-content:center;padding:40px 50px;max-width:1280px;margin:0 auto;}
@@ -23,8 +23,13 @@ html,body{background:var(--bg-mid);color:var(--ink);font-family:'Patrick Hand',c
 /* ── CHAPTER MAP ── */
 .map-section{display:flex;flex-direction:column;align-items:center;gap:0.6rem;}
 .map-wrap{position:relative;width:100%;max-width:420px;}
-.map-wrap img{display:block;width:100%;border-radius:14px;}
-.map-hint{font-family:'Patrick Hand',cursive;font-size:1.05rem;color:var(--accent);letter-spacing:0.5px;font-style:italic;text-align:center;}
+.map-wrap img{
+  display:block;
+  width:100%;
+  border-radius:14px;
+  filter:drop-shadow(0 8px 12px rgba(200,148,47,0.35));
+}
+.map-hint{font-family:'Yesteryear',cursive;font-size:1.05rem;color:var(--accent);letter-spacing:0.5px;font-style:italic;text-align:center;}
 .map-marker{position:absolute;transform:translate(-50%,-50%);font-size:1.4rem;line-height:1;z-index:5;
   filter:drop-shadow(0 1px 3px rgba(90,74,50,0.5));transition:left 0.25s ease,top 0.25s ease;
   cursor:grab;touch-action:none;}
@@ -48,7 +53,12 @@ html,body{background:var(--bg-mid);color:var(--ink);font-family:'Patrick Hand',c
 
 /* ── side (decorative) images: smaller, no marker layer ── */
 .map-side .map-wrap{max-width:300px;}
-.map-side img{border-radius:14px;}
+.map-wrap img{
+  display:block;
+  width:100%;
+  border-radius:14px;
+  filter:drop-shadow(0 8px 12px rgba(200,148,47,0.35));
+}
 @media(max-width:900px){
   .map-side .map-wrap{max-width:160px;}
 }
@@ -78,7 +88,7 @@ html,body{background:var(--bg-mid);color:var(--ink);font-family:'Patrick Hand',c
 .rune-ornament{display:flex;align-items:center;gap:0.6rem;width:100%;max-width:18rem;margin:1rem auto;}
 .rune-ornament .line{flex:1;height:1px;background:linear-gradient(to right,transparent,var(--accent),transparent);}
 .rune-ornament .gem{font-size:1rem;}
-.footer{font-family:'Patrick Hand',cursive;color:var(--ink);}
+.footer{font-family:'Yesteryear',cursive;color:var(--ink);}
 .home-btn{font-family:'Fredoka',sans-serif;color:var(--accent-dim);}
 </style>
 </head>
