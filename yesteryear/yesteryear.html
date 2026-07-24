@@ -68,7 +68,7 @@ html,body{background:var(--bg-mid);color:var(--ink);font-family:'Patrick Hand',c
   border-radius:50%;border:3px solid var(--bone);}
 .player-btn:hover .avatar{border-color:var(--pc,var(--accent));}
 .player-badge{position:absolute;top:-3px;right:-3px;z-index:10;
-  width:26px;height:26px;border-radius:50%;
+  width:40px;height:40px;border-radius:50%;
   display:flex;align-items:center;justify-content:center;
   background:var(--bone);border:2px solid var(--pc,var(--accent));
   font-family:'Fredoka',sans-serif;font-size:0.8rem;font-weight:700;color:var(--ink);}
@@ -163,7 +163,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const BINGO_COL = 'yesteryear';
+const BINGO_COL = 'yesteryear_bingo';
 
 const PLAYERS = {
   elana:  { emoji:"🐉",   color:"#c9a84c", name:"Elana"  },
