@@ -6,15 +6,37 @@
 <title>Yesteryear</title>
 <link rel="stylesheet" href="../style.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Patrick+Hand&family=Yesteryear&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Yesteryear&display=swap" rel="stylesheet">
 <style>
 :root{
-  --accent:#f7815c;--accent-lt:#b8d1a3;--accent-dim:#c8942f;
-  --ink:#5a4a32;--ink-faded:#a89a7c;
-  --bg-deep:#fdf6e3;--bg-mid:#f7edc9;--bone:#fffaf0;
-  --stone:#e6a822;--stone-dk:#e0d0a6;--stone-lt:#f5ecd2;
+  /* text */
+  --ink:#5a4a32;         /* body text */
+  --ink-faded:#a89a7c;   /* muted / captions */
+
+  /* surfaces */
+  --bg-mid:#f7edc9;      /* page background */
+  --bg-deep:#fdf6e3;
+  --bone:#fffaf0;        /* cards, buttons */
+
+  /* teal accent */
+  --accent:#396765;      /* names, links */
+  --accent-lt:#b8d1a3;
+  --accent-dim:#c8942f;  /* gold — home btn */
+
+  /* warm neutrals */
+  --stone:#e6a822;       /* amber — map border */
+  --stone-dk:#e0d0a6;    /* subtle borders */
+  --stone-lt:#f5ecd2;    /* pale cream */
+
+  /* coral highlight */
+  --pink:#eb7357;        /* side-image borders, ornament lines */
+
+  --num-font:'Courier Prime','Courier New',Courier,monospace;
 }
-html,body{background:var(--bg-mid);color:var(--ink);font-family:'Yesteryear',cursive;}
+*{font-family:var(--num-font)!important;}
+.home-btn,.home-btn *{font-family:'Cinzel',serif!important;}
+.pname{font-family:'Yesteryear',cursive!important;}
+html,body{background:var(--bg-mid);color:var(--ink);font-family:var(--num-font);}
 #bg-rune{position:fixed;inset:0;z-index:0;pointer-events:none;background:var(--bg-mid) url('yesteryear_back.png') center/cover no-repeat;}
 
 .home-layout{position:relative;z-index:2;display:grid;grid-template-columns:0.7fr 1fr 0.7fr;gap:28px;align-items:center;justify-content:center;padding:40px 50px;max-width:1280px;margin:0 auto;}
@@ -26,10 +48,10 @@ html,body{background:var(--bg-mid);color:var(--ink);font-family:'Yesteryear',cur
 .map-wrap img{
   display:block;
   width:100%;
-  border-radius:14px;
+  border:3px double var(--stone);
   filter:drop-shadow(0 8px 12px rgba(200,148,47,0.35));
 }
-.map-hint{font-family:'Yesteryear',cursive;font-size:1.05rem;color:var(--accent);letter-spacing:0.5px;font-style:italic;text-align:center;}
+.map-hint{font-family:'fredoka',cursive;font-size:0.7rem;color:var(--accent);letter-spacing:0.5px;font-style:italic;text-align:center;}
 .map-marker{position:absolute;transform:translate(-50%,-50%);font-size:1.4rem;line-height:1;z-index:5;
   filter:drop-shadow(0 1px 3px rgba(90,74,50,0.5));transition:left 0.25s ease,top 0.25s ease;
   cursor:grab;touch-action:none;}
@@ -53,10 +75,10 @@ html,body{background:var(--bg-mid);color:var(--ink);font-family:'Yesteryear',cur
 
 /* ── side (decorative) images: smaller, no marker layer ── */
 .map-side .map-wrap{max-width:300px;}
-.map-wrap img{
+.map-side .map-wrap img{
   display:block;
   width:100%;
-  border-radius:14px;
+  border-color:var(--pink);
   filter:drop-shadow(0 8px 12px rgba(200,148,47,0.35));
 }
 @media(max-width:900px){
@@ -68,28 +90,28 @@ html,body{background:var(--bg-mid);color:var(--ink);font-family:'Yesteryear',cur
 .player-btns{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1.5rem 2rem;justify-content:center;max-width:640px;}
 @media(max-width:700px){.player-btns{grid-template-columns:1fr 1fr;max-width:340px;}}
 .player-btn{display:flex;flex-direction:column;align-items:center;gap:0;text-decoration:none;
-  color:var(--ink);font-family:'Fredoka',sans-serif;letter-spacing:0.5px;transition:transform 0.3s ease;}
+  color:var(--accent);font-family:'Yesteryear',sans-serif;letter-spacing:0.5px;transition:transform 0.3s ease;}
 .player-btn:hover{transform:translateY(-4px);}
 .player-img-frame{position:relative;width:150px;height:150px;margin:0 auto;}
 .player-img-frame::before{content:'';position:absolute;inset:-6px;border-radius:50%;
   background:radial-gradient(circle,var(--pc-glow,var(--accent)) 0%,transparent 70%);
   opacity:0.4;filter:blur(6px);z-index:0;}
 .player-img-frame .avatar{position:relative;z-index:2;width:100%;height:100%;object-fit:cover;
-  border-radius:50%;border:3px solid var(--bone);}
+  border-radius:50%;border:5px solid var(--bone);}
 .player-btn:hover .avatar{border-color:var(--pc,var(--accent));}
 .player-badge{position:absolute;top:-3px;right:-3px;z-index:10;
   width:40px;height:40px;border-radius:50%;
   display:flex;align-items:center;justify-content:center;
-  background:var(--bone);border:2px solid var(--pc,var(--accent));
-  font-family:'Fredoka',sans-serif;font-size:0.8rem;font-weight:700;color:var(--ink);}
-.player-btn .pname{display:block;margin-top:10px;font-size:1.05rem;color:var(--ink);}
+  background:var(--bone);border:3.5px solid var(--pc,var(--accent));
+  font-family: Courrier Prime;font-size:1.1rem;font-weight:700;color:var(--ink);}
+.player-btn .pname{display:block;margin-top:10px;font-size:2rem;color:var(--accent);}
 
 .footer-section{position:relative;z-index:2;text-align:center;padding:1.5rem 1rem 3rem;}
 .rune-ornament{display:flex;align-items:center;gap:0.6rem;width:100%;max-width:18rem;margin:1rem auto;}
-.rune-ornament .line{flex:1;height:1px;background:linear-gradient(to right,transparent,var(--accent),transparent);}
-.rune-ornament .gem{font-size:1rem;}
-.footer{font-family:'Yesteryear',cursive;color:var(--ink);}
-.home-btn{font-family:'Fredoka',sans-serif;color:var(--accent-dim);}
+.rune-ornament .line{flex:1;height:1px;background:linear-gradient(to right,transparent,var(--pink),transparent);}
+.rune-ornament .gem{font-size:2rem;}
+.footer{font-family:'fredoka',cursive;color:var(--ink);}
+.home-btn{font-family:'Cinzel',sans-serif;color:var(--accent-dim);}
 </style>
 </head>
 <body>
@@ -108,7 +130,7 @@ html,body{background:var(--bg-mid);color:var(--ink);font-family:'Yesteryear',cur
     <div class="map-wrap" id="mapWrap">
       <img src="yesteryear_map.png" alt="Yesteryear chapter map">
     </div>
-    <div class="map-hint">🐓 Drag your emoji across the map to mark your progress 🐓</div>
+    <div class="map-hint">🐄 Drag your emoji across the map to mark your progress 🐄</div>
   </section>
 
   <section class="map-section map-side">
@@ -120,28 +142,28 @@ html,body{background:var(--bg-mid);color:var(--ink);font-family:'Yesteryear',cur
   <section class="players">
     <div class="rune-ornament"><div class="line"></div><div class="gem">🐄</div><div class="line"></div></div>
     <div class="player-btns">
-      <a class="player-btn" href="yesteryear_player.html?p=elana" style="--pc:#c9a84c;--pc-glow:#c9a84c;">
+      <a class="player-btn" href="yesteryear_player.html?p=elana" style="--pc:#e9d7a0;--pc-glow:#e9d7a0;">
         <div class="player-img-frame">
           <img class="avatar" src="../pdp_elana.png" alt="Elana">
           <div class="player-badge" id="badge-elana"></div>
         </div>
         <span class="pname">Elana</span>
       </a>
-      <a class="player-btn" href="yesteryear_player.html?p=lena" style="--pc:#9caf88;--pc-glow:#9caf88;">
+      <a class="player-btn" href="yesteryear_player.html?p=lena" style="--pc:#ced8c1;--pc-glow:#ced8c1;">
         <div class="player-img-frame">
           <img class="avatar" src="../pdp_lena.png" alt="Lena">
           <div class="player-badge" id="badge-lena"></div>
         </div>
         <span class="pname">Lena</span>
       </a>
-      <a class="player-btn" href="yesteryear_player.html?p=kathi" style="--pc:#9b6fb0;--pc-glow:#9b6fb0;">
+      <a class="player-btn" href="yesteryear_player.html?p=kathi" style="--pc:#d0bada;--pc-glow:#d0bada;">
         <div class="player-img-frame">
           <img class="avatar" src="../pdp_kathi.png" alt="Kathi">
           <div class="player-badge" id="badge-kathi"></div>
         </div>
         <span class="pname">Kathi</span>
       </a>
-      <a class="player-btn" href="yesteryear_player.html?p=marine" style="--pc:#5a9bd4;--pc-glow:#5a9bd4;">
+      <a class="player-btn" href="yesteryear_player.html?p=marine" style="--pc:#b2ceeb;--pc-glow:#b2ceeb;">
         <div class="player-img-frame">
           <img class="avatar" src="../pdp_marine.png" alt="Marine">
           <div class="player-badge" id="badge-marine"></div>
@@ -317,8 +339,7 @@ async function endDrag(cx,cy){
   curPos[pid]=idx;
   if(tileChanged)arriveAt[pid]=Date.now();
   renderMapMarkers();
-  const progress=Math.min(idx,TOTAL_CHAPTERS);
-  const payload={mapPos:idx,chapterProgress:progress};
+  const payload={mapPos:idx};
   if(tileChanged)payload.mapPosAt=arriveAt[pid];
   try{await setDoc(doc(db,BINGO_COL,pid),payload,{merge:true});}catch(err){console.error(err);}
 }

@@ -222,12 +222,21 @@
   /* ════════ BUTTONS ════════ */
   .buttons{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.9rem;max-width:640px;margin:0 auto;}
   .btn{
+    position:relative;
     width:100%;height:80px;
     display:flex;align-items:center;justify-content:left;gap:0.6rem;
     padding:0 1rem;
     font-family:'Cinzel',serif;text-transform:uppercase;text-decoration:none;
     border-radius:6px;transition:all 0.3s ease;
   }
+  /* "to read" notification dot — same look as the unread-message dot in TraitorQueen */
+  .notif-dot{
+    position:absolute;top:7px;left:8px;
+    width:8px;height:8px;border-radius:50%;
+    background:#c9a84c;box-shadow:0 0 6px rgba(201,168,76,0.7);
+    display:none;
+  }
+  .notif-dot.show{display:block;}
   .btn-secondary{
     background:#1a0f1f;border:1px solid #c9a84c33;color:#f5ecd9;
     text-shadow:0 1px 2px rgba(0,0,0,0.6);box-shadow:0 0 12px rgba(201,168,76,0.12);
@@ -367,6 +376,7 @@
 
       <div class="buttons">
         <a class="btn btn-bingo" href="recommendations.html">
+          <span class="notif-dot" id="dot-suggestions" title="Votes still needed"></span>
           <span class="btn-icon">💡</span>
           <div class="btn-text">
             <span class="btn-label">Suggestions</span>
@@ -381,6 +391,7 @@
           </div>
         </a>
         <a class="btn btn-bingo" href="cawpile.html">
+          <span class="notif-dot" id="dot-cawpile" title="Ratings still needed"></span>
           <span class="btn-icon">🏆</span>
           <div class="btn-text">
             <span class="btn-label">CAWPILE</span>
@@ -397,7 +408,7 @@
 		<a href="traitorqueen/traitorqueen.html"><img src="traitorqueen/traitorqueen_cover.jpg" alt="The Traitor Queen"></a>
         <a href="fateinkedinblood/fateinkedinblood.html"><img src="fateinkedinblood/fateinkedinblood_cover.jpg" alt="A Fate Inked in Blood"></a>
         <a href="wizardbaking/wizardbaking.html"><img src="wizardbaking/wizardbaking_cover.jpeg" alt="A Wizard's Guide to Defensive Baking"></a>
-		<a href="construction.html"><img src="yesteryear/yesteryear_cover.jpg" alt="Yesteryear"></a>
+		<a href="yesteryear/yesteryear.html"><img src="yesteryear/yesteryear_cover.jpg" alt="Yesteryear"></a>
       </div>
     </div>
 
@@ -560,6 +571,63 @@
   }
 
   loadScores();
+
+  // ══════════ "To read" dots: flag when votes/ratings are still pending ══════════
+  // Player codes → archive pid (same mapping the Suggestions & CAWPILE pages use)
+  const CODE_TO_PID = { marinara:'marine', lenarrator:'lena', elanalogy:'elana', kathistory:'kathi' };
+  const VOTE_CODES  = Object.keys(CODE_TO_PID);
+
+  // Archived reads judged on the CAWPILE page (same list/files as cawpile.html)
+  const CAWPILE_BOOKS = [
+    { id:'ironflame',     file:'archive/archive_ironflame.json' },
+    { id:'witchslayer',   file:'archive/archive_witchslayer.json' },
+    { id:'bridgekingdom', file:'archive/archive_bridgekingdom.json' },
+  ];
+
+  async function fetchDocsMap(colName){
+    const snap = await getDocs(collection(db, colName));
+    const out = {};
+    snap.forEach(d => out[d.id] = d.data());
+    return out;
+  }
+
+  // Suggestions: pending if any book hasn't been voted on by all four players
+  async function suggestionsPending(){
+    try {
+      const books = await fetchDocsMap('books');
+      return Object.values(books).some(b => Object.keys(b.votes || {}).length < VOTE_CODES.length);
+    } catch(e){ console.warn('Suggestions dot check failed', e); return false; }
+  }
+
+  // CAWPILE: pending if any archived book isn't rated by everyone who read it
+  async function cawpilePending(){
+    try {
+      const ratingsMap = await fetchDocsMap('cawpile');
+      const readerSets = await Promise.all(CAWPILE_BOOKS.map(async b => {
+        try {
+          const r = await fetch(b.file); if (!r.ok) throw new Error(r.status);
+          const j = await r.json();
+          const bingo = j?.collections?.shouty_bingo || j?.first_bingo || {};
+          return new Set(Object.keys(bingo));
+        } catch { return null; }   // unknown readers → don't flag this book
+      }));
+      return CAWPILE_BOOKS.some((b, i) => {
+        const readers = readerSets[i];
+        if (!readers) return false;
+        const ratings = ratingsMap[b.id]?.ratings || {};
+        const readerCodes = VOTE_CODES.filter(code => readers.has(CODE_TO_PID[code]));
+        if (!readerCodes.length) return false;
+        return !readerCodes.every(code => ratings[code]);
+      });
+    } catch(e){ console.warn('CAWPILE dot check failed', e); return false; }
+  }
+
+  async function updateVoteDots(){
+    const [sug, caw] = await Promise.all([suggestionsPending(), cawpilePending()]);
+    document.getElementById('dot-suggestions')?.classList.toggle('show', sug);
+    document.getElementById('dot-cawpile')?.classList.toggle('show', caw);
+  }
+  updateVoteDots();
 </script>
 
 <!-- ✦ SECRET EASTER EGG: wandering emojis ✦ -->
