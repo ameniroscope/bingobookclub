@@ -75,6 +75,8 @@ html,body{background:var(--bg-mid);color:var(--ink);font-family:var(--num-font);
 
 /* ── side (decorative) images: smaller, no marker layer ── */
 .map-side .map-wrap{max-width:300px;}
+a.map-wrap{display:block;text-decoration:none;transition:transform 0.3s ease;}
+a.map-wrap:hover{transform:translateY(-4px);}
 .map-side .map-wrap img{
   display:block;
   width:100%;
@@ -134,9 +136,9 @@ html,body{background:var(--bg-mid);color:var(--ink);font-family:var(--num-font);
   </section>
 
   <section class="map-section map-side">
-    <div class="map-wrap" id="mapWrapB">
-      <img src="yesteryearB.png">
-    </div>
+    <a class="map-wrap" href="../secret/baguette.html" id="mapWrapB">
+      <img src="yesteryearB.png" alt="Baguette recipe">
+    </a>
   </section>
 
   <section class="players">
