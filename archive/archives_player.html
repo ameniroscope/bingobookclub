@@ -150,6 +150,8 @@ function extractPlayerData(json, collectionName, pid){
     let raw = json.collections?.[collectionName]?.[pid];
     // Old format (Bridge Kingdom): json.first_bingo[pid]
     if(!raw) raw = json.first_bingo?.[pid];
+    // Generic format (Traitor Queen): collection name is a top-level key
+    if(!raw) raw = json[collectionName]?.[pid];
     if(!raw) return null;
     const data = raw._data || raw;
     const cells  = Array.isArray(data.cells)  ? data.cells  : Array(GRID_SIZE).fill('');
