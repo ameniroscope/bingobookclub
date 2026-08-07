@@ -426,7 +426,6 @@
     <div class="current-col">
       <h2 class="section-title">CURRENT READS</h2>
       <div class="current-books">
-		<a href="traitorqueen/traitorqueen.html"><img src="traitorqueen/traitorqueen_cover.jpg" alt="The Traitor Queen"></a>
         <a href="fateinkedinblood/fateinkedinblood.html"><img src="fateinkedinblood/fateinkedinblood_cover.jpg" alt="A Fate Inked in Blood"></a>
 		<a href="yesteryear/yesteryear.html"><img src="yesteryear/yesteryear_cover.jpg" alt="Yesteryear"></a>
       </div>
@@ -466,21 +465,13 @@
   // ── Players ──
   const PLAYERS = ['lena', 'kathi', 'marine', 'elana'];
 
-  // ── Fallback archived points, used only if the archive JSON can't be fetched
-  //    (e.g. opening the site via file:// instead of a real server) ──
-  const ARCHIVE_FALLBACK = {
-    lena:   { points: 0,  books: 0 },
-    kathi:  { points: 12, books: 1 },
-    marine: { points: 8,  books: 1 },
-    elana:  { points: 0,  books: 0 }
-  };
-
   // ── Archived books: read straight from the exported JSON used by the Archives page ──
   // collection: which key inside the JSON's "collections" object holds the bingo docs.
   const ARCHIVE_BOOKS = [
     { file: 'archive/archive_ironflame.json', collection: 'shouty_bingo' },
 	{ file: 'archive/archive_witchslayer.json', collection: 'shouty_bingo' },
 	{ file: 'archive/archive_bridgekingdom.json', collection: 'first_bingo' },
+	{ file: 'archive/archive_traitorqueen.json', collection: 'traitorqueen_bingo' },
   ];
 
   async function loadArchivedTotals() {
@@ -508,15 +499,13 @@
   }
 
   // ── Live books config ──
-  // collection: Firestore collection name
-  // lastMapPos: the mapPos value that counts as "finished"
-  const LIVE_BOOKS = [
-    { collection: 'first_bingo',           lastMapPos: 42 },
-    { collection: 'traitorqueen_bingo',    lastMapPos: 63 },
-    { collection: 'fateinkedinblood_bingo', lastMapPos: 36 },
-    { collection: 'cursecarvedinbone_bingo', lastMapPos: 53 },
-    { collection: 'yesteryear_bingo', lastMapPos: 63 },
-  ];
+// collection: Firestore collection name
+// lastMapPos: the mapPos value that counts as "finished"
+const LIVE_BOOKS = [
+  { collection: 'fateinkedinblood_bingo', lastMapPos: 36 },
+  { collection: 'cursecarvedinbone_bingo', lastMapPos: 53 },
+  { collection: 'yesteryear_bingo',       lastMapPos: 63 },
+];
 
   // ── calcPoints: same formula as archive page ──
   // cells marked (excl. free square) + lines×5
@@ -603,6 +592,7 @@
     { id:'ironflame',     file:'archive/archive_ironflame.json' },
     { id:'witchslayer',   file:'archive/archive_witchslayer.json' },
     { id:'bridgekingdom', file:'archive/archive_bridgekingdom.json' },
+	{ id:'traitorqueen', file:'archive/archive_traitorqueen.json' },
   ];
 
   async function fetchDocsMap(colName){
