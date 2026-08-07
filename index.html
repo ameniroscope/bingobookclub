@@ -332,6 +332,7 @@
           <div class="player-name">🌙 Lena</div>
           <div class="player-stats">
             <div class="stat"><span class="stat-num" id="lena-points">—</span><span class="stat-label">Pts</span></div>
+            <div class="stat"><span class="stat-num" id="lena-rating">—</span><span class="stat-label">Avg</span></div>
             <div class="stat"><span class="stat-num" id="lena-books">—</span><span class="stat-label">Read</span></div>
           </div>
         </div>
@@ -343,6 +344,7 @@
           <div class="player-name">🍄 Kathi</div>
           <div class="player-stats">
             <div class="stat"><span class="stat-num" id="kathi-points">—</span><span class="stat-label">Pts</span></div>
+            <div class="stat"><span class="stat-num" id="kathi-rating">—</span><span class="stat-label">Avg</span></div>
             <div class="stat"><span class="stat-num" id="kathi-books">—</span><span class="stat-label">Read</span></div>
           </div>
         </div>
@@ -354,6 +356,7 @@
           <div class="player-name">🧜‍♀️ Marine</div>
           <div class="player-stats">
             <div class="stat"><span class="stat-num" id="marine-points">—</span><span class="stat-label">Pts</span></div>
+            <div class="stat"><span class="stat-num" id="marine-rating">—</span><span class="stat-label">Avg</span></div>
             <div class="stat"><span class="stat-num" id="marine-books">—</span><span class="stat-label">Read</span></div>
           </div>
         </div>
@@ -365,6 +368,7 @@
           <div class="player-name">🐉 Elana</div>
           <div class="player-stats">
             <div class="stat"><span class="stat-num" id="elana-points">—</span><span class="stat-label">Pts</span></div>
+            <div class="stat"><span class="stat-num" id="elana-rating">—</span><span class="stat-label">Avg</span></div>
             <div class="stat"><span class="stat-num" id="elana-books">—</span><span class="stat-label">Read</span></div>
           </div>
         </div>
@@ -548,7 +552,6 @@ const LIVE_BOOKS = [
         if (!rec) return;
         const marked = Array.isArray(rec.marked) ? rec.marked : [];
         totals[p].points += calcPoints(marked);
-        // Count as finished if mapPos reached the last position
         const mapPos = rec.mapPos ?? rec.chapterProgress ?? 0;
         if (mapPos >= book.lastMapPos) totals[p].books += 1;
       });
@@ -561,8 +564,12 @@ const LIVE_BOOKS = [
     PLAYERS.forEach(p => {
       const pts = document.getElementById(`${p}-points`);
       const bks = document.getElementById(`${p}-books`);
+      const rtg = document.getElementById(`${p}-rating`);
       if (pts) pts.textContent = totals[p].points;
       if (bks) bks.textContent = totals[p].books;
+      if (rtg) rtg.textContent = totals[p].books > 0
+        ? (totals[p].points / totals[p].books).toFixed(1)
+        : '—';
     });
 
     // Crown: highest average points per book, among players with at least 1 book
