@@ -523,6 +523,7 @@ const BOOKS = [
   { id: "ironflame",      title: "Iron Flame",      cover: "archive/ironflame_cover.jpg",      file: "archive/archive_ironflame.json" },
   { id: "witchslayer",   title: "Witchslayer",      cover: "archive/witchslayer_cover.jpg",    file: "archive/archive_witchslayer.json" },
   { id: "bridgekingdom", title: "Bridge Kingdom",   cover: "archive/bridgekingdom_cover.jpg",  file: "archive/archive_bridgekingdom.json" },
+  { id: "traitorqueen", title: "The Traitor Queen", cover: "archive/traitorqueen_cover.jpg", file: "archive/archive_traitorqueen.json" },
 ];
 
 // pid = the id used in the archive JSONs / bingo records
@@ -604,7 +605,8 @@ async function loadReaders() {
       const r = await fetch(book.file);
       if (!r.ok) throw new Error(r.status);
       const json = await r.json();
-      const bingo = json?.collections?.shouty_bingo || json?.first_bingo || {};
+      const bingoKey = Object.keys(json||{}).find(k=>k.endsWith('_bingo')||k==='first_bingo');
+      const bingo = json?.collections?.shouty_bingo || (bingoKey ? json[bingoKey] : null) || {};
       readersByBook[book.id] = new Set(Object.keys(bingo));
     } catch (e) {
       console.warn(`Could not load readers for ${book.title}`, e);
