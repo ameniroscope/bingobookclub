@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Yesteryear</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐮</text></svg>">
 <link rel="stylesheet" href="../style.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Yesteryear&display=swap" rel="stylesheet">
@@ -56,6 +57,14 @@ html,body{background:var(--bg-mid);color:var(--ink);font-family:var(--num-font);
   filter:drop-shadow(0 1px 3px rgba(90,74,50,0.5));transition:left 0.25s ease,top 0.25s ease;
   cursor:grab;touch-action:none;}
 .map-marker.dragging{cursor:grabbing;transition:none;z-index:6;filter:drop-shadow(0 2px 6px rgba(90,74,50,0.6));}
+/* ── MOBILE: tap the map to enlarge, then drag your emoji ── */
+.map-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:1000;}
+body.map-modal-open{overflow:hidden;}
+.map-close{position:fixed;top:14px;right:16px;z-index:1002;width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:#5a4a32;color:#fff;border:1px solid rgba(255,255,255,0.4);font-size:1.3rem;line-height:1;cursor:pointer;padding:0;}
+@media(max-width:900px){
+  .map-wrap.map-open{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:94vw;max-width:500px;height:auto;margin:0;z-index:1001;touch-action:none;}
+  .map-wrap.map-open img{width:100%;height:auto;max-width:none;max-height:none;touch-action:none;}
+}
 
 .drag-tooltip{
   position:absolute;
@@ -113,7 +122,6 @@ a.map-wrap:hover{transform:translateY(-4px);}
 .rune-ornament .line{flex:1;height:1px;background:linear-gradient(to right,transparent,var(--pink),transparent);}
 .rune-ornament .gem{font-size:2rem;}
 .footer{font-family:'fredoka',cursive;color:var(--ink);}
-.home-btn{font-family:'Cinzel',sans-serif;color:var(--accent-dim);}
 </style>
 </head>
 <body>
@@ -285,8 +293,23 @@ function tryStartDrag(cx,cy){
     }
   }
 }
-mapWrap.addEventListener('mousedown',e=>tryStartDrag(e.clientX,e.clientY));
-mapWrap.addEventListener('touchstart',e=>tryStartDrag(e.touches[0].clientX,e.touches[0].clientY),{passive:true});
+/* ── MOBILE: tap map to enlarge, then drag emoji ── */
+const MAP_MQ=window.matchMedia('(max-width:900px)');
+let mapOpen=false;
+const mapBackdrop=document.createElement('div');mapBackdrop.className='map-backdrop';
+const mapCloseBtn=document.createElement('button');mapCloseBtn.type='button';mapCloseBtn.className='map-close';mapCloseBtn.setAttribute('aria-label','Close map');mapCloseBtn.textContent='✕';
+let mapHome=null;
+function openMap(){if(mapOpen||!MAP_MQ.matches)return;mapOpen=true;document.body.classList.add('map-modal-open');mapHome=document.createElement('span');mapHome.style.display='none';mapWrap.parentNode.insertBefore(mapHome,mapWrap);document.body.appendChild(mapBackdrop);document.body.appendChild(mapWrap);document.body.appendChild(mapCloseBtn);mapWrap.classList.add('map-open');}
+function closeMap(){if(!mapOpen)return;mapOpen=false;mapWrap.classList.remove('map-open');if(mapHome&&mapHome.parentNode){mapHome.parentNode.insertBefore(mapWrap,mapHome);mapHome.remove();}mapBackdrop.remove();mapCloseBtn.remove();document.body.classList.remove('map-modal-open');mapHome=null;}
+mapBackdrop.addEventListener('click',closeMap);
+mapCloseBtn.addEventListener('click',closeMap);
+const mapHint=document.querySelector('.map-hint');
+const mapHintOrig=mapHint?mapHint.innerHTML:'';
+function syncMapHint(){if(!mapHint)return;if(MAP_MQ.matches){mapHint.textContent='Tap the map to open, then drag your emoji';}else{mapHint.innerHTML=mapHintOrig;}}
+syncMapHint();
+MAP_MQ.addEventListener('change',e=>{syncMapHint();if(!e.matches)closeMap();});
+mapWrap.addEventListener('mousedown',e=>{if(MAP_MQ.matches&&!mapOpen){openMap();return;}tryStartDrag(e.clientX,e.clientY);});
+mapWrap.addEventListener('touchstart',e=>{if(MAP_MQ.matches&&!mapOpen){openMap();return;}tryStartDrag(e.touches[0].clientX,e.touches[0].clientY);},{passive:true});
 
 function nearestIdx(cx,cy){
   const rect=mapImg.getBoundingClientRect();

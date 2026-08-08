@@ -138,6 +138,11 @@ html, body {
     font-size: 1rem;
 }
 
+/* Hide the Home button while the mobile chapter-map modal is open */
+body.map-modal-open .home-btn {
+    display: none;
+}
+
 /* Mobile: move Home button to top-left so it doesn't sit on top of
    the chat compose box, which docks to the bottom of the screen */
 @media (max-width: 767px) {
