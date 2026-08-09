@@ -15,8 +15,8 @@
   top: -60px;
   right: 40px;
   width: 70px;
-  z-index: 999;
-  pointer-events: none;
+  z-index: 9999;
+  cursor: pointer;
   filter: drop-shadow(0 4px 8px rgba(0,0,0,.35));
   animation: dog-peek 1.2s cubic-bezier(.34,1.56,.64,1) forwards;
   animation-delay: .5s;
@@ -26,6 +26,13 @@
   0%   { top: -80px; }
   70%  { top: 28px; }
   100% { top: 18px; }
+}
+
+/* Safety net: make sure the fixed decorative star layer never blocks clicks
+   on things above it (like the dog). If style.css already sets this, this
+   just confirms it; if it didn't, this fixes the click-through bug. */
+#stars {
+  pointer-events: none;
 }
 
 .page{
@@ -683,7 +690,7 @@
     font-size: 2rem;
     opacity: 0.25;
     cursor: pointer;
-    z-index: 9999;
+    z-index: 900;
     pointer-events: all;
     transition: opacity 0.4s ease, transform 0.3s ease;
     user-select: none;
