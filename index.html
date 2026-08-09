@@ -18,14 +18,13 @@
   z-index: 9999;
   cursor: pointer;
   filter: drop-shadow(0 4px 8px rgba(0,0,0,.35));
-  animation: dog-peek 1.2s cubic-bezier(.34,1.56,.64,1) forwards;
+  animation: dog-peek 2.4s ease-in-out infinite alternate;
   animation-delay: .5s;
 }
 
 @keyframes dog-peek {
-  0%   { top: -80px; }
-  70%  { top: 28px; }
-  100% { top: 18px; }
+  0%   { top: -20px; }
+  100% { top: 30px; }
 }
 
 /* Safety net: make sure the fixed decorative star layer never blocks clicks
