@@ -8,27 +8,48 @@
 <link rel="stylesheet" href="style.css">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Caveat:wght@700&display=swap" rel="stylesheet">
 <style>
+
+/* ════════ PEEKING DOG (top-level, not nested in .page) ════════ */
+.peeking-dog {
+  position: fixed;
+  top: -60px;
+  right: 40px;
+  width: 70px;
+  z-index: 999;
+  pointer-events: none;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,.35));
+  animation: dog-peek 1.2s cubic-bezier(.34,1.56,.64,1) forwards;
+  animation-delay: .5s;
+}
+
+@keyframes dog-peek {
+  0%   { top: -80px; }
+  70%  { top: 28px; }
+  100% { top: 18px; }
+}
+
 .page{
-    position:relative;z-index:1;
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    margin:3rem auto;
-    width:calc(100% - 6rem);
-    max-width:1500px;
-    
-  .layout{
-    display:grid;
-    grid-template-columns:230px 1fr 230px;
-    gap:2rem;
-    align-items:center;
-    justify-content:center;
-  }
-  .layout > div{min-width:0;}
+  position:relative;z-index:1;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  margin:3rem auto;
+  width:calc(100% - 6rem);
+  max-width:1500px;
+}
+
+.layout{
+  display:grid;
+  grid-template-columns:230px 1fr 230px;
+  gap:2rem;
+  align-items:center;
+  justify-content:center;
+}
+.layout > div{min-width:0;}
 
 /* ════════ HORNY JAIL ════════ */
-    .horny-jail-block {
+.horny-jail-block {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -77,267 +98,251 @@
   opacity: 0.85;
 }
 
-.peeking-dog {
-  position: fixed;
-  top: -60px;
-  right: 40px;
-  width: 70px;
-  z-index: 999;
-  pointer-events: none;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,.35));
-  animation: dog-peek 1.2s cubic-bezier(.34,1.56,.64,1) forwards;
-  animation-delay: .5s;
+/* ════════ SCOREBOARD ════════ */
+.scoreboard{
+  display:flex;
+  flex-direction:column;
+  gap:0.3rem;
+  padding:1.2rem 1rem;
+  background:linear-gradient(180deg,#1a1020 0%,#130b17 100%);
+  border:1px solid #c9a84c33;
+  border-radius:14px;
+  box-shadow:0 0 18px rgba(201,168,76,0.08);
+}
+.scoreboard-title{
+  font-family:'Cinzel',serif;
+  font-size:1rem;
+  letter-spacing:3px;
+  color:#c9a84c;
+  text-transform:uppercase;
+  text-align:center;
+  padding-bottom:0.6rem;
+  margin-bottom:0.2rem;
+  border-bottom:1px solid #c9a84c22;
+}
+.player{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:0.35rem;
+  padding:0.45rem 0.5rem;
+  border-radius:10px;
+  transition:background .25s ease, transform .25s ease;
+}
+.player:hover{background:rgba(201,168,76,0.05);transform:translateY(-2px);}
+
+.crown{
+  position:absolute;top:-6px;left:50%;
+  transform:translateX(-50%) rotate(-8deg);
+  font-size:1.1rem;
+  filter:drop-shadow(0 0 5px rgba(212,175,55,0.7));
+  animation:crownFloat 2.4s ease-in-out infinite;
+  display:none;
+}
+@keyframes crownFloat{0%,100%{transform:translateX(-50%) translateY(0) rotate(-8deg);}50%{transform:translateX(-50%) translateY(-3px) rotate(-8deg);}}
+
+.player-avatar{
+  width:78px;height:78px;border-radius:50%;flex-shrink:0;
+  object-fit:cover;border:2px solid #c9a84c66;
+  box-shadow:0 0 12px rgba(201,168,76,0.2);
+  transition:border-color .25s ease, box-shadow .25s ease;
+}
+.player-info{display:flex;flex-direction:column;align-items:center;gap:0.3rem;width:100%;}
+.player-name{
+  font-family:'Cinzel',serif;
+  font-size:0.82rem;
+  letter-spacing:0.5px;
+  color:#f0e6c8;
+  text-transform:uppercase;
+  white-space:nowrap;
+  text-align:center;
+}
+.player-stats{display:flex;gap:0.5rem;justify-content:center;width:100%;}
+.stat{
+  display:flex;flex-direction:column;align-items:center;gap:0.15rem;
+  padding:0.35rem 0.5rem;
+  background:rgba(201,168,76,0.08);
+  border:1px solid #c9a84c22;
+  border-radius:6px;
+  flex:1;
+  max-width:64px;
+}
+.stat-num{font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;color:#c9a84c;line-height:1;}
+.stat-label{font-size:0.5rem;letter-spacing:0.5px;color:#c8b89a99;text-transform:uppercase;}
+
+/* ════════ CONTENT ════════ */
+.content{display:flex;flex-direction:column;padding-left:1.5rem;}
+
+.hero{
+  display:flex;
+  align-items:center;
+  gap:2rem;
+  margin-bottom:1.6rem;
+  width:100%;
 }
 
-@keyframes dog-peek {
-  0%   { top: -80px; }
-  70%  { top: 28px; }   /* slight overshoot for a bouncy feel */
-  100% { top: 18px; }
+.img-frame{
+  position:relative;
+  width:150px;height:150px;flex-shrink:0;
 }
-    
-  /* ════════ SCOREBOARD ════════ */
+.img-frame::before{
+  content:'';
+  position:absolute;
+  inset:-7px;
+  border-radius:50%;
+  background:conic-gradient(from 0deg,transparent 0%,#669b9d33 20%,#669b9d88 50%,#669b9d33 80%,transparent 100%);
+  animation:spin 12s linear infinite;
+  z-index:0;
+}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+.img-frame::after{content:'';position:absolute;inset:-3px;border-radius:50%;background:#0d0a0e;z-index:1;}
+.img-frame a{ display:block; width:100%; height:100%; }
+.img-frame img{
+  position:relative;z-index:2;width:100%;height:100%;object-fit:cover;border-radius:50%;
+  border:2px solid #c9a84c55;
+  transition:border-color .3s ease, box-shadow .3s ease, transform .3s ease;
+}
+.img-frame a:hover img{
+  border-color:#c9a84c;
+  box-shadow:0 0 18px rgba(201,168,76,0.45);
+  transform:translateY(-3px);
+}
+
+.hero-text{display:flex;flex-direction:column;flex:1;}
+.club-title{
+  font-family:'Cinzel',serif;
+  font-size:0.7rem;
+  letter-spacing:5px;
+  color:#c9a84c88;
+  text-transform:uppercase;
+  margin-bottom:0.3rem;
+}
+.main-title{
+  font-family:'Cinzel',serif;
+  font-size:clamp(1.6rem,4.5vw,3.6rem);
+  font-weight:700;
+  color:#f0e6c8;
+  line-height:1.05;
+  letter-spacing:1.5px;
+  text-shadow:0 0 40px rgba(201,168,76,0.25);
+}
+.scratch-wrap{position:relative;display:inline-block;}
+.scratch-svg{position:absolute;left:-4%;top:38%;width:108%;height:34%;pointer-events:none;}
+.scratch-svg path{stroke:#cc1a1a;stroke-width:5;fill:none;stroke-linecap:round;}
+.handwritten-sub{position:absolute;top:-0.85em;left:50%;transform:translateX(-50%) rotate(-7deg);
+  font-family:'Caveat',cursive;font-weight:700;font-size:0.6em;color:#cc1a1a;white-space:nowrap;pointer-events:none;}
+
+.title-rule{display:flex;align-items:center;gap:0.5rem;margin-top:0.7rem;width:100%;}
+.title-rule .line{flex:1;height:1px;background:linear-gradient(to right,transparent,#c9a84c55,transparent);}
+.title-rule .gem{color:#c9a84c;font-size:0.55rem;}
+
+.welcome-box{margin-bottom:2.2rem;}
+.welcome-box p{font-size:1.05rem;color:#c8b89a;line-height:1.9;text-align:justify;}
+.welcome-box p + p{margin-top:0.7rem;}
+.welcome-box em{color:#f0e6c8;font-style:normal;}
+
+/* ════════ CURRENT READS ════════ */
+.current-col{display:flex;flex-direction:column;align-items:center;}
+.section-title{
+  font-family:'Cinzel',serif;
+  color:#e8dcc0;
+  letter-spacing:2px;
+  font-size:1.25rem;
+  margin-bottom:1.4rem;
+  text-align:center;
+  width:100%;
+}
+.current-books{display:flex;flex-direction:column;gap:1.4rem;align-items:center;width:100%;}
+.current-books a{display:flex;justify-content:center;width:100%;}
+.current-books img{
+  width:78%;max-width:135px;border-radius:8px;border:1px solid #c9a84c55;transition:.3s;
+}
+.current-books img:hover{transform:translateY(-4px);box-shadow:0 0 20px rgba(201,168,76,.25);}
+
+/* ════════ BUTTONS ════════ */
+.buttons{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.9rem;max-width:640px;margin:0 auto;}
+.btn{
+  position:relative;
+  width:100%;height:80px;
+  display:flex;align-items:center;justify-content:left;gap:0.6rem;
+  padding:0 1rem;
+  font-family:'Cinzel',serif;text-transform:uppercase;text-decoration:none;
+  border-radius:6px;transition:all 0.3s ease;
+}
+/* "to read" notification dot — same look as the unread-message dot in TraitorQueen */
+.notif-dot{
+  position:absolute;top:7px;left:8px;
+  width:8px;height:8px;border-radius:50%;
+  background:#c9a84c;box-shadow:0 0 6px rgba(201,168,76,0.7);
+  display:none;
+}
+.notif-dot.show{display:block;}
+.btn-secondary{
+  background:#1a0f1f;border:1px solid #c9a84c33;color:#f5ecd9;
+  text-shadow:0 1px 2px rgba(0,0,0,0.6);box-shadow:0 0 12px rgba(201,168,76,0.12);
+}
+.btn-secondary:hover{background:#24152b;border-color:#c9a84c88;box-shadow:0 0 20px rgba(201,168,76,0.25);transform:translateY(-2px);}
+.btn-bingo{
+  background:rgba(201,168,76,0.2);border:2px solid #c9a84c;color:#f5ecd9;
+  text-shadow:0 1px 2px rgba(0,0,0,0.6);box-shadow:0 0 30px rgba(201,168,76,0.3);
+}
+.btn-bingo:hover{background:rgba(201,168,76,0.3);border-color:#d4af37;box-shadow:0 0 40px rgba(201,168,76,0.5);transform:translateY(-2px);}
+.btn-icon{font-size:1.2rem;flex-shrink:0;}
+.btn-text{display:flex;flex-direction:column;align-items:flex-start;gap:0.1rem;}
+.btn-label{font-size:1rem;letter-spacing:1.5px;}
+.btn-sub{font-family:'Crimson Text',serif;font-size:0.9rem;letter-spacing:0.5px;opacity:0.75;text-transform:none;font-style:italic;}
+
+.footer{text-align:center;}
+
+/* ════════ MOBILE ════════ */
+@media(max-width:1000px){
+  .page{padding:2rem 1rem;}
+  .layout{grid-template-columns:1fr;gap:2rem;}
+
+  .peeking-dog{width:50px;top:10px;right:16px;}
+
   .scoreboard{
-    display:flex;
-    flex-direction:column;
-    gap:0.3rem;
-    padding:1.2rem 1rem;
-    background:linear-gradient(180deg,#1a1020 0%,#130b17 100%);
-    border:1px solid #c9a84c33;
-    border-radius:14px;
-    box-shadow:0 0 18px rgba(201,168,76,0.08);
+    flex-direction:row;flex-wrap:nowrap;gap:0.5rem;
+    padding:0.8rem 0.6rem;overflow-x:auto;justify-content:space-around;
   }
-  .scoreboard-title{
-    font-family:'Cinzel',serif;
-    font-size:1rem;
-    letter-spacing:3px;
-    color:#c9a84c;
-    text-transform:uppercase;
-    text-align:center;
-    padding-bottom:0.6rem;
-    margin-bottom:0.2rem;
-    border-bottom:1px solid #c9a84c22;
-  }
-  .player{
-    position:relative;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:0.35rem;
-    padding:0.45rem 0.5rem;
-    border-radius:10px;
-    transition:background .25s ease, transform .25s ease;
-  }
-  .player:hover{background:rgba(201,168,76,0.05);transform:translateY(-2px);}
+  .scoreboard-title{display:none;}
+  .player{flex:1;min-width:0;padding:0.4rem 0.3rem;}
+  .player-avatar{width:52px;height:52px;}
+  .player-name{font-size:0.65rem;letter-spacing:0;}
+  .player-stats{flex-direction:column;gap:0.25rem;align-items:center;}
+  .stat-num{font-size:0.9rem;}
+  .stat-label{font-size:0.45rem;}
+  .stat{padding:0.25rem 0.3rem;max-width:48px;width:100%;}
 
-  .crown{
-    position:absolute;top:-6px;left:50%;
-    transform:translateX(-50%) rotate(-8deg);
-    font-size:1.1rem;
-    filter:drop-shadow(0 0 5px rgba(212,175,55,0.7));
-    animation:crownFloat 2.4s ease-in-out infinite;
-    display:none;
-  }
-  @keyframes crownFloat{0%,100%{transform:translateX(-50%) translateY(0) rotate(-8deg);}50%{transform:translateX(-50%) translateY(-3px) rotate(-8deg);}}
+  .content{padding-left:0;}
 
-  .player-avatar{
-    width:78px;height:78px;border-radius:50%;flex-shrink:0;
-    object-fit:cover;border:2px solid #c9a84c66;
-    box-shadow:0 0 12px rgba(201,168,76,0.2);
-    transition:border-color .25s ease, box-shadow .25s ease;
-  }
-  .player-info{display:flex;flex-direction:column;align-items:center;gap:0.3rem;width:100%;}
-  .player-name{
-    font-family:'Cinzel',serif;
-    font-size:0.82rem;
-    letter-spacing:0.5px;
-    color:#f0e6c8;
-    text-transform:uppercase;
-    white-space:nowrap;
-    text-align:center;
-  }
-  .player-stats{display:flex;gap:0.5rem;justify-content:center;width:100%;}
-  .stat{
-    display:flex;flex-direction:column;align-items:center;gap:0.15rem;
-    padding:0.35rem 0.5rem;
-    background:rgba(201,168,76,0.08);
-    border:1px solid #c9a84c22;
-    border-radius:6px;
-    flex:1;
-    max-width:64px;
-  }
-  .stat-num{font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;color:#c9a84c;line-height:1;}
-  .stat-label{font-size:0.5rem;letter-spacing:0.5px;color:#c8b89a99;text-transform:uppercase;}
+  .hero{flex-direction:column;text-align:center;gap:1rem;margin-bottom:1.2rem;}
+  .img-frame{width:110px;height:110px;}
+  .main-title{font-size:clamp(1.5rem,7vw,2.2rem);white-space:normal;}
+  .club-title{font-size:0.6rem;letter-spacing:3px;}
+  .welcome-box p{font-size:0.95rem;}
 
-  /* ════════ CONTENT ════════ */
-  .content{display:flex;flex-direction:column;padding-left:1.5rem;}
+  .current-col{order:3;}
+  .section-title{font-size:1rem;margin-bottom:1rem;}
+  .current-books{flex-direction:row;justify-content:center;gap:0.8rem;}
+  .current-books img{width:22vw;max-width:90px;}
 
-  .hero{
-    display:flex;
-    align-items:center;
-    gap:2rem;
-    margin-bottom:1.6rem;
-    width:100%;
-  }
+  .buttons{grid-template-columns:1fr 1fr 1fr;max-width:100%;}
+  .btn{height:68px;}
+  .btn-label{font-size:0.8rem;letter-spacing:1px;}
+  .btn-sub{font-size:0.78rem;}
+}
 
-	.img-frame{
-	  position:relative;
-	  width:150px;height:150px;flex-shrink:0;
-	}
-	.img-frame::before{
-	  content:'';
-	  position:absolute;
-	  inset:-7px;
-	  border-radius:50%;
-	  background:conic-gradient(from 0deg,transparent 0%,#669b9d33 20%,#669b9d88 50%,#669b9d33 80%,transparent 100%);
-	  animation:spin 12s linear infinite;
-	  z-index:0;
-	}
-	@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
-	.img-frame::after{content:'';position:absolute;inset:-3px;border-radius:50%;background:#0d0a0e;z-index:1;}
-	.img-frame a{ display:block; width:100%; height:100%; }
-	.img-frame img{
-	  position:relative;z-index:2;width:100%;height:100%;object-fit:cover;border-radius:50%;
-	  border:2px solid #c9a84c55;
-	  transition:border-color .3s ease, box-shadow .3s ease, transform .3s ease;
-	}
-	.img-frame a:hover img{
-	  border-color:#c9a84c;
-	  box-shadow:0 0 18px rgba(201,168,76,0.45);
-	  transform:translateY(-3px);
-	}
-
-  .hero-text{display:flex;flex-direction:column;flex:1;}
-  .club-title{
-    font-family:'Cinzel',serif;
-    font-size:0.7rem;
-    letter-spacing:5px;
-    color:#c9a84c88;
-    text-transform:uppercase;
-    margin-bottom:0.3rem;
-  }
-  .main-title{
-    font-family:'Cinzel',serif;
-    font-size:clamp(1.6rem,4.5vw,3.6rem);
-    font-weight:700;
-    color:#f0e6c8;
-    line-height:1.05;
-    letter-spacing:1.5px;
-    text-shadow:0 0 40px rgba(201,168,76,0.25);
-  }
-  .scratch-wrap{position:relative;display:inline-block;}
-  .scratch-svg{position:absolute;left:-4%;top:38%;width:108%;height:34%;pointer-events:none;}
-  .scratch-svg path{stroke:#cc1a1a;stroke-width:5;fill:none;stroke-linecap:round;}
-  .handwritten-sub{position:absolute;top:-0.85em;left:50%;transform:translateX(-50%) rotate(-7deg);
-    font-family:'Caveat',cursive;font-weight:700;font-size:0.6em;color:#cc1a1a;white-space:nowrap;pointer-events:none;}
-
-  .title-rule{display:flex;align-items:center;gap:0.5rem;margin-top:0.7rem;width:100%;}
-  .title-rule .line{flex:1;height:1px;background:linear-gradient(to right,transparent,#c9a84c55,transparent);}
-  .title-rule .gem{color:#c9a84c;font-size:0.55rem;}
-
-  .welcome-box{margin-bottom:2.2rem;}
-  .welcome-box p{font-size:1.05rem;color:#c8b89a;line-height:1.9;text-align:justify;}
-  .welcome-box p + p{margin-top:0.7rem;}
-  .welcome-box em{color:#f0e6c8;font-style:normal;}
-
-  /* ════════ CURRENT READS ════════ */
-  .current-col{display:flex;flex-direction:column;align-items:center;}
-  .section-title{
-    font-family:'Cinzel',serif;
-    color:#e8dcc0;
-    letter-spacing:2px;
-    font-size:1.25rem;
-    margin-bottom:1.4rem;
-    text-align:center;
-    width:100%;
-  }
-  .current-books{display:flex;flex-direction:column;gap:1.4rem;align-items:center;width:100%;}
-  .current-books a{display:flex;justify-content:center;width:100%;}
-  .current-books img{
-    width:78%;max-width:135px;border-radius:8px;border:1px solid #c9a84c55;transition:.3s;
-  }
-  .current-books img:hover{transform:translateY(-4px);box-shadow:0 0 20px rgba(201,168,76,.25);}
-
-  /* ════════ BUTTONS ════════ */
-  .buttons{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.9rem;max-width:640px;margin:0 auto;}
-  .btn{
-    position:relative;
-    width:100%;height:80px;
-    display:flex;align-items:center;justify-content:left;gap:0.6rem;
-    padding:0 1rem;
-    font-family:'Cinzel',serif;text-transform:uppercase;text-decoration:none;
-    border-radius:6px;transition:all 0.3s ease;
-  }
-  /* "to read" notification dot — same look as the unread-message dot in TraitorQueen */
-  .notif-dot{
-    position:absolute;top:7px;left:8px;
-    width:8px;height:8px;border-radius:50%;
-    background:#c9a84c;box-shadow:0 0 6px rgba(201,168,76,0.7);
-    display:none;
-  }
-  .notif-dot.show{display:block;}
-  .btn-secondary{
-    background:#1a0f1f;border:1px solid #c9a84c33;color:#f5ecd9;
-    text-shadow:0 1px 2px rgba(0,0,0,0.6);box-shadow:0 0 12px rgba(201,168,76,0.12);
-  }
-  .btn-secondary:hover{background:#24152b;border-color:#c9a84c88;box-shadow:0 0 20px rgba(201,168,76,0.25);transform:translateY(-2px);}
-  .btn-bingo{
-    background:rgba(201,168,76,0.2);border:2px solid #c9a84c;color:#f5ecd9;
-    text-shadow:0 1px 2px rgba(0,0,0,0.6);box-shadow:0 0 30px rgba(201,168,76,0.3);
-  }
-  .btn-bingo:hover{background:rgba(201,168,76,0.3);border-color:#d4af37;box-shadow:0 0 40px rgba(201,168,76,0.5);transform:translateY(-2px);}
-  .btn-icon{font-size:1.2rem;flex-shrink:0;}
-  .btn-text{display:flex;flex-direction:column;align-items:flex-start;gap:0.1rem;}
-  .btn-label{font-size:1rem;letter-spacing:1.5px;}
-  .btn-sub{font-family:'Crimson Text',serif;font-size:0.9rem;letter-spacing:0.5px;opacity:0.75;text-transform:none;font-style:italic;}
-
-  .footer{text-align:center;}
-
-  /* ════════ MOBILE ════════ */
-  @media(max-width:1000px){
-    .page{padding:2rem 1rem;}
-    .layout{grid-template-columns:1fr;gap:2rem;}
-
-    .scoreboard{
-      flex-direction:row;flex-wrap:nowrap;gap:0.5rem;
-      padding:0.8rem 0.6rem;overflow-x:auto;justify-content:space-around;
-    }
-    .scoreboard-title{display:none;}
-    .player{flex:1;min-width:0;padding:0.4rem 0.3rem;}
-    .player-avatar{width:52px;height:52px;}
-    .player-name{font-size:0.65rem;letter-spacing:0;}
-    .player-stats{flex-direction:column;gap:0.25rem;align-items:center;}
-    .stat-num{font-size:0.9rem;}
-    .stat-label{font-size:0.45rem;}
-    .stat{padding:0.25rem 0.3rem;max-width:48px;width:100%;}
-    
-    .content{padding-left:0;}
-    
-    .hero{flex-direction:column;text-align:center;gap:1rem;margin-bottom:1.2rem;}
-    .img-frame{width:110px;height:110px;}
-    .main-title{font-size:clamp(1.5rem,7vw,2.2rem);white-space:normal;}
-    .club-title{font-size:0.6rem;letter-spacing:3px;}
-    .welcome-box p{font-size:0.95rem;}
-
-    .current-col{order:3;}
-    .section-title{font-size:1rem;margin-bottom:1rem;}
-    .current-books{flex-direction:row;justify-content:center;gap:0.8rem;}
-    .current-books img{width:22vw;max-width:90px;}
-
-    .buttons{grid-template-columns:1fr 1fr 1fr;max-width:100%;}
-    .btn{height:68px;}
-    .btn-label{font-size:0.8rem;letter-spacing:1px;}
-    .btn-sub{font-size:0.78rem;}
-  }
-
-  @media(max-width:400px){
-    .buttons{grid-template-columns:1fr;}
-    .current-books img{width:20vw;}
-  }
+@media(max-width:400px){
+  .buttons{grid-template-columns:1fr;}
+  .current-books img{width:20vw;}
+}
 </style>
 </head>
 <body>
 
-<img src="sideeye3.png" alt="" class="peeking-dog" aria-hidden="true">	
+<img src="sideeye3.png" alt="" class="peeking-dog" aria-hidden="true">
 
 <div class="stars" id="stars"></div>
 
@@ -400,11 +405,11 @@
     <!-- ════ COLUMN 2: main content ════ -->
     <div class="content">
       <div class="hero">
-		<div class="img-frame">
-		  <a href="secret/perso_bingo/perso_bingo.html" title="Personal Challenges">
-		    <img src="BingoPicture.png" alt="The Bingo Book Club">
-		  </a>
-		</div>
+        <div class="img-frame">
+          <a href="secret/perso_bingo/perso_bingo.html" title="Personal Challenges">
+            <img src="BingoPicture.png" alt="The Bingo Book Club">
+          </a>
+        </div>
         <div class="hero-text">
           <div class="club-title">✦ Est. 2026 · Welcome to ✦</div>
           <div class="main-title">The Bingo Book Club</div>
@@ -453,8 +458,8 @@
       <h2 class="section-title">CURRENT READS</h2>
       <div class="current-books">
         <a href="fateinkedinblood/fateinkedinblood.html"><img src="fateinkedinblood/fateinkedinblood_cover.jpg" alt="A Fate Inked in Blood"></a>
-		<a href="onyxstorm/onyxstorm.html"><img src="onyxstorm/onyxstorm_cover.jpg" alt="Onyx Storm"></a>
-		<a href="yesteryear/yesteryear.html"><img src="yesteryear/yesteryear_cover.jpg" alt="Yesteryear"></a>
+        <a href="onyxstorm/onyxstorm.html"><img src="onyxstorm/onyxstorm_cover.jpg" alt="Onyx Storm"></a>
+        <a href="yesteryear/yesteryear.html"><img src="yesteryear/yesteryear_cover.jpg" alt="Yesteryear"></a>
       </div>
     </div>
 
@@ -496,9 +501,9 @@
   // collection: which key inside the JSON's "collections" object holds the bingo docs.
   const ARCHIVE_BOOKS = [
     { file: 'archive/archive_ironflame.json', collection: 'shouty_bingo' },
-	{ file: 'archive/archive_witchslayer.json', collection: 'shouty_bingo' },
-	{ file: 'archive/archive_bridgekingdom.json', collection: 'first_bingo' },
-	{ file: 'archive/archive_traitorqueen.json', collection: 'traitorqueen_bingo' },
+    { file: 'archive/archive_witchslayer.json', collection: 'shouty_bingo' },
+    { file: 'archive/archive_bridgekingdom.json', collection: 'first_bingo' },
+    { file: 'archive/archive_traitorqueen.json', collection: 'traitorqueen_bingo' },
   ];
 
   async function loadArchivedTotals() {
@@ -526,13 +531,13 @@
   }
 
   // ── Live books config ──
-// collection: Firestore collection name
-// lastMapPos: the mapPos value that counts as "finished"
-const LIVE_BOOKS = [
-  { collection: 'fateinkedinblood_bingo', lastMapPos: 36 },
-  { collection: 'cursecarvedinbone_bingo', lastMapPos: 53 },
-  { collection: 'yesteryear_bingo',       lastMapPos: 63 },
-];
+  // collection: Firestore collection name
+  // lastMapPos: the mapPos value that counts as "finished"
+  const LIVE_BOOKS = [
+    { collection: 'fateinkedinblood_bingo', lastMapPos: 36 },
+    { collection: 'cursecarvedinbone_bingo', lastMapPos: 53 },
+    { collection: 'yesteryear_bingo',       lastMapPos: 63 },
+  ];
 
   // ── calcPoints: same formula as archive page ──
   // cells marked (excl. free square) + lines×5
@@ -622,7 +627,7 @@ const LIVE_BOOKS = [
     { id:'ironflame',     file:'archive/archive_ironflame.json' },
     { id:'witchslayer',   file:'archive/archive_witchslayer.json' },
     { id:'bridgekingdom', file:'archive/archive_bridgekingdom.json' },
-	{ id:'traitorqueen', file:'archive/archive_traitorqueen.json' },
+    { id:'traitorqueen', file:'archive/archive_traitorqueen.json' },
   ];
 
   async function fetchDocsMap(colName){
@@ -700,7 +705,7 @@ const LIVE_BOOKS = [
 <div id="art" class="wanderer" title="...">📸</div>
 <div id="dino" class="wanderer" title="...">🦖</div>
 <div id="fivestar" class="wanderer" title="...">⭐</div>
-<div id="hpfanfic" class="wanderer" title="...">⚡</div>	
+<div id="hpfanfic" class="wanderer" title="...">⚡</div>
 <div id="atla" class="wanderer" title="...">🔥</div>
 
 <script>
@@ -730,10 +735,10 @@ makeWanderer('music2', () => window.location.href = 'https://open.spotify.com/pl
 makeWanderer('art',   () => window.location.href = 'secret/fanart.html');
 makeWanderer('dino',   () => window.location.href = 'onyxstorm/onyxstorm_recap.html');
 makeWanderer('fivestar',   () => window.location.href = 'secret/fivestars.html');
-makeWanderer('hpfanfic',   () => window.location.href = 'secret/hpmor.html');	
-makeWanderer('atla',   () => window.location.href = 'secret/atla.html');	
+makeWanderer('hpfanfic',   () => window.location.href = 'secret/hpmor.html');
+makeWanderer('atla',   () => window.location.href = 'secret/atla.html');
 </script>
 <!-- ✦ end easter egg ✦ -->
-  
+
 </body>
 </html>
