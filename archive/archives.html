@@ -358,7 +358,7 @@ function renderCards(){
   const gridStyle = ` style="top:${gridTop}%;width:${gridWidth}%${gridHeight != null ? `;height:${gridHeight}%` : ''}"`;
 
 
-  const activePlayers = PLAYERS.filter(p => bingo[p.pid]);
+  const activePlayers = PLAYERS.filter(p => bingo[p.pid] && Array.isArray(bingo[p.pid].marked));
 
   const playerPts = activePlayers.map(p => calcPoints(bingo[p.pid].marked || [12]).total);
   const maxPts = Math.max(...playerPts, 0);
