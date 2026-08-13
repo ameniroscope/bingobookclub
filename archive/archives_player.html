@@ -163,9 +163,10 @@ function extractPlayerData(json, collectionName, pid){
     if(!raw) raw = json[collectionName]?.[pid];
     if(!raw) return null;
     const data = raw._data || raw;
+    if(!Array.isArray(data.marked)) return null;
     const cells  = Array.isArray(data.cells)  ? data.cells  : Array(GRID_SIZE).fill('');
-    const marked = Array.isArray(data.marked) ? data.marked : [];
-    return { cells, marked: marked.filter(v=>Number.isInteger(v)&&v>=0&&v<GRID_SIZE) };
+    const marked = data.marked.filter(v=>Number.isInteger(v)&&v>=0&&v<GRID_SIZE);
+    return { cells, marked };
   }catch(e){ return null; }
 }
 
