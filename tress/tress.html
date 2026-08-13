@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tress of the Emerald Sea — The Bingo Book Club</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍵</text></svg>">
+<link rel="stylesheet" href="../style.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;600&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --ink:#233b1e;           /* deep forest green - text */
+  --ink-faded:#5b6b3d;     /* muted olive */
+  --gold:#2f5233;          /* emerald - kicker, accents, borders */
+  --gold-lt:#6f9e6a;       /* sage - glows, highlights */
+  --parch:#f4ecd6;         /* cream */
+  --parch-dark:#e2d5b2;
+  --worn:#8b7a4a;          /* warm vine brown - ornament lines */
+  --bg-base:#e6dcc0;       /* page background */
+  --tooltip-bg:#1f3319;
+}
+html,body{background:none;min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var(--ink);display:flex;
+  justify-content:center;align-items:center;}
+#bg{position:fixed;inset:0;z-index:0;background:#e6dcc0;}
+#bg::after{content:'';position:absolute;inset:0;background:
+  radial-gradient(ellipse 70% 50% at 15% 20%,rgba(47,82,51,0.16) 0%,transparent 55%),
+  radial-gradient(ellipse 60% 70% at 85% 75%,rgba(58,107,79,0.13) 0%,transparent 55%),
+  radial-gradient(ellipse 100% 100% at 50% 50%,transparent 60%,rgba(28,52,25,0.20) 100%);}
+
+.wrap{position:relative;z-index:1;min-height:100vh;max-width:1100px;margin:0 auto;padding:2rem 1.5rem;
+  display:grid;grid-template-columns:420px 1fr;gap:3rem;align-items:center;justify-content:center;}
+
+.map-col{position:sticky;top:3rem;display:flex;flex-direction:column;align-items:center;gap:0.75rem;}
+.map-wrap{position:relative;width:100%;max-width:460px;overflow:hidden;box-shadow:0 0 40px rgba(31,51,25,0.6);user-select:none;background:#12240c;border-radius:4px;}
+.map-wrap img{display:block;width:100%;height:auto;}
+.marker{position:absolute;width:36px;height:36px;display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;transform:translate(-50%,-50%);z-index:10;
+  filter:drop-shadow(0 1px 3px rgba(0,0,0,0.7));transition:left 0.4s ease,top 0.4s ease;pointer-events:none;}
+.marker.draggable{cursor:grab;pointer-events:all;}
+.marker.draggable:active{cursor:grabbing;}
+.map-tooltip{position:absolute;z-index:30;background:rgba(31,51,25,0.94);color:var(--gold-lt);
+  font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:1px;padding:0.3rem 0.6rem;border-radius:3px;
+  border:1px solid var(--gold-lt);pointer-events:none;white-space:nowrap;transform:translate(-50%,-140%);
+  opacity:0;transition:opacity 0.15s;}
+.map-tooltip.show{opacity:1;}
+.map-hint{font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:1px;color:var(--ink-faded);font-style:italic;text-align:center;}
+
+/* ── MOBILE: tap the map to enlarge, then drag your marker ── */
+.map-backdrop{position:fixed;inset:0;background:rgba(15,26,12,0.9);z-index:1000;}
+body.map-modal-open{overflow:hidden;}
+.map-close{position:fixed;top:14px;right:16px;z-index:1002;width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:#1f3319;color:#f4ecd6;border:1px solid rgba(244,236,214,0.45);font-size:1.3rem;line-height:1;cursor:pointer;padding:0;}
+@media(max-width:860px){
+  .map-wrap.map-open{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:94vw;max-width:500px;height:auto;margin:0;z-index:1001;touch-action:none;}
+  .map-wrap.map-open img{width:100%;height:auto;max-width:none;max-height:none;touch-action:none;}
+}
+
+.right-col{display:flex;flex-direction:column;gap:2rem;}
+.kicker{font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:5px;color:var(--gold);text-transform:uppercase;margin-bottom:0.35rem;text-align:center;}
+.big-title{font-family:'Cinzel',serif;font-size:3.2rem;font-weight:600;letter-spacing:3px;color:var(--ink);line-height:1.1;text-align:center;}
+.ornament{display:flex;align-items:center;gap:0.6rem;margin:0.75rem 0 0;max-width:500px;}
+.orn-line{flex:1;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent);}
+.orn-gem{color:var(--gold);font-size:0.8rem;}
+.intro-text{font-size:1.15rem;line-height:1.85;color:var(--ink-faded);max-width:500px;margin:0 auto;text-align:justify;}
+.intro-ps{font-size:0.8rem;line-height:1.85;color:var(--ink-faded);max-width:500px;margin:0 auto;text-align:justify;font-style:italic;}
+.intro-text p+p{margin-top:0.9rem;}
+.intro-bold{font-family:'Cinzel',serif;display:block;margin-top:10px;margin-bottom:10px;text-align:center;font-size:1.3rem;letter-spacing:2px;color:var(--ink);}
+
+.player-btns{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem 2.5rem;justify-content:center;}
+.player-btn{display:flex;flex-direction:column;align-items:center;gap:0;text-decoration:none;
+  color:var(--ink);font-family:'Cinzel',serif;letter-spacing:1px;transition:transform 0.3s ease;}
+.player-btn:hover{transform:translateY(-5px);}
+.player-img-frame{position:relative;width:140px;height:140px;margin:0 auto;}
+.player-img-frame::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, transparent 0%, rgba(111, 158, 106, 0.2) 20%, #233b1e 50%, rgba(111, 158, 106, 0.2) 80%, transparent 100%);
+    animation: spin 12s linear infinite;
+    z-index: 0;
+}
+.player-img-frame::after{content:'';position:absolute;inset:-4px;border-radius:50%;background:var(--parch);z-index:1;}
+.player-img-frame .avatar{position:relative;z-index:2;width:100%;height:100%;object-fit:cover;
+  border-radius:50%;border:2px solid rgba(111,158,106,0.5);}
+.player-btn:hover .avatar {
+    border-color: #6f9e6a;
+    box-shadow: 0 0 25px #233b1e;
+}
+.player-btn .pname{display:block;margin-top:14px;font-size:1.2rem;letter-spacing:2px;color:var(--ink);}
+.player-badge{position:absolute;top:-3px;right:-3px;z-index:10;
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--parch);border:2px solid #233b1e;
+  font-family:'Cinzel',serif;font-size:0.85rem;font-weight:700;
+  color:var(--ink);text-shadow:0 0 6px rgba(35,59,30,0.8);filter:drop-shadow(0 0 6px rgba(35,59,30,0.5));}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+
+@media(max-width:860px){.wrap{grid-template-columns:1fr;}.map-col{position:static;max-width:460px;width:100%;margin:0 auto;}}
+</style>
+</head>
+<body>
+<div id="bg"></div>
+
+<a href="../index.html" class="home-btn">🏠 Home</a>
+
+<div class="wrap">
+  <aside class="map-col">
+    <div class="map-wrap" id="mapEl">
+      <img src="tress_map.png" class="map-img" alt="Chapter map of Tress of the Emerald Sea">
+      <div class="map-tooltip" id="mapTooltip"></div>
+    </div>
+    <div class="map-hint" id="mapHint" style="display:none;">Drag your marker to update your progress</div>
+  </aside>
+
+  <div class="right-col">
+    <div>
+      <div class="kicker">The Bingo Book Club</div>
+      <div class="big-title">Hello sailors,</div>
+    </div>
+
+    <div class="intro-text">
+      <p>After all the war and lust and blood, what would be better than a fairy tale ? Yet even in fairy tales, there is a darkness, so don't forget to </p>
+      <div class="intro-bold">Please mind the Emerald Sea</div>
+      <p>Our heroine this round is Tress, a window-washer that loves her calm island and has one simple hobby :  collecting cups. And like everyone trying to live a quiet life, she embarks in a journey that has a bit more pirates than what she would be confortable with.</p>
+      <p>This is your spoiler-safe cove for a cozy adventure with unusual magic and the kind of story that makes you want to be a little braver over a warm pot of tea. 🌿</p>
+    </div>
+
+    <div class="ornament">
+      <div class="orn-line"></div>
+      <div class="orn-gem">◆</div>
+      <div class="orn-line"></div>
+    </div>
+
+    <div>
+      <div class="kicker" style="margin-bottom:0.75rem;">Choose your reader</div>
+      <div class="player-btns">
+        <a class="player-btn" href="tress_player.html?p=kathi">
+          <div class="player-img-frame">
+            <img class="avatar" src="../pdp_kathi.png" alt="Kathi">
+            <div class="player-badge" id="badge-kathi"></div>
+          </div>
+          <span class="pname">Kathi</span>
+        </a>
+        <a class="player-btn" href="tress_player.html?p=elana">
+          <div class="player-img-frame">
+            <img class="avatar" src="../pdp_elana.png" alt="Elana">
+            <div class="player-badge" id="badge-elana"></div>
+          </div>
+          <span class="pname">Elana</span>
+        </a>
+      </div>
+    </div>
+	
+	<div class="intro-ps">
+      <p>PS : This better make you a fan of Brando Sando, we need more of those hehe</p>
+    </div>
+	
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore, collection, onSnapshot, doc, setDoc }
+  from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const fb = initializeApp({
+  apiKey: "AIzaSyAIQTe-QGQmwqTVmIyJZZ_qlDNsD6GUskY",
+  authDomain: "bingobookclub-2144e.firebaseapp.com",
+  projectId: "bingobookclub-2144e",
+  storageBucket: "bingobookclub-2144e.firebasestorage.app",
+  messagingSenderId: "294177836341",
+  appId: "1:294177836341:web:6d5f11e64737fbe3aad07c"
+});
+const db = getFirestore(fb);
+
+const BINGO_COL = 'tress_bingo';
+
+const mapEl   = document.getElementById("mapEl");
+const tooltip = document.getElementById("mapTooltip");
+const mapHint = document.getElementById("mapHint");
+
+const PLAYERS = {
+  kathi: { emoji:"🍄", offset:{x:-4,y:-4} },
+  elana: { emoji:"🐉", offset:{x:4,y:4} },
+};
+
+const MIN_CH = 0, MAX_CH = 64;   // 0 = start, 1–64 = chapters (64 = End / Epilogue)
+
+/* MAP POSITIONS — 8×8 chapter grid. 0/1 share START, 64 = END. */
+const POS = {
+  0: { x:13.4, y:31.3 },   1: { x:13.4, y:31.3 },
+  2: { x:26.63, y:34.75 }, 3: { x:35.66, y:34.75 }, 4: { x:44.97, y:34.75 }, 5: { x:54.34, y:34.75 },
+  6: { x:63.66, y:34.75 }, 7: { x:73.03, y:34.75 }, 8: { x:82.3, y:34.75 },
+  9: { x:17.7, y:41.06 },  10:{ x:26.63, y:41.06 }, 11:{ x:35.66, y:41.06 }, 12:{ x:44.97, y:41.06 },
+  13:{ x:54.34, y:41.06 }, 14:{ x:63.66, y:41.06 }, 15:{ x:73.03, y:41.06 }, 16:{ x:82.3, y:41.06 },
+  17:{ x:17.7, y:47.37 },  18:{ x:26.63, y:47.37 }, 19:{ x:35.66, y:47.37 }, 20:{ x:44.97, y:47.37 },
+  21:{ x:54.34, y:47.37 }, 22:{ x:63.66, y:47.37 }, 23:{ x:73.03, y:47.37 }, 24:{ x:82.3, y:47.37 },
+  25:{ x:17.7, y:53.67 },  26:{ x:26.63, y:53.67 }, 27:{ x:35.66, y:53.67 }, 28:{ x:44.97, y:53.67 },
+  29:{ x:54.34, y:53.67 }, 30:{ x:63.66, y:53.67 }, 31:{ x:73.03, y:53.67 }, 32:{ x:82.3, y:53.67 },
+  33:{ x:17.7, y:59.98 },  34:{ x:26.63, y:59.98 }, 35:{ x:35.66, y:59.98 }, 36:{ x:44.97, y:59.98 },
+  37:{ x:54.34, y:59.98 }, 38:{ x:63.66, y:59.98 }, 39:{ x:73.03, y:59.98 }, 40:{ x:82.3, y:59.98 },
+  41:{ x:17.7, y:66.28 },  42:{ x:26.63, y:66.28 }, 43:{ x:35.66, y:66.28 }, 44:{ x:44.97, y:66.28 },
+  45:{ x:54.34, y:66.28 }, 46:{ x:63.66, y:66.28 }, 47:{ x:73.03, y:66.28 }, 48:{ x:82.3, y:66.28 },
+  49:{ x:17.7, y:72.56 },  50:{ x:26.63, y:72.56 }, 51:{ x:35.66, y:72.56 }, 52:{ x:44.97, y:72.56 },
+  53:{ x:54.34, y:72.56 }, 54:{ x:63.66, y:72.56 }, 55:{ x:73.03, y:72.56 }, 56:{ x:82.3, y:72.56 },
+  57:{ x:17.7, y:78.87 },  58:{ x:26.63, y:78.87 }, 59:{ x:35.66, y:78.87 }, 60:{ x:44.97, y:78.87 },
+  61:{ x:54.34, y:78.87 }, 62:{ x:63.66, y:78.87 }, 63:{ x:73.03, y:78.87 },
+  64:{ x:89.0, y:82.5 },
+};
+
+/* POSITION FINDER — run findMapPosition() in the console to grab x/y values */
+window.findMapPosition = function () {
+  mapEl.style.cursor = "crosshair";
+  console.clear();
+  console.log("Position finder ON. Click the map to print x/y percentages.");
+  mapEl.addEventListener("click", function finderClick(e) {
+    const rect = mapEl.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width  * 100).toFixed(2);
+    const y = ((e.clientY - rect.top)  / rect.height * 100).toFixed(2);
+    console.log(`{ x:${x}, y:${y} }`);
+    const dot = document.createElement("div");
+    dot.style.cssText = `position:absolute;left:${x}%;top:${y}%;width:12px;height:12px;background:red;
+      border:2px solid white;border-radius:50%;transform:translate(-50%,-50%);z-index:99999;pointer-events:none;`;
+    mapEl.appendChild(dot);
+  });
+};
+
+const progress = { kathi:0, elana:0 };
+
+function placeMarker(pid, chNum) {
+  let m = document.getElementById("marker-" + pid);
+  if (!m) {
+    m = document.createElement("div");
+    m.id = "marker-" + pid;
+    m.className = "marker";
+    m.textContent = PLAYERS[pid].emoji;
+    mapEl.appendChild(m);
+  }
+  const clamped = Math.min(Math.max(chNum, MIN_CH), MAX_CH);
+  const p = POS[clamped] || POS[0];
+  const o = PLAYERS[pid].offset;
+  m.style.left = (p.x + o.x/6) + "%";
+  m.style.top  = (p.y + o.y/6) + "%";
+}
+
+function snapNearest(cx, cy) {
+  const rect = mapEl.getBoundingClientRect();
+  const xp = (cx - rect.left) / rect.width  * 100;
+  const yp = (cy - rect.top)  / rect.height * 100;
+  let best = 0, bestD = Infinity;
+  for (const [ch, p] of Object.entries(POS)) {
+    if (+ch === 1) continue; // 1 shares START with 0 — snap resolves to 0
+    const d = Math.hypot(xp - p.x, yp - p.y);
+    if (d <= bestD) { bestD = d; best = +ch; }
+  }
+  return best;
+}
+
+/* Drag markers */
+let dragging = false, dragPid = null;
+
+function tryStartDrag(cx, cy) {
+  for (const pid of Object.keys(PLAYERS)) {
+    const m = document.getElementById("marker-" + pid);
+    if (!m) continue;
+    const r = m.getBoundingClientRect();
+    if (Math.hypot(cx - (r.left + r.width/2), cy - (r.top + r.height/2)) < 24) {
+      dragging = true; dragPid = pid;
+      m.classList.add("draggable");
+      m.style.transition = "none";
+      return;
+    }
+  }
+}
+/* ── MOBILE: tap map to enlarge, then drag your marker ── */
+const MAP_MQ = window.matchMedia('(max-width:860px)');
+let mapOpen = false, mapHome = null;
+const mapBackdrop = document.createElement('div'); mapBackdrop.className = 'map-backdrop';
+const mapCloseBtn = document.createElement('button'); mapCloseBtn.type = 'button'; mapCloseBtn.className = 'map-close';
+mapCloseBtn.setAttribute('aria-label','Close map'); mapCloseBtn.textContent = '✕';
+function openMap(){
+  if(mapOpen || !MAP_MQ.matches) return;
+  mapOpen = true;
+  document.body.classList.add('map-modal-open');
+  mapHome = document.createElement('span'); mapHome.style.display = 'none';
+  mapEl.parentNode.insertBefore(mapHome, mapEl);
+  document.body.appendChild(mapBackdrop);
+  document.body.appendChild(mapEl);
+  document.body.appendChild(mapCloseBtn);
+  mapEl.classList.add('map-open');
+}
+function closeMap(){
+  if(!mapOpen) return;
+  mapOpen = false;
+  mapEl.classList.remove('map-open');
+  if(mapHome && mapHome.parentNode){ mapHome.parentNode.insertBefore(mapEl, mapHome); mapHome.remove(); }
+  mapBackdrop.remove(); mapCloseBtn.remove();
+  document.body.classList.remove('map-modal-open');
+  mapHome = null;
+}
+mapBackdrop.addEventListener('click', closeMap);
+mapCloseBtn.addEventListener('click', closeMap);
+
+const mapHintOrig = mapHint ? mapHint.textContent : '';
+function syncMapHint(){ if(!mapHint) return; mapHint.textContent = MAP_MQ.matches ? 'Tap the map to open, then drag your marker' : mapHintOrig; }
+syncMapHint();
+MAP_MQ.addEventListener('change', e => { syncMapHint(); if(!e.matches) closeMap(); });
+
+mapEl.addEventListener("mousedown", e => { if(MAP_MQ.matches && !mapOpen){ openMap(); return; } tryStartDrag(e.clientX, e.clientY); });
+mapEl.addEventListener("touchstart", e => { if(MAP_MQ.matches && !mapOpen){ openMap(); return; } tryStartDrag(e.touches[0].clientX, e.touches[0].clientY); }, {passive:true});
+
+function onMove(cx, cy) {
+  if (!dragging || !dragPid) return;
+  const rect = mapEl.getBoundingClientRect();
+  const xp = Math.min(Math.max((cx - rect.left) / rect.width  * 100, 2), 98);
+  const yp = Math.min(Math.max((cy - rect.top)  / rect.height * 100, 2), 98);
+  const m = document.getElementById("marker-" + dragPid);
+  if (m) { m.style.left = xp + "%"; m.style.top = yp + "%"; }
+  const ch = snapNearest(cx, cy);
+  tooltip.textContent = ch === 0 ? "Start" : ch === 64 ? "End" : "Chapter " + ch;
+  tooltip.style.left = xp + "%";
+  tooltip.style.top  = yp + "%";
+  tooltip.classList.add("show");
+}
+window.addEventListener("mousemove", e => { if (dragging) onMove(e.clientX, e.clientY); });
+window.addEventListener("touchmove", e => { if (dragging) onMove(e.touches[0].clientX, e.touches[0].clientY); }, {passive:true});
+
+async function endDrag(cx, cy) {
+  if (!dragging) return;
+  dragging = false;
+  tooltip.classList.remove("show");
+  const m = document.getElementById("marker-" + dragPid);
+  if (m) { m.style.transition = ""; m.classList.remove("draggable"); }
+
+  const chNum = snapNearest(cx, cy);
+  progress[dragPid] = chNum;
+  placeMarker(dragPid, chNum);
+
+  // Save the CHAPTER reached (0–64). Player pages unlock rooms by chapter threshold.
+  await setDoc(doc(db, BINGO_COL, dragPid), { chapter: chNum, mapPos: chNum, chapterProgress: Math.min(chNum, MAX_CH) }, { merge:true });
+  dragPid = null;
+}
+window.addEventListener("mouseup", e => endDrag(e.clientX, e.clientY));
+window.addEventListener("touchend", e => endDrag(e.changedTouches[0].clientX, e.changedTouches[0].clientY));
+
+/* Starting markers */
+placeMarker("kathi", 0);
+placeMarker("elana", 0);
+mapHint.style.display = "block";
+
+/* Live markers — listen to Firebase and update positions + point badges */
+onSnapshot(collection(db, BINGO_COL), snap => {
+  snap.forEach(d => {
+    if (!PLAYERS[d.id]) return;
+    const data = d.data();
+    const chNum = Number(data.chapter ?? data.mapPos ?? 0);
+    progress[d.id] = chNum;
+    if (!(dragging && dragPid === d.id)) placeMarker(d.id, chNum);
+    const badge = document.getElementById("badge-" + d.id);
+    if (badge) badge.textContent = data.points ?? 0;
+  });
+  mapHint.style.display = "block";
+}, err => console.error(err));
+</script>
+</body>
+</html>
