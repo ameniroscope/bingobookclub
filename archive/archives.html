@@ -186,7 +186,7 @@ const BOOKS = [
     bingoCollection: "first_bingo", messagesCollection: "messages", messagesField: "chapter", chapterRangeSize: 7, maxChapter: 41 },
   { title: "The Traitor Queen", file: "archive_traitorqueen.json", bingo: "traitorqueen_bingo.png", cover: "traitorqueen_cover.jpg", gridTop: 34.7, gridWidth: 73,
     bingoCollection: "traitorqueen_bingo", messagesCollection: "traitorqueen_messages", messagesField: "chapter", chapterRangeSize: 8, maxChapter: 63 },
-  { title: "Yesteryear", file: "archive_yesteryear.json", bingo: "yesteryear_bingo.png", cover: "yesteryear_cover.jpg", gridTop: 34.7, gridWidth: 73,
+  { title: "Yesteryear", file: "archive_yesteryear.json", bingo: "yesteryear_bingo.png", cover: "yesteryear_cover.jpg", gridTop: 29, gridWidth: 78.4, gridHeight: 53,
     bingoCollection: "yesteryear_bingo", messagesCollection: "yesteryear_messages", messagesField: "chapter", chapterRangeSize: 8, maxChapter: 57 },
 	
 ];
@@ -354,7 +354,9 @@ function renderCards(){
     ? ` style="background-image:url('${esc(activeBook.bingo)}')"` : '';
   const gridTop = activeBook && activeBook.gridTop != null ? activeBook.gridTop : 35.8;
   const gridWidth = activeBook && activeBook.gridWidth != null ? activeBook.gridWidth : 73;
-  const gridStyle = ` style="top:${gridTop}%;width:${gridWidth}%"`;
+  const gridHeight = activeBook?.gridHeight;
+  const gridStyle = ` style="top:${gridTop}%;width:${gridWidth}%${gridHeight != null ? `;height:${gridHeight}%` : ''}"`;
+
 
   const activePlayers = PLAYERS.filter(p => bingo[p.pid]);
 
