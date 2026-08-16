@@ -86,11 +86,72 @@ body.map-modal-open{overflow:hidden;}
 .rune-ornament{display:flex;align-items:center;gap:0.6rem;width:100%;max-width:18rem;margin:1rem auto;}
 .rune-ornament .line{flex:1;height:1px;background:linear-gradient(to right,transparent,var(--accent-dim),transparent);}
 .rune-ornament .gem{color:var(--accent-lt);font-size:0.7rem;}
+
+/* ── NORSE GODS SIDE RAILS ── */
+/* Round thumbnails; hover (desktop) or tap (mobile) pops open a larger 4:3
+   view. The god's name/description is baked into each image. */
+/* two staggered columns per rail forming a diamond lattice (left: 5 then an
+   offset 4; right: mirrored). The 2nd column overlaps the 1st so the diamonds
+   interlock. */
+.gods-rail{position:fixed;top:50%;transform:translateY(-50%);z-index:60;
+  display:flex;flex-direction:row;align-items:flex-start;gap:0;padding:6px;}
+.gods-rail.gods-left{left:50px;}
+.gods-rail.gods-right{right:50px;}
+.gods-col{display:flex;flex-direction:column;gap:14px;}
+.gods-rail>.gods-col+.gods-col{margin-left:-48px;} /* overlap so diamonds nest */
+.gods-col-offset{margin-top:57px;} /* half a step down so it nestles between */
+.god{position:relative;cursor:pointer;}
+
+/* diamond thumbnail: an accent diamond behind, with the (upright) image diamond
+   scaled down inside it to reveal a ring; glow via drop-shadow so it follows
+   the diamond outline. */
+.god-thumb{width:100px;height:100px;
+  clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);
+  background:var(--accent);
+  display:flex;align-items:center;justify-content:center;
+  filter:drop-shadow(0 2px 4px rgba(0,0,0,0.6)) drop-shadow(0 0 7px rgba(217,122,60,0.4));
+  transition:transform 0.25s ease,filter 0.25s ease;}
+.god-thumb-img,.god-fallback-inner{display:flex;align-items:center;justify-content:center;
+  width:100%;height:100%;object-fit:cover;background:var(--stone-dk);
+  clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);transform:scale(0.9);}
+.god-fallback-inner{color:var(--accent-lt);font-family:'Norse',serif;font-size:1.9rem;line-height:1;}
+.god:hover .god-thumb,.god.open .god-thumb{transform:scale(1.1);
+  filter:drop-shadow(0 2px 6px rgba(0,0,0,0.7)) drop-shadow(0 0 12px rgba(217,122,60,0.65));}
+
+/* enlarged pop-open view (whole 4:3 image, text readable) */
+.god-big{position:absolute;top:50%;transform:translateY(-50%) scale(0.92);
+  width:320px;aspect-ratio:3/4;border-radius:8px;object-fit:cover;
+  border:2px solid var(--accent-lt);background:var(--stone-dk);
+  box-shadow:0 10px 30px rgba(0,0,0,0.7);
+  opacity:0;visibility:hidden;pointer-events:none;transition:opacity 0.2s ease,transform 0.2s ease;z-index:70;}
+.god-big-fallback{display:flex;align-items:center;justify-content:center;text-align:center;padding:0 10px;
+  color:var(--accent-lt);font-family:'Norse',serif;font-size:2rem;letter-spacing:1px;}
+.god:hover .god-big,.god.open .god-big{opacity:1;visibility:visible;transform:translateY(-50%) scale(1);}
+.gods-left .god-big{left:calc(100% + 14px);}
+.gods-right .god-big{right:calc(100% + 14px);}
+
+/* horizontal strip (shown when the side rails don't have room) */
+.gods-strip{display:none;}
+@media(max-width:1559px){
+  .gods-rail{display:none;}
+  .gods-strip{display:block;position:relative;z-index:2;max-width:640px;margin:0 auto 1rem;padding:0 12px;}
+  .gods-strip-title{font-family:'Norse',serif;font-size:1.6rem;letter-spacing:1px;color:var(--accent);
+    text-align:center;margin-bottom:12px;text-shadow:0 1px 3px rgba(0,0,0,0.6);}
+  .gods-strip-track{display:flex;gap:12px;overflow-x:auto;padding:6px 4px 14px;
+    scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;}
+  .gods-strip .god{flex:0 0 auto;scroll-snap-align:center;}
+  .gods-strip .god-big{top:auto;bottom:calc(100% + 12px);left:50%;right:auto;
+    transform:translateX(-50%) scale(0.92);width:min(78vw,320px);}
+  .gods-strip .god.open .god-big{transform:translateX(-50%) scale(1);}
+}
 </style>
 </head>
 <body>
 
 <div id="bg-rune"></div>
+
+<aside class="gods-rail gods-left" id="godsLeft" aria-label="Norse gods"></aside>
+<aside class="gods-rail gods-right" id="godsRight" aria-label="Norse gods"></aside>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <filter id="tintArrow" color-interpolation-filters="sRGB">
@@ -128,6 +189,11 @@ body.map-modal-open{overflow:hidden;}
   </section>
 
 </main>
+
+<section class="gods-strip" id="godsStrip">
+  <div class="gods-strip-title">The Gods</div>
+  <div class="gods-strip-track" id="godsStripTrack"></div>
+</section>
 
 <section class="footer-section">
   <div class="rune-ornament"><div class="line"></div><div class="gem">ᛟ</div><div class="line"></div></div>
@@ -359,6 +425,104 @@ syncAxisArrowsWhenReady();
 window.addEventListener('resize',syncAxisArrows);
 new ResizeObserver(syncAxisArrows).observe(rankGrid);
 
+</script>
+
+<script>
+/* ── NORSE GODS SIDE RAILS ── */
+/* Each entry is the actual image filename in this folder (names are lowercase
+   and extensions are mixed .jpg/.png). Each picture already has the god's
+   name/description baked into it. */
+/* A plain string = a god image. An object with `href` = a secret entry that
+   still shows/enlarges like the rest but navigates on click. */
+const GODS = ["hlin.png","odin.jpg","frigg.jpg","thor.jpg","freyr.jpg","freyja.jpg",
+              "loki.jpg","heimdall.jpg","baldur.jpg","hodr.jpg","tyr.jpg","njord.jpg",
+              "hel.jpg",{file:"tbk3.png", href:"../inadequateheir/tbk3.html"},"idunn.png","skadi.jpg",
+              "vidar.jpg","bragi.png"];  // secret tbk3 sits in Bragi's spot; Bragi moves to the end
+
+function makeGod(entry){
+  const file=(typeof entry==='string')?entry:entry.file;
+  const href=(typeof entry==='object')?entry.href:null;
+  const label=file.replace(/\.[^.]+$/,'');            // strip extension
+  const title=label.charAt(0).toUpperCase()+label.slice(1); // e.g. "baldur" -> "Baldur"
+  const fallbackText=href?'?':title.charAt(0);        // keep the secret one mysterious
+
+  const g=document.createElement('div');
+  g.className='god';
+  g.tabIndex=0;
+
+  const thumb=document.createElement('div');
+  thumb.className='god-thumb';
+  const timg=document.createElement('img');
+  timg.className='god-thumb-img';
+  timg.src=file;
+  timg.alt=href?'':title;
+  timg.loading='lazy';
+  timg.onerror=function(){
+    const fb=document.createElement('div');
+    fb.className='god-fallback-inner';
+    fb.textContent=fallbackText;
+    timg.replaceWith(fb);
+  };
+  thumb.appendChild(timg);
+  g.appendChild(thumb);
+
+  const big=document.createElement('img');
+  big.className='god-big';
+  big.src=file;
+  big.alt=href?'':title;
+  big.loading='lazy';
+  big.onerror=function(){
+    const fb=document.createElement('div');
+    fb.className='god-big god-big-fallback';
+    fb.textContent=href?'?':title;
+    big.replaceWith(fb);
+  };
+  g.appendChild(big);
+
+  if(href){
+    /* secret entry: still enlarges on hover, but a click opens the page */
+    g.addEventListener('click',()=>{ window.location.href=href; });
+  }else{
+    /* tap / click toggles the enlarged view (needed on touch devices) */
+    g.addEventListener('click',e=>{
+      e.stopPropagation();
+      const wasOpen=g.classList.contains('open');
+      document.querySelectorAll('.god.open').forEach(o=>o.classList.remove('open'));
+      if(!wasOpen)g.classList.add('open');
+    });
+  }
+  return g;
+}
+
+const godsLeft=document.getElementById('godsLeft');
+const godsRight=document.getElementById('godsRight');
+const godsStripTrack=document.getElementById('godsStripTrack');
+
+/* helper: build a vertical column from a list of entries */
+function makeColumn(entries,offset){
+  const col=document.createElement('div');
+  col.className='gods-col'+(offset?' gods-col-offset':'');
+  entries.forEach(e=>col.appendChild(makeGod(e)));
+  return col;
+}
+
+/* 18 entries → 9 per side. Each rail = a column of 5 + a staggered column of 4. */
+const leftGods=GODS.slice(0,9), rightGods=GODS.slice(9);
+const L5=leftGods.slice(0,5),  L4=leftGods.slice(5);   // left: 5 then offset 4
+const R5=rightGods.slice(0,5), R4=rightGods.slice(5);  // right: mirrored (offset 4 then 5)
+
+godsLeft.appendChild(makeColumn(L5,false));
+godsLeft.appendChild(makeColumn(L4,true));
+godsRight.appendChild(makeColumn(R4,true));
+godsRight.appendChild(makeColumn(R5,false));
+
+/* mobile strip: a single flat row of every entry */
+GODS.forEach(e=>godsStripTrack.appendChild(makeGod(e)));
+
+/* clicking anywhere else closes any open enlarged view */
+document.addEventListener('click',()=>{
+  document.querySelectorAll('.god.open').forEach(o=>o.classList.remove('open'));
+});
 </script>
 
 </body>
