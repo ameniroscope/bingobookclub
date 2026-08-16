@@ -95,17 +95,17 @@ body.map-modal-open{overflow:hidden;}
    interlock. */
 .gods-rail{position:fixed;top:50%;transform:translateY(-50%);z-index:60;
   display:flex;flex-direction:row;align-items:flex-start;gap:0;padding:6px;}
-.gods-rail.gods-left{left:50px;}
-.gods-rail.gods-right{right:50px;}
+.gods-rail.gods-left{left:35px;}
+.gods-rail.gods-right{right:35px;}
 .gods-col{display:flex;flex-direction:column;gap:14px;}
 .gods-rail>.gods-col+.gods-col{margin-left:-48px;} /* overlap so diamonds nest */
-.gods-col-offset{margin-top:57px;} /* half a step down so it nestles between */
+.gods-col-offset{margin-top:82px;} /* half a step down so it nestles between */
 .god{position:relative;cursor:pointer;}
 
 /* diamond thumbnail: an accent diamond behind, with the (upright) image diamond
    scaled down inside it to reveal a ring; glow via drop-shadow so it follows
    the diamond outline. */
-.god-thumb{width:100px;height:100px;
+.god-thumb{width:150px;height:150px;
   clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);
   background:var(--accent);
   display:flex;align-items:center;justify-content:center;

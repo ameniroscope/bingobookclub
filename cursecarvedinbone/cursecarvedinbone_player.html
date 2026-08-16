@@ -179,21 +179,24 @@ html,body{min-height:100vh;font-family:'Crimson Text',Georgia,serif;color:var(--
 }
 
 /* ── NORSE GODS SIDE RAILS ── */
-/* Diamond thumbnails in two staggered, overlapping columns forming a lattice
-   (left: 5 then an offset 4; right: mirrored). Hover (desktop) or tap (mobile)
-   pops open a larger view; the god's name/description is baked into each image. */
+/* Round thumbnails; hover (desktop) or tap (mobile) pops open a larger 4:3
+   view. The god's name/description is baked into each image. */
+/* two staggered columns per rail forming a diamond lattice (left: 5 then an
+   offset 4; right: mirrored). The 2nd column overlaps the 1st so the diamonds
+   interlock. */
 .gods-rail{position:fixed;top:50%;transform:translateY(-50%);z-index:60;
   display:flex;flex-direction:row;align-items:flex-start;gap:0;padding:6px;}
-.gods-rail.gods-left{left:50px;}
-.gods-rail.gods-right{right:50px;}
+.gods-rail.gods-left{left:35px;}
+.gods-rail.gods-right{right:35px;}
 .gods-col{display:flex;flex-direction:column;gap:14px;}
 .gods-rail>.gods-col+.gods-col{margin-left:-48px;} /* overlap so diamonds nest */
-.gods-col-offset{margin-top:57px;} /* half a step down so it nestles between */
+.gods-col-offset{margin-top:82px;} /* half a step down so it nestles between */
 .god{position:relative;cursor:pointer;}
 
 /* diamond thumbnail: an accent diamond behind, with the (upright) image diamond
-   scaled down inside it to reveal a ring; glow via drop-shadow. */
-.god-thumb{width:100px;height:100px;
+   scaled down inside it to reveal a ring; glow via drop-shadow so it follows
+   the diamond outline. */
+.god-thumb{width:150px;height:150px;
   clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);
   background:var(--accent);
   display:flex;align-items:center;justify-content:center;
@@ -206,7 +209,7 @@ html,body{min-height:100vh;font-family:'Crimson Text',Georgia,serif;color:var(--
 .god:hover .god-thumb,.god.open .god-thumb{transform:scale(1.1);
   filter:drop-shadow(0 2px 6px rgba(0,0,0,0.7)) drop-shadow(0 0 12px rgba(217,122,60,0.65));}
 
-/* enlarged pop-open view (whole image, text readable) */
+/* enlarged pop-open view (whole 4:3 image, text readable) */
 .god-big{position:absolute;top:50%;transform:translateY(-50%) scale(0.92);
   width:320px;aspect-ratio:3/4;border-radius:8px;object-fit:cover;
   border:2px solid var(--accent-lt);background:var(--stone-dk);
@@ -222,8 +225,8 @@ html,body{min-height:100vh;font-family:'Crimson Text',Georgia,serif;color:var(--
 .gods-strip{display:none;}
 @media(max-width:1559px){
   .gods-rail{display:none;}
-  .gods-strip{display:block;position:relative;z-index:2;max-width:640px;margin:0 auto 2rem;padding:0 12px;}
-  .gods-strip-title{font-family:'Norse',serif;font-size:1.6rem;letter-spacing:1px;color:var(--accent-lt);
+  .gods-strip{display:block;position:relative;z-index:2;max-width:640px;margin:0 auto 1rem;padding:0 12px;}
+  .gods-strip-title{font-family:'Norse',serif;font-size:1.6rem;letter-spacing:1px;color:var(--accent);
     text-align:center;margin-bottom:12px;text-shadow:0 1px 3px rgba(0,0,0,0.6);}
   .gods-strip-track{display:flex;gap:12px;overflow-x:auto;padding:6px 4px 14px;
     scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;}

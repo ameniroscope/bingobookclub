@@ -321,7 +321,7 @@ body{
 }
 
 
-.tbk-title .q{
+.q{
 
   font-family:var(--read);
 
@@ -1755,23 +1755,23 @@ function openVoteModal(player){
     this is a new vote or an edit.
   */
 
-  if(existing?.vote === 'in'){
+if(existing?.vote === 'in'){
 
-    vmTitle.textContent =
-      'Still excited?';
+  vmTitle.innerHTML =
+    'Still excited <span class="q">?</span>';
 
-    vmSubmit.textContent =
-      'Update';
+  vmSubmit.textContent =
+    'Update';
 
-  }else{
+}else{
 
-    vmTitle.textContent =
-      'How excited are you?';
+  vmTitle.innerHTML =
+    'How excited are you <span class="q">?</span>';
 
-    vmSubmit.textContent =
-      "I'm in!";
+  vmSubmit.textContent =
+    "I'm in!";
 
-  }
+}
 
 
   /*
