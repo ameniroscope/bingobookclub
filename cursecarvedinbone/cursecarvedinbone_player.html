@@ -6,284 +6,888 @@
 <title>A Curse Carved in Bone</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🦴</text></svg>">
 <link rel="stylesheet" href="../style.css">
+
 <style>
-@font-face{font-family:'Norse';src:url('../fonts/Norse.otf') format('opentype');font-weight:400;font-display:swap;}
-@font-face{font-family:'Norse';src:url('../fonts/Norse-Bold.otf') format('opentype');font-weight:700;font-display:swap;}
+@font-face{
+  font-family:'Norse';
+  src:url('../fonts/Norse.otf') format('opentype');
+  font-weight:400;
+  font-display:swap;
+}
+@font-face{
+  font-family:'Norse';
+  src:url('../fonts/Norse-Bold.otf') format('opentype');
+  font-weight:700;
+  font-display:swap;
+}
+
 :root{
-  --player:#a8430f;--player-glow:rgba(168,67,15,0.35);
-  --accent:#a8430f;--accent-lt:#d97a3c;--accent-dim:#4a1a0c;
-  --ink:#fff3e6;--ink-faded:#d9b89a;
-  --bg-deep:#170d06;--bg-mid:#231406;--stone-dk:#2a1710;
+  --player:#a8430f;
+  --player-glow:rgba(168,67,15,.35);
+  --accent:#a8430f;
+  --accent-lt:#d97a3c;
+  --accent-dim:#4a1a0c;
+  --ink:#fff3e6;
+  --ink-faded:#d9b89a;
+  --bg-deep:#170d06;
+  --bg-mid:#231406;
+  --stone-dk:#2a1710;
 }
-html,body{min-height:100vh;font-family:'Crimson Text',Georgia,serif;color:var(--ink);background:var(--bg-deep);}
-#bg{position:fixed;inset:0;z-index:0;background:var(--bg-deep) url('background.png') center/420px repeat;}
-#bg::after{content:'';position:absolute;inset:0;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='4' height='4' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");}
 
-/* ── TOP-RIGHT: back to book hub ── */
-.players-btn{background:#231406;color:var(--accent-lt);border-color:var(--accent-dim);box-shadow:0 2px 8px rgba(0,0,0,0.3);}
-.players-btn:hover{background:#102a2f;border-color:var(--accent-lt);transform:translateY(-2px);}
+html,body{
+  min-height:100vh;
+  margin:0;
+  font-family:'Crimson Text',Georgia,serif;
+  color:var(--ink);
+  background:var(--bg-deep);
+}
 
-/* ── PLAYER HEADER ── */
-.player-header{display:flex;flex-direction:column;align-items:center;gap:0.6rem;position:relative;z-index:1;padding:2.2rem 1rem 0.5rem;}
-.img-frame{position:relative;width:110px;height:110px;}
-.img-frame::before{content:'';position:absolute;inset:-8px;border-radius:50%;border:2px solid var(--ring,var(--accent-dim));z-index:0;}
-.img-frame::after{content:'';position:absolute;inset:-4px;border-radius:50%;background:var(--bg-deep);z-index:1;}
-.img-frame img{position:relative;z-index:2;width:100%;height:100%;object-fit:cover;border-radius:50%;border:2px solid var(--player);}
-.player-name{font-family:'Norse',serif;font-size:2.5rem;font-weight:400;color:var(--ink);letter-spacing:2px;text-shadow:0 1px 3px rgba(0,0,0,0.6);}
+body{overflow-x:hidden;}
 
-/* ── LAYOUT ── */
-.wrap{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:1.5rem 2rem 4rem;
-  display:grid;grid-template-columns:1fr 1.15fr;gap:3rem;align-items:start;}
-@media(max-width:860px){.wrap{grid-template-columns:1fr;gap:2.5rem;padding:1.5rem 1.2rem 3rem;}}
+#bg{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  background:var(--bg-deep) url('background.png') center/420px repeat;
+}
+#bg::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='4' height='4' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  pointer-events:none;
+}
 
-.section-title{font-family:'Norse',serif;font-size:1.7rem;letter-spacing:3px;color:var(--accent-lt);text-transform:uppercase;text-align:center;margin-bottom:1rem;}
+/* TOP BUTTONS */
+.players-btn{
+  background:#231406;
+  color:var(--accent-lt);
+  border-color:var(--accent-dim);
+  box-shadow:0 2px 8px rgba(0,0,0,.3);
+}
+.players-btn:hover{
+  background:#102a2f;
+  border-color:var(--accent-lt);
+  transform:translateY(-2px);
+}
 
-/* ── BINGO ── */
+/* PLAYER HEADER */
+.player-header{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:.6rem;
+  position:relative;
+  z-index:1;
+  padding:2.2rem 1rem .5rem;
+}
+.img-frame{
+  position:relative;
+  width:110px;
+  height:110px;
+}
+.img-frame::before{
+  content:'';
+  position:absolute;
+  inset:-8px;
+  border-radius:50%;
+  border:2px solid var(--ring,var(--accent-dim));
+  z-index:0;
+}
+.img-frame::after{
+  content:'';
+  position:absolute;
+  inset:-4px;
+  border-radius:50%;
+  background:var(--bg-deep);
+  z-index:1;
+}
+.img-frame img{
+  position:relative;
+  z-index:2;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:50%;
+  border:2px solid var(--player);
+}
+.player-name{
+  font-family:'Norse',serif;
+  font-size:2.5rem;
+  font-weight:400;
+  color:var(--ink);
+  letter-spacing:2px;
+  text-shadow:0 1px 3px rgba(0,0,0,.6);
+}
+
+/* LAYOUT */
+.wrap{
+  position:relative;
+  z-index:1;
+  max-width:1200px;
+  margin:0 auto;
+  padding:1.5rem 2rem 4rem;
+  display:grid;
+  grid-template-columns:1fr 1.15fr;
+  gap:3rem;
+  align-items:start;
+}
+.section-title{
+  font-family:'Norse',serif;
+  font-size:1.7rem;
+  letter-spacing:3px;
+  color:var(--accent-lt);
+  text-transform:uppercase;
+  text-align:center;
+  margin-bottom:1rem;
+}
+
+/* BINGO */
 .bingo-section{display:flex;flex-direction:column;}
-.points-line{display:flex;flex-direction:column;align-items:flex-start;gap:0.1rem;width:100%;max-width:440px;margin:0.1rem auto 0.9rem;padding-left:5px;
-  font-family:'Norse',serif;letter-spacing:1px;color:var(--ink);}
-.points-line .pts-row{display:flex;align-items:baseline;gap:0.4rem;}
-.points-line .pts-total{font-size:1.6rem;font-weight:700;color:var(--accent-lt);text-shadow:0 1px 3px rgba(0,0,0,0.6);}
-.points-line .pts-label{font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--ink-faded);}
-.points-line .pts-break{display:block;width:100%;font-size:0.7rem;color:var(--ink-faded);font-style:italic;font-family:'Crimson Text',serif;letter-spacing:0;}
-.bingo-controls{position:absolute;left:-52px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:0.5rem;z-index:3;}
-.bingo-lock-btn{background:var(--bg-mid);border:1px solid var(--accent-dim);border-radius:50%;width:38px;height:38px;cursor:pointer;
-  font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;padding:0;}
-.bingo-lock-btn:hover{border-color:var(--accent-lt);}
-.bingo-lock-btn.unlocked{border-color:var(--accent-lt);background:rgba(168,67,15,0.15);}
-
-.bingo-card-wrap{position:relative;width:100%;max-width:440px;margin:0 auto;aspect-ratio:1023/1537;
-  background:url('cursecarvedinbone_bingo.png') center/contain no-repeat;border-radius:6px;
-  box-shadow:0 4px 14px rgba(0,0,0,0.4);}
-.bingo-grid {
-    position: absolute;
-    left: 5.6%;
-    top: 25.9%;
-    width: 88%;
-    height: 57%;
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(5, 1fr);
-    gap: 2px;
+.points-line{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:.1rem;
+  width:100%;
+  max-width:440px;
+  margin:.1rem auto .9rem;
+  padding-left:5px;
+  font-family:'Norse',serif;
+  letter-spacing:1px;
+  color:var(--ink);
 }
-.bingo-cell{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-size:clamp(8px,1.6vw,13px);
-  line-height:1.1;text-align:center;padding:1px;overflow:hidden;cursor:pointer;transition:background 0.15s;border-radius:3px;
-  background:transparent;}
-.bingo-cell.marked{background:var(--player-glow);box-shadow:inset 0 0 0 1px var(--accent);}
-.bingo-cell.free{font-weight:600;color:var(--accent-lt);cursor:default;}
-.cell-text{width:100%;height:100%;display:flex;align-items:center;justify-content:center;text-align:center;
-  font-family:'Crimson Text',Georgia,serif;font-weight:600;font-size:inherit;line-height:1.1;color:#fff;padding:1px;overflow-wrap:break-word;word-break:break-word;}
-.bingo-cell textarea{width:100%;height:100%;border:none;background:rgba(168,67,15,0.18);outline:none;resize:none;
-  text-align:center;font-family:'Crimson Text',Georgia,serif;font-weight:600;font-size:inherit;line-height:1.1;color:#fff;padding:1px;overflow:hidden;overflow-wrap:break-word;word-break:break-word;}
-.bingo-hint{font-size:11px;color:var(--accent-lt);margin-top:8px;font-style:italic;text-align:center;}
-.bingo-status{font-size:11px;color:var(--ink-faded);font-style:italic;text-align:center;margin-top:4px;min-height:1em;}
+.points-line .pts-row{display:flex;align-items:baseline;gap:.4rem;}
+.points-line .pts-total{
+  font-size:1.6rem;
+  font-weight:700;
+  color:var(--accent-lt);
+  text-shadow:0 1px 3px rgba(0,0,0,.6);
+}
+.points-line .pts-label{
+  font-size:.7rem;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--ink-faded);
+}
+.points-line .pts-break{
+  display:block;
+  width:100%;
+  font-size:.7rem;
+  color:var(--ink-faded);
+  font-style:italic;
+  font-family:'Crimson Text',serif;
+  letter-spacing:0;
+}
 
-/* ── ROOMS ── */
-.rooms-col{display:flex;flex-direction:column;justify-content:center;align-self:center;}
-.progress-control{display:flex;align-items:center;justify-content:center;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.9rem;}
-.progress-control label{font-family:'Norse',serif;font-size:0.8rem;letter-spacing:1px;color:var(--ink-faded);}
-.progress-control input{width:60px;height:34px;text-align:center;font-family:'Crimson Text',serif;font-size:1rem;
-  background:var(--bg-mid);border:1px solid var(--accent-dim);border-radius:6px;color:var(--ink);}
+.bingo-card-wrap{
+  position:relative;
+  width:100%;
+  max-width:440px;
+  margin:0 auto;
+  aspect-ratio:1023/1537;
+  background:url('cursecarvedinbone_bingo.png') center/contain no-repeat;
+  border-radius:6px;
+  box-shadow:0 4px 14px rgba(0,0,0,.4);
+}
+.bingo-grid{
+  position:absolute;
+  left:5.6%;
+  top:25.9%;
+  width:88%;
+  height:57%;
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  grid-template-rows:repeat(5,1fr);
+  gap:2px;
+}
+.bingo-cell{
+  min-width:0;
+  min-height:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:clamp(8px,1.6vw,13px);
+  line-height:1.1;
+  text-align:center;
+  padding:1px;
+  overflow:hidden;
+  cursor:pointer;
+  transition:background .15s;
+  border-radius:3px;
+  background:transparent;
+}
+.bingo-cell.marked{
+  background:var(--player-glow);
+  box-shadow:inset 0 0 0 1px var(--accent);
+}
+.bingo-cell.free{
+  font-weight:600;
+  color:var(--accent-lt);
+  cursor:default;
+}
+.cell-text{
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  font-family:'Crimson Text',Georgia,serif;
+  font-weight:600;
+  font-size:inherit;
+  line-height:1.1;
+  color:#fff;
+  padding:1px;
+  overflow-wrap:break-word;
+  word-break:break-word;
+}
+.bingo-cell textarea{
+  width:100%;
+  height:100%;
+  box-sizing:border-box;
+  border:none;
+  background:rgba(168,67,15,.18);
+  outline:none;
+  resize:none;
+  text-align:center;
+  font-family:'Crimson Text',Georgia,serif;
+  font-weight:600;
+  font-size:inherit;
+  line-height:1.1;
+  color:#fff;
+  padding:1px;
+  overflow:hidden;
+  overflow-wrap:break-word;
+  word-break:break-word;
+}
+.bingo-hint{
+  font-size:11px;
+  color:var(--accent-lt);
+  margin-top:8px;
+  font-style:italic;
+  text-align:center;
+}
+.bingo-status{
+  font-size:11px;
+  color:var(--ink-faded);
+  font-style:italic;
+  text-align:center;
+  margin-top:4px;
+  min-height:1em;
+}
+.bingo-controls{
+  position:absolute;
+  left:-52px;
+  top:50%;
+  transform:translateY(-50%);
+  display:flex;
+  flex-direction:column;
+  gap:.5rem;
+  z-index:3;
+}
+.bingo-lock-btn{
+  background:var(--bg-mid);
+  border:1px solid var(--accent-dim);
+  border-radius:50%;
+  width:38px;
+  height:38px;
+  cursor:pointer;
+  font-size:1.1rem;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:all .2s;
+  padding:0;
+}
+.bingo-lock-btn:hover,
+.bingo-lock-btn.unlocked{
+  border-color:var(--accent-lt);
+}
+.bingo-lock-btn.unlocked{background:rgba(168,67,15,.15);}
+
+/* ROOMS */
+.rooms-col{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-self:center;
+}
+.progress-control{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:.5rem;
+  flex-wrap:wrap;
+  margin-bottom:.9rem;
+}
+.progress-control label{
+  font-family:'Norse',serif;
+  font-size:.8rem;
+  letter-spacing:1px;
+  color:var(--ink-faded);
+}
+.progress-control input{
+  width:60px;
+  height:34px;
+  text-align:center;
+  font-family:'Crimson Text',serif;
+  font-size:1rem;
+  background:var(--bg-mid);
+  border:1px solid var(--accent-dim);
+  border-radius:6px;
+  color:var(--ink);
+}
 .progress-control input:focus{outline:none;border-color:var(--accent-lt);}
-.progress-control button{height:34px;padding:0 0.8rem;cursor:pointer;font-family:'Norse',serif;font-size:0.8rem;letter-spacing:1px;
-  background:var(--bg-mid);border:1px solid var(--accent-lt);border-radius:6px;color:var(--accent-lt);transition:all 0.2s;}
-.progress-control button:hover{background:#102a2f;}
-.progress-status{font-size:0.75rem;color:var(--ink-faded);font-style:italic;}
-.legend{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap;color:var(--ink-faded);font-size:0.85rem;margin-bottom:1rem;}
-.legend span{display:flex;align-items:center;gap:0.35rem;}
-.legend .dot{width:11px;height:11px;border-radius:50%;display:inline-block;}
-.legend .dot.unlocked{background:rgba(168,67,15,0.25);border:1px solid var(--accent-lt);}
-.legend .dot.locked{background:var(--bg-mid);border:1px solid var(--accent-dim);}
-.rooms-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
-.room-btn{position:relative;height:58px;display:flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;
-  transition:all 0.2s;font-family:'Norse',serif;font-size:0.95rem;letter-spacing:0.5px;text-align:center;padding:0 0.5rem;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='4' height='4' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");}
+.legend{
+  display:flex;
+  justify-content:center;
+  gap:1rem;
+  flex-wrap:wrap;
+  color:var(--ink-faded);
+  font-size:.85rem;
+  margin-bottom:1rem;
+}
+.legend span{display:flex;align-items:center;gap:.35rem;}
+.legend .dot{
+  width:11px;
+  height:11px;
+  border-radius:50%;
+  display:inline-block;
+}
+.legend .dot.unlocked{
+  background:rgba(168,67,15,.25);
+  border:1px solid var(--accent-lt);
+}
+.legend .dot.locked{
+  background:var(--bg-mid);
+  border:1px solid var(--accent-dim);
+}
+.rooms-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+}
+.room-btn{
+  position:relative;
+  height:58px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:6px;
+  cursor:pointer;
+  transition:all .2s;
+  font-family:'Norse',serif;
+  font-size:.95rem;
+  letter-spacing:.5px;
+  text-align:center;
+  padding:0 .5rem;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='4' height='4' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+}
 .room-btn:hover{transform:translateY(-2px);}
-.room-btn.unlocked{background-color:rgba(168,67,15,0.14);border:1px solid var(--accent-lt);color:var(--ink);box-shadow:inset 0 0 12px rgba(0,0,0,0.3);}
-.room-btn.unlocked:hover{background-color:rgba(168,67,15,0.24);}
-.room-btn.locked{background-color:var(--bg-mid);border:1px solid var(--accent-dim);color:var(--ink-faded);box-shadow:inset 0 0 12px rgba(0,0,0,0.4);}
+.room-btn.unlocked{
+  background-color:rgba(168,67,15,.14);
+  border:1px solid var(--accent-lt);
+  color:var(--ink);
+  box-shadow:inset 0 0 12px rgba(0,0,0,.3);
+}
+.room-btn.unlocked:hover{background-color:rgba(168,67,15,.24);}
+.room-btn.locked{
+  background-color:var(--bg-mid);
+  border:1px solid var(--accent-dim);
+  color:var(--ink-faded);
+  box-shadow:inset 0 0 12px rgba(0,0,0,.4);
+}
 .room-btn.locked:hover{border-color:var(--accent-lt);}
-.room-btn .lock-ico{position:absolute;top:6px;right:6px;font-size:1rem;opacity:0.5;}
-.room-btn .unread-dot{position:absolute;top:6px;left:8px;width:8px;height:8px;border-radius:50%;
-  background:var(--accent-lt);display:none;}
+.room-btn .lock-ico{
+  position:absolute;
+  top:6px;
+  right:6px;
+  font-size:1rem;
+  opacity:.5;
+}
+.room-btn .unread-dot{
+  position:absolute;
+  top:6px;
+  left:8px;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--accent-lt);
+  display:none;
+}
 .room-btn.has-unread .unread-dot{display:block;}
 
-/* ── CHAT MODAL ── */
-.overlay{position:fixed;inset:0;z-index:200;background:rgba(10,6,2,0.78);backdrop-filter:blur(4px);
-  display:flex;align-items:center;justify-content:center;
-  padding:1rem;padding-bottom:max(1rem,env(safe-area-inset-bottom));
-  opacity:0;pointer-events:none;transition:opacity 0.2s;}
+/* CHAT */
+.overlay{
+  position:fixed;
+  inset:0;
+  z-index:200;
+  background:rgba(10,6,2,.78);
+  backdrop-filter:blur(4px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:1rem;
+  padding-bottom:max(1rem,env(safe-area-inset-bottom));
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .2s;
+}
 .overlay.open{opacity:1;pointer-events:all;}
-.chat-modal{background-color:#5c3d22;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='4' height='4' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
-  border:2px solid var(--accent-dim);border-radius:12px;width:100%;max-width:600px;
-  height:80vh;height:80dvh;max-height:80vh;max-height:80dvh;
-  display:flex;flex-direction:column;box-shadow:0 8px 40px rgba(0,0,0,0.45),inset 0 0 30px rgba(0,0,0,0.35);
-  transform:translateY(12px);transition:transform 0.2s;overflow:hidden;}
+.chat-modal{
+  background-color:#5c3d22;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='4' height='4' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+  border:2px solid var(--accent-dim);
+  border-radius:12px;
+  width:100%;
+  max-width:600px;
+  height:80vh;
+  height:80dvh;
+  max-height:80vh;
+  max-height:80dvh;
+  display:flex;
+  flex-direction:column;
+  box-shadow:0 8px 40px rgba(0,0,0,.45),inset 0 0 30px rgba(0,0,0,.35);
+  transform:translateY(12px);
+  transition:transform .2s;
+  overflow:hidden;
+}
 .overlay.open .chat-modal{transform:translateY(0);}
-.chat-hdr{flex-shrink:0;padding:1rem 1.25rem;border-bottom:1px solid var(--accent-dim);
-  display:flex;align-items:flex-start;justify-content:space-between;gap:0.5rem;}
-.chat-room-label{font-family:'Norse',serif;font-size:0.68rem;letter-spacing:2px;color:var(--accent-lt);text-transform:uppercase;}
-.chat-title{font-family:'Norse',serif;font-size:1.6rem;font-weight:400;color:var(--ink);letter-spacing:1px;}
-.chat-status{display:inline-block;margin-top:5px;font-family:'Norse',serif;font-size:0.6rem;letter-spacing:1px;padding:0.22rem 0.6rem;border-radius:3px;text-transform:uppercase;}
+.chat-hdr{
+  flex-shrink:0;
+  padding:1rem 1.25rem;
+  border-bottom:1px solid var(--accent-dim);
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:.5rem;
+}
+.chat-room-label{
+  font-family:'Norse',serif;
+  font-size:.68rem;
+  letter-spacing:2px;
+  color:var(--accent-lt);
+  text-transform:uppercase;
+}
+.chat-title{
+  font-family:'Norse',serif;
+  font-size:1.6rem;
+  font-weight:400;
+  color:var(--ink);
+  letter-spacing:1px;
+}
+.chat-status{
+  display:inline-block;
+  margin-top:5px;
+  font-family:'Norse',serif;
+  font-size:.6rem;
+  letter-spacing:1px;
+  padding:.22rem .6rem;
+  border-radius:3px;
+  text-transform:uppercase;
+}
 .chat-status.unlocked{background:var(--accent);color:#1a0e02;}
-.chat-status.locked{background:var(--bg-deep);color:var(--ink-faded);border:1px solid var(--accent-dim);}
-.close-btn{background:none;border:none;cursor:pointer;color:var(--ink-faded);font-size:1.5rem;line-height:1;padding:0.1rem;transition:color 0.15s;flex-shrink:0;}
+.chat-status.locked{
+  background:var(--bg-deep);
+  color:var(--ink-faded);
+  border:1px solid var(--accent-dim);
+}
+.close-btn{
+  background:none;
+  border:none;
+  cursor:pointer;
+  color:var(--ink-faded);
+  font-size:1.5rem;
+  line-height:1;
+  padding:.1rem;
+  transition:color .15s;
+  flex-shrink:0;
+}
 .close-btn:hover{color:var(--ink);}
-.messages{flex:1;min-height:0;overflow-y:auto;padding:1rem 1.2rem;display:flex;flex-direction:column;gap:0.7rem;}
-.empty-msg,.write-note{font-size:1rem;color:var(--ink-faded);font-style:italic;text-align:center;margin:auto;line-height:1.8;}
-.write-note strong{display:block;font-family:'Norse',serif;font-size:0.85rem;font-style:normal;letter-spacing:1px;margin-bottom:0.3rem;color:var(--ink);text-transform:uppercase;}
-.msg{display:flex;flex-direction:column;gap:0.15rem;align-items:flex-start;}
+.messages{
+  flex:1;
+  min-height:0;
+  overflow-y:auto;
+  padding:1rem 1.2rem;
+  display:flex;
+  flex-direction:column;
+  gap:.7rem;
+}
+.empty-msg,.write-note{
+  font-size:1rem;
+  color:var(--ink-faded);
+  font-style:italic;
+  text-align:center;
+  margin:auto;
+  line-height:1.8;
+}
+.write-note strong{
+  display:block;
+  font-family:'Norse',serif;
+  font-size:.85rem;
+  font-style:normal;
+  letter-spacing:1px;
+  margin-bottom:.3rem;
+  color:var(--ink);
+  text-transform:uppercase;
+}
+.msg{
+  display:flex;
+  flex-direction:column;
+  gap:.15rem;
+  align-items:flex-start;
+}
 .msg.mine{align-items:flex-end;}
-.msg-name{display:block;font-family:'Norse',serif;font-size:0.8rem;letter-spacing:1px;color:var(--accent-lt);margin-bottom:0.15rem;}
-.msg.mine .msg-name{color:var(--accent-lt);}
-.msg-text{display:block;font-family:'Crimson Text',Georgia,serif;font-size:1rem;color:var(--ink);line-height:1.6;
-  max-width:min(85%,420px);background:rgba(168,67,15,0.1);border:1px solid var(--accent-dim);
-  padding:0.5rem 0.75rem;border-radius:8px;word-break:break-word;}
-.msg.mine .msg-text{background:var(--accent-dim);border-color:var(--accent);color:#fff6ea;}
-.compose{flex-shrink:0;border-top:1px solid var(--accent-dim);padding:0.7rem 1rem;
-  padding-bottom:max(0.7rem,env(safe-area-inset-bottom));display:flex;gap:0.5rem;align-items:flex-end;}
-.compose textarea{flex:1;resize:none;min-height:42px;max-height:110px;background:rgba(255,255,255,0.05);border:1px solid var(--accent-dim);border-radius:8px;
-  padding:0.5rem 0.7rem;font-family:'Crimson Text',serif;font-size:1rem;color:var(--ink);line-height:1.5;}
+.msg-name{
+  display:block;
+  font-family:'Norse',serif;
+  font-size:.8rem;
+  letter-spacing:1px;
+  color:var(--accent-lt);
+  margin-bottom:.15rem;
+}
+.msg-text{
+  display:block;
+  font-family:'Crimson Text',Georgia,serif;
+  font-size:1rem;
+  color:var(--ink);
+  line-height:1.6;
+  max-width:min(85%,420px);
+  background:rgba(168,67,15,.1);
+  border:1px solid var(--accent-dim);
+  padding:.5rem .75rem;
+  border-radius:8px;
+  word-break:break-word;
+}
+.compose{
+  flex-shrink:0;
+  border-top:1px solid var(--accent-dim);
+  padding:.7rem 1rem;
+  padding-bottom:max(.7rem,env(safe-area-inset-bottom));
+  display:flex;
+  gap:.5rem;
+  align-items:flex-end;
+}
+.compose textarea{
+  flex:1;
+  resize:none;
+  min-height:42px;
+  max-height:110px;
+  box-sizing:border-box;
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--accent-dim);
+  border-radius:8px;
+  padding:.5rem .7rem;
+  font-family:'Crimson Text',serif;
+  font-size:1rem;
+  color:var(--ink);
+  line-height:1.5;
+}
 .compose textarea::placeholder{color:var(--ink-faded);font-style:italic;}
 .compose textarea:focus{outline:none;border-color:var(--accent-lt);}
-.send-btn{height:42px;padding:0 1.1rem;background:#231406;border:1px solid var(--accent-lt);border-radius:8px;color:var(--accent-lt);
-  font-family:'Norse',serif;font-size:0.7rem;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;white-space:nowrap;flex-shrink:0;}
+.send-btn{
+  height:42px;
+  padding:0 1.1rem;
+  background:#231406;
+  border:1px solid var(--accent-lt);
+  border-radius:8px;
+  color:var(--accent-lt);
+  font-family:'Norse',serif;
+  font-size:.7rem;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:all .2s;
+  white-space:nowrap;
+  flex-shrink:0;
+}
 .send-btn:hover{background:#102a2f;}
+.send-btn:disabled{opacity:.5;cursor:wait;}
 
-/* ── PASSWORD MODAL ── */
-.lock-modal-wrap{display:none;position:fixed;inset:0;z-index:400;background:#040d0f;align-items:center;justify-content:center;flex-direction:column;padding:2rem;text-align:center;}
+/* PASSWORD / UNKNOWN */
+.lock-modal-wrap,
+.unknown-wrap{
+  position:fixed;
+  inset:0;
+  z-index:400;
+  background:#040d0f;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  padding:2rem;
+  text-align:center;
+}
+.lock-modal-wrap{display:none;}
 .lock-modal-wrap.open{display:flex;}
-.lock-club{font-family:'Norse',serif;font-size:0.7rem;letter-spacing:6px;color:var(--accent-lt);text-transform:uppercase;margin-bottom:0.4rem;}
-.lock-title{font-family:'Norse',serif;font-size:clamp(1.8rem,5vw,2.8rem);font-weight:400;color:var(--ink);letter-spacing:2px;margin-bottom:1.6rem;text-shadow:0 1px 3px rgba(0,0,0,0.6);}
-.lock-modal-wrap input{width:min(320px,90vw);height:52px;text-align:center;font-family:'Norse',serif;font-size:1rem;letter-spacing:2px;
-  background:#231406;border:1px solid var(--accent-dim);border-radius:8px;color:var(--ink);margin-bottom:1rem;}
-.lock-modal-wrap input:focus{outline:none;border-color:var(--accent-lt);}
-.lock-modal-wrap button{width:min(320px,90vw);height:52px;cursor:pointer;font-family:'Norse',serif;text-transform:uppercase;letter-spacing:3px;
-  background:#231406;border:1px solid var(--accent-lt);border-radius:8px;color:var(--accent-lt);transition:all 0.25s ease;}
-.lock-modal-wrap button:hover{background:#102a2f;}
-.lock-error{color:#d98a8a;font-size:0.9rem;min-height:1.2rem;margin-top:0.8rem;letter-spacing:1px;}
-
-/* ── UNKNOWN PLAYER ── */
-.unknown-wrap{display:none;position:fixed;inset:0;z-index:400;background:#040d0f;align-items:center;justify-content:center;flex-direction:column;gap:1rem;padding:2rem;text-align:center;}
+.unknown-wrap{display:none;gap:1rem;}
 .unknown-wrap.open{display:flex;}
+.lock-club{
+  font-family:'Norse',serif;
+  font-size:.7rem;
+  letter-spacing:6px;
+  color:var(--accent-lt);
+  text-transform:uppercase;
+  margin-bottom:.4rem;
+}
+.lock-title{
+  font-family:'Norse',serif;
+  font-size:clamp(1.8rem,5vw,2.8rem);
+  font-weight:400;
+  color:var(--ink);
+  letter-spacing:2px;
+  margin-bottom:1.6rem;
+  text-shadow:0 1px 3px rgba(0,0,0,.6);
+}
+.lock-modal-wrap input{
+  width:min(320px,90vw);
+  height:52px;
+  box-sizing:border-box;
+  text-align:center;
+  font-family:'Norse',serif;
+  font-size:1rem;
+  letter-spacing:2px;
+  background:#231406;
+  border:1px solid var(--accent-dim);
+  border-radius:8px;
+  color:var(--ink);
+  margin-bottom:1rem;
+}
+.lock-modal-wrap input:focus{outline:none;border-color:var(--accent-lt);}
+.lock-modal-wrap button{
+  width:min(320px,90vw);
+  height:52px;
+  cursor:pointer;
+  font-family:'Norse',serif;
+  text-transform:uppercase;
+  letter-spacing:3px;
+  background:#231406;
+  border:1px solid var(--accent-lt);
+  border-radius:8px;
+  color:var(--accent-lt);
+  transition:all .25s ease;
+}
+.lock-modal-wrap button:hover{background:#102a2f;}
+.lock-error{
+  color:#d98a8a;
+  font-size:.9rem;
+  min-height:1.2rem;
+  margin-top:.8rem;
+  letter-spacing:1px;
+}
 
+/* NORSE GOD SIDE RAILS
+   IMPORTANT: this is a real CSS comment.
+   The old version began with //*, which is invalid CSS. */
+.gods-rail{
+  position:fixed;
+  top:50%;
+  transform:translateY(-50%);
+  z-index:60;
+  display:flex;
+  flex-direction:row;
+  align-items:flex-start;
+  gap:0;
+  padding:6px;
+}
+.gods-rail.gods-left{left:35px;}
+.gods-rail.gods-right{right:35px;}
+.gods-col{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+.gods-rail>.gods-col+.gods-col{margin-left:-48px;}
+.gods-col-offset{margin-top:82px;}
+.god{
+  position:relative;
+  cursor:pointer;
+  outline:none;
+}
+.god-thumb{
+  width:150px;
+  height:150px;
+  clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);
+  background:var(--accent);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  filter:drop-shadow(0 2px 4px rgba(0,0,0,.6)) drop-shadow(0 0 7px rgba(217,122,60,.4));
+  transition:transform .25s ease,filter .25s ease;
+}
+.god-thumb-img,
+.god-fallback-inner{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  background:var(--stone-dk);
+  clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);
+  transform:scale(.9);
+}
+.god-fallback-inner{
+  color:var(--accent-lt);
+  font-family:'Norse',serif;
+  font-size:1.9rem;
+}
+.god:hover .god-thumb,
+.god.open .god-thumb{
+  transform:scale(1.1);
+  filter:drop-shadow(0 2px 6px rgba(0,0,0,.7)) drop-shadow(0 0 12px rgba(217,122,60,.65));
+}
+.god-big{
+  position:fixed;
+  width:320px;
+  height:auto;
+  aspect-ratio:3/4;
+  object-fit:cover;
+  border-radius:8px;
+  border:2px solid var(--accent-lt);
+  background:var(--stone-dk);
+  box-shadow:0 10px 30px rgba(0,0,0,.7);
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transform:scale(.92);
+  transform-origin:center center;
+  transition:opacity .2s ease,transform .2s ease;
+  z-index:9999;
+}
+.god-big.show{
+  opacity:1;
+  visibility:visible;
+  transform:scale(1);
+}
+.god-big-fallback{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:0 10px;
+  box-sizing:border-box;
+  color:var(--accent-lt);
+  font-family:'Norse',serif;
+  font-size:2rem;
+  letter-spacing:1px;
+}
+.gods-strip{display:none;}
+
+@media(max-width:1559px){
+  .gods-rail{display:none;}
+  .gods-strip{
+    display:block;
+    position:relative;
+    z-index:2;
+    max-width:640px;
+    margin:0 auto 1rem;
+    padding:0 12px;
+  }
+  .gods-strip-title{
+    font-family:'Norse',serif;
+    font-size:1.6rem;
+    letter-spacing:1px;
+    color:var(--accent);
+    text-align:center;
+    margin-bottom:12px;
+    text-shadow:0 1px 3px rgba(0,0,0,.6);
+  }
+  .gods-strip-track{
+    display:flex;
+    gap:12px;
+    overflow-x:auto;
+    padding:6px 4px 14px;
+    scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+  }
+  .gods-strip .god{
+    flex:0 0 auto;
+    scroll-snap-align:center;
+  }
+}
 @media(max-width:860px){
+  .wrap{
+    grid-template-columns:1fr;
+    gap:2.5rem;
+    padding:1.5rem 1.2rem 3rem;
+  }
   .rooms-grid{grid-template-columns:repeat(2,1fr);}
-  .bingo-controls{position:static;flex-direction:row;left:auto;top:auto;transform:none;justify-content:center;margin-bottom:0.7rem;}
+  .bingo-controls{
+    position:static;
+    flex-direction:row;
+    left:auto;
+    top:auto;
+    transform:none;
+    justify-content:center;
+    margin-bottom:.7rem;
+  }
 }
 @media(max-width:600px){
   .overlay{padding:0;align-items:flex-end;}
-  .chat-modal{height:92vh;height:92dvh;max-height:92vh;max-height:92dvh;border-radius:16px 16px 0 0;border-bottom:none;}
+  .chat-modal{
+    height:92vh;
+    height:92dvh;
+    max-height:92vh;
+    max-height:92dvh;
+    border-radius:16px 16px 0 0;
+    border-bottom:none;
+  }
   .msg-text{max-width:90%;}
-}
-
-/* ── NORSE GODS SIDE RAILS ── */
-/* Round thumbnails; hover (desktop) or tap (mobile) pops open a larger 4:3
-   view. The god's name/description is baked into each image. */
-/* two staggered columns per rail forming a diamond lattice (left: 5 then an
-   offset 4; right: mirrored). The 2nd column overlaps the 1st so the diamonds
-   interlock. */
-.gods-rail{position:fixed;top:50%;transform:translateY(-50%);z-index:60;
-  display:flex;flex-direction:row;align-items:flex-start;gap:0;padding:6px;}
-.gods-rail.gods-left{left:35px;}
-.gods-rail.gods-right{right:35px;}
-.gods-col{display:flex;flex-direction:column;gap:14px;}
-.gods-rail>.gods-col+.gods-col{margin-left:-48px;} /* overlap so diamonds nest */
-.gods-col-offset{margin-top:82px;} /* half a step down so it nestles between */
-.god{position:relative;cursor:pointer;}
-
-/* diamond thumbnail: an accent diamond behind, with the (upright) image diamond
-   scaled down inside it to reveal a ring; glow via drop-shadow so it follows
-   the diamond outline. */
-.god-thumb{width:150px;height:150px;
-  clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);
-  background:var(--accent);
-  display:flex;align-items:center;justify-content:center;
-  filter:drop-shadow(0 2px 4px rgba(0,0,0,0.6)) drop-shadow(0 0 7px rgba(217,122,60,0.4));
-  transition:transform 0.25s ease,filter 0.25s ease;}
-.god-thumb-img,.god-fallback-inner{display:flex;align-items:center;justify-content:center;
-  width:100%;height:100%;object-fit:cover;background:var(--stone-dk);
-  clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);transform:scale(0.9);}
-.god-fallback-inner{color:var(--accent-lt);font-family:'Norse',serif;font-size:1.9rem;line-height:1;}
-.god:hover .god-thumb,.god.open .god-thumb{transform:scale(1.1);
-  filter:drop-shadow(0 2px 6px rgba(0,0,0,0.7)) drop-shadow(0 0 12px rgba(217,122,60,0.65));}
-
-/* enlarged pop-open view (whole 4:3 image, text readable) */
-.god-big{position:absolute;top:50%;transform:translateY(-50%) scale(0.92);
-  width:320px;aspect-ratio:3/4;border-radius:8px;object-fit:cover;
-  border:2px solid var(--accent-lt);background:var(--stone-dk);
-  box-shadow:0 10px 30px rgba(0,0,0,0.7);
-  opacity:0;visibility:hidden;pointer-events:none;transition:opacity 0.2s ease,transform 0.2s ease;z-index:70;}
-.god-big-fallback{display:flex;align-items:center;justify-content:center;text-align:center;padding:0 10px;
-  color:var(--accent-lt);font-family:'Norse',serif;font-size:2rem;letter-spacing:1px;}
-.god:hover .god-big,.god.open .god-big{opacity:1;visibility:visible;transform:translateY(-50%) scale(1);}
-.gods-left .god-big{left:calc(100% + 14px);}
-.gods-right .god-big{right:calc(100% + 14px);}
-
-/* horizontal strip (shown when the side rails don't have room) */
-.gods-strip{display:none;}
-@media(max-width:1559px){
-  .gods-rail{display:none;}
-  .gods-strip{display:block;position:relative;z-index:2;max-width:640px;margin:0 auto 1rem;padding:0 12px;}
-  .gods-strip-title{font-family:'Norse',serif;font-size:1.6rem;letter-spacing:1px;color:var(--accent);
-    text-align:center;margin-bottom:12px;text-shadow:0 1px 3px rgba(0,0,0,0.6);}
-  .gods-strip-track{display:flex;gap:12px;overflow-x:auto;padding:6px 4px 14px;
-    scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;}
-  .gods-strip .god{flex:0 0 auto;scroll-snap-align:center;}
-  .gods-strip .god-big{top:auto;bottom:calc(100% + 12px);left:50%;right:auto;
-    transform:translateX(-50%) scale(0.92);width:min(78vw,320px);}
-  .gods-strip .god.open .god-big{transform:translateX(-50%) scale(1);}
+  .gods-strip-track{gap:8px;}
+  .gods-strip .god-thumb{width:110px;height:110px;}
 }
 </style>
 </head>
+
 <body>
 <div id="bg"></div>
 
-<!-- UNKNOWN PLAYER FALLBACK -->
 <div class="unknown-wrap" id="unknownWrap">
   <div style="font-family:'Norse',serif;font-size:1.7rem;color:var(--accent-lt);">Who goes there?</div>
-  <div style="color:var(--ink-faded);font-size:0.95rem;">No player found. Go back and choose your avatar.</div>
-  <a href="cursecarvedinbone.html" style="margin-top:1rem;font-family:'Norse',serif;font-size:0.75rem;letter-spacing:2px;color:var(--accent-lt);text-decoration:none;border:1px solid var(--accent-dim);padding:0.6rem 1.2rem;border-radius:6px;">← Back</a>
+  <div style="color:var(--ink-faded);font-size:.95rem;">No player was found for this page. Go back and choose your avatar.</div>
+  <a href="cursecarvedinbone.html" style="margin-top:1rem;font-family:'Norse',serif;font-size:.75rem;letter-spacing:2px;color:var(--accent-lt);text-decoration:none;border:1px solid var(--accent-dim);padding:.6rem 1.2rem;border-radius:6px;">← Back</a>
 </div>
 
-<!-- PASSWORD MODAL -->
 <div class="lock-modal-wrap open" id="initialLockModal">
   <div class="lock-club">The Bingo Book Club</div>
-  <div class="lock-title" id="lockTitle">Enter Your Code</div>
+  <div class="lock-title" id="lockTitle">Loading…</div>
   <input type="text" id="initialPasswordInput" placeholder="password" autocomplete="off">
   <button id="initialUnlockSubmit" type="button">Enter</button>
   <div class="lock-error" id="initialLockError"></div>
 </div>
 
 <div id="mainContent" style="display:none;">
-
   <aside class="gods-rail gods-left" id="godsLeft" aria-label="Norse gods"></aside>
   <aside class="gods-rail gods-right" id="godsRight" aria-label="Norse gods"></aside>
 
-  <!-- TOP-RIGHT: back to book hub -->
   <a href="cursecarvedinbone.html" class="players-btn">🦴 A Curse Carved in Bone</a>
-
-  <!-- TOP-LEFT (mobile) / BOTTOM-LEFT (desktop): home -->
   <a href="../index.html" class="home-btn"><span class="home-btn-icon">🏠</span> Home</a>
 
   <div class="player-header">
-    <div class="img-frame"><img id="playerPhoto" src="" alt="Player Photo"></div>
+    <div class="img-frame">
+      <img id="playerPhoto" src="" alt="Player Photo">
+    </div>
     <div class="player-name" id="playerHeaderName"></div>
   </div>
 
   <div class="wrap">
     <div class="bingo-section">
       <div class="points-line">
-        <div class="pts-row"><span class="pts-total" id="ptsTotal">0</span><span class="pts-label">pts</span></div>
+        <div class="pts-row">
+          <span class="pts-total" id="ptsTotal">0</span>
+          <span class="pts-label">pts</span>
+        </div>
         <span class="pts-break" id="ptsBreak"></span>
       </div>
+
       <div class="bingo-card-wrap">
         <div class="bingo-controls">
-          <button class="bingo-lock-btn unlocked" id="bingoEditBtn" title="Toggle edit mode">✏️</button>
+          <button class="bingo-lock-btn unlocked" id="bingoEditBtn" title="Toggle edit mode" type="button">✏️</button>
         </div>
         <div class="bingo-grid" id="bingoGrid"></div>
       </div>
+
       <div class="bingo-hint" id="bingoHint">Click squares to mark them</div>
       <div class="bingo-status" id="bingoStatus"></div>
     </div>
@@ -304,7 +908,6 @@ html,body{min-height:100vh;font-family:'Crimson Text',Georgia,serif;color:var(--
   </section>
 </div>
 
-<!-- CHAT MODAL -->
 <div class="overlay" id="overlay">
   <div class="chat-modal">
     <div class="chat-hdr">
@@ -313,430 +916,880 @@ html,body{min-height:100vh;font-family:'Crimson Text',Georgia,serif;color:var(--
         <div class="chat-title" id="chatTitle"></div>
         <span class="chat-status" id="chatStatus"></span>
       </div>
-      <button class="close-btn" id="chatClose">✕</button>
+      <button class="close-btn" id="chatClose" type="button">✕</button>
     </div>
     <div class="messages" id="chatMessages"></div>
     <div class="compose">
       <textarea id="chatTA" rows="1" placeholder="Leave a thought…"></textarea>
-      <button class="send-btn" id="chatSend">Post</button>
+      <button class="send-btn" id="chatSend" type="button">Post</button>
     </div>
   </div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, getDocs, addDoc, onSnapshot, doc, setDoc, getDoc, serverTimestamp }
-  from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  addDoc,
+  onSnapshot,
+  doc,
+  setDoc,
+  getDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+/* =========================================================
+   CONFIG
+   ========================================================= */
 const BINGO_COL = 'cursecarvedinbone_bingo';
 const MSG_COL = 'cursecarvedinbone_messages';
-
-/* ── chapter rooms (Part 1: 1-7, Part 2: 8-15, Part 3: 16-22, Part 4: 23-29, Part 5: 30-36) ── */
-const CHAPTER_GROUPS = [
-  { label:"Ch 1–7",   first:1,  last:7,  unlock:7  },
-  { label:"Ch 8–14",  first:8,  last:14, unlock:14 },
-  { label:"Ch 15–21", first:15, last:21, unlock:21 },
-  { label:"Ch 22–28", first:22, last:28, unlock:28 },
-  { label:"Ch 29–35", first:29, last:35, unlock:35 },
-  { label:"Ch 36–42", first:36, last:42, unlock:42 },
-  { label:"Ch 43–49", first:43, last:49, unlock:49 },
-  { label:"Ch 50–52", first:50, last:52, unlock:52 },
-];
-
+const TOTAL_CHAPTERS = 52;
+const GRID_SIZE = 25;
 const POINTS_PER_CELL = 1;
 const POINTS_PER_LINE = 5;
 
-const fb = initializeApp({
+const CHAPTER_GROUPS = [
+  {label:"Ch 1–7",   first:1,  last:7,  unlock:7},
+  {label:"Ch 8–14",  first:8,  last:14, unlock:14},
+  {label:"Ch 15–21", first:15, last:21, unlock:21},
+  {label:"Ch 22–28", first:22, last:28, unlock:28},
+  {label:"Ch 29–35", first:29, last:35, unlock:35},
+  {label:"Ch 36–42", first:36, last:42, unlock:42},
+  {label:"Ch 43–49", first:43, last:49, unlock:49},
+  {label:"Ch 50–52", first:50, last:52, unlock:52}
+];
+
+const firebaseConfig = {
   apiKey:"AIzaSyAIQTe-QGQmwqTVmIyJZZ_qlDNsD6GUskY",
   authDomain:"bingobookclub-2144e.firebaseapp.com",
   projectId:"bingobookclub-2144e",
   storageBucket:"bingobookclub-2144e.firebasestorage.app",
   messagingSenderId:"294177836341",
   appId:"1:294177836341:web:6d5f11e64737fbe3aad07c"
-});
-const db = getFirestore(fb);
+};
 
-/* ════════ ALL PLAYER CONFIGS (Firestore: accessCodes collection, doc id = pid) ════════ */
-const PLAYERS = {};
-try {
-  const accessSnap = await getDocs(collection(db,'accessCodes'));
-  accessSnap.forEach(d => PLAYERS[d.id] = d.data());
-} catch (e) {
-  console.error(e);
-  document.getElementById('initialLockError').textContent = 'Connection error — please refresh the page';
-  throw e;
-}
-
-/* ── RESOLVE PLAYER FROM URL ── */
-const params = new URLSearchParams(window.location.search);
-const PID = params.get('p') || '';
-const PCFG = PLAYERS[PID];
-
-if(!PCFG){
-  document.getElementById('initialLockModal').classList.remove('open');
-  document.getElementById('unknownWrap').classList.add('open');
-  throw new Error('Unknown player: '+PID);
-}
-
-const { name:PNAME, emoji:PEMOJI, password:PASSWORD } = PCFG;
-
-document.title = `${PNAME} – A Curse Carved in Bone`;
-document.getElementById('playerHeaderName').textContent = PNAME;
-document.getElementById('playerPhoto').src = '../pdp_'+PID+'.png';
-document.getElementById('lockTitle').textContent = `Enter Your Code, ${PNAME}`;
-
-/* ── PASSWORD GATE ── */
 const initialLockModal = document.getElementById('initialLockModal');
 const initialPasswordInput = document.getElementById('initialPasswordInput');
 const initialUnlockSubmit = document.getElementById('initialUnlockSubmit');
 const initialLockError = document.getElementById('initialLockError');
 const mainContent = document.getElementById('mainContent');
+const unknownWrap = document.getElementById('unknownWrap');
 
-function checkInitialPassword(){
-  if(initialPasswordInput.value.trim()===PASSWORD){
-    initialLockModal.classList.remove('open');
-    mainContent.style.display='block';
-    init();
-  }else{
-    initialLockError.textContent='Incorrect password';
-    initialPasswordInput.value='';initialPasswordInput.focus();
+const params = new URLSearchParams(window.location.search);
+const PID = (params.get('p') || '').trim();
+
+let db;
+let PLAYERS = {};
+let PCFG = null;
+let PNAME = '';
+let PEMOJI = '';
+let PASSWORD = '';
+
+let cells = Array(GRID_SIZE).fill('');
+let markedSet = new Set([12]);
+let isEditMode = false;
+let isSaving = false;
+
+let myProgress = 0;
+let activeRoom = null;
+let activeUnsub = null;
+let unreadUnsub = null;
+let progressUnsub = null;
+
+const unreadGroups = new Set();
+const STORAGE_KEY = `ccib_lastread_${PID}`;
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
+function esc(value){
+  return String(value ?? '')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/\n/g,'<br>');
+}
+
+function hexA(hex, alpha){
+  if(!/^#[0-9a-f]{6}$/i.test(hex)) return `rgba(168,67,15,${alpha})`;
+  const n = parseInt(hex.slice(1),16);
+  return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${alpha})`;
+}
+
+function getLastRead(){
+  try{
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  }catch{
+    return {};
   }
 }
-initialUnlockSubmit.addEventListener('click',checkInitialPassword);
-initialPasswordInput.addEventListener('keydown',e=>{if(e.key==='Enter')checkInitialPassword();});
 
-/* ── BINGO ── */
-const GRID_SIZE=25;
-let cells=Array(GRID_SIZE).fill('');
-let markedSet=new Set([12]);
-let isEditMode=false,isSaving=false;
+function setLastRead(chapterGroupStart){
+  const data = getLastRead();
+  data[chapterGroupStart] = Math.floor(Date.now()/1000);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
 
-const bingoGrid=document.getElementById('bingoGrid'),
-      bingoHint=document.getElementById('bingoHint'),
-      bingoStatus=document.getElementById('bingoStatus'),
-      editBtn=document.getElementById('bingoEditBtn');
+function getChapterNumber(value){
+  const n = Number(
+    String(value ?? '')
+      .replace(/chapter-?/i,'')
+      .replace(/chap/i,'')
+      .trim()
+  );
+  return Number.isFinite(n) ? n : NaN;
+}
 
-editBtn.addEventListener('click',()=>{
-  isEditMode=!isEditMode;
-  editBtn.textContent=isEditMode?'👁️':'✏️';
-  editBtn.title=isEditMode?'Switch to play mode':'Switch to edit mode';
-  bingoHint.textContent=isEditMode?'Edit mode — type in squares':'Click squares to mark them';
-  renderBingo();
-});
+function findGroup(chapter){
+  return CHAPTER_GROUPS.find(g => chapter >= g.first && chapter <= g.last) || null;
+}
+
+/* =========================================================
+   BINGO
+   ========================================================= */
+const bingoGrid = document.getElementById('bingoGrid');
+const bingoHint = document.getElementById('bingoHint');
+const bingoStatus = document.getElementById('bingoStatus');
+const editBtn = document.getElementById('bingoEditBtn');
 
 function countLines(){
-  let lines=0;
-  for(let r=0;r<5;r++)if([0,1,2,3,4].every(c=>markedSet.has(r*5+c)))lines++;
-  for(let c=0;c<5;c++)if([0,1,2,3,4].every(r=>markedSet.has(r*5+c)))lines++;
-  if([0,1,2,3,4].every(i=>markedSet.has(i*5+i)))lines++;
-  if([0,1,2,3,4].every(i=>markedSet.has(i*5+(4-i))))lines++;
+  let lines = 0;
+
+  for(let r=0;r<5;r++){
+    if([0,1,2,3,4].every(c => markedSet.has(r*5+c))) lines++;
+  }
+
+  for(let c=0;c<5;c++){
+    if([0,1,2,3,4].every(r => markedSet.has(r*5+c))) lines++;
+  }
+
+  if([0,1,2,3,4].every(i => markedSet.has(i*5+i))) lines++;
+  if([0,1,2,3,4].every(i => markedSet.has(i*5+(4-i)))) lines++;
+
   return lines;
 }
+
 function calcPoints(){
-  let cellCount=0;
-  markedSet.forEach(i=>{if(i!==12)cellCount++;});
-  return cellCount*POINTS_PER_CELL+countLines()*POINTS_PER_LINE;
+  let cellCount = 0;
+  markedSet.forEach(i => {
+    if(i !== 12) cellCount++;
+  });
+  return cellCount * POINTS_PER_CELL + countLines() * POINTS_PER_LINE;
 }
+
 function renderPoints(){
-  let cellCount=0;
-  markedSet.forEach(i=>{if(i!==12)cellCount++;});
-  const lines=countLines();
-  document.getElementById('ptsTotal').textContent=calcPoints();
-  document.getElementById('ptsBreak').textContent=
+  let cellCount = 0;
+  markedSet.forEach(i => {
+    if(i !== 12) cellCount++;
+  });
+
+  const lines = countLines();
+
+  document.getElementById('ptsTotal').textContent = calcPoints();
+  document.getElementById('ptsBreak').textContent =
     `${cellCount} cell${cellCount===1?'':'s'} + ${lines} line${lines===1?'':'s'}`;
 }
+
 function renderBingo(){
-  bingoGrid.innerHTML='';
+  bingoGrid.innerHTML = '';
+
   for(let i=0;i<GRID_SIZE;i++){
-    const isFree=i===12;
-    const cell=document.createElement('div');
-    cell.className='bingo-cell'+(isFree?' free':markedSet.has(i)?' marked':'');
-    if(isFree){cell.style.cursor='default';}
-    else if(isEditMode){
-      const ta=document.createElement('textarea');
-      ta.value=cells[i];
-      ta.addEventListener('input',e=>{cells[i]=e.target.value;});
-      ta.addEventListener('blur',saveBingo);
+    const isFree = i === 12;
+    const cell = document.createElement('div');
+
+    cell.className =
+      'bingo-cell' +
+      (isFree ? ' free' : markedSet.has(i) ? ' marked' : '');
+
+    if(isFree){
+      cell.textContent = 'FREE';
+      cell.style.cursor = 'default';
+    }else if(isEditMode){
+      const ta = document.createElement('textarea');
+      ta.value = cells[i] || '';
+      ta.setAttribute('aria-label', `Bingo square ${i+1}`);
+
+      ta.addEventListener('input', e => {
+        cells[i] = e.target.value;
+      });
+
+      ta.addEventListener('blur', saveBingo);
       cell.appendChild(ta);
     }else{
-      const txt=document.createElement('div');txt.className='cell-text';txt.textContent=cells[i];cell.appendChild(txt);
-      cell.style.cursor='pointer';
-      cell.addEventListener('click',async()=>{
-        markedSet.has(i)?markedSet.delete(i):markedSet.add(i);
-        renderBingo();await saveBingo();
+      const txt = document.createElement('div');
+      txt.className = 'cell-text';
+      txt.textContent = cells[i] || '';
+      cell.appendChild(txt);
+
+      cell.addEventListener('click', async () => {
+        if(markedSet.has(i)) markedSet.delete(i);
+        else markedSet.add(i);
+
+        renderBingo();
+        await saveBingo();
       });
     }
+
     bingoGrid.appendChild(cell);
   }
+
   renderPoints();
 }
+
 async function saveBingo(){
-  if(isSaving)return;isSaving=true;bingoStatus.textContent='Saving…';
+  if(isSaving || !db || !PID) return;
+
+  isSaving = true;
+  bingoStatus.textContent = 'Saving…';
+
   try{
-    await setDoc(doc(db,BINGO_COL,PID),{
-      cells,marked:[...markedSet],points:calcPoints(),lines:countLines(),name:PNAME,emoji:PEMOJI
-    },{merge:true});
-    bingoStatus.textContent='Saved ✓';
-  }catch(e){console.error(e);bingoStatus.textContent='Save failed';}
-  finally{isSaving=false;setTimeout(()=>{bingoStatus.textContent='';},2000);}
+    await setDoc(
+      doc(db, BINGO_COL, PID),
+      {
+        cells,
+        marked:[...markedSet],
+        points:calcPoints(),
+        lines:countLines(),
+        name:PNAME,
+        emoji:PEMOJI,
+        updatedAt:serverTimestamp()
+      },
+      {merge:true}
+    );
+
+    bingoStatus.textContent = 'Saved ✓';
+  }catch(error){
+    console.error('Bingo save failed:', error);
+    bingoStatus.textContent = 'Save failed — check Firebase permissions';
+  }finally{
+    isSaving = false;
+    setTimeout(() => {
+      bingoStatus.textContent = '';
+    }, 2500);
+  }
 }
+
 async function loadBingo(){
-  bingoStatus.textContent='Loading…';
+  if(!db || !PID) return;
+
+  bingoStatus.textContent = 'Loading…';
+
   try{
-    const d=await getDoc(doc(db,BINGO_COL,PID));
-    if(d.exists()){
-      const data=d.data();
-      if(Array.isArray(data.cells))cells=data.cells;
+    const snap = await getDoc(doc(db, BINGO_COL, PID));
+
+    if(snap.exists()){
+      const data = snap.data();
+
+      if(Array.isArray(data.cells)){
+        cells = Array(GRID_SIZE).fill('');
+        data.cells.slice(0,GRID_SIZE).forEach((value,index) => {
+          cells[index] = String(value ?? '');
+        });
+      }
+
       if(Array.isArray(data.marked)){
-        markedSet=new Set(data.marked.filter(v=>typeof v==='number'&&Number.isInteger(v)&&v>=0&&v<=24));
+        markedSet = new Set(
+          data.marked.filter(
+            value =>
+              Number.isInteger(value) &&
+              value >= 0 &&
+              value < GRID_SIZE
+          )
+        );
         markedSet.add(12);
       }
     }
-  }catch(e){console.error(e);}
-  renderBingo();bingoStatus.textContent='';
+  }catch(error){
+    console.error('Bingo load failed:', error);
+    bingoStatus.textContent = 'Could not load bingo data';
+  }
+
+  renderBingo();
+
+  if(bingoStatus.textContent === 'Loading…'){
+    bingoStatus.textContent = '';
+  }
 }
 
-/* ── PROGRESS + ROOMS ── */
-const TOTAL_CHAPTERS=52;
-let myProgress=0,activeRoom=null,activeUnsub=null;
+editBtn.addEventListener('click', () => {
+  isEditMode = !isEditMode;
+  editBtn.textContent = isEditMode ? '👁️' : '✏️';
+  editBtn.title = isEditMode ? 'Switch to play mode' : 'Switch to edit mode';
+  bingoHint.textContent = isEditMode
+    ? 'Edit mode — type in squares'
+    : 'Click squares to mark them';
+  renderBingo();
+});
 
-const STORAGE_KEY=`ccib_lastread_${PID}`;
-function getLastRead(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');}catch{return {};}}
-function setLastRead(ch){
-  const lr=getLastRead();
-  lr[ch]=Math.floor(Date.now()/1000);
-  localStorage.setItem(STORAGE_KEY,JSON.stringify(lr));
-}
+/* =========================================================
+   ROOMS
+   ========================================================= */
+const roomsGrid = document.getElementById('roomsGrid');
 
-const unreadGroups=new Set();
-
-function init(){
-  loadBingo();
-  onSnapshot(doc(db,BINGO_COL,PID),d=>{
-    if(d.exists())myProgress=Number(d.data().mapPos??d.data().chapterProgress??0);
-    renderRooms();
-  },err=>console.error(err));
-
-  // ONE global listener for unread tracking — never duplicated
-  onSnapshot(collection(db,MSG_COL),snap=>{
-    const lr=getLastRead();
-    unreadGroups.clear();
-    snap.forEach(d=>{
-      const m=d.data();
-      if(!m.ts||!m.ts.seconds)return;
-      const ch=Number(String(m.chapter).replace(/chapter-?/i,'').replace(/chap/i,'').trim());
-      const grp=CHAPTER_GROUPS.find(g=>ch>=g.first&&ch<=g.last);
-      if(!grp)return;
-      if(myProgress<grp.unlock)return;
-      const lastSeen=lr[grp.first]||0;
-      if(m.ts.seconds>lastSeen&&m.name!==PNAME&&m.name!==PID){
-        unreadGroups.add(grp.first);
-      }
-    });
-    renderRooms();
-  },err=>console.error(err));
-}
-
-const roomsGrid=document.getElementById('roomsGrid');
 function renderRooms(){
-  roomsGrid.innerHTML='';
-  CHAPTER_GROUPS.forEach(grp=>{
-    const unlocked=myProgress>=grp.unlock;
-    const hasUnread=unlocked&&unreadGroups.has(grp.first);
-    const btn=document.createElement('div');
-    btn.className='room-btn '+(unlocked?'unlocked':'locked')+(hasUnread?' has-unread':'');
-    btn.innerHTML=`<span class="unread-dot"></span>`
-      +(unlocked?'':'<span class="lock-ico">🔒</span>')
-      +grp.label;
-    btn.addEventListener('click',()=>openChat(grp));
+  roomsGrid.innerHTML = '';
+
+  CHAPTER_GROUPS.forEach(group => {
+    const unlocked = myProgress >= group.unlock;
+    const hasUnread = unlocked && unreadGroups.has(group.first);
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className =
+      'room-btn ' +
+      (unlocked ? 'unlocked' : 'locked') +
+      (hasUnread ? ' has-unread' : '');
+
+    btn.innerHTML =
+      '<span class="unread-dot"></span>' +
+      (unlocked ? '' : '<span class="lock-ico">🔒</span>') +
+      esc(group.label);
+
+    btn.addEventListener('click', () => openChat(group));
     roomsGrid.appendChild(btn);
   });
 }
 
-/* ── CHAT ── */
-const overlay=document.getElementById('overlay'),
-      chatClose=document.getElementById('chatClose'),
-      chatTA=document.getElementById('chatTA'),
-      chatSend=document.getElementById('chatSend');
+/* =========================================================
+   CHAT
+   ========================================================= */
+const overlay = document.getElementById('overlay');
+const chatClose = document.getElementById('chatClose');
+const chatTA = document.getElementById('chatTA');
+const chatSend = document.getElementById('chatSend');
 
-function openChat(grp){
-  activeRoom=grp;
-  const canRead=myProgress>=grp.unlock;
-  document.getElementById('chatRoomLabel').textContent='Chapter Room';
-  document.getElementById('chatTitle').textContent=grp.label;
-  const st=document.getElementById('chatStatus');
-  st.className='chat-status '+(canRead?'unlocked':'locked');
-  st.textContent=canRead?'Unlocked — all messages visible':'Write only';
-  overlay.classList.add('open');document.body.style.overflow='hidden';
-  chatTA.value='';chatTA.style.height='auto';
-  setLastRead(grp.first);
-  unreadGroups.delete(grp.first);
+function openChat(group){
+  activeRoom = group;
+
+  const canRead = myProgress >= group.unlock;
+
+  document.getElementById('chatRoomLabel').textContent = 'Chapter Room';
+  document.getElementById('chatTitle').textContent = group.label;
+
+  const status = document.getElementById('chatStatus');
+  status.className = 'chat-status ' + (canRead ? 'unlocked' : 'locked');
+  status.textContent = canRead ? 'Unlocked — all messages visible' : 'Write only';
+
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  chatTA.value = '';
+  chatTA.style.height = 'auto';
+
+  setLastRead(group.first);
+  unreadGroups.delete(group.first);
   renderRooms();
-  subscribeChat(grp);
+
+  subscribeChat(group);
 }
+
 function closeChat(){
-  overlay.classList.remove('open');document.body.style.overflow='';
-  if(activeUnsub){activeUnsub();activeUnsub=null;}activeRoom=null;
-}
-chatClose.addEventListener('click',closeChat);
-overlay.addEventListener('click',e=>{if(e.target===overlay)closeChat();});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&overlay.classList.contains('open'))closeChat();});
-chatTA.addEventListener('input',()=>{chatTA.style.height='auto';chatTA.style.height=chatTA.scrollHeight+'px';});
-chatTA.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}});
-chatSend.addEventListener('click',sendMsg);
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
 
-function msgInGroup(m,grp){
-  const n=Number(String(m.chapter).replace(/chapter-?/i,'').replace(/chap/i,'').trim());
-  return n>=grp.first&&n<=grp.last;
+  if(activeUnsub){
+    activeUnsub();
+    activeUnsub = null;
+  }
+
+  activeRoom = null;
 }
 
-function subscribeChat(grp){
-  if(activeUnsub){activeUnsub();activeUnsub=null;}
-  const msgDiv=document.getElementById('chatMessages');
-  msgDiv.innerHTML='<span class="empty-msg">Loading…</span>';
-  activeUnsub=onSnapshot(collection(db,MSG_COL),snap=>{
-    const canRead=myProgress>=grp.unlock;
-    let msgs=[];
-    snap.forEach(d=>{const m=d.data();if(msgInGroup(m,grp))msgs.push(m);});
-    msgs.sort((a,b)=>(a.ts?.seconds||0)-(b.ts?.seconds||0));
-    if(!canRead)msgs=msgs.filter(m=>m.name===PNAME||m.name===PID);
-    msgDiv.innerHTML='';
-    if(msgs.length===0){
-      msgDiv.innerHTML=(!canRead)
-        ?`<div class="write-note"><strong>Write mode</strong>Post freely — you'll see everyone's thoughts once you reach chapter ${grp.unlock}.</div>`
-        :`<span class="empty-msg">No thoughts yet. Be the first!</span>`;
-      return;
+chatClose.addEventListener('click', closeChat);
+
+overlay.addEventListener('click', event => {
+  if(event.target === overlay) closeChat();
+});
+
+document.addEventListener('keydown', event => {
+  if(event.key === 'Escape' && overlay.classList.contains('open')){
+    closeChat();
+  }
+});
+
+chatTA.addEventListener('input', () => {
+  chatTA.style.height = 'auto';
+  chatTA.style.height = Math.min(chatTA.scrollHeight,110) + 'px';
+});
+
+chatTA.addEventListener('keydown', event => {
+  if(event.key === 'Enter' && !event.shiftKey){
+    event.preventDefault();
+    sendMsg();
+  }
+});
+
+chatSend.addEventListener('click', sendMsg);
+
+function messageBelongsToGroup(message, group){
+  const chapter = getChapterNumber(message.chapter);
+  return chapter >= group.first && chapter <= group.last;
+}
+
+function subscribeChat(group){
+  if(activeUnsub){
+    activeUnsub();
+    activeUnsub = null;
+  }
+
+  const msgDiv = document.getElementById('chatMessages');
+  msgDiv.innerHTML = '<span class="empty-msg">Loading…</span>';
+
+  activeUnsub = onSnapshot(
+    collection(db, MSG_COL),
+    snap => {
+      const canRead = myProgress >= group.unlock;
+      let messages = [];
+
+      snap.forEach(docSnap => {
+        const message = docSnap.data();
+        if(messageBelongsToGroup(message, group)){
+          messages.push(message);
+        }
+      });
+
+      messages.sort(
+        (a,b) =>
+          (a.ts?.seconds || 0) -
+          (b.ts?.seconds || 0)
+      );
+
+      if(!canRead){
+        messages = messages.filter(
+          message =>
+            message.name === PNAME ||
+            message.name === PID
+        );
+      }
+
+      msgDiv.innerHTML = '';
+
+      if(messages.length === 0){
+        msgDiv.innerHTML = !canRead
+          ? `<div class="write-note"><strong>Write mode</strong>Post freely — you'll see everyone's thoughts once you reach chapter ${group.unlock}.</div>`
+          : `<span class="empty-msg">No thoughts yet. Be the first!</span>`;
+        return;
+      }
+
+      messages.forEach(message => {
+        const isMine =
+          message.name === PNAME ||
+          message.name === PID;
+
+        const playerId = Object.keys(PLAYERS).find(
+          id =>
+            PLAYERS[id]?.name === message.name ||
+            id === message.name
+        );
+
+        const info = playerId ? PLAYERS[playerId] : null;
+        const emoji = info?.emoji || 'ᛟ';
+        const name = info?.name || String(message.name || '?');
+        const color = info?.color || '#a8430f';
+
+        const element = document.createElement('div');
+        element.className = 'msg' + (isMine ? ' mine' : '');
+
+        element.innerHTML =
+          `<span class="msg-name" style="color:${esc(color)}">${esc(emoji)} ${esc(name)}</span>` +
+          `<span class="msg-text" style="background:${hexA(color,isMine?.6:.45)};border-color:${esc(color)}">${esc(String(message.text || ''))}</span>`;
+
+        msgDiv.appendChild(element);
+      });
+
+      msgDiv.scrollTop = msgDiv.scrollHeight;
+    },
+    error => {
+      console.error('Chat listener failed:', error);
+      msgDiv.innerHTML =
+        `<span class="empty-msg">Could not load messages: ${esc(error.message)}</span>`;
     }
-    msgs.forEach(m=>{
-      const isMine=m.name===PNAME||m.name===PID;
-      const pid=Object.keys(PLAYERS).find(k=>PLAYERS[k].name===m.name||k===m.name);
-      const info=pid?PLAYERS[pid]:null;
-      const emoji=info?info.emoji:'ᛟ';
-      const name=info?info.name:String(m.name||'?');
-      const color=info?.color||'#a8430f';
-      const el=document.createElement('div');
-      el.className='msg'+(isMine?' mine':'');
-      el.innerHTML=`<span class="msg-name" style="color:${color}">${emoji} ${esc(name)}</span><span class="msg-text" style="background:${hexA(color,isMine?0.6:0.45)};border-color:${color};color:#fff">${esc(String(m.text||''))}</span>`;
-      msgDiv.appendChild(el);
-    });
-    msgDiv.scrollTop=msgDiv.scrollHeight;
-  },err=>{
-    msgDiv.innerHTML=`<span class="empty-msg">Could not load messages: ${esc(err.message)}</span>`;
-  });
+  );
 }
 
 async function sendMsg(){
-  const text=chatTA.value.trim();
-  if(!text||activeRoom===null)return;
-  chatSend.disabled=true;
-  chatTA.disabled=true;
+  const text = chatTA.value.trim();
+
+  if(!text || !activeRoom || !db) return;
+
+  chatSend.disabled = true;
+  chatTA.disabled = true;
+
   try{
     await addDoc(collection(db,MSG_COL),{
-      chapter:activeRoom.first,name:PNAME,text,ts:serverTimestamp()
+      chapter:activeRoom.first,
+      name:PNAME,
+      text,
+      ts:serverTimestamp()
     });
-    chatTA.value='';chatTA.style.height='auto';
+
+    chatTA.value = '';
+    chatTA.style.height = 'auto';
     setLastRead(activeRoom.first);
-  }catch(e){console.error(e);}
-  finally{
-    chatSend.disabled=false;
-    chatTA.disabled=false;
+  }catch(error){
+    console.error('Message send failed:', error);
+    alert('Could not post your message. Check your Firebase Firestore permissions.');
+  }finally{
+    chatSend.disabled = false;
+    chatTA.disabled = false;
     chatTA.focus();
   }
 }
 
-function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
-function hexA(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;}
+/* =========================================================
+   INITIAL BOOTSTRAP
+   ========================================================= */
+async function bootstrap(){
+  if(!PID){
+    initialLockModal.classList.remove('open');
+    unknownWrap.classList.add('open');
+    return;
+  }
+
+  try{
+    const app = initializeApp(firebaseConfig);
+    db = getFirestore(app);
+
+    const accessSnap = await getDocs(collection(db,'accessCodes'));
+
+    accessSnap.forEach(snapshot => {
+      PLAYERS[snapshot.id] = snapshot.data();
+    });
+
+    PCFG = PLAYERS[PID];
+
+    if(!PCFG){
+      initialLockModal.classList.remove('open');
+      unknownWrap.classList.add('open');
+      console.error(
+        `Player "${PID}" was not found in the accessCodes collection.`
+      );
+      return;
+    }
+
+    PNAME = String(PCFG.name || PID);
+    PEMOJI = String(PCFG.emoji || 'ᛟ');
+    PASSWORD = String(PCFG.password ?? '');
+
+    document.title = `${PNAME} – A Curse Carved in Bone`;
+    document.getElementById('playerHeaderName').textContent = PNAME;
+    document.getElementById('playerPhoto').src = `../pdp_${PID}.png`;
+    document.getElementById('lockTitle').textContent = `Enter Your Code, ${PNAME}`;
+
+    initialPasswordInput.focus();
+  }catch(error){
+    console.error('Player page bootstrap failed:', error);
+
+    initialLockError.innerHTML =
+      'Connection error.<br>Open the browser console for the exact Firebase error.';
+  }
+}
+
+function unlockPlayer(){
+  if(initialPasswordInput.value.trim() === PASSWORD){
+    initialLockModal.classList.remove('open');
+    mainContent.style.display = 'block';
+    initPlayerPage();
+  }else{
+    initialLockError.textContent = 'Incorrect password';
+    initialPasswordInput.value = '';
+    initialPasswordInput.focus();
+  }
+}
+
+initialUnlockSubmit.addEventListener('click', unlockPlayer);
+
+initialPasswordInput.addEventListener('keydown', event => {
+  if(event.key === 'Enter') unlockPlayer();
+});
+
+function initPlayerPage(){
+  loadBingo();
+
+  if(progressUnsub) progressUnsub();
+
+  progressUnsub = onSnapshot(
+    doc(db,BINGO_COL,PID),
+    snapshot => {
+      if(snapshot.exists()){
+        const data = snapshot.data();
+        myProgress = Number(
+          data.mapPos ??
+          data.chapterProgress ??
+          0
+        );
+
+        if(!Number.isFinite(myProgress)) myProgress = 0;
+      }else{
+        myProgress = 0;
+      }
+
+      renderRooms();
+
+      if(activeRoom){
+        const status = document.getElementById('chatStatus');
+        const canRead = myProgress >= activeRoom.unlock;
+        status.className = 'chat-status ' + (canRead ? 'unlocked' : 'locked');
+        status.textContent = canRead
+          ? 'Unlocked — all messages visible'
+          : 'Write only';
+      }
+    },
+    error => {
+      console.error('Progress listener failed:', error);
+    }
+  );
+
+  if(unreadUnsub) unreadUnsub();
+
+  unreadUnsub = onSnapshot(
+    collection(db,MSG_COL),
+    snapshot => {
+      const lastRead = getLastRead();
+
+      unreadGroups.clear();
+
+      snapshot.forEach(docSnap => {
+        const message = docSnap.data();
+
+        if(!message.ts?.seconds) return;
+
+        const chapter = getChapterNumber(message.chapter);
+        const group = findGroup(chapter);
+
+        if(!group) return;
+        if(myProgress < group.unlock) return;
+
+        const lastSeen = Number(lastRead[group.first] || 0);
+
+        if(
+          message.ts.seconds > lastSeen &&
+          message.name !== PNAME &&
+          message.name !== PID
+        ){
+          unreadGroups.add(group.first);
+        }
+      });
+
+      renderRooms();
+    },
+    error => {
+      console.error('Unread listener failed:', error);
+    }
+  );
+
+  renderRooms();
+}
+
+/* Start the page. */
+bootstrap();
 </script>
 
 <script>
-/* ── NORSE GODS SIDE RAILS ── */
-/* A plain string = a god image (filenames are lowercase, extensions mixed
-   .jpg/.png; each image already has the god's name/description baked in).
-   An object with `href` = a secret entry that enlarges like the rest but
-   navigates on click. */
-const GODS = ["hlin.png","odin.jpg","frigg.jpg","thor.jpg","freyr.jpg","freyja.jpg",
-              "loki.jpg","heimdall.jpg","baldur.jpg","hodr.jpg","tyr.jpg","njord.jpg",
-              "hel.jpg",{file:"tbk3.png", href:"../inadequateheir/tbk3.html"},"idunn.png","skadi.jpg",
-              "vidar.jpg","bragi.png"];  // secret tbk3 sits in Bragi's spot; Bragi moves to the end
+/* =========================================================
+   NORSE GODS
+   ========================================================= */
+
+const GODS = [
+  "hlin.png",
+  "odin.jpg",
+  "frigg.jpg",
+  "thor.jpg",
+  "freyr.jpg",
+  "freyja.jpg",
+  "loki.jpg",
+  "heimdall.jpg",
+  "baldur.jpg",
+  "hodr.jpg",
+  "tyr.jpg",
+  "njord.jpg",
+  "hel.jpg",
+  {
+    file:"tbk3.png",
+    href:"../inadequateheir/tbk3.html"
+  },
+  "idunn.png",
+  "skadi.jpg",
+  "vidar.jpg",
+  "bragi.png"
+];
+
+function closeAllGods(){
+  document.querySelectorAll('.god.open').forEach(g => {
+    g.classList.remove('open');
+  });
+
+  document.querySelectorAll('.god-big.show').forEach(popup => {
+    popup.classList.remove('show');
+  });
+}
 
 function makeGod(entry){
-  const file=(typeof entry==='string')?entry:entry.file;
-  const href=(typeof entry==='object')?entry.href:null;
-  const label=file.replace(/\.[^.]+$/,'');
-  const title=label.charAt(0).toUpperCase()+label.slice(1);
-  const fallbackText=href?'?':title.charAt(0);
+  const file = typeof entry === 'string' ? entry : entry.file;
+  const href = typeof entry === 'object' ? entry.href : null;
 
-  const g=document.createElement('div');
-  g.className='god';
-  g.tabIndex=0;
+  const label = file.replace(/\.[^.]+$/,'');
+  const title = label.charAt(0).toUpperCase() + label.slice(1);
 
-  const thumb=document.createElement('div');
-  thumb.className='god-thumb';
-  const timg=document.createElement('img');
-  timg.className='god-thumb-img';
-  timg.src=file;
-  timg.alt=href?'':title;
-  timg.loading='lazy';
-  timg.onerror=function(){
-    const fb=document.createElement('div');
-    fb.className='god-fallback-inner';
-    fb.textContent=fallbackText;
-    timg.replaceWith(fb);
+  const god = document.createElement('div');
+  god.className = 'god';
+  god.tabIndex = 0;
+  god.setAttribute('role','button');
+  god.setAttribute('aria-label', title);
+
+  const thumb = document.createElement('div');
+  thumb.className = 'god-thumb';
+
+  const thumbImg = document.createElement('img');
+  thumbImg.className = 'god-thumb-img';
+  thumbImg.src = file;
+  thumbImg.alt = href ? '' : title;
+  thumbImg.loading = 'lazy';
+
+  thumbImg.onerror = () => {
+    const fallback = document.createElement('div');
+    fallback.className = 'god-fallback-inner';
+    fallback.textContent = href ? '?' : title.charAt(0);
+    thumbImg.replaceWith(fallback);
   };
-  thumb.appendChild(timg);
-  g.appendChild(thumb);
 
-  const big=document.createElement('img');
-  big.className='god-big';
-  big.src=file;
-  big.alt=href?'':title;
-  big.loading='lazy';
-  big.onerror=function(){
-    const fb=document.createElement('div');
-    fb.className='god-big god-big-fallback';
-    fb.textContent=href?'?':title;
-    big.replaceWith(fb);
+  thumb.appendChild(thumbImg);
+  god.appendChild(thumb);
+
+  const popup = document.createElement('img');
+  popup.className = 'god-big';
+  popup.src = file;
+  popup.alt = href ? '' : title;
+  popup.loading = 'lazy';
+
+  popup.onerror = () => {
+    const fallback = document.createElement('div');
+    fallback.className = 'god-big god-big-fallback';
+    fallback.textContent = href ? '?' : title;
+    popup.replaceWith(fallback);
   };
-  g.appendChild(big);
 
-  if(href){
-    g.addEventListener('click',()=>{ window.location.href=href; });
-  }else{
-    g.addEventListener('click',e=>{
-      e.stopPropagation();
-      const wasOpen=g.classList.contains('open');
-      document.querySelectorAll('.god.open').forEach(o=>o.classList.remove('open'));
-      if(!wasOpen)g.classList.add('open');
-    });
+  document.body.appendChild(popup);
+  god._godBig = popup;
+
+  function positionPopup(){
+    const rect = thumb.getBoundingClientRect();
+    const margin = 12;
+    const gap = 14;
+
+    const width = Math.min(320, Math.max(180, window.innerWidth - margin*2));
+    const height = width * 4 / 3;
+
+    let left;
+
+    if(god.closest('.gods-left')){
+      left = rect.right + gap;
+    }else if(god.closest('.gods-right')){
+      left = rect.left - width - gap;
+    }else{
+      left = (window.innerWidth - width) / 2;
+    }
+
+    left = Math.max(
+      margin,
+      Math.min(left, window.innerWidth - width - margin)
+    );
+
+    let top = rect.top + rect.height/2 - height/2;
+
+    top = Math.max(
+      margin,
+      Math.min(top, window.innerHeight - height - margin)
+    );
+
+    popup.style.width = width + 'px';
+    popup.style.left = left + 'px';
+    popup.style.top = top + 'px';
   }
-  return g;
+
+  god.addEventListener('mouseenter', () => {
+    positionPopup();
+    popup.classList.add('show');
+  });
+
+  god.addEventListener('mouseleave', () => {
+    if(!god.classList.contains('open')){
+      popup.classList.remove('show');
+    }
+  });
+
+  god.addEventListener('focus', () => {
+    positionPopup();
+    popup.classList.add('show');
+  });
+
+  god.addEventListener('blur', () => {
+    if(!god.classList.contains('open')){
+      popup.classList.remove('show');
+    }
+  });
+
+  god.addEventListener('click', event => {
+    event.stopPropagation();
+
+    if(href){
+      window.location.href = href;
+      return;
+    }
+
+    const wasOpen = god.classList.contains('open');
+    closeAllGods();
+
+    if(!wasOpen){
+      god.classList.add('open');
+      positionPopup();
+      popup.classList.add('show');
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    if(god.classList.contains('open')){
+      positionPopup();
+    }
+  });
+
+  return god;
 }
 
-function makeColumn(entries,offset){
-  const col=document.createElement('div');
-  col.className='gods-col'+(offset?' gods-col-offset':'');
-  entries.forEach(e=>col.appendChild(makeGod(e)));
-  return col;
+const godsLeft = document.getElementById('godsLeft');
+const godsRight = document.getElementById('godsRight');
+const godsStripTrack = document.getElementById('godsStripTrack');
+
+function makeColumn(entries, offset){
+  const column = document.createElement('div');
+  column.className = 'gods-col' + (offset ? ' gods-col-offset' : '');
+
+  entries.forEach(entry => {
+    column.appendChild(makeGod(entry));
+  });
+
+  return column;
 }
 
-const godsLeft=document.getElementById('godsLeft');
-const godsRight=document.getElementById('godsRight');
-const godsStripTrack=document.getElementById('godsStripTrack');
+const leftGods = GODS.slice(0,9);
+const rightGods = GODS.slice(9);
 
-/* 18 entries → 9 per side. Each rail = a column of 5 + a staggered column of 4. */
-const leftGods=GODS.slice(0,9), rightGods=GODS.slice(9);
-godsLeft.appendChild(makeColumn(leftGods.slice(0,5),false));  // left: 5 then offset 4
-godsLeft.appendChild(makeColumn(leftGods.slice(5),true));
-godsRight.appendChild(makeColumn(rightGods.slice(5),true));   // right: mirrored (offset 4 then 5)
-godsRight.appendChild(makeColumn(rightGods.slice(0,5),false));
+godsLeft.appendChild(makeColumn(leftGods.slice(0,5), false));
+godsLeft.appendChild(makeColumn(leftGods.slice(5), true));
 
-/* mobile strip: a single flat row of every entry */
-GODS.forEach(e=>godsStripTrack.appendChild(makeGod(e)));
+godsRight.appendChild(makeColumn(rightGods.slice(5), true));
+godsRight.appendChild(makeColumn(rightGods.slice(0,5), false));
 
-/* clicking anywhere else closes any open enlarged view */
-document.addEventListener('click',()=>{
-  document.querySelectorAll('.god.open').forEach(o=>o.classList.remove('open'));
+GODS.forEach(entry => {
+  godsStripTrack.appendChild(makeGod(entry));
+});
+
+document.addEventListener('click', () => {
+  closeAllGods();
 });
 </script>
+
 </body>
 </html>
