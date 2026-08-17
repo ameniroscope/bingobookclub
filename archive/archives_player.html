@@ -246,6 +246,11 @@ async function init(){
     spawnTressMarker(pid);
   }
 
+  // Little floating ⏳ marker to the current TBK3 read — only for Kathi
+  if(pid === 'kathi'){
+    spawnTBKMarker(pid);
+  }
+
   app.innerHTML = `
     <div class="player-header">
       <div class="player-header-main">
@@ -330,6 +335,31 @@ function spawnTressMarker(pid){
     requestAnimationFrame(move);
   })();
   el.addEventListener('click', () => { window.location.href = `../tress/tress.html`; });
+}
+
+function spawnTBKMarker(pid){
+  const el = document.createElement('div');
+  el.className = 'wanderer';
+  el.textContent = '⏳';
+  el.title = 'The Inadequate Heir';
+  document.body.appendChild(el);
+
+  let x = Math.random() * (window.innerWidth  - 80) + 40;
+  let y = Math.random() * (window.innerHeight - 80) + 40;
+  let vx = (Math.random() * 0.12 + 0.05) * (Math.random() < 0.5 ? 1 : -1);
+  let vy = (Math.random() * 0.12 + 0.05) * (Math.random() < 0.5 ? 1 : -1);
+  el.style.left = x + 'px';
+  el.style.top  = y + 'px';
+  (function move(){
+    x += vx; y += vy;
+    const pad = 40;
+    if(x < pad || x > window.innerWidth  - pad) vx *= -1;
+    if(y < pad || y > window.innerHeight - pad) vy *= -1;
+    el.style.left = x + 'px';
+    el.style.top  = y + 'px';
+    requestAnimationFrame(move);
+  })();
+  el.addEventListener('click', () => { window.location.href = `../inadequateheir/inadequateheir.html`; });
 }
 
 init();
