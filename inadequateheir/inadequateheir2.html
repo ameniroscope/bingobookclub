@@ -20,7 +20,7 @@ html,body{background:var(--sand-lt);color:var(--ink);font-family:'Hakan',serif;}
 #bg-rune{position:fixed;inset:0;z-index:0;pointer-events:none;background:var(--sand-lt) url('background.png') center/cover no-repeat;}
 #bg-rune::after{content:'';position:absolute;inset:0;background:
   linear-gradient(180deg,rgba(243,228,198,0.30) 0%,rgba(243,228,198,0.05) 42%,rgba(217,184,119,0.16) 100%);}
-.home-layout{position:relative;z-index:2;min-height:100vh;display:grid;grid-template-columns:0.95fr 1fr;gap:36px;align-items:center;justify-content:center;padding:40px 50px;max-width:1500px;margin:0 auto;}
+.home-layout{position:relative;z-index:2;min-height:100vh;display:grid;grid-template-columns:0.95fr 1fr;gap:36px;align-items:center;justify-content:center;padding:40px 50px;max-width:1280px;margin:0 auto;}
 @media(max-width:900px){.home-layout{grid-template-columns:1fr;gap:32px;padding:35px 20px;}}
 /* ── CHAPTER MAP ── */
 .map-section{display:flex;flex-direction:column;align-items:center;gap:0.6rem;}
@@ -87,7 +87,7 @@ body.map-modal-open{overflow:hidden;}
 /* ── KATHI'S JAIL ── she "read too fast", so she's benched from the ranking
    quadrant and locked up beside it instead. ── */
 .players-row{display:flex;align-items:center;justify-content:center;gap:5.5rem;flex-wrap:wrap;}
-.players-row .rank-frame{margin:0;}
+.players-row .rank-frame{margin:0;flex:0 1 620px;}
 .jail-box{display:flex;flex-direction:column;align-items:center;gap:8px;}
 .jail-caption{transform:rotate(-3deg);
   font-family:system-ui,-apple-system,'Segoe UI',sans-serif;font-weight:800;font-size:0.85rem;letter-spacing:1.5px;
