@@ -188,8 +188,8 @@ const BOOKS = [
     bingoCollection: "traitorqueen_bingo", messagesCollection: "traitorqueen_messages", messagesField: "chapter", chapterRangeSize: 8, maxChapter: 63 },
   { title: "Yesteryear", file: "archive_yesteryear.json", bingo: "yesteryear_bingo.png", cover: "yesteryear_cover.jpg", gridTop: 29, gridWidth: 78.4, gridHeight: 53,
     bingoCollection: "yesteryear_bingo", messagesCollection: "yesteryear_messages", messagesField: "chapter", chapterRangeSize: 8, maxChapter: 57 },
-  { title: "A Fate Inked in Blood", file: "archive_fateinkedinblood.json", bingo: "fateinkedinblood_bingo.png", cover: "fateinkedinblood_cover.jpg", gridTop: 34.7, gridWidth: 73,
-    bingoCollection: "fateinkedinblood_bingo", messagesCollection: "fateinkedinblood_messages", messagesField: "chapter", chapterRangeSize: 7, maxChapter: 29 },
+  { title: "A Fate Inked in Blood", file: "archive_fateinkedinblood.json", bingo: "fateinkedinblood_bingo.png", cover: "fateinkedinblood_cover.jpg", gridTop: 26.5, gridWidth: 82, cellColor: "#f2e8d0",
+    bingoCollection: "fateinkedinblood_bingo", messagesCollection: "fateinkedinblood_messages", messagesField: "chapter", chapterRangeSize: 7, maxChapter: 35 },
 	
 ];
 
@@ -377,11 +377,12 @@ function renderCards(){
     const col = document.createElement('div');
     col.className = 'player-col';
 
+    const cellColorStyle = activeBook?.cellColor ? ` style="color:${activeBook.cellColor}"` : '';
     let cellsHtml = '';
     for(let i=0;i<GRID_SIZE;i++){
       const isFree = i===12;
       const cls = 'bingo-cell' + (isFree?' free':markedSet.has(i)?' marked':'');
-      cellsHtml += `<div class="${cls}"><div class="cell-text">${isFree?' ':esc(cells[i])}</div></div>`;
+      cellsHtml += `<div class="${cls}"><div class="cell-text"${cellColorStyle}>${isFree?' ':esc(cells[i])}</div></div>`;
     }
 
     col.innerHTML = `

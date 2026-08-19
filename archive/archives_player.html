@@ -131,7 +131,7 @@ const BOOKS = [
   { title:'Bridge Kingdom',file:'archive_bridgekingdom.json',image:'bridgekingdom_bingo.png',year:'2026', collection:'shouty_bingo', gridTop:34.7, gridWidth:73 },
   { title:'Traitor Queen',file:'archive_traitorqueen.json',image:'traitorqueen_bingo.png',year:'2026', collection:'traitorqueen_bingo', gridTop:34.7, gridWidth:73 },
   { title:'Yesteryear',           file:'archive_yesteryear.json',        image:'yesteryear_bingo.png',        year:'2026', collection:'yesteryear_bingo',        gridTop:29,   gridWidth:78.4, gridHeight:53 },
-  { title:'A Fate Inked in Blood',file:'archive_fateinkedinblood.json',  image:'fateinkedinblood_bingo.png',  year:'2026', collection:'fateinkedinblood_bingo', gridTop:34.7, gridWidth:73 },
+  { title:'A Fate Inked in Blood',file:'archive_fateinkedinblood.json',  image:'fateinkedinblood_bingo.png',  year:'2026', collection:'fateinkedinblood_bingo', gridTop:26.5, gridWidth:82, cellColor:'#f2e8d0' },
 ];
 
 const GRID_SIZE = 25;
@@ -196,13 +196,14 @@ async function fetchCover(title){
 // ─────────────────────────────────────────────
 // RENDER
 // ─────────────────────────────────────────────
-function renderBingoCard(cells, marked, bgImage, gridTop, gridWidth, gridHeight){
+function renderBingoCard(cells, marked, bgImage, gridTop, gridWidth, gridHeight, cellColor){
   const markedSet = new Set(marked);
+  const colorStyle = cellColor ? ` style="color:${cellColor}"` : '';
   let cellsHtml = '';
   for(let i=0;i<GRID_SIZE;i++){
     const isFree = i===12;
     const cls = 'bingo-cell'+(isFree?' free':markedSet.has(i)?' marked':'');
-    cellsHtml += `<div class="${cls}"><div class="cell-text">${isFree?' ':esc(cells[i])}</div></div>`;
+    cellsHtml += `<div class="${cls}"><div class="cell-text"${colorStyle}>${isFree?' ':esc(cells[i])}</div></div>`;
   }
   const gridStyle = `top:${gridTop ?? 35.8}%;width:${gridWidth ?? 73}%${gridHeight != null ? `;height:${gridHeight}%` : ''}`;
   return `<div class="bingo-card-wrap" style="background-image:url('${esc(bgImage)}')">
@@ -225,7 +226,7 @@ function renderBookSection(book, playerData, coverUrl){
         <div><span class="pts-big">${pts.total}</span> <span class="pts-label">pts</span></div>
         <div class="pts-breakdown">${pts.cells} guess${pts.cells!==1?'es':''} + ${pts.lines} line${pts.lines!==1?'s':''}</div>
       </div>
-      ${renderBingoCard(cells, marked, book.image, book.gridTop, book.gridWidth, book.gridHeight)}
+      ${renderBingoCard(cells, marked, book.image, book.gridTop, book.gridWidth, book.gridHeight, book.cellColor)}
     </div>
   </div>`;
 }
