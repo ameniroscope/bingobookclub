@@ -1104,7 +1104,7 @@ function renderBingo(){
       (isFree ? ' free' : markedSet.has(i) ? ' marked' : '');
 
     if(isFree){
-      cell.textContent = 'FREE';
+      cell.textContent = ' ';
       cell.style.cursor = 'default';
     }else if(isEditMode){
       const ta = document.createElement('textarea');
