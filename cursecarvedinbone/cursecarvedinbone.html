@@ -1182,7 +1182,8 @@ import {
   collection,
   doc,
   setDoc,
-  onSnapshot
+  onSnapshot,
+  serverTimestamp
 }
 from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
@@ -1378,7 +1379,9 @@ Object.keys(PLAYERS).forEach(
     stats[p] = {
       chapterProgress:0,
       points:0,
-      mapPos:0
+      mapPos:0,
+      progressAt:Infinity,   // when they reached their current progress (secs)
+      arrivalTie:-Infinity   // = -progressAt, so earlier arrival ranks higher
     };
 
   }
@@ -1436,7 +1439,7 @@ function render(){
   const xRank =
     computeRanks(
       'chapterProgress',
-      'points'
+      'arrivalTie'
     );
 
   const yRank =
@@ -2232,6 +2235,18 @@ async function endDrag(cx,cy){
     );
 
 
+  const payload = {
+    mapPos:idx,
+    chapterProgress:progress
+  };
+
+  // Stamp arrival time only when the reader moves to a NEW progress, so
+  // whoever reached a spot first keeps the earlier timestamp (and stays the
+  // fastest reader on ties). Unchanged progress keeps the original stamp.
+  if(progress !== (stats[pid] && stats[pid].chapterProgress)){
+    payload.progressAt = serverTimestamp();
+  }
+
   try{
 
     await setDoc(
@@ -2240,10 +2255,7 @@ async function endDrag(cx,cy){
         BINGO_COL,
         pid
       ),
-      {
-        mapPos:idx,
-        chapterProgress:progress
-      },
+      payload,
       {
         merge:true
       }
@@ -2318,6 +2330,15 @@ onSnapshot(
           : chapterProgress;
 
 
+      // Seconds since epoch when this reader reached their current progress.
+      // Missing / pending server timestamp → treated as "not yet arrived",
+      // so they never win a fastest-reader tie.
+      const progressAt =
+        data.progressAt && data.progressAt.seconds != null
+          ? Number(data.progressAt.seconds)
+          : Infinity;
+
+
       stats[d.id] = {
 
         chapterProgress,
@@ -2327,7 +2348,14 @@ onSnapshot(
             data.points || 0
           ),
 
-        mapPos
+        mapPos,
+
+        progressAt,
+
+        arrivalTie:
+          progressAt === Infinity
+            ? -Infinity
+            : -progressAt
 
       };
 
