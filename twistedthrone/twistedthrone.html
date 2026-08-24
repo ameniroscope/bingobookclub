@@ -7,7 +7,7 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👑</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../style.css">
 <style>
 /* Shared site font — same file the rest of the book club uses. Falls back to
@@ -21,6 +21,7 @@
   /* Warm parchment ink for text on the dark ground */
   --ink:#f2e6d8;--ink-faded:#c7b3d6;
   --display:'Cinzel','Hakan',serif;
+  --display-hero:'UnifrakturCook','Cinzel','Hakan',serif;
   --body-font:'Cormorant Garamond','Hakan',serif;
 }
 html,body{background:var(--purple-deep);color:var(--ink);font-family:var(--body-font);}
@@ -92,18 +93,18 @@ body.map-modal-open{overflow:hidden;}
 .title-ornament{display:flex;align-items:center;gap:0.6rem;width:100%;max-width:16rem;margin:0 auto 0.6rem;}
 .title-ornament .line{flex:1;height:1px;background:linear-gradient(to right,transparent,var(--gold-deep),transparent);}
 .title-ornament .gem{color:var(--gold);font-size:0.7rem;}
-.players-title{font-family:var(--display);font-weight:700;font-size:2.6rem;letter-spacing:3px;text-transform:uppercase;margin-top:0;margin-bottom:24px;color:var(--gold);
+.players-title{font-family:var(--display-hero);font-weight:700;font-size:3.4rem;letter-spacing:1px;margin-top:0;margin-bottom:24px;color:var(--gold);
   text-shadow:0 2px 3px rgba(0,0,0,0.6),0 0 22px rgba(205,164,52,0.28);}
 .rank-frame{position:relative;display:grid;grid-template-columns:70px 1fr;grid-template-rows:auto 56px;gap:10px;max-width:620px;margin:0 auto;padding:8px;}
 .y-axis{grid-column:1;grid-row:1;position:relative;display:flex;align-items:center;justify-content:center;}
 .y-arrow{width:auto;height:300px;flex-shrink:0;filter:url(#tintArrow);}
 .y-label{position:absolute;top:50%;left:-15%;transform:translate(-50%,-50%) rotate(180deg);z-index:1;
-  font-family:var(--display);font-size:clamp(12px,1.6vw,18px);font-weight:600;letter-spacing:3px;text-transform:uppercase;
+  font-family:var(--display-hero);font-size:clamp(12px,1.6vw,18px);font-weight:600;letter-spacing:3px;text-transform:uppercase;
   writing-mode:vertical-rl;color:var(--gold);white-space:nowrap;pointer-events:none;text-shadow:0 1px 3px rgba(0,0,0,0.6);}
 .x-axis{grid-column:2;grid-row:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;}
 .x-arrow-wrap{position:relative;width:100%;}
 .x-arrow{position:absolute;top:50%;left:50%;filter:url(#tintArrow);transform:translate(-50%,-50%) rotate(90deg);}
-.x-label{font-family:var(--display);font-size:clamp(12px,1.6vw,18px);font-weight:600;letter-spacing:3px;text-transform:uppercase;
+.x-label{font-family:var(--display-hero);font-size:clamp(12px,1.6vw,18px);font-weight:600;letter-spacing:3px;text-transform:uppercase;
   color:var(--gold);white-space:nowrap;pointer-events:none;text-shadow:0 1px 3px rgba(0,0,0,0.6);}
 .rank-grid{grid-column:2;grid-row:1;position:relative;aspect-ratio:1/1;width:100%;margin:10px;}
 .rank-avatar{position:absolute;text-decoration:none;color:var(--gold);font-family:var(--display);
@@ -125,7 +126,7 @@ body.map-modal-open{overflow:hidden;}
   color:var(--gold-lt);text-shadow:0 0 6px rgba(0,0,0,0.7);filter:drop-shadow(0 1px 3px rgba(0,0,0,0.5));}
 .rank-name{font-size:1.35rem;letter-spacing:1.5px;color:var(--gold);text-shadow:0 1px 3px rgba(0,0,0,0.6);}
 @media(max-width:800px){
-  .players-title{font-size:1.5rem;margin-bottom:20px;letter-spacing:2px;}
+  .players-title{font-size:2rem;margin-bottom:20px;letter-spacing:0.5px;}
   .rank-img-frame{width:60px;height:60px;}
   .rank-name{font-size:1rem;}
   .rank-frame{grid-template-columns:42px 1fr;grid-template-rows:auto 40px;}
