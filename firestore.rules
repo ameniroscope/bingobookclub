@@ -43,8 +43,15 @@ service cloud.firestore {
       allow delete: if false;
     }
 
-    // ── Fan art gallery: append only ──
-    match /fanart/{art} {
+    // Fanart wall
+    match /fanart/{docId} {
+      allow read: if true;
+      allow create: if true;
+      allow update, delete: if false;
+    }
+
+    // Wanted Wall (bad/outrageous fanart)
+    match /badart/{docId} {
       allow read: if true;
       allow create: if true;
       allow update, delete: if false;
@@ -65,6 +72,10 @@ service cloud.firestore {
       allow read, write: if true;
     }
 
+    match /atla_tracker/{docId} {
+      allow read, write: if true;
+    }
+
     // ── Bingo cards & map progress: first_bingo, <book>_bingo… ──
     //    doc id must be one of the four players
     match /{bingoCol}/{player} {
@@ -74,16 +85,41 @@ service cloud.firestore {
       allow delete: if false;
     }
 
-    // ── Chapter chat rooms: messages, <book>_messages… append only ──
+    // ── Chapter chat rooms: messages, <book>_messages… ──
+    //    Post a message (append-only content), or update ONLY its
+    //    reactions map. The original text / name / chapter can't be
+    //    changed, and nothing can ever be deleted.
     match /{msgCol}/{msg} {
       allow read: if msgCol == 'messages' || msgCol.matches('.*_messages');
       allow create: if (msgCol == 'messages' || msgCol.matches('.*_messages'))
                     && request.resource.data.text is string
                     && request.resource.data.text.size() > 0
                     && request.resource.data.text.size() <= 5000;
-      allow update, delete: if false;
+      // reactions: text/name/chapter must stay identical to what's stored,
+      // and the reactions field must be a map — so an update can only ever
+      // add or remove emoji reactions, never rewrite the message.
+      allow update: if (msgCol == 'messages' || msgCol.matches('.*_messages'))
+                    && request.resource.data.text == resource.data.text
+                    && request.resource.data.name == resource.data.name
+                    && request.resource.data.chapter == resource.data.chapter
+                    && request.resource.data.reactions is map;
+      allow delete: if false;
     }
 
-    // Anything not matched above is denied by default.
+    // ── The Inadequate Heir — readiness votes ──
+    match /tbk3_votes/{playerId} {
+
+      allow read: if true;
+
+      allow create, update: if
+        playerId in ['lena', 'kathi', 'marine', 'elana']
+        && request.resource.data.keys().hasOnly(['vote', 'message'])
+        && request.resource.data.vote == 'in'
+        && request.resource.data.message is string
+        && request.resource.data.message.size() > 0
+        && request.resource.data.message.size() <= 180;
+
+      allow delete: if false;
+    }
   }
 }

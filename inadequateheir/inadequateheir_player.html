@@ -132,10 +132,33 @@ html,body{min-height:100vh;font-family:'Hakan',serif;color:var(--ink);background
 .msg.mine{align-items:flex-end;}
 .msg-name{display:block;font-family:var(--read);font-weight:600;font-size:0.82rem;color:var(--accent);margin-bottom:0.15rem;}
 .msg.mine .msg-name{color:var(--accent);}
-.msg-text{display:block;font-family:var(--read);font-size:1.02rem;color:var(--ink);line-height:1.55;
-  max-width:min(85%,420px);background:rgba(180,83,27,0.1);border:1px solid rgba(124,54,15,0.28);
-  padding:0.5rem 0.75rem;border-radius:8px;word-break:break-word;}
-.msg.mine .msg-text{background:var(--accent);border-color:var(--accent);color:#fff5ec;}
+.msg-bubble{display:inline-block;max-width:min(85%,420px);background:rgba(180,83,27,0.1);border:1px solid rgba(124,54,15,0.28);padding:0.5rem 0.75rem;border-radius:8px;word-break:break-word;}
+.msg-text{display:block;font-family:var(--read);font-size:1.02rem;line-height:1.55;}
+.reply-quote{display:block;border-left:3px solid rgba(255,255,255,0.55);background:rgba(0,0,0,0.14);border-radius:5px;padding:0.25rem 0.5rem;margin-bottom:0.4rem;}
+.reply-quote-name{display:block;font-family:var(--read);font-weight:700;font-size:0.78rem;color:#fff5ec;}
+.reply-quote-text{display:block;font-family:var(--read);font-size:0.85rem;color:rgba(255,247,230,0.85);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px;}
+.msg-underbar{display:flex;align-items:center;gap:6px;margin-top:3px;flex-wrap:wrap;}
+.msg.mine .msg-underbar{flex-direction:row-reverse;}
+.msg-act{background:transparent;border:none;cursor:pointer;color:var(--ink-faded);font-size:0.95rem;line-height:1;padding:2px 5px;border-radius:6px;opacity:0.55;transition:opacity .15s,background .15s,color .15s;}
+.msg-act:hover{opacity:1;color:var(--accent);background:rgba(124,54,15,0.08);}
+.msg:hover .msg-act{opacity:0.85;}
+.reactions{display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
+.reaction-pill{display:inline-flex;align-items:center;gap:3px;background:rgba(124,54,15,0.08);border:1px solid var(--accent-dim);border-radius:11px;padding:1px 7px;cursor:pointer;font-size:0.9rem;line-height:1.4;color:var(--ink);transition:all .15s;}
+.reaction-pill b{font-weight:700;font-size:0.75rem;color:var(--ink-faded);}
+.reaction-pill.mine{background:var(--player-glow);border-color:var(--accent);}
+.reaction-pill.mine b{color:var(--accent);}
+.reaction-pill:hover{border-color:var(--accent);}
+.react-bar{position:fixed;z-index:300;display:none;gap:2px;background:#f3e4c6;border:1px solid var(--accent-dim);border-radius:22px;padding:5px 8px;box-shadow:0 6px 20px rgba(74,36,16,0.35);}
+.react-bar.open{display:flex;}
+.react-bar button{background:transparent;border:none;cursor:pointer;font-size:1.35rem;line-height:1;padding:3px 5px;border-radius:50%;transition:transform .12s,background .12s;}
+.react-bar button:hover{transform:scale(1.25);background:rgba(124,54,15,0.10);}
+.reply-preview{display:flex;align-items:center;gap:0.6rem;flex-shrink:0;padding:0.5rem 1rem;border-top:1px solid var(--accent-dim);background:rgba(124,54,15,0.06);}
+.reply-preview[hidden]{display:none;}
+.reply-preview-body{flex:1;min-width:0;border-left:3px solid var(--accent);padding-left:0.55rem;}
+.reply-preview-name{display:block;font-family:var(--read);font-size:0.75rem;font-weight:700;color:var(--accent);}
+.reply-preview-text{display:block;font-family:var(--read);font-size:0.85rem;color:var(--ink-faded);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.reply-preview-cancel{background:none;border:none;color:var(--ink-faded);font-size:1.15rem;line-height:1;cursor:pointer;flex-shrink:0;padding:0.1rem 0.3rem;}
+.reply-preview-cancel:hover{color:var(--ink);}
 .compose{flex-shrink:0;border-top:1px solid rgba(124,54,15,0.28);padding:0.7rem 1rem;
   padding-bottom:max(0.7rem,env(safe-area-inset-bottom));display:flex;gap:0.5rem;align-items:flex-end;}
 .compose textarea{flex:1;resize:none;min-height:42px;max-height:110px;background:rgba(255,255,255,0.6);border:1px solid var(--accent-dim);border-radius:8px;
@@ -245,6 +268,13 @@ html,body{min-height:100vh;font-family:'Hakan',serif;color:var(--ink);background
       <button class="close-btn" id="chatClose">✕</button>
     </div>
     <div class="messages" id="chatMessages"></div>
+    <div class="reply-preview" id="replyPreview" hidden>
+      <div class="reply-preview-body">
+        <span class="reply-preview-name" id="replyPreviewName"></span>
+        <span class="reply-preview-text" id="replyPreviewText"></span>
+      </div>
+      <button class="reply-preview-cancel" id="replyCancel" type="button" aria-label="Cancel reply">✕</button>
+    </div>
     <div class="compose">
       <textarea id="chatTA" rows="1" placeholder="Leave a thought…"></textarea>
       <button class="send-btn" id="chatSend">Post</button>
@@ -254,7 +284,7 @@ html,body{min-height:100vh;font-family:'Hakan',serif;color:var(--ink);background
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, getDocs, addDoc, onSnapshot, doc, setDoc, getDoc, serverTimestamp }
+import { getFirestore, collection, getDocs, addDoc, onSnapshot, doc, setDoc, getDoc, updateDoc, arrayUnion, arrayRemove, serverTimestamp }
   from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const BINGO_COL = 'inadequateheir_bingo';
@@ -501,6 +531,7 @@ function openChat(grp){
   st.textContent=canRead?'Unlocked — all messages visible':'Write only';
   overlay.classList.add('open');document.body.style.overflow='hidden';
   chatTA.value='';chatTA.style.height='auto';
+  cancelReply();
   setLastRead(grp.first);
   unreadGroups.delete(grp.first);
   renderRooms();
@@ -508,6 +539,7 @@ function openChat(grp){
 }
 function closeChat(){
   overlay.classList.remove('open');document.body.style.overflow='';
+  closeReactBar();cancelReply();
   if(activeUnsub){activeUnsub();activeUnsub=null;}activeRoom=null;
 }
 chatClose.addEventListener('click',closeChat);
@@ -516,6 +548,61 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&overlay.classList.c
 chatTA.addEventListener('input',()=>{chatTA.style.height='auto';chatTA.style.height=chatTA.scrollHeight+'px';});
 chatTA.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}});
 chatSend.addEventListener('click',sendMsg);
+
+/* ── REACTIONS + REPLIES ── */
+const REACT_EMOJIS=['❤️','😂','😮','😢','👑','👍'];
+const reactBar=document.createElement('div');
+reactBar.className='react-bar';
+let reactCtx=null;
+REACT_EMOJIS.forEach(em=>{
+  const b=document.createElement('button');
+  b.type='button';b.textContent=em;
+  b.addEventListener('click',ev=>{
+    ev.stopPropagation();
+    if(!reactCtx)return;
+    const arr=Array.isArray(reactCtx.reactions?.[em])?reactCtx.reactions[em]:[];
+    toggleReaction(reactCtx.msgId,em,arr.includes(PID));
+    closeReactBar();
+  });
+  reactBar.appendChild(b);
+});
+document.body.appendChild(reactBar);
+function openReactBar(anchor,msgId,reactions){
+  if(!msgId)return;
+  reactCtx={msgId,reactions:reactions||{}};
+  reactBar.classList.add('open');
+  const r=anchor.getBoundingClientRect();
+  const bw=reactBar.offsetWidth,bh=reactBar.offsetHeight;
+  let left=r.left+r.width/2-bw/2;
+  left=Math.max(8,Math.min(left,window.innerWidth-bw-8));
+  let top=r.top-bh-8;
+  if(top<8)top=r.bottom+8;
+  reactBar.style.left=left+'px';reactBar.style.top=top+'px';
+}
+function closeReactBar(){reactBar.classList.remove('open');reactCtx=null;}
+document.addEventListener('click',()=>closeReactBar());
+document.addEventListener('keydown',ev=>{if(ev.key==='Escape')closeReactBar();});
+document.getElementById('chatMessages').addEventListener('scroll',()=>closeReactBar());
+async function toggleReaction(msgId,emoji,mine){
+  if(!db||!msgId)return;
+  try{
+    await updateDoc(doc(db,MSG_COL,msgId),{[`reactions.${emoji}`]:mine?arrayRemove(PID):arrayUnion(PID)});
+  }catch(err){console.error('Reaction update failed:',err);}
+}
+let replyingTo=null;
+const replyPreview=document.getElementById('replyPreview');
+const replyPreviewName=document.getElementById('replyPreviewName');
+const replyPreviewText=document.getElementById('replyPreviewText');
+const replyCancelBtn=document.getElementById('replyCancel');
+function startReply(target){
+  replyingTo={name:String(target.name||''),text:String(target.text||'')};
+  replyPreviewName.textContent=replyingTo.name;
+  replyPreviewText.textContent=replyingTo.text;
+  replyPreview.hidden=false;
+  chatTA.focus();
+}
+function cancelReply(){replyingTo=null;replyPreview.hidden=true;}
+replyCancelBtn.addEventListener('click',cancelReply);
 
 function msgInGroup(m,grp){
   const n=Number(String(m.chapter).replace(/chapter-?/i,'').replace(/chap/i,'').trim());
@@ -529,7 +616,7 @@ function subscribeChat(grp){
   activeUnsub=onSnapshot(collection(db,MSG_COL),snap=>{
     const canRead=myProgress>=grp.unlock;
     let msgs=[];
-    snap.forEach(d=>{const m=d.data();if(msgInGroup(m,grp))msgs.push(m);});
+    snap.forEach(d=>{const m=d.data();m._id=d.id;if(msgInGroup(m,grp))msgs.push(m);});
     msgs.sort((a,b)=>(a.ts?.seconds||0)-(b.ts?.seconds||0));
     if(!canRead)msgs=msgs.filter(m=>m.name===PNAME||m.name===PID);
     msgDiv.innerHTML='';
@@ -546,9 +633,41 @@ function subscribeChat(grp){
       const emoji=info?info.emoji:'◈';
       const name=info?info.name:String(m.name||'?');
       const color=info?.color||'#c2410c';
+      const msgId=m._id;
       const el=document.createElement('div');
       el.className='msg'+(isMine?' mine':'');
-      el.innerHTML=`<span class="msg-name" style="color:${color}">${emoji} ${esc(name)}</span><span class="msg-text" style="background:${hexA(color,isMine?0.6:0.45)};border-color:${color};color:#fff">${esc(String(m.text||''))}</span>`;
+      const rt=m.replyTo;
+      const quoteHTML=(rt&&(rt.name||rt.text))
+        ?`<div class="reply-quote"><span class="reply-quote-name">${esc(rt.name||'')}</span><span class="reply-quote-text">${esc(String(rt.text||''))}</span></div>`
+        :'';
+      el.innerHTML=
+        `<span class="msg-name" style="color:${color}">${emoji} ${esc(name)}</span>`+
+        `<div class="msg-bubble" style="background:${hexA(color,isMine?0.6:0.45)};border-color:${color};color:#fff">`+
+          quoteHTML+
+          `<span class="msg-text">${esc(String(m.text||''))}</span>`+
+        `</div>`+
+        `<div class="msg-underbar">`+
+          `<button class="msg-act react-act" type="button" title="React" aria-label="React">☺</button>`+
+          `<button class="msg-act reply-act" type="button" title="Reply" aria-label="Reply">↩</button>`+
+          `<span class="reactions"></span>`+
+        `</div>`;
+      const reactionsWrap=el.querySelector('.reactions');
+      const rx=m.reactions||{};
+      Object.keys(rx).forEach(em=>{
+        const arr=Array.isArray(rx[em])?rx[em]:[];
+        if(!arr.length)return;
+        const mineRx=arr.includes(PID);
+        const pill=document.createElement('button');
+        pill.type='button';
+        pill.className='reaction-pill'+(mineRx?' mine':'');
+        pill.innerHTML=`<span>${esc(em)}</span><b>${arr.length}</b>`;
+        pill.addEventListener('click',ev=>{ev.stopPropagation();toggleReaction(msgId,em,mineRx);});
+        reactionsWrap.appendChild(pill);
+      });
+      const reactBtn=el.querySelector('.react-act');
+      reactBtn.addEventListener('click',ev=>{ev.stopPropagation();openReactBar(reactBtn,msgId,m.reactions||{});});
+      const replyBtn=el.querySelector('.reply-act');
+      replyBtn.addEventListener('click',ev=>{ev.stopPropagation();startReply({name,text:String(m.text||'')});});
       msgDiv.appendChild(el);
     });
     msgDiv.scrollTop=msgDiv.scrollHeight;
@@ -563,10 +682,11 @@ async function sendMsg(){
   chatSend.disabled=true;
   chatTA.disabled=true;
   try{
-    await addDoc(collection(db,MSG_COL),{
-      chapter:activeRoom.first,name:PNAME,text,ts:serverTimestamp()
-    });
+    const payload={chapter:activeRoom.first,name:PNAME,text,ts:serverTimestamp()};
+    if(replyingTo){payload.replyTo={name:replyingTo.name,text:String(replyingTo.text||'').slice(0,140)};}
+    await addDoc(collection(db,MSG_COL),payload);
     chatTA.value='';chatTA.style.height='auto';
+    cancelReply();
     setLastRead(activeRoom.first);
   }catch(e){console.error(e);}
   finally{

@@ -3,75 +3,82 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A Curse Carved in Bone</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🦴</text></svg>">
+<title>The Twisted Throne</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👑</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&family=IM+Fell+English+SC&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../style.css">
 
 <style>
-@font-face{
-  font-family:'Norse';
-  src:url('../fonts/Norse.otf') format('opentype');
-  font-weight:400;
-  font-display:swap;
-}
-@font-face{
-  font-family:'Norse';
-  src:url('../fonts/Norse-Bold.otf') format('opentype');
-  font-weight:700;
-  font-display:swap;
-}
+/* Shared site font — same file the rest of the book club uses. Falls back to
+   IM Fell English SC / Cormorant (loaded above) if Hakan isn't present. */
+@font-face{font-family:'Hakan';src:url('../fonts/Hakan.otf') format('opentype'),url('../fonts/Hakan.ttf') format('truetype');font-weight:400;font-display:swap;}
 
 :root{
-  --player:#a8430f;
-  --player-glow:rgba(168,67,15,.35);
-  --accent:#a8430f;
-  --accent-lt:#d97a3c;
-  --accent-dim:#4a1a0c;
-  --ink:#fff3e6;
-  --ink-faded:#d9b89a;
-  --bg-deep:#170d06;
-  --bg-mid:#231406;
-  --stone-dk:#2a1710;
+  /* Rich Gold (16-0836 TCX) — titles, names, primary accents */
+  --player:#c79a42;
+  --player-glow:rgba(199,154,66,.32);
+  --accent:#c79a42;
+  --accent-lt:#e6c877;
+  --accent-dim:#8a6a2a;
+  /* Amethyst Purple (19-3520 TCX) — page ground, panels, borders */
+  --bg-deep:#130712;
+  --bg-mid:#2a1230;
+  --purple-mid:#4a1d4c;
+  /* Jewel Teal (19-4526 TCX) — secondary accent. Deep velvet jewel tone,
+     not a bright mint/cyan, to match the amethyst+gold+teal mood. */
+  --teal:#0f6b6b;
+  --teal-lt:#2c9187;
+  --teal-deep:#0a332e;
+  /* Warm parchment ink on the dark ground */
+  --ink:#f2e6d8;
+  --ink-faded:#c7b3d6;
+  --display:'IM Fell English SC','Cormorant Garamond','Hakan',serif;
+  --read:'Cormorant Garamond',Georgia,serif;
 }
 
 html,body{
   min-height:100vh;
   margin:0;
-  font-family:'Crimson Text',Georgia,serif;
+  font-family:var(--read);
   color:var(--ink);
   background:var(--bg-deep);
 }
-
 body{overflow-x:hidden;}
 
+/* ── BACKGROUND: flat lush amethyst ground — no gradient, no image. ── */
 #bg{
   position:fixed;
   inset:0;
   z-index:0;
-  background:var(--bg-deep) url('background.png') center/420px repeat;
+  background:#22122c;
 }
 #bg::after{
   content:'';
   position:absolute;
   inset:0;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='4' height='4' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
   pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='4' height='4' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
 }
 
-/* TOP BUTTONS */
+/* Script font — keep letters joined by removing the wide tracking used for serif type */
+.player-name,.section-title,.chat-title,.lock-title,.pts-label,.chat-status,.chat-room-label,.room-btn,.send-btn,.msg-name,.write-note strong,.lock-club{letter-spacing:normal!important;}
+
+/* ── TOP-RIGHT: back to book hub ── */
 .players-btn{
-  background:#231406;
+  background:var(--bg-mid);
   color:var(--accent-lt);
   border-color:var(--accent-dim);
-  box-shadow:0 2px 8px rgba(0,0,0,.3);
+  box-shadow:0 2px 8px rgba(0,0,0,.4);
 }
 .players-btn:hover{
-  background:#102a2f;
+  background:var(--purple-mid);
   border-color:var(--accent-lt);
   transform:translateY(-2px);
 }
 
-/* PLAYER HEADER */
+/* ── PLAYER HEADER ── */
 .player-header{
   display:flex;
   flex-direction:column;
@@ -81,11 +88,7 @@ body{overflow-x:hidden;}
   z-index:1;
   padding:2.2rem 1rem .5rem;
 }
-.img-frame{
-  position:relative;
-  width:110px;
-  height:110px;
-}
+.img-frame{position:relative;width:110px;height:110px;}
 .img-frame::before{
   content:'';
   position:absolute;
@@ -112,15 +115,14 @@ body{overflow-x:hidden;}
   border:2px solid var(--player);
 }
 .player-name{
-  font-family:'Norse',serif;
-  font-size:2.5rem;
+  font-family:'UnifrakturCook','IM Fell English SC','Hakan',serif;
+  font-size:2.6rem;
   font-weight:400;
-  color:var(--ink);
-  letter-spacing:2px;
-  text-shadow:0 1px 3px rgba(0,0,0,.6);
+  color:var(--accent-lt);
+  text-shadow:0 2px 3px rgba(0,0,0,.6),0 0 22px rgba(205,164,52,.25);
 }
 
-/* LAYOUT */
+/* ── LAYOUT ── */
 .wrap{
   position:relative;
   z-index:1;
@@ -133,16 +135,16 @@ body{overflow-x:hidden;}
   align-items:start;
 }
 .section-title{
-  font-family:'Norse',serif;
-  font-size:1.7rem;
-  letter-spacing:3px;
-  color:var(--accent-lt);
-  text-transform:uppercase;
+  font-family:var(--display);
+  font-size:1.9rem;
+  letter-spacing:1px;
+  color:var(--accent);
   text-align:center;
   margin-bottom:1rem;
+  text-shadow:0 1px 3px rgba(0,0,0,.5);
 }
 
-/* BINGO */
+/* ── BINGO ── */
 .bingo-section{display:flex;flex-direction:column;}
 .points-line{
   display:flex;
@@ -153,7 +155,7 @@ body{overflow-x:hidden;}
   max-width:440px;
   margin:.1rem auto .9rem;
   padding-left:5px;
-  font-family:'Norse',serif;
+  font-family:var(--display);
   letter-spacing:1px;
   color:var(--ink);
 }
@@ -173,10 +175,10 @@ body{overflow-x:hidden;}
 .points-line .pts-break{
   display:block;
   width:100%;
-  font-size:.7rem;
+  font-size:.72rem;
   color:var(--ink-faded);
   font-style:italic;
-  font-family:'Crimson Text',serif;
+  font-family:var(--read);
   letter-spacing:0;
 }
 
@@ -186,20 +188,24 @@ body{overflow-x:hidden;}
   max-width:440px;
   margin:0 auto;
   aspect-ratio:1023/1537;
-  background:url('cursecarvedinbone_bingo.png') center/contain no-repeat;
+  background:url('twistedthrone_bingo.png') center/contain no-repeat;
   border-radius:6px;
-  box-shadow:0 4px 14px rgba(0,0,0,.4);
+  box-shadow:0 4px 14px rgba(0,0,0,.5);
 }
+/* ── BINGO GRID OVERLAY ──
+   Positioned to the real twistedthrone_bingo.png (1023×1537): these
+   percentages were measured from the cream 5×5 grid in the art, so each
+   clickable cell lands on a printed square. */
 .bingo-grid{
   position:absolute;
-  left:5.6%;
-  top:25.9%;
-  width:88%;
-  height:57%;
+  left:7.04%;
+  top:33.05%;
+  width:85.83%;
+  height:56.21%;
   display:grid;
   grid-template-columns:repeat(5,1fr);
   grid-template-rows:repeat(5,1fr);
-  gap:2px;
+  gap:0;
 }
 .bingo-cell{
   min-width:0;
@@ -214,12 +220,12 @@ body{overflow-x:hidden;}
   overflow:hidden;
   cursor:pointer;
   transition:background .15s;
-  border-radius:3px;
   background:transparent;
 }
 .bingo-cell.marked{
-  background:var(--player-glow);
-  box-shadow:inset 0 0 0 1px var(--accent);
+  background:rgba(74,29,76,.55);
+  box-shadow:inset 0 0 0 1px #2a103087;
+  border-radius : 5px;
 }
 .bingo-cell.free{
   font-weight:600;
@@ -233,11 +239,11 @@ body{overflow-x:hidden;}
   align-items:center;
   justify-content:center;
   text-align:center;
-  font-family:'Crimson Text',Georgia,serif;
+  font-family:var(--read);
   font-weight:600;
   font-size:inherit;
   line-height:1.1;
-  color:#fff;
+  color:#2a1030;
   padding:1px;
   overflow-wrap:break-word;
   word-break:break-word;
@@ -247,29 +253,31 @@ body{overflow-x:hidden;}
   height:100%;
   box-sizing:border-box;
   border:none;
-  background:rgba(168,67,15,.18);
+  background:rgba(255,255,255,.35);
   outline:none;
   resize:none;
   text-align:center;
-  font-family:'Crimson Text',Georgia,serif;
+  font-family:var(--read);
   font-weight:600;
   font-size:inherit;
   line-height:1.1;
-  color:#fff;
+  color:#2a1030;
   padding:1px;
   overflow:hidden;
   overflow-wrap:break-word;
   word-break:break-word;
 }
 .bingo-hint{
-  font-size:11px;
+  font-family:var(--read);
+  font-size:14px;
   color:var(--accent-lt);
   margin-top:8px;
   font-style:italic;
   text-align:center;
 }
 .bingo-status{
-  font-size:11px;
+  font-family:var(--read);
+  font-size:12px;
   color:var(--ink-faded);
   font-style:italic;
   text-align:center;
@@ -301,68 +309,30 @@ body{overflow-x:hidden;}
   padding:0;
 }
 .bingo-lock-btn:hover,
-.bingo-lock-btn.unlocked{
-  border-color:var(--accent-lt);
-}
-.bingo-lock-btn.unlocked{background:rgba(168,67,15,.15);}
+.bingo-lock-btn.unlocked{border-color:var(--accent-lt);}
+.bingo-lock-btn.unlocked{background:rgba(199,154,66,.15);}
 
-/* ROOMS */
+/* ── ROOMS ── */
 .rooms-col{
   display:flex;
   flex-direction:column;
   justify-content:center;
   align-self:center;
 }
-.progress-control{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:.5rem;
-  flex-wrap:wrap;
-  margin-bottom:.9rem;
-}
-.progress-control label{
-  font-family:'Norse',serif;
-  font-size:.8rem;
-  letter-spacing:1px;
-  color:var(--ink-faded);
-}
-.progress-control input{
-  width:60px;
-  height:34px;
-  text-align:center;
-  font-family:'Crimson Text',serif;
-  font-size:1rem;
-  background:var(--bg-mid);
-  border:1px solid var(--accent-dim);
-  border-radius:6px;
-  color:var(--ink);
-}
-.progress-control input:focus{outline:none;border-color:var(--accent-lt);}
 .legend{
   display:flex;
   justify-content:center;
   gap:1rem;
   flex-wrap:wrap;
+  font-family:var(--read);
   color:var(--ink-faded);
   font-size:.85rem;
   margin-bottom:1rem;
 }
 .legend span{display:flex;align-items:center;gap:.35rem;}
-.legend .dot{
-  width:11px;
-  height:11px;
-  border-radius:50%;
-  display:inline-block;
-}
-.legend .dot.unlocked{
-  background:rgba(168,67,15,.25);
-  border:1px solid var(--accent-lt);
-}
-.legend .dot.locked{
-  background:var(--bg-mid);
-  border:1px solid var(--accent-dim);
-}
+.legend .dot{width:11px;height:11px;border-radius:50%;display:inline-block;}
+.legend .dot.unlocked{background:rgba(199,154,66,.25);border:1px solid var(--accent-lt);}
+.legend .dot.locked{background:var(--bg-mid);border:1px solid var(--accent-dim);}
 .rooms-grid{
   display:grid;
   grid-template-columns:repeat(2,1fr);
@@ -377,21 +347,20 @@ body{overflow-x:hidden;}
   border-radius:6px;
   cursor:pointer;
   transition:all .2s;
-  font-family:'Norse',serif;
-  font-size:.95rem;
+  font-family:var(--display);
+  font-size:1.05rem;
   letter-spacing:.5px;
   text-align:center;
   padding:0 .5rem;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='4' height='4' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
 }
 .room-btn:hover{transform:translateY(-2px);}
 .room-btn.unlocked{
-  background-color:rgba(168,67,15,.14);
-  border:1px solid var(--accent-lt);
+  background-color:rgba(199,154,66,.14);
+  border:1px solid var(--accent);
   color:var(--ink);
   box-shadow:inset 0 0 12px rgba(0,0,0,.3);
 }
-.room-btn.unlocked:hover{background-color:rgba(168,67,15,.24);}
+.room-btn.unlocked:hover{background-color:rgba(199,154,66,.24);}
 .room-btn.locked{
   background-color:var(--bg-mid);
   border:1px solid var(--accent-dim);
@@ -399,13 +368,7 @@ body{overflow-x:hidden;}
   box-shadow:inset 0 0 12px rgba(0,0,0,.4);
 }
 .room-btn.locked:hover{border-color:var(--accent-lt);}
-.room-btn .lock-ico{
-  position:absolute;
-  top:6px;
-  right:6px;
-  font-size:1rem;
-  opacity:.5;
-}
+.room-btn .lock-ico{position:absolute;top:6px;right:6px;font-size:1rem;opacity:.55;}
 .room-btn .unread-dot{
   position:absolute;
   top:6px;
@@ -413,17 +376,17 @@ body{overflow-x:hidden;}
   width:8px;
   height:8px;
   border-radius:50%;
-  background:var(--accent-lt);
+  background:var(--teal-lt);
   display:none;
 }
 .room-btn.has-unread .unread-dot{display:block;}
 
-/* CHAT */
+/* ── CHAT MODAL ── */
 .overlay{
   position:fixed;
   inset:0;
   z-index:200;
-  background:rgba(10,6,2,.78);
+  background:rgba(9,4,14,.8);
   backdrop-filter:blur(4px);
   display:flex;
   align-items:center;
@@ -436,8 +399,8 @@ body{overflow-x:hidden;}
 }
 .overlay.open{opacity:1;pointer-events:all;}
 .chat-modal{
-  background-color:#5c3d22;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='4' height='4' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+  background-color:#241030;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='4' height='4' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
   border:2px solid var(--accent-dim);
   border-radius:12px;
   width:100%;
@@ -448,7 +411,7 @@ body{overflow-x:hidden;}
   max-height:80dvh;
   display:flex;
   flex-direction:column;
-  box-shadow:0 8px 40px rgba(0,0,0,.45),inset 0 0 30px rgba(0,0,0,.35);
+  box-shadow:0 8px 40px rgba(0,0,0,.55),inset 0 0 30px rgba(0,0,0,.35);
   transform:translateY(12px);
   transition:transform .2s;
   overflow:hidden;
@@ -464,28 +427,27 @@ body{overflow-x:hidden;}
   gap:.5rem;
 }
 .chat-room-label{
-  font-family:'Norse',serif;
-  font-size:.68rem;
+  font-family:var(--read);
+  font-size:.7rem;
   letter-spacing:2px;
   color:var(--accent-lt);
   text-transform:uppercase;
 }
 .chat-title{
-  font-family:'Norse',serif;
-  font-size:1.6rem;
+  font-family:var(--display);
+  font-size:1.7rem;
   font-weight:400;
   color:var(--ink);
-  letter-spacing:1px;
+  letter-spacing:.5px;
 }
 .chat-status{
   display:inline-block;
   margin-top:5px;
-  font-family:'Norse',serif;
-  font-size:.6rem;
-  letter-spacing:1px;
+  font-family:var(--read);
+  font-weight:600;
+  font-size:.72rem;
   padding:.22rem .6rem;
   border-radius:3px;
-  text-transform:uppercase;
 }
 .chat-status.unlocked{background:var(--accent);color:#1a0e02;}
 .chat-status.locked{
@@ -515,6 +477,7 @@ body{overflow-x:hidden;}
   gap:.7rem;
 }
 .empty-msg,.write-note{
+  font-family:var(--read);
   font-size:1rem;
   color:var(--ink-faded);
   font-style:italic;
@@ -524,33 +487,27 @@ body{overflow-x:hidden;}
 }
 .write-note strong{
   display:block;
-  font-family:'Norse',serif;
-  font-size:.85rem;
+  font-family:var(--read);
+  font-size:.95rem;
+  font-weight:600;
   font-style:normal;
-  letter-spacing:1px;
   margin-bottom:.3rem;
   color:var(--ink);
-  text-transform:uppercase;
 }
-.msg{
-  display:flex;
-  flex-direction:column;
-  gap:.15rem;
-  align-items:flex-start;
-}
+.msg{display:flex;flex-direction:column;gap:.15rem;align-items:flex-start;}
 .msg.mine{align-items:flex-end;}
 .msg-name{
   display:block;
-  font-family:'Norse',serif;
-  font-size:.8rem;
-  letter-spacing:1px;
+  font-family:var(--read);
+  font-weight:600;
+  font-size:.82rem;
   color:var(--accent-lt);
   margin-bottom:.15rem;
 }
 .msg-bubble{
   display:inline-block;
   max-width:min(85%,420px);
-  background:rgba(168,67,15,.1);
+  background:rgba(199,154,66,.1);
   border:1px solid var(--accent-dim);
   padding:.5rem .75rem;
   border-radius:8px;
@@ -558,34 +515,67 @@ body{overflow-x:hidden;}
 }
 .msg-text{
   display:block;
-  font-family:'Crimson Text',Georgia,serif;
-  font-size:1rem;
+  font-family:var(--read);
+  font-size:1.02rem;
   color:var(--ink);
   line-height:1.6;
 }
-.reply-quote{display:block;border-left:3px solid var(--accent-lt);background:rgba(0,0,0,.25);border-radius:5px;padding:.25rem .5rem;margin-bottom:.4rem;}
-.reply-quote-name{display:block;font-family:'Crimson Text',Georgia,serif;font-weight:700;font-size:.78rem;color:var(--accent-lt);}
-.reply-quote-text{display:block;font-family:'Crimson Text',Georgia,serif;font-size:.85rem;color:var(--ink-faded);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px;}
+/* quoted message shown inside a reply bubble */
+.reply-quote{
+  display:block;
+  border-left:3px solid var(--accent-lt);
+  background:rgba(0,0,0,.22);
+  border-radius:5px;
+  padding:.25rem .5rem;
+  margin-bottom:.4rem;
+}
+.reply-quote-name{display:block;font-family:var(--read);font-weight:700;font-size:.78rem;color:var(--accent-lt);}
+.reply-quote-text{display:block;font-family:var(--read);font-size:.85rem;color:var(--ink-faded);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px;}
+/* per-message react / reply tools + reaction pills */
 .msg-underbar{display:flex;align-items:center;gap:6px;margin-top:3px;flex-wrap:wrap;}
 .msg.mine .msg-underbar{flex-direction:row-reverse;}
-.msg-act{background:transparent;border:none;cursor:pointer;color:var(--ink-faded);font-size:.95rem;line-height:1;padding:2px 5px;border-radius:6px;opacity:.55;transition:opacity .15s,background .15s,color .15s;}
-.msg-act:hover{opacity:1;color:var(--accent-lt);background:rgba(255,255,255,.06);}
+.msg-act{
+  background:transparent;border:none;cursor:pointer;
+  color:var(--ink-faded);font-size:.95rem;line-height:1;
+  padding:2px 5px;border-radius:6px;opacity:.5;
+  transition:opacity .15s,background .15s,color .15s;
+}
+.msg-act:hover{opacity:1;color:var(--accent-lt);background:rgba(255,255,255,.07);}
 .msg:hover .msg-act{opacity:.85;}
 .reactions{display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
-.reaction-pill{display:inline-flex;align-items:center;gap:3px;background:rgba(255,255,255,.06);border:1px solid var(--accent-dim);border-radius:11px;padding:1px 7px;cursor:pointer;font-size:.9rem;line-height:1.4;color:var(--ink);transition:all .15s;}
+.reaction-pill{
+  display:inline-flex;align-items:center;gap:3px;
+  background:rgba(255,255,255,.06);border:1px solid var(--accent-dim);
+  border-radius:11px;padding:1px 7px;cursor:pointer;
+  font-size:.9rem;line-height:1.4;color:var(--ink);transition:all .15s;
+}
 .reaction-pill b{font-weight:700;font-size:.75rem;color:var(--ink-faded);}
-.reaction-pill.mine{background:var(--player-glow);border-color:var(--accent-lt);}
+.reaction-pill.mine{background:rgba(199,154,66,.22);border-color:var(--accent-lt);}
 .reaction-pill.mine b{color:var(--accent-lt);}
 .reaction-pill:hover{border-color:var(--accent-lt);}
-.react-bar{position:fixed;z-index:300;display:none;gap:2px;background:#2a1710;border:1px solid var(--accent-dim);border-radius:22px;padding:5px 8px;box-shadow:0 6px 20px rgba(0,0,0,.55);}
+/* floating emoji react bar */
+.react-bar{
+  position:fixed;z-index:300;display:none;gap:2px;
+  background:#241030;border:1px solid var(--accent-dim);
+  border-radius:22px;padding:5px 8px;box-shadow:0 6px 20px rgba(0,0,0,.55);
+}
 .react-bar.open{display:flex;}
-.react-bar button{background:transparent;border:none;cursor:pointer;font-size:1.35rem;line-height:1;padding:3px 5px;border-radius:50%;transition:transform .12s,background .12s;}
+.react-bar button{
+  background:transparent;border:none;cursor:pointer;font-size:1.35rem;line-height:1;
+  padding:3px 5px;border-radius:50%;transition:transform .12s,background .12s;
+}
 .react-bar button:hover{transform:scale(1.25);background:rgba(255,255,255,.08);}
-.reply-preview{display:flex;align-items:center;gap:.6rem;flex-shrink:0;padding:.5rem 1rem;border-top:1px solid var(--accent-dim);background:rgba(0,0,0,.25);}
+/* "replying to" preview above the compose box */
+.reply-preview{
+  display:flex;align-items:center;gap:.6rem;flex-shrink:0;
+  padding:.5rem 1rem;border-top:1px solid var(--accent-dim);background:rgba(0,0,0,.22);
+}
 .reply-preview[hidden]{display:none;}
 .reply-preview-body{flex:1;min-width:0;border-left:3px solid var(--accent-lt);padding-left:.55rem;}
-.reply-preview-name{display:block;font-family:'Crimson Text',Georgia,serif;font-size:.75rem;font-weight:700;color:var(--accent-lt);}
-.reply-preview-text{display:block;font-family:'Crimson Text',Georgia,serif;font-size:.85rem;color:var(--ink-faded);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.reply-preview-name{display:block;font-family:var(--read);font-size:.75rem;font-weight:700;color:var(--accent-lt);}
+.reply-preview-text{display:block;font-family:var(--read);font-size:.85rem;color:var(--ink-faded);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .reply-preview-cancel{background:none;border:none;color:var(--ink-faded);font-size:1.15rem;line-height:1;cursor:pointer;flex-shrink:0;padding:.1rem .3rem;}
 .reply-preview-cancel:hover{color:var(--ink);}
 .compose{
@@ -607,7 +597,7 @@ body{overflow-x:hidden;}
   border:1px solid var(--accent-dim);
   border-radius:8px;
   padding:.5rem .7rem;
-  font-family:'Crimson Text',serif;
+  font-family:var(--read);
   font-size:1rem;
   color:var(--ink);
   line-height:1.5;
@@ -617,29 +607,27 @@ body{overflow-x:hidden;}
 .send-btn{
   height:42px;
   padding:0 1.1rem;
-  background:#231406;
+  background:var(--bg-mid);
   border:1px solid var(--accent-lt);
   border-radius:8px;
   color:var(--accent-lt);
-  font-family:'Norse',serif;
-  font-size:.7rem;
-  letter-spacing:1.5px;
-  text-transform:uppercase;
+  font-family:var(--display);
+  font-size:1.05rem;
   cursor:pointer;
   transition:all .2s;
   white-space:nowrap;
   flex-shrink:0;
 }
-.send-btn:hover{background:#102a2f;}
+.send-btn:hover{background:var(--purple-mid);}
 .send-btn:disabled{opacity:.5;cursor:wait;}
 
-/* PASSWORD / UNKNOWN */
+/* ── PASSWORD / UNKNOWN ── */
 .lock-modal-wrap,
 .unknown-wrap{
   position:fixed;
   inset:0;
   z-index:400;
-  background:#040d0f;
+  background:radial-gradient(120% 120% at 50% 0%,#2a1230 0%,#130712 70%);
   align-items:center;
   justify-content:center;
   flex-direction:column;
@@ -651,195 +639,56 @@ body{overflow-x:hidden;}
 .unknown-wrap{display:none;gap:1rem;}
 .unknown-wrap.open{display:flex;}
 .lock-club{
-  font-family:'Norse',serif;
-  font-size:.7rem;
-  letter-spacing:6px;
+  font-family:var(--read);
+  font-size:1.05rem;
+  letter-spacing:1px;
   color:var(--accent-lt);
-  text-transform:uppercase;
   margin-bottom:.4rem;
 }
 .lock-title{
-  font-family:'Norse',serif;
-  font-size:clamp(1.8rem,5vw,2.8rem);
+  font-family:var(--display);
+  font-size:clamp(2.2rem,6vw,3.4rem);
   font-weight:400;
   color:var(--ink);
-  letter-spacing:2px;
   margin-bottom:1.6rem;
-  text-shadow:0 1px 3px rgba(0,0,0,.6);
+  text-shadow:0 2px 3px rgba(0,0,0,.6),0 0 22px rgba(205,164,52,.22);
 }
 .lock-modal-wrap input{
   width:min(320px,90vw);
   height:52px;
   box-sizing:border-box;
   text-align:center;
-  font-family:'Norse',serif;
-  font-size:1rem;
-  letter-spacing:2px;
-  background:#231406;
+  font-family:var(--read);
+  font-size:1.2rem;
+  background:var(--bg-mid);
   border:1px solid var(--accent-dim);
   border-radius:8px;
   color:var(--ink);
   margin-bottom:1rem;
 }
-.lock-modal-wrap input:focus{outline:none;border-color:var(--accent-lt);}
+.lock-modal-wrap input:focus{outline:none;border-color:var(--accent-lt);box-shadow:0 0 14px rgba(199,154,66,.25);}
 .lock-modal-wrap button{
   width:min(320px,90vw);
   height:52px;
   cursor:pointer;
-  font-family:'Norse',serif;
-  text-transform:uppercase;
-  letter-spacing:3px;
-  background:#231406;
+  font-family:var(--display);
+  font-size:1.2rem;
+  background:var(--bg-mid);
   border:1px solid var(--accent-lt);
   border-radius:8px;
   color:var(--accent-lt);
   transition:all .25s ease;
 }
-.lock-modal-wrap button:hover{background:#102a2f;}
+.lock-modal-wrap button:hover{background:var(--purple-mid);}
 .lock-error{
-  color:#d98a8a;
-  font-size:.9rem;
+  color:#e6849c;
+  font-size:1rem;
   min-height:1.2rem;
   margin-top:.8rem;
-  letter-spacing:1px;
 }
 
-/* NORSE GOD SIDE RAILS
-   IMPORTANT: this is a real CSS comment.
-   The old version began with //*, which is invalid CSS. */
-.gods-rail{
-  position:fixed;
-  top:50%;
-  transform:translateY(-50%);
-  z-index:60;
-  display:flex;
-  flex-direction:row;
-  align-items:flex-start;
-  gap:0;
-  padding:6px;
-}
-.gods-rail.gods-left{left:35px;}
-.gods-rail.gods-right{right:35px;}
-.gods-col{
-  display:flex;
-  flex-direction:column;
-  gap:14px;
-}
-.gods-rail>.gods-col+.gods-col{margin-left:-48px;}
-.gods-col-offset{margin-top:82px;}
-.god{
-  position:relative;
-  cursor:pointer;
-  outline:none;
-}
-.god-thumb{
-  width:150px;
-  height:150px;
-  clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);
-  background:var(--accent);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  filter:drop-shadow(0 2px 4px rgba(0,0,0,.6)) drop-shadow(0 0 7px rgba(217,122,60,.4));
-  transition:transform .25s ease,filter .25s ease;
-}
-.god-thumb-img,
-.god-fallback-inner{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  background:var(--stone-dk);
-  clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);
-  transform:scale(.9);
-}
-.god-fallback-inner{
-  color:var(--accent-lt);
-  font-family:'Norse',serif;
-  font-size:1.9rem;
-}
-.god:hover .god-thumb,
-.god.open .god-thumb{
-  transform:scale(1.1);
-  filter:drop-shadow(0 2px 6px rgba(0,0,0,.7)) drop-shadow(0 0 12px rgba(217,122,60,.65));
-}
-.god-big{
-  position:fixed;
-  width:320px;
-  height:auto;
-  aspect-ratio:3/4;
-  object-fit:cover;
-  border-radius:8px;
-  border:2px solid var(--accent-lt);
-  background:var(--stone-dk);
-  box-shadow:0 10px 30px rgba(0,0,0,.7);
-  opacity:0;
-  visibility:hidden;
-  pointer-events:none;
-  transform:scale(.92);
-  transform-origin:center center;
-  transition:opacity .2s ease,transform .2s ease;
-  z-index:9999;
-}
-.god-big.show{
-  opacity:1;
-  visibility:visible;
-  transform:scale(1);
-}
-.god-big-fallback{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  padding:0 10px;
-  box-sizing:border-box;
-  color:var(--accent-lt);
-  font-family:'Norse',serif;
-  font-size:2rem;
-  letter-spacing:1px;
-}
-.gods-strip{display:none;}
-
-@media(max-width:1559px){
-  .gods-rail{display:none;}
-  .gods-strip{
-    display:block;
-    position:relative;
-    z-index:2;
-    max-width:640px;
-    margin:0 auto 1rem;
-    padding:0 12px;
-  }
-  .gods-strip-title{
-    font-family:'Norse',serif;
-    font-size:1.6rem;
-    letter-spacing:1px;
-    color:var(--accent);
-    text-align:center;
-    margin-bottom:12px;
-    text-shadow:0 1px 3px rgba(0,0,0,.6);
-  }
-  .gods-strip-track{
-    display:flex;
-    gap:12px;
-    overflow-x:auto;
-    padding:6px 4px 14px;
-    scroll-snap-type:x mandatory;
-    -webkit-overflow-scrolling:touch;
-  }
-  .gods-strip .god{
-    flex:0 0 auto;
-    scroll-snap-align:center;
-  }
-}
 @media(max-width:860px){
-  .wrap{
-    grid-template-columns:1fr;
-    gap:2.5rem;
-    padding:1.5rem 1.2rem 3rem;
-  }
+  .wrap{grid-template-columns:1fr;gap:2.5rem;padding:1.5rem 1.2rem 3rem;}
   .rooms-grid{grid-template-columns:repeat(2,1fr);}
   .bingo-controls{
     position:static;
@@ -862,8 +711,6 @@ body{overflow-x:hidden;}
     border-bottom:none;
   }
   .msg-bubble{max-width:90%;}
-  .gods-strip-track{gap:8px;}
-  .gods-strip .god-thumb{width:110px;height:110px;}
 }
 </style>
 </head>
@@ -871,12 +718,14 @@ body{overflow-x:hidden;}
 <body>
 <div id="bg"></div>
 
+<!-- UNKNOWN PLAYER FALLBACK -->
 <div class="unknown-wrap" id="unknownWrap">
-  <div style="font-family:'Norse',serif;font-size:1.7rem;color:var(--accent-lt);">Who goes there?</div>
+  <div style="font-family:'IM Fell English SC',serif;font-size:2rem;color:var(--accent-lt);">Who goes there?</div>
   <div style="color:var(--ink-faded);font-size:.95rem;">No player was found for this page. Go back and choose your avatar.</div>
-  <a href="cursecarvedinbone.html" style="margin-top:1rem;font-family:'Norse',serif;font-size:.75rem;letter-spacing:2px;color:var(--accent-lt);text-decoration:none;border:1px solid var(--accent-dim);padding:.6rem 1.2rem;border-radius:6px;">← Back</a>
+  <a href="twistedthrone.html" style="margin-top:1rem;font-family:'IM Fell English SC',serif;font-size:.75rem;letter-spacing:2px;color:var(--accent-lt);text-decoration:none;border:1px solid var(--accent-dim);padding:.6rem 1.2rem;border-radius:6px;">← Back</a>
 </div>
 
+<!-- PASSWORD MODAL -->
 <div class="lock-modal-wrap open" id="initialLockModal">
   <div class="lock-club">The Bingo Book Club</div>
   <div class="lock-title" id="lockTitle">Loading…</div>
@@ -886,10 +735,10 @@ body{overflow-x:hidden;}
 </div>
 
 <div id="mainContent" style="display:none;">
-  <aside class="gods-rail gods-left" id="godsLeft" aria-label="Norse gods"></aside>
-  <aside class="gods-rail gods-right" id="godsRight" aria-label="Norse gods"></aside>
 
-  <a href="cursecarvedinbone.html" class="players-btn">🦴 A Curse Carved in Bone</a>
+  <!-- TOP-RIGHT: back to book hub -->
+  <a href="twistedthrone.html" class="players-btn">👑 The Twisted Throne</a>
+  <!-- BOTTOM-LEFT (desktop) / TOP-LEFT (mobile): home -->
   <a href="../index.html" class="home-btn"><span class="home-btn-icon">🏠</span> Home</a>
 
   <div class="player-header">
@@ -929,13 +778,9 @@ body{overflow-x:hidden;}
       <div class="rooms-grid" id="roomsGrid"></div>
     </div>
   </div>
-
-  <section class="gods-strip" id="godsStrip">
-    <div class="gods-strip-title">The Gods</div>
-    <div class="gods-strip-track" id="godsStripTrack"></div>
-  </section>
 </div>
 
+<!-- CHAT MODAL -->
 <div class="overlay" id="overlay">
   <div class="chat-modal">
     <div class="chat-hdr">
@@ -981,13 +826,14 @@ import {
 /* =========================================================
    CONFIG
    ========================================================= */
-const BINGO_COL = 'cursecarvedinbone_bingo';
-const MSG_COL = 'cursecarvedinbone_messages';
-const TOTAL_CHAPTERS = 52;
+const BINGO_COL = 'twistedthrone_bingo';
+const MSG_COL = 'twistedthrone_messages';
+const TOTAL_CHAPTERS = 55;
 const GRID_SIZE = 25;
 const POINTS_PER_CELL = 1;
 const POINTS_PER_LINE = 5;
 
+/* 55 chapters split into 8 rooms (seven of 7, last of 6). */
 const CHAPTER_GROUPS = [
   {label:"Ch 1–7",   first:1,  last:7,  unlock:7},
   {label:"Ch 8–14",  first:8,  last:14, unlock:14},
@@ -996,7 +842,7 @@ const CHAPTER_GROUPS = [
   {label:"Ch 29–35", first:29, last:35, unlock:35},
   {label:"Ch 36–42", first:36, last:42, unlock:42},
   {label:"Ch 43–49", first:43, last:49, unlock:49},
-  {label:"Ch 50–52", first:50, last:52, unlock:52}
+  {label:"Ch 50–55", first:50, last:55, unlock:55}
 ];
 
 const firebaseConfig = {
@@ -1037,7 +883,7 @@ let unreadUnsub = null;
 let progressUnsub = null;
 
 const unreadGroups = new Set();
-const STORAGE_KEY = `ccib_lastread_${PID}`;
+const STORAGE_KEY = `twistedthrone_lastread_${PID}`;
 
 /* =========================================================
    HELPERS
@@ -1051,7 +897,7 @@ function esc(value){
 }
 
 function hexA(hex, alpha){
-  if(!/^#[0-9a-f]{6}$/i.test(hex)) return `rgba(168,67,15,${alpha})`;
+  if(!/^#[0-9a-f]{6}$/i.test(hex)) return `rgba(199,154,66,${alpha})`;
   const n = parseInt(hex.slice(1),16);
   return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${alpha})`;
 }
@@ -1374,9 +1220,10 @@ function messageBelongsToGroup(message, group){
    ========================================================= */
 const REACT_EMOJIS = ['❤️','😂','😮','😢','👑','👍'];
 
+/* one reusable floating emoji bar, shared by every message */
 const reactBar = document.createElement('div');
 reactBar.className = 'react-bar';
-let reactCtx = null;
+let reactCtx = null; // { msgId, reactions }
 REACT_EMOJIS.forEach(em => {
   const b = document.createElement('button');
   b.type = 'button';
@@ -1398,7 +1245,7 @@ function openReactBar(anchor, msgId, reactions){
   reactBar.classList.add('open');
   const r = anchor.getBoundingClientRect();
   const bw = reactBar.offsetWidth, bh = reactBar.offsetHeight;
-  let left = r.left + r.width/2 - bw/2;
+  let left = r.left + r.width / 2 - bw / 2;
   left = Math.max(8, Math.min(left, window.innerWidth - bw - 8));
   let top = r.top - bh - 8;
   if(top < 8) top = r.bottom + 8;
@@ -1424,7 +1271,8 @@ async function toggleReaction(msgId, emoji, mine){
   }
 }
 
-let replyingTo = null;
+/* reply-to state */
+let replyingTo = null; // { name, text }
 const replyPreview = document.getElementById('replyPreview');
 const replyPreviewName = document.getElementById('replyPreviewName');
 const replyPreviewText = document.getElementById('replyPreviewText');
@@ -1501,9 +1349,9 @@ function subscribeChat(group){
         );
 
         const info = playerId ? PLAYERS[playerId] : null;
-        const emoji = info?.emoji || 'ᛟ';
+        const emoji = info?.emoji || '◈';
         const name = info?.name || String(message.name || '?');
-        const color = info?.color || '#a8430f';
+        const color = info?.color || '#c79a42';
         const msgId = message._id;
 
         const element = document.createElement('div');
@@ -1526,6 +1374,7 @@ function subscribeChat(group){
             `<span class="reactions"></span>` +
           `</div>`;
 
+        // reaction pills
         const reactionsWrap = element.querySelector('.reactions');
         const rx = message.reactions || {};
         Object.keys(rx).forEach(em => {
@@ -1543,6 +1392,7 @@ function subscribeChat(group){
           reactionsWrap.appendChild(pill);
         });
 
+        // react / reply actions
         const reactBtn = element.querySelector('.react-act');
         reactBtn.addEventListener('click', event => {
           event.stopPropagation();
@@ -1633,10 +1483,10 @@ async function bootstrap(){
     }
 
     PNAME = String(PCFG.name || PID);
-    PEMOJI = String(PCFG.emoji || 'ᛟ');
+    PEMOJI = String(PCFG.emoji || '◈');
     PASSWORD = String(PCFG.password ?? '');
 
-    document.title = `${PNAME} – A Curse Carved in Bone`;
+    document.title = `${PNAME} – The Twisted Throne`;
     document.getElementById('playerHeaderName').textContent = PNAME;
     document.getElementById('playerPhoto').src = `../pdp_${PID}.png`;
     document.getElementById('lockTitle').textContent = `Enter Your Code, ${PNAME}`;
@@ -1748,210 +1598,6 @@ function initPlayerPage(){
 
 /* Start the page. */
 bootstrap();
-</script>
-
-<script>
-/* =========================================================
-   NORSE GODS
-   ========================================================= */
-
-const GODS = [
-  "hlin.png",
-  "odin.jpg",
-  "frigg.jpg",
-  "thor.jpg",
-  "freyr.jpg",
-  "freyja.jpg",
-  "loki.jpg",
-  "heimdall.jpg",
-  "baldur.jpg",
-  "hodr.jpg",
-  "tyr.jpg",
-  "njord.jpg",
-  "hel.jpg",
-  {
-    file:"tbk3.png",
-    href:"../inadequateheir/tbk3.html"
-  },
-  "idunn.png",
-  "skadi.jpg",
-  "vidar.jpg",
-  "bragi.png"
-];
-
-function closeAllGods(){
-  document.querySelectorAll('.god.open').forEach(g => {
-    g.classList.remove('open');
-  });
-
-  document.querySelectorAll('.god-big.show').forEach(popup => {
-    popup.classList.remove('show');
-  });
-}
-
-function makeGod(entry){
-  const file = typeof entry === 'string' ? entry : entry.file;
-  const href = typeof entry === 'object' ? entry.href : null;
-
-  const label = file.replace(/\.[^.]+$/,'');
-  const title = label.charAt(0).toUpperCase() + label.slice(1);
-
-  const god = document.createElement('div');
-  god.className = 'god';
-  god.tabIndex = 0;
-  god.setAttribute('role','button');
-  god.setAttribute('aria-label', title);
-
-  const thumb = document.createElement('div');
-  thumb.className = 'god-thumb';
-
-  const thumbImg = document.createElement('img');
-  thumbImg.className = 'god-thumb-img';
-  thumbImg.src = file;
-  thumbImg.alt = href ? '' : title;
-  thumbImg.loading = 'lazy';
-
-  thumbImg.onerror = () => {
-    const fallback = document.createElement('div');
-    fallback.className = 'god-fallback-inner';
-    fallback.textContent = href ? '?' : title.charAt(0);
-    thumbImg.replaceWith(fallback);
-  };
-
-  thumb.appendChild(thumbImg);
-  god.appendChild(thumb);
-
-  const popup = document.createElement('img');
-  popup.className = 'god-big';
-  popup.src = file;
-  popup.alt = href ? '' : title;
-  popup.loading = 'lazy';
-
-  popup.onerror = () => {
-    const fallback = document.createElement('div');
-    fallback.className = 'god-big god-big-fallback';
-    fallback.textContent = href ? '?' : title;
-    popup.replaceWith(fallback);
-  };
-
-  document.body.appendChild(popup);
-  god._godBig = popup;
-
-  function positionPopup(){
-    const rect = thumb.getBoundingClientRect();
-    const margin = 12;
-    const gap = 14;
-
-    const width = Math.min(320, Math.max(180, window.innerWidth - margin*2));
-    const height = width * 4 / 3;
-
-    let left;
-
-    if(god.closest('.gods-left')){
-      left = rect.right + gap;
-    }else if(god.closest('.gods-right')){
-      left = rect.left - width - gap;
-    }else{
-      left = (window.innerWidth - width) / 2;
-    }
-
-    left = Math.max(
-      margin,
-      Math.min(left, window.innerWidth - width - margin)
-    );
-
-    let top = rect.top + rect.height/2 - height/2;
-
-    top = Math.max(
-      margin,
-      Math.min(top, window.innerHeight - height - margin)
-    );
-
-    popup.style.width = width + 'px';
-    popup.style.left = left + 'px';
-    popup.style.top = top + 'px';
-  }
-
-  god.addEventListener('mouseenter', () => {
-    positionPopup();
-    popup.classList.add('show');
-  });
-
-  god.addEventListener('mouseleave', () => {
-    if(!god.classList.contains('open')){
-      popup.classList.remove('show');
-    }
-  });
-
-  god.addEventListener('focus', () => {
-    positionPopup();
-    popup.classList.add('show');
-  });
-
-  god.addEventListener('blur', () => {
-    if(!god.classList.contains('open')){
-      popup.classList.remove('show');
-    }
-  });
-
-  god.addEventListener('click', event => {
-    event.stopPropagation();
-
-    if(href){
-      window.location.href = href;
-      return;
-    }
-
-    const wasOpen = god.classList.contains('open');
-    closeAllGods();
-
-    if(!wasOpen){
-      god.classList.add('open');
-      positionPopup();
-      popup.classList.add('show');
-    }
-  });
-
-  window.addEventListener('resize', () => {
-    if(god.classList.contains('open')){
-      positionPopup();
-    }
-  });
-
-  return god;
-}
-
-const godsLeft = document.getElementById('godsLeft');
-const godsRight = document.getElementById('godsRight');
-const godsStripTrack = document.getElementById('godsStripTrack');
-
-function makeColumn(entries, offset){
-  const column = document.createElement('div');
-  column.className = 'gods-col' + (offset ? ' gods-col-offset' : '');
-
-  entries.forEach(entry => {
-    column.appendChild(makeGod(entry));
-  });
-
-  return column;
-}
-
-const leftGods = GODS.slice(0,9);
-const rightGods = GODS.slice(9);
-
-godsLeft.appendChild(makeColumn(leftGods.slice(0,5), false));
-godsLeft.appendChild(makeColumn(leftGods.slice(5), true));
-
-godsRight.appendChild(makeColumn(rightGods.slice(5), true));
-godsRight.appendChild(makeColumn(rightGods.slice(0,5), false));
-
-GODS.forEach(entry => {
-  godsStripTrack.appendChild(makeGod(entry));
-});
-
-document.addEventListener('click', () => {
-  closeAllGods();
-});
 </script>
 
 </body>

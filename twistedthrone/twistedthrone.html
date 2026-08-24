@@ -14,10 +14,13 @@
    IM Fell English SC / Cormorant (loaded above) if Hakan isn't present in this repo yet. */
 @font-face{font-family:'Hakan';src:url('../fonts/Hakan.otf') format('opentype'),url('../fonts/Hakan.ttf') format('truetype');font-weight:400;font-display:swap;}
 :root{
-  /* Royal gold — titles, names, primary accents */
-  --gold:#cda434;--gold-lt:#f0d98c;--gold-deep:#8f6b1c;
-  /* Deep Tudor purple — page ground, panels, borders. Flat, no gradients. */
-  --purple-deep:#0a0512;--purple:#160a20;--purple-mid:#2e1740;
+  /* Rich Gold (16-0836 TCX) — titles, names, primary accents */
+  --gold:#c79a42;--gold-lt:#e6c877;--gold-deep:#8a6a2a;
+  /* Amethyst Purple (19-3520 TCX) — page ground, panels, borders. Flat, no gradients. */
+  --purple-deep:#130712;--purple:#2a1230;--purple-mid:#4a1d4c;
+  /* Jewel Teal (19-4526 TCX) — secondary accent. Deep velvet jewel tone,
+     not a bright mint/cyan, to match the amethyst+gold+teal mood. */
+  --teal:#0f6b6b;--teal-lt:#2c9187;--teal-deep:#0a332e;
   /* Warm parchment ink for text on the dark ground */
   --ink:#f2e6d8;--ink-faded:#c7b3d6;
   --display:'IM Fell English SC','Cormorant Garamond','Hakan',serif;
@@ -28,24 +31,9 @@ html,body{background:var(--purple-deep);color:var(--ink);font-family:var(--body-
 /* Script font — keep letters joined by removing the wide tracking used for serif type */
 .map-hint{letter-spacing:normal!important;}
 
-/* ── BACKGROUND: flat, very dark purple — no gradients. An optional
-   book-specific background.png (once you have one) sits under this as a
-   texture and is darkened to match via multiply, rather than the page
-   relying on gradient glow to read as "dark". ── */
+/* ── BACKGROUND: flat lush amethyst ground — no gradient, no image. ── */
 #bg-rune{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
-  background-color:var(--purple-deep);
-  background-image:url('background.png');
-  background-position:center;background-size:cover;background-repeat:no-repeat;
-  background-blend-mode:multiply;}
-.silk{position:absolute;border-radius:50%;filter:blur(1px);opacity:0.14;mix-blend-mode:screen;
-  background:var(--gold-lt);
-  width:140vmax;height:60px;transform-origin:center;}
-.silk-1{top:12%;left:-60vmax;animation:drift1 46s linear infinite;}
-.silk-2{top:58%;left:-70vmax;opacity:0.09;animation:drift2 62s linear infinite;background:#a97fce;}
-.silk-3{top:84%;left:-65vmax;opacity:0.12;animation:drift1 54s linear infinite reverse;}
-@keyframes drift1{0%{transform:translateX(0) rotate(-3deg);}50%{transform:translateX(35vmax) rotate(-1deg);}100%{transform:translateX(70vmax) rotate(-3deg);}}
-@keyframes drift2{0%{transform:translateX(0) rotate(2deg);}50%{transform:translateX(38vmax) rotate(4deg);}100%{transform:translateX(76vmax) rotate(2deg);}}
-@media(prefers-reduced-motion:reduce){.silk{animation:none!important;}}
+  background:#22122c;}
 
 .home-layout{position:relative;z-index:2;min-height:100vh;display:grid;grid-template-columns:0.95fr 64px 1.1fr;gap:28px;align-items:center;justify-content:center;padding:40px 50px;max-width:1320px;margin:0 auto;}
 @media(max-width:900px){.home-layout{grid-template-columns:1fr;gap:12px;padding:35px 20px;}.crest-divider{width:100%;height:56px;}}
@@ -64,22 +52,22 @@ html,body{background:var(--purple-deep);color:var(--ink);font-family:var(--body-
 .map-section{display:flex;flex-direction:column;align-items:center;gap:0.7rem;}
 .map-wrap{position:relative;width:100%;max-width:420px;}
 .map-wrap img{display:block;width:100%;border-radius:6px;border:3px solid var(--gold);
-  box-shadow:0 0 0 1px var(--purple-mid),0 12px 30px rgba(0,0,0,0.55),inset 0 0 24px rgba(0,0,0,0.35);
+  box-shadow:0 0 0 1px var(--teal-deep),0 0 0 4px var(--purple-mid),0 12px 30px rgba(0,0,0,0.55),inset 0 0 24px rgba(0,0,0,0.35);
   background:var(--purple);min-height:220px;}
 .map-hint{font-family:var(--body-font);font-style:italic;font-size:0.95rem;color:var(--ink-faded);letter-spacing:0.3px;text-align:center;}
 .map-marker{position:absolute;transform:translate(-50%,-50%);font-size:1.4rem;line-height:1;z-index:5;
   filter:drop-shadow(0 1px 3px rgba(0,0,0,0.7));transition:left 0.25s ease,top 0.25s ease;
   cursor:grab;touch-action:none;}
 .map-marker.dragging{cursor:grabbing;transition:none;z-index:6;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.85));}
-.map-tooltip{position:absolute;z-index:30;background:var(--purple-deep);color:var(--gold-lt);
+.map-tooltip{position:absolute;z-index:30;background:var(--teal-deep);color:var(--gold-lt);
   font-family:system-ui,-apple-system,'Segoe UI',sans-serif;font-weight:600;font-size:0.8rem;letter-spacing:0.3px;
-  padding:0.22rem 0.55rem;border-radius:5px;border:1px solid var(--gold-deep);pointer-events:none;white-space:nowrap;
+  padding:0.22rem 0.55rem;border-radius:5px;border:1px solid var(--teal);pointer-events:none;white-space:nowrap;
   transform:translate(-50%,-165%);opacity:0;transition:opacity 0.12s;box-shadow:0 2px 8px rgba(0,0,0,0.6);}
 .map-tooltip.show{opacity:1;}
 /* ── MOBILE: tap the map to enlarge, then drag your emoji ── */
 .map-backdrop{position:fixed;inset:0;background:rgba(9,4,14,0.88);z-index:1000;}
 body.map-modal-open{overflow:hidden;}
-.map-close{position:fixed;top:14px;right:16px;z-index:1002;width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--purple-deep);color:var(--gold-lt);border:1px solid var(--gold-deep);font-size:1.3rem;line-height:1;cursor:pointer;padding:0;}
+.map-close{position:fixed;top:14px;right:16px;z-index:1002;width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--teal-deep);color:var(--gold-lt);border:1px solid var(--teal);font-size:1.3rem;line-height:1;cursor:pointer;padding:0;}
 @media(max-width:900px){
   .map-wrap.map-open{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:94vw;max-width:500px;height:auto;margin:0;z-index:1001;touch-action:none;}
   .map-wrap.map-open img{width:100%;height:auto;max-width:none;max-height:none;touch-action:none;}
@@ -93,13 +81,13 @@ body.map-modal-open{overflow:hidden;}
   text-shadow:0 2px 3px rgba(0,0,0,0.6),0 0 22px rgba(205,164,52,0.28);}
 .rank-frame{position:relative;display:grid;grid-template-columns:70px 1fr;grid-template-rows:auto 56px;gap:10px;max-width:620px;margin:0 auto;padding:8px;}
 .y-axis{grid-column:1;grid-row:1;position:relative;display:flex;align-items:center;justify-content:center;}
-.y-arrow{width:auto;height:300px;flex-shrink:0;filter:url(#tintArrow);}
+.y-arrow{width:auto;height:300px;flex-shrink:0;filter:url(#tintArrowTeal);}
 .y-label{position:absolute;top:50%;left:-15%;transform:translate(-50%,-50%) rotate(180deg);z-index:1;
   font-family:var(--display);font-size:clamp(13px,1.8vw,20px);font-weight:400;letter-spacing:3px;
   writing-mode:vertical-rl;color:var(--gold);white-space:nowrap;pointer-events:none;text-shadow:0 1px 3px rgba(0,0,0,0.6);}
 .x-axis{grid-column:2;grid-row:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;}
 .x-arrow-wrap{position:relative;width:100%;}
-.x-arrow{position:absolute;top:50%;left:50%;filter:url(#tintArrow);transform:translate(-50%,-50%) rotate(90deg);}
+.x-arrow{position:absolute;top:50%;left:50%;filter:url(#tintArrowTeal);transform:translate(-50%,-50%) rotate(90deg);}
 .x-label{font-family:var(--display);font-size:clamp(13px,1.8vw,20px);font-weight:400;letter-spacing:3px;
   color:var(--gold);white-space:nowrap;pointer-events:none;text-shadow:0 1px 3px rgba(0,0,0,0.6);}
 .rank-grid{grid-column:2;grid-row:1;position:relative;aspect-ratio:1/1;width:100%;margin:10px;}
@@ -120,7 +108,7 @@ body.map-modal-open{overflow:hidden;}
   background:var(--purple-deep);border:2px solid var(--pc,var(--gold));
   font-family:var(--display);font-size:0.85rem;font-weight:700;
   color:var(--gold-lt);text-shadow:0 0 6px rgba(0,0,0,0.7);filter:drop-shadow(0 1px 3px rgba(0,0,0,0.5));}
-.rank-name{font-size:1.35rem;letter-spacing:1.5px;color:var(--gold);text-shadow:0 1px 3px rgba(0,0,0,0.6);}
+.rank-name{font-family:var(--display-hero);font-size:1.35rem;letter-spacing:normal;color:var(--gold);text-shadow:0 1px 3px rgba(0,0,0,0.6);}
 @media(max-width:800px){
   .players-title{font-size:2rem;margin-bottom:20px;letter-spacing:0.5px;}
   .rank-img-frame{width:60px;height:60px;}
@@ -132,21 +120,19 @@ body.map-modal-open{overflow:hidden;}
 .rune-ornament{display:flex;align-items:center;gap:0.6rem;width:100%;max-width:18rem;margin:1rem auto;}
 .rune-ornament .line{flex:1;height:1px;background:var(--gold-deep);opacity:0.55;}
 .rune-ornament .gem{color:var(--gold);font-size:0.7rem;}
-.home-btn{display:inline-flex;align-items:center;gap:0.4rem;font-family:var(--display);letter-spacing:1.5px;
-  font-size:0.95rem;color:var(--gold);text-decoration:none;border:1px solid var(--gold-deep);border-radius:999px;
-  padding:0.5rem 1.1rem;background:var(--purple);transition:background 0.2s,border-color 0.2s;}
-.home-btn:hover{background:rgba(205,164,52,0.14);border-color:var(--gold);}
+/* .home-btn is intentionally left unstyled here — it inherits from ../style.css
+   so it matches the button on every other page of the site. */
 </style>
 </head>
 <body>
-<div id="bg-rune">
-  <div class="silk silk-1"></div>
-  <div class="silk silk-2"></div>
-  <div class="silk silk-3"></div>
-</div>
+<div id="bg-rune"></div>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <filter id="tintArrow" color-interpolation-filters="sRGB">
+  <filter id="tintArrowGold" color-interpolation-filters="sRGB">
     <feFlood style="flood-color:var(--gold)" result="flood"/>
+    <feComposite in="flood" in2="SourceGraphic" operator="in"/>
+  </filter>
+  <filter id="tintArrowTeal" color-interpolation-filters="sRGB">
+    <feFlood style="flood-color:var(--teal-lt)" result="flood"/>
     <feComposite in="flood" in2="SourceGraphic" operator="in"/>
   </filter>
 </svg>
@@ -164,12 +150,12 @@ body.map-modal-open{overflow:hidden;}
     <h1 class="players-title">Choose Your Player</h1>
     <div class="rank-frame">
       <div class="y-axis">
-        <img class="y-arrow" src="arrow.png" alt="">
+        <img class="y-arrow" src="arrowY.png" alt="">
         <span class="y-label">Best Guesser</span>
       </div>
       <div class="rank-grid" id="rankGrid"></div>
       <div class="x-axis">
-        <div class="x-arrow-wrap" id="xArrowWrap"><img class="x-arrow" src="arrow.png" alt=""></div>
+        <div class="x-arrow-wrap" id="xArrowWrap"><img class="x-arrow" src="arrowX.png" alt=""></div>
         <span class="x-label">Fastest Reader</span>
       </div>
     </div>
@@ -197,9 +183,9 @@ const db = getFirestore(app);
 /* New collection so this book's progress doesn't collide with other books' data */
 const BINGO_COL = 'twistedthrone_bingo';
 const PLAYERS = {
-  elana:  { emoji:"🐉",   color:"#d9bf6e", name:"Elana",  href:"twistedthrone_player.html?p=elana",  img:"../pdp_elana.png"  },
-  lena:   { emoji:"🌙",   color:"#3fae82", name:"Lena",   href:"twistedthrone_player.html?p=lena",   img:"../pdp_lena.png"   },
-  kathi:  { emoji:"🍄",   color:"#c65fd6", name:"Kathi",  href:"twistedthrone_player.html?p=kathi",  img:"../pdp_kathi.png"  },
+  elana:  { emoji:"🐉",   color:"#d1a752", name:"Elana",  href:"twistedthrone_player.html?p=elana",  img:"../pdp_elana.png"  },
+  lena:   { emoji:"🌙",   color:"#2f9c8f", name:"Lena",   href:"twistedthrone_player.html?p=lena",   img:"../pdp_lena.png"   },
+  kathi:  { emoji:"🍄",   color:"#9d4fbd", name:"Kathi",  href:"twistedthrone_player.html?p=kathi",  img:"../pdp_kathi.png"  },
   marine: { emoji:"🧜‍♀️", color:"#3f9fd6", name:"Marine", href:"twistedthrone_player.html?p=marine", img:"../pdp_marine.png" },
 };
 /* Everyone competes on the axes this time — Kathi's back in the game. */
@@ -211,7 +197,7 @@ function hexA(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${(n>>16)&25
    not traced against real art. Once twistedthrone_map.png exists, open the
    console and run `findMapPosition()`, click each chapter's spot on the map, and
    paste the printed {left,top} values in here row by row. */
-const TOTAL_CHAPTERS = 52;
+const TOTAL_CHAPTERS = 55;
 const CHAPTER_POS = [
   {left:14.00,top:31.56}, // 0  Start
   {left:21.51,top:31.56}, {left:29.13,top:31.56}, {left:37.46,top:31.56}, {left:45.32,top:31.56}, // 1–4
@@ -227,7 +213,8 @@ const CHAPTER_POS = [
   {left:21.51,top:77.51}, {left:29.13,top:77.51}, {left:37.46,top:77.51}, {left:45.32,top:77.51}, // 41–44
   {left:53.65,top:77.51}, {left:61.27,top:77.51}, {left:69.13,top:77.51}, {left:77.46,top:77.51}, // 45–48
   {left:21.51,top:86.70}, {left:29.13,top:86.70}, {left:37.46,top:86.70}, {left:45.32,top:86.70}, // 49–52
-  {left:53.65,top:86.70}, // 53  End
+  {left:53.65,top:86.70}, {left:61.27,top:86.70}, {left:69.13,top:86.70}, // 53–55
+  {left:77.46,top:86.70}, // 56  End
 ];
 const MAP_END_IDX = CHAPTER_POS.length-1;
 const mapWrap=document.getElementById('mapWrap');
