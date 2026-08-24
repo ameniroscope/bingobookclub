@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Twisted Throne</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👑</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<style>
+/* Shared site font — same file the rest of the book club uses. Falls back to
+   Cinzel/Cormorant (loaded above) if Hakan isn't present in this repo yet. */
+@font-face{font-family:'Hakan';src:url('../fonts/Hakan.otf') format('opentype'),url('../fonts/Hakan.ttf') format('truetype');font-weight:400;font-display:swap;}
+:root{
+  /* Royal gold — titles, names, primary accents */
+  --gold:#cda434;--gold-lt:#f0d98c;--gold-deep:#8f6b1c;
+  /* Deep Tudor purple — page ground, panels, borders */
+  --purple-deep:#170a22;--purple:#2c1240;--purple-mid:#4a2260;
+  /* Warm parchment ink for text on the dark ground */
+  --ink:#f2e6d8;--ink-faded:#c7b3d6;
+  --display:'Cinzel','Hakan',serif;
+  --body-font:'Cormorant Garamond','Hakan',serif;
+}
+html,body{background:var(--purple-deep);color:var(--ink);font-family:var(--body-font);}
+/* Script font — keep letters joined by removing the wide tracking used for serif type */
+.map-hint{letter-spacing:normal!important;}
+
+/* ── BACKGROUND: dark royal ground + drifting silk for the "windy" feel.
+   Layered so an optional book-specific background.png (once you have one)
+   sits underneath the gradients rather than fighting them. ── */
+#bg-rune{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+  background:
+    radial-gradient(ellipse 90% 60% at 50% -10%,rgba(205,164,52,0.10) 0%,transparent 55%),
+    radial-gradient(ellipse 70% 50% at 15% 100%,rgba(74,34,96,0.55) 0%,transparent 60%),
+    radial-gradient(ellipse 70% 50% at 85% 100%,rgba(74,34,96,0.45) 0%,transparent 60%),
+    linear-gradient(180deg,#1f0e2c 0%,#170a22 45%,#12081b 100%),
+    url('background.png') center/cover no-repeat;
+  background-color:var(--purple-deep);}
+#bg-rune::after{content:'';position:absolute;inset:0;background:
+  radial-gradient(ellipse 120% 80% at 50% 50%,transparent 40%,rgba(9,4,14,0.55) 100%);}
+.silk{position:absolute;border-radius:50%;filter:blur(1px);opacity:0.16;mix-blend-mode:screen;
+  background:linear-gradient(100deg,transparent,var(--gold-lt) 45%,transparent 70%);
+  width:140vmax;height:60px;transform-origin:center;}
+.silk-1{top:12%;left:-60vmax;animation:drift1 46s linear infinite;}
+.silk-2{top:58%;left:-70vmax;opacity:0.10;animation:drift2 62s linear infinite;background:linear-gradient(100deg,transparent,#a97fce 45%,transparent 70%);}
+.silk-3{top:84%;left:-65vmax;opacity:0.12;animation:drift1 54s linear infinite reverse;}
+@keyframes drift1{0%{transform:translateX(0) rotate(-3deg);}50%{transform:translateX(35vmax) rotate(-1deg);}100%{transform:translateX(70vmax) rotate(-3deg);}}
+@keyframes drift2{0%{transform:translateX(0) rotate(2deg);}50%{transform:translateX(38vmax) rotate(4deg);}100%{transform:translateX(76vmax) rotate(2deg);}}
+@media(prefers-reduced-motion:reduce){.silk{animation:none!important;}}
+
+.home-layout{position:relative;z-index:2;min-height:100vh;display:grid;grid-template-columns:0.95fr 64px 1.1fr;gap:28px;align-items:center;justify-content:center;padding:40px 50px;max-width:1320px;margin:0 auto;}
+@media(max-width:900px){.home-layout{grid-template-columns:1fr;gap:12px;padding:35px 20px;}.crest-divider{width:100%;height:56px;}}
+
+/* ── CREST DIVIDER — stands where the jail used to sit; a small gilded
+   ornament rather than a third competing column. ── */
+.crest-divider{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;height:100%;min-height:280px;}
+.crest-divider .line{width:1px;flex:1;background:linear-gradient(to bottom,transparent,var(--gold-deep) 15%,var(--gold) 50%,var(--gold-deep) 85%,transparent);}
+.crest-divider .crown{font-size:1.3rem;filter:drop-shadow(0 0 6px rgba(205,164,52,0.55));}
+@media(max-width:900px){
+  .crest-divider{flex-direction:row;min-height:0;}
+  .crest-divider .line{width:auto;flex:1;height:1px;background:linear-gradient(to right,transparent,var(--gold-deep) 15%,var(--gold) 50%,var(--gold-deep) 85%,transparent);}
+}
+
+/* ── CHAPTER MAP ── */
+.map-section{display:flex;flex-direction:column;align-items:center;gap:0.7rem;}
+.map-wrap{position:relative;width:100%;max-width:420px;}
+.map-wrap img{display:block;width:100%;border-radius:6px;border:3px solid var(--gold);
+  box-shadow:0 0 0 1px var(--purple-mid),0 12px 30px rgba(0,0,0,0.55),inset 0 0 24px rgba(0,0,0,0.35);
+  background:var(--purple);min-height:220px;}
+.map-hint{font-family:var(--body-font);font-style:italic;font-size:0.95rem;color:var(--ink-faded);letter-spacing:0.3px;text-align:center;}
+.map-marker{position:absolute;transform:translate(-50%,-50%);font-size:1.4rem;line-height:1;z-index:5;
+  filter:drop-shadow(0 1px 3px rgba(0,0,0,0.7));transition:left 0.25s ease,top 0.25s ease;
+  cursor:grab;touch-action:none;}
+.map-marker.dragging{cursor:grabbing;transition:none;z-index:6;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.85));}
+.map-tooltip{position:absolute;z-index:30;background:var(--purple-deep);color:var(--gold-lt);
+  font-family:system-ui,-apple-system,'Segoe UI',sans-serif;font-weight:600;font-size:0.8rem;letter-spacing:0.3px;
+  padding:0.22rem 0.55rem;border-radius:5px;border:1px solid var(--gold-deep);pointer-events:none;white-space:nowrap;
+  transform:translate(-50%,-165%);opacity:0;transition:opacity 0.12s;box-shadow:0 2px 8px rgba(0,0,0,0.6);}
+.map-tooltip.show{opacity:1;}
+/* ── MOBILE: tap the map to enlarge, then drag your emoji ── */
+.map-backdrop{position:fixed;inset:0;background:rgba(9,4,14,0.88);z-index:1000;}
+body.map-modal-open{overflow:hidden;}
+.map-close{position:fixed;top:14px;right:16px;z-index:1002;width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--purple-deep);color:var(--gold-lt);border:1px solid var(--gold-deep);font-size:1.3rem;line-height:1;cursor:pointer;padding:0;}
+@media(max-width:900px){
+  .map-wrap.map-open{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:94vw;max-width:500px;height:auto;margin:0;z-index:1001;touch-action:none;}
+  .map-wrap.map-open img{width:100%;height:auto;max-width:none;max-height:none;touch-action:none;}
+}
+/* ── PLAYERS / RANK GRID ── */
+.players-section{text-align:center;width:100%;}
+.title-ornament{display:flex;align-items:center;gap:0.6rem;width:100%;max-width:16rem;margin:0 auto 0.6rem;}
+.title-ornament .line{flex:1;height:1px;background:linear-gradient(to right,transparent,var(--gold-deep),transparent);}
+.title-ornament .gem{color:var(--gold);font-size:0.7rem;}
+.players-title{font-family:var(--display);font-weight:700;font-size:2.6rem;letter-spacing:3px;text-transform:uppercase;margin-top:0;margin-bottom:24px;color:var(--gold);
+  text-shadow:0 2px 3px rgba(0,0,0,0.6),0 0 22px rgba(205,164,52,0.28);}
+.rank-frame{position:relative;display:grid;grid-template-columns:70px 1fr;grid-template-rows:auto 56px;gap:10px;max-width:620px;margin:0 auto;padding:8px;}
+.y-axis{grid-column:1;grid-row:1;position:relative;display:flex;align-items:center;justify-content:center;}
+.y-arrow{width:auto;height:300px;flex-shrink:0;filter:url(#tintArrow);}
+.y-label{position:absolute;top:50%;left:-15%;transform:translate(-50%,-50%) rotate(180deg);z-index:1;
+  font-family:var(--display);font-size:clamp(12px,1.6vw,18px);font-weight:600;letter-spacing:3px;text-transform:uppercase;
+  writing-mode:vertical-rl;color:var(--gold);white-space:nowrap;pointer-events:none;text-shadow:0 1px 3px rgba(0,0,0,0.6);}
+.x-axis{grid-column:2;grid-row:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;}
+.x-arrow-wrap{position:relative;width:100%;}
+.x-arrow{position:absolute;top:50%;left:50%;filter:url(#tintArrow);transform:translate(-50%,-50%) rotate(90deg);}
+.x-label{font-family:var(--display);font-size:clamp(12px,1.6vw,18px);font-weight:600;letter-spacing:3px;text-transform:uppercase;
+  color:var(--gold);white-space:nowrap;pointer-events:none;text-shadow:0 1px 3px rgba(0,0,0,0.6);}
+.rank-grid{grid-column:2;grid-row:1;position:relative;aspect-ratio:1/1;width:100%;margin:10px;}
+.rank-avatar{position:absolute;text-decoration:none;color:var(--gold);font-family:var(--display);
+  display:flex;flex-direction:column;align-items:center;gap:4px;transform:translate(-50%,-50%);
+  transition:left 0.5s ease,top 0.5s ease,transform 0.3s ease;z-index:5;}
+.rank-avatar:hover{transform:translate(-50%,-50%) scale(1.08);z-index:6;}
+.rank-img-frame{position:relative;width:110px;height:110px;}
+.rank-img-frame::before{content:'';position:absolute;inset:-10px;border-radius:50%;
+  background:radial-gradient(circle,var(--pc-glow,var(--gold)) 0%,var(--pc-glow,var(--gold)) 40%,transparent 75%);
+  opacity:var(--pc-glow-op,0.45);filter:blur(9px);z-index:0;}
+.rank-img-frame::after{content:'';position:absolute;inset:-2px;border-radius:50%;background:var(--purple-deep);z-index:1;opacity:0.9;}
+.rank-img-frame img{position:relative;z-index:2;width:100%;height:100%;object-fit:cover;border-radius:50%;border:2px solid var(--gold);box-shadow:0 3px 12px rgba(0,0,0,0.55);}
+.rank-avatar:hover .rank-img-frame img{border-color:var(--pc,var(--gold));}
+.rank-badge{position:absolute;top:-4px;right:-4px;z-index:10;
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--purple-deep);border:2px solid var(--pc,var(--gold));
+  font-family:var(--display);font-size:0.85rem;font-weight:700;
+  color:var(--gold-lt);text-shadow:0 0 6px rgba(0,0,0,0.7);filter:drop-shadow(0 1px 3px rgba(0,0,0,0.5));}
+.rank-name{font-size:1.35rem;letter-spacing:1.5px;color:var(--gold);text-shadow:0 1px 3px rgba(0,0,0,0.6);}
+@media(max-width:800px){
+  .players-title{font-size:1.5rem;margin-bottom:20px;letter-spacing:2px;}
+  .rank-img-frame{width:60px;height:60px;}
+  .rank-name{font-size:1rem;}
+  .rank-frame{grid-template-columns:42px 1fr;grid-template-rows:auto 40px;}
+}
+.footer-section{position:relative;z-index:2;text-align:center;padding:1.5rem 1rem 3rem;}
+.footer-section .footer{font-family:var(--display);letter-spacing:2px;font-size:0.85rem;color:var(--ink-faded);text-transform:uppercase;}
+.rune-ornament{display:flex;align-items:center;gap:0.6rem;width:100%;max-width:18rem;margin:1rem auto;}
+.rune-ornament .line{flex:1;height:1px;background:linear-gradient(to right,transparent,var(--gold-deep),transparent);}
+.rune-ornament .gem{color:var(--gold);font-size:0.7rem;}
+.home-btn{display:inline-flex;align-items:center;gap:0.4rem;font-family:var(--display);letter-spacing:1.5px;text-transform:uppercase;
+  font-size:0.85rem;color:var(--gold);text-decoration:none;border:1px solid var(--gold-deep);border-radius:999px;
+  padding:0.5rem 1.1rem;background:rgba(74,34,96,0.35);transition:background 0.2s,border-color 0.2s;}
+.home-btn:hover{background:rgba(205,164,52,0.14);border-color:var(--gold);}
+</style>
+</head>
+<body>
+<div id="bg-rune">
+  <div class="silk silk-1"></div>
+  <div class="silk silk-2"></div>
+  <div class="silk silk-3"></div>
+</div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="tintArrow" color-interpolation-filters="sRGB">
+    <feFlood style="flood-color:var(--gold)" result="flood"/>
+    <feComposite in="flood" in2="SourceGraphic" operator="in"/>
+  </filter>
+</svg>
+<main class="home-layout">
+  <section class="map-section">
+    <div class="map-wrap" id="mapWrap">
+      <img src="twistedthrone_map.png" alt="The Twisted Throne chapter map">
+      <div class="map-tooltip" id="mapTooltip"></div>
+    </div>
+    <div class="map-hint">Drag your emoji across the map to mark your progress</div>
+  </section>
+  <div class="crest-divider" aria-hidden="true"><div class="line"></div><div class="crown">👑</div><div class="line"></div></div>
+  <section class="players-section">
+    <div class="title-ornament"><div class="line"></div><div class="gem">◈</div><div class="line"></div></div>
+    <h1 class="players-title">Choose Your Player</h1>
+    <div class="rank-frame">
+      <div class="y-axis">
+        <img class="y-arrow" src="arrow.png" alt="">
+        <span class="y-label">Best Guesser</span>
+      </div>
+      <div class="rank-grid" id="rankGrid"></div>
+      <div class="x-axis">
+        <div class="x-arrow-wrap" id="xArrowWrap"><img class="x-arrow" src="arrow.png" alt=""></div>
+        <span class="x-label">Fastest Reader</span>
+      </div>
+    </div>
+  </section>
+</main>
+<section class="footer-section">
+  <div class="rune-ornament"><div class="line"></div><div class="gem">◈</div><div class="line"></div></div>
+  <a class="home-btn" href="../index.html"><span class="home-btn-icon">🏠</span> Home</a>
+  <div class="footer">◈ &nbsp; The Bingo Book Club &nbsp; ◈</div>
+</section>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, doc, setDoc, onSnapshot }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyAIQTe-QGQmwqTVmIyJZZ_qlDNsD6GUskY",
+  authDomain: "bingobookclub-2144e.firebaseapp.com",
+  projectId: "bingobookclub-2144e",
+  storageBucket: "bingobookclub-2144e.firebasestorage.app",
+  messagingSenderId: "294177836341",
+  appId: "1:294177836341:web:6d5f11e64737fbe3aad07c"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+/* New collection so this book's progress doesn't collide with other books' data */
+const BINGO_COL = 'twistedthrone_bingo';
+const PLAYERS = {
+  elana:  { emoji:"🐉",   color:"#d9bf6e", name:"Elana",  href:"twistedthrone_player.html?p=elana",  img:"../pdp_elana.png"  },
+  lena:   { emoji:"🌙",   color:"#3fae82", name:"Lena",   href:"twistedthrone_player.html?p=lena",   img:"../pdp_lena.png"   },
+  kathi:  { emoji:"🍄",   color:"#c65fd6", name:"Kathi",  href:"twistedthrone_player.html?p=kathi",  img:"../pdp_kathi.png"  },
+  marine: { emoji:"🧜‍♀️", color:"#3f9fd6", name:"Marine", href:"twistedthrone_player.html?p=marine", img:"../pdp_marine.png" },
+};
+/* Everyone competes on the axes this time — Kathi's back in the game. */
+const RANKED_IDS = ['elana','lena','kathi','marine'];
+function hexA(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;}
+/* ── CHAPTER MAP MARKERS ── index 0 = Start, 1..52 = chapters, 53 = End.
+   PLACEHOLDER GRID: this book's map art isn't ready yet, so these are a generic
+   evenly-spaced 8-per-row grid (same spacing convention as the other book pages),
+   not traced against real art. Once twistedthrone_map.png exists, open the
+   console and run `findMapPosition()`, click each chapter's spot on the map, and
+   paste the printed {left,top} values in here row by row. */
+const TOTAL_CHAPTERS = 52;
+const CHAPTER_POS = [
+  {left:14.00,top:31.56}, // 0  Start
+  {left:21.51,top:31.56}, {left:29.13,top:31.56}, {left:37.46,top:31.56}, {left:45.32,top:31.56}, // 1–4
+  {left:53.65,top:31.56}, {left:61.27,top:31.56}, {left:69.13,top:31.56}, {left:77.46,top:31.56}, // 5–8
+  {left:21.51,top:40.75}, {left:29.13,top:40.75}, {left:37.46,top:40.75}, {left:45.32,top:40.75}, // 9–12
+  {left:53.65,top:40.75}, {left:61.27,top:40.75}, {left:69.13,top:40.75}, {left:77.46,top:40.75}, // 13–16
+  {left:21.51,top:49.94}, {left:29.13,top:49.94}, {left:37.46,top:49.94}, {left:45.32,top:49.94}, // 17–20
+  {left:53.65,top:49.94}, {left:61.27,top:49.94}, {left:69.13,top:49.94}, {left:77.46,top:49.94}, // 21–24
+  {left:21.51,top:59.13}, {left:29.13,top:59.13}, {left:37.46,top:59.13}, {left:45.32,top:59.13}, // 25–28
+  {left:53.65,top:59.13}, {left:61.27,top:59.13}, {left:69.13,top:59.13}, {left:77.46,top:59.13}, // 29–32
+  {left:21.51,top:68.32}, {left:29.13,top:68.32}, {left:37.46,top:68.32}, {left:45.32,top:68.32}, // 33–36
+  {left:53.65,top:68.32}, {left:61.27,top:68.32}, {left:69.13,top:68.32}, {left:77.46,top:68.32}, // 37–40
+  {left:21.51,top:77.51}, {left:29.13,top:77.51}, {left:37.46,top:77.51}, {left:45.32,top:77.51}, // 41–44
+  {left:53.65,top:77.51}, {left:61.27,top:77.51}, {left:69.13,top:77.51}, {left:77.46,top:77.51}, // 45–48
+  {left:21.51,top:86.70}, {left:29.13,top:86.70}, {left:37.46,top:86.70}, {left:45.32,top:86.70}, // 49–52
+  {left:53.65,top:86.70}, // 53  End
+];
+const MAP_END_IDX = CHAPTER_POS.length-1;
+const mapWrap=document.getElementById('mapWrap');
+const mapImg=mapWrap.querySelector('img');
+const mapTooltip=document.getElementById('mapTooltip');
+window.findMapPosition = function () {
+  mapImg.style.cursor = "crosshair";
+  console.clear();
+  console.log("Position finder ON. Click the map to print left/top percentages.");
+  mapImg.addEventListener("click", function finderClick(e) {
+    const rect = mapImg.getBoundingClientRect();
+    const left = ((e.clientX - rect.left) / rect.width  * 100).toFixed(2);
+    const top  = ((e.clientY - rect.top)  / rect.height * 100).toFixed(2);
+    console.log(`{left:${left},top:${top}},`);
+    const dot = document.createElement("div");
+    dot.style.cssText = `position:absolute;left:${left}%;top:${top}%;width:10px;height:10px;background:red;
+      border:2px solid white;border-radius:50%;transform:translate(-50%,-50%);z-index:99999;pointer-events:none;`;
+    mapWrap.appendChild(dot);
+  });
+};
+const MARKER_OFFSET={elana:{x:2,y:-2},lena:{x:2,y:2},kathi:{x:-2,y:2},marine:{x:-2,y:-2}};
+function clampIdx(i){return Math.max(0,Math.min(MAP_END_IDX,i));}
+function renderMapMarkers(){
+  Object.keys(PLAYERS).forEach(pid=>{
+    if(dragging&&dragPid===pid)return;
+    const p=PLAYERS[pid];
+    let m=document.getElementById('mapmarker-'+pid);
+    if(!m){
+      m=document.createElement('div');
+      m.id='mapmarker-'+pid;
+      m.className='map-marker';
+      m.textContent=p.emoji;
+      mapWrap.appendChild(m);
+    }
+    const idx=clampIdx(stats[pid].mapPos??0);
+    const pos=CHAPTER_POS[idx];
+    const off=MARKER_OFFSET[pid]||{x:0,y:0};
+    m.style.left=(pos.left+off.x)+'%';
+    m.style.top=(pos.top+off.y)+'%';
+  });
+}
+let dragging=false,dragPid=null;
+function tryStartDrag(cx,cy){
+  for(const pid of Object.keys(PLAYERS)){
+    const m=document.getElementById('mapmarker-'+pid); if(!m) continue;
+    const r=m.getBoundingClientRect();
+    if(Math.hypot(cx-(r.left+r.width/2),cy-(r.top+r.height/2))<24){
+      dragging=true;dragPid=pid;m.classList.add('dragging');m.style.transition='none';return;
+    }
+  }
+}
+/* ── MOBILE: tap map to enlarge, then drag emoji ── */
+const MAP_MQ=window.matchMedia('(max-width:900px)');
+let mapOpen=false;
+const mapBackdrop=document.createElement('div');mapBackdrop.className='map-backdrop';
+const mapCloseBtn=document.createElement('button');mapCloseBtn.type='button';mapCloseBtn.className='map-close';mapCloseBtn.setAttribute('aria-label','Close map');mapCloseBtn.textContent='✕';
+let mapHome=null;
+function openMap(){if(mapOpen||!MAP_MQ.matches)return;mapOpen=true;document.body.classList.add('map-modal-open');mapHome=document.createElement('span');mapHome.style.display='none';mapWrap.parentNode.insertBefore(mapHome,mapWrap);document.body.appendChild(mapBackdrop);document.body.appendChild(mapWrap);document.body.appendChild(mapCloseBtn);mapWrap.classList.add('map-open');}
+function closeMap(){if(!mapOpen)return;mapOpen=false;mapWrap.classList.remove('map-open');if(mapHome&&mapHome.parentNode){mapHome.parentNode.insertBefore(mapWrap,mapHome);mapHome.remove();}mapBackdrop.remove();mapCloseBtn.remove();document.body.classList.remove('map-modal-open');mapHome=null;}
+mapBackdrop.addEventListener('click',closeMap);
+mapCloseBtn.addEventListener('click',closeMap);
+const mapHint=document.querySelector('.map-hint');
+const mapHintOrig=mapHint?mapHint.innerHTML:'';
+function syncMapHint(){if(!mapHint)return;if(MAP_MQ.matches){mapHint.textContent='Tap the map to open, then drag your emoji';}else{mapHint.innerHTML=mapHintOrig;}}
+syncMapHint();
+MAP_MQ.addEventListener('change',e=>{syncMapHint();if(!e.matches)closeMap();});
+mapWrap.addEventListener('mousedown',e=>{if(MAP_MQ.matches&&!mapOpen){openMap();return;}tryStartDrag(e.clientX,e.clientY);});
+mapWrap.addEventListener('touchstart',e=>{if(MAP_MQ.matches&&!mapOpen){openMap();return;}tryStartDrag(e.touches[0].clientX,e.touches[0].clientY);},{passive:true});
+function nearestIdx(cx,cy){
+  const rect=mapImg.getBoundingClientRect();
+  const xp=(cx-rect.left)/rect.width*100, yp=(cy-rect.top)/rect.height*100;
+  let best=0,bestD=Infinity;
+  CHAPTER_POS.forEach((p,i)=>{
+    const d=Math.hypot(xp-p.left,yp-p.top);
+    if(d<=bestD){bestD=d;best=i;}
+  });
+  return best;
+}
+function onMove(cx,cy){
+  if(!dragging||!dragPid)return;
+  const m=document.getElementById('mapmarker-'+dragPid); if(!m)return;
+  const rect=mapImg.getBoundingClientRect();
+  const xp=Math.min(Math.max((cx-rect.left)/rect.width*100,2),98);
+  const yp=Math.min(Math.max((cy-rect.top)/rect.height*100,2),98);
+  m.style.left=xp+'%';m.style.top=yp+'%';
+  const idx=nearestIdx(cx,cy);
+  mapTooltip.textContent = idx===0 ? 'Start' : idx===MAP_END_IDX ? 'End' : 'Chapter '+idx;
+  mapTooltip.style.left=xp+'%';
+  mapTooltip.style.top=yp+'%';
+  mapTooltip.classList.add('show');
+}
+window.addEventListener('mousemove',e=>onMove(e.clientX,e.clientY));
+window.addEventListener('touchmove',e=>onMove(e.touches[0].clientX,e.touches[0].clientY),{passive:true});
+async function endDrag(cx,cy){
+  if(!dragging)return;
+  const pid=dragPid;
+  dragging=false;dragPid=null;
+  mapTooltip.classList.remove('show');
+  const m=document.getElementById('mapmarker-'+pid);
+  if(m){m.style.transition='';m.classList.remove('dragging');}
+  const idx=nearestIdx(cx,cy);
+  const tileChanged=curPos[pid]==null||Number(curPos[pid])!==Number(idx);
+  stats[pid].mapPos=idx;
+  curPos[pid]=idx;
+  if(tileChanged)arriveAt[pid]=Date.now();
+  renderMapMarkers();
+  render();
+  const progress=Math.min(idx,TOTAL_CHAPTERS);
+  const payload={mapPos:idx,chapterProgress:progress};
+  if(tileChanged)payload.mapPosAt=arriveAt[pid];
+  try{await setDoc(doc(db,BINGO_COL,pid),payload,{merge:true});}catch(err){console.error(err);}
+}
+window.addEventListener('mouseup',e=>endDrag(e.clientX,e.clientY));
+window.addEventListener('touchend',e=>endDrag(e.changedTouches[0].clientX,e.changedTouches[0].clientY));
+/* ── RANK GRID (best guesser / fastest reader) ── */
+const rankGrid=document.getElementById('rankGrid');
+const stats={};
+Object.keys(PLAYERS).forEach(p=>stats[p]={chapterProgress:0,points:0,mapPos:0});
+/* ── ARRIVAL ORDER: first reader to reach a tile ranks ahead as faster ── */
+const arriveAt={};   // pid -> timestamp they reached their current tile
+const curPos={};     // pid -> current tile
+function computeRanks(metric,tieMetric){
+  const ids=RANKED_IDS.slice();
+  ids.sort((a,b)=>{
+    if(stats[a][metric]!==stats[b][metric]) return stats[a][metric]-stats[b][metric];
+    if(metric==='chapterProgress'){                           // same tile → first to arrive is faster
+      const ta=arriveAt[a]??0,tb=arriveAt[b]??0;
+      if(ta!==tb) return tb-ta;                               // earlier arrival → higher rank
+    }
+    if(stats[a][tieMetric]!==stats[b][tieMetric]) return stats[a][tieMetric]-stats[b][tieMetric];
+    const ta=arriveAt[a]??0,tb=arriveAt[b]??0;return tb-ta;   // stable fallback: earlier arrival ahead
+  });
+  const ranks={};
+  ids.forEach((id,i)=>ranks[id]=i+1);
+  return ranks;
+}
+function render(){
+  const xRank=computeRanks('chapterProgress','points');
+  const yRank=computeRanks('points','chapterProgress');
+  RANKED_IDS.forEach(pid=>{
+    const p=PLAYERS[pid];
+    let a=document.getElementById('rank-'+pid);
+    if(!a){
+      a=document.createElement('a');
+      a.id='rank-'+pid;
+      a.className='rank-avatar';
+      a.href=p.href;
+      a.style.setProperty('--ring',hexA(p.color,0.25));
+      a.style.setProperty('--ring-bright',hexA(p.color,0.7));
+      a.style.setProperty('--pc',p.color);
+      a.style.setProperty('--pc-glow',p.color);
+      a.style.setProperty('--pc-glow-op',pid==='elana'?0.45:0.6);
+      a.innerHTML=`<div class="rank-img-frame"><img src="${p.img}" alt="${p.name}"><div class="rank-badge" id="badge-${pid}"></div></div><div class="rank-name">${p.name}</div>`;
+      rankGrid.appendChild(a);
+    }
+    const badge=document.getElementById('badge-'+pid);
+    if(badge) badge.textContent = stats[pid].points;
+    const col=xRank[pid];
+    const row=yRank[pid];
+    const leftPct=(col-0.5)/RANKED_IDS.length*100;
+    const topPct=(RANKED_IDS.length-row+0.5)/RANKED_IDS.length*100;
+    a.style.left=leftPct+'%';
+    a.style.top=topPct+'%';
+  });
+}
+onSnapshot(collection(db,BINGO_COL),snap=>{
+  snap.forEach(d=>{
+    if(!PLAYERS[d.id]) return;
+    const data=d.data();
+    const chapterProgress=Number(data.chapterProgress||0);
+    const mapPos=(data.mapPos!=null)?Number(data.mapPos):chapterProgress;
+    stats[d.id]={ chapterProgress, points:Number(data.points||0), mapPos };
+    if(!(dragging&&dragPid===d.id)){
+      curPos[d.id]=mapPos;
+      arriveAt[d.id]=(data.mapPosAt!=null)?Number(data.mapPosAt):0;
+    }
+  });
+  render();
+  renderMapMarkers();
+},err=>console.error(err));
+render();
+renderMapMarkers();
+/* ── AXIS ARROWS: size to actually match the rank-grid's rendered dimensions ── */
+const yArrow=document.querySelector('.y-arrow'), xArrow=document.querySelector('.x-arrow'),
+      xArrowWrap=document.getElementById('xArrowWrap');
+function sizeArrow(img,targetLong){
+  const ratio=(img.naturalWidth&&img.naturalHeight)?(img.naturalWidth/img.naturalHeight):0.34;
+  img.style.height=Math.round(targetLong)+'px';
+  img.style.width=Math.round(targetLong*ratio)+'px';
+  return Math.round(targetLong*ratio);
+}
+function syncAxisArrows(){
+  const r=rankGrid.getBoundingClientRect();
+  if(r.height>0)sizeArrow(yArrow,r.height*0.92);
+  if(r.width>0){
+    const thickness=sizeArrow(xArrow,r.width*0.92);
+    xArrowWrap.style.height=thickness+'px';
+  }
+}
+function syncAxisArrowsWhenReady(){
+  const ready=img=>img.complete?Promise.resolve():new Promise(res=>img.addEventListener('load',res,{once:true}));
+  Promise.all([ready(yArrow),ready(xArrow)]).then(syncAxisArrows);
+}
+syncAxisArrowsWhenReady();
+window.addEventListener('resize',syncAxisArrows);
+new ResizeObserver(syncAxisArrows).observe(rankGrid);
+</script>
+</body>
+</html>
