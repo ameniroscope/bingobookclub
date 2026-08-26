@@ -465,13 +465,16 @@
           const rec = col[pid]._data || col[pid];
           const marked = Array.isArray(rec.marked) ? rec.marked : [];
           totals[pid].points += calcPoints(marked);
-          totals[pid].books += 1; // present in an archived snapshot = finished that book
+          // Same rule as live books: a snapshot only counts as a book read if the
+          // player actually played the bingo (a tracker-only card doesn't count).
+          const hasBingoMarks = marked.some(i => i !== 12);
+          if (hasBingoMarks) totals[pid].books += 1;
         });
       }
       return totals;
     } catch (e) {
-      console.warn('Falling back to hardcoded archive totals', e);
-      return ARCHIVE_FALLBACK;
+      console.warn('Could not load archived totals', e);
+      return totals; // degrade to zeros rather than crashing the whole scoreboard
     }
   }
 
