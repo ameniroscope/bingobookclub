@@ -80,7 +80,9 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
   transform:translateX(-50%);display:grid;
   grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(5,1fr);}
 .bingo-cell{display:flex;align-items:center;justify-content:center;padding:2px;}
-.bingo-cell.marked{background:rgba(212,175,55,0.55);}
+.bingo-cell.marked {
+  background: var(--marked-color, rgba(212,175,55,0.55));
+}
 .cell-text{width:100%;height:100%;display:flex;align-items:center;justify-content:center;
   text-align:center;font-family:'IM Fell English',Georgia,serif;
   font-size:clamp(6px,1.2vw,11px);line-height:1.2;color:#2a1a0a;padding:2px;
@@ -119,10 +121,10 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 // CONFIG
 // ─────────────────────────────────────────────
 const PLAYERS = {
-  elana:  { name:'Elana',  emoji:'🐉', color:'#c9a84c', photo:'../pdp_elana.png',  pid:'elana'  },
-  lena:   { name:'Lena',   emoji:'🌙', color:'#1f3a36', photo:'../pdp_lena.png',   pid:'lena'   },
-  kathi:  { name:'Kathi',  emoji:'🍄', color:'#24152b', photo:'../pdp_kathi.png',  pid:'kathi'  },
-  marine: { name:'Marine', emoji:'🧜‍♀️', color:'#172838', photo:'../pdp_marine.png', pid:'marine' }
+  elana:  { name:'Elana',  emoji:'🐉', color:'#c9a84c', photo:'../pdp_elana.png',  pid:'elana', marked:'rgb(201 168 76 / 50%)'},
+  lena:   { name:'Lena',   emoji:'🌙', color:'#1f3a36', photo:'../pdp_lena.png',   pid:'lena', marked:'rgb(31 58 54 / 50%);'},
+  kathi:  { name:'Kathi',  emoji:'🍄', color:'#24152b', photo:'../pdp_kathi.png',  pid:'kathi', marked:'rgb(36 21 43 / 50%)'},
+  marine: { name:'Marine', emoji:'🧜‍♀️', color:'#172838', photo:'../pdp_marine.png', pid:'marine', marked:'rgb(23 40 56 / 50%)'}
 };
 
 const BOOKS = [
@@ -242,6 +244,7 @@ async function init(){
   }
 
   document.title = `${player.name}'s History · Bingo Book Club`;
+  document.documentElement.style.setProperty('--marked-color', player.marked);
 
   // Little floating 🍵 marker to the current Tress read — only for its two readers
   if(pid === 'kathi' || pid === 'elana'){
