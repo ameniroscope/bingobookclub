@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Naomi Mitchison — The Bingo Book Club</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔥</text></svg>">
+<link rel="stylesheet" href="../style.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;600;700&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --ink:#2e1c0f;           /* dark espresso - text */
+  --ink-faded:#8a5230;     /* muted terracotta */
+  --gold:#c0491f;          /* rust orange - kicker, accents, borders */
+  --gold-lt:#e2803f;       /* warm amber - glows, highlights */
+  --parch:#f4ecd6;         /* cream */
+  --parch-dark:#e6d6b8;
+  --worn:#a8703f;          /* warm brown - ornament lines */
+  --bg-base:#ece0c4;       /* page background */
+}
+html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var(--ink);}
+#bg{position:fixed;inset:0;z-index:0;background:#ece0c4;}
+#bg::after{content:'';position:absolute;inset:0;background:
+  radial-gradient(ellipse 70% 50% at 15% 20%,rgba(192,73,31,0.15) 0%,transparent 55%),
+  radial-gradient(ellipse 60% 70% at 85% 75%,rgba(226,128,63,0.13) 0%,transparent 55%),
+  radial-gradient(ellipse 100% 100% at 50% 50%,transparent 60%,rgba(58,32,16,0.20) 100%);}
+
+/* ── TOP-RIGHT: back to book hub ── */
+.players-btn{background:#3a2010;color:#e6d6b8;border-color:var(--gold);box-shadow:0 2px 8px rgba(0,0,0,0.3);}
+.players-btn:hover{background:rgba(58,32,16,0.95);transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.4);}
+
+.page-3col{position:relative;z-index:1;max-width:1600px;margin:0 auto;padding:3.5rem 1.5rem 5rem;
+  display:grid;grid-template-columns:minmax(120px,168px) minmax(0,800px) minmax(120px,168px);
+  gap:2.4rem;justify-content:center;align-items:start;}
+.page-3col .bio-header{grid-column:1/-1;}
+
+/* ── SIDE RAILS OF NOVEL COVERS ── */
+.rail{display:flex;flex-direction:column;gap:1.1rem;}
+.rail-label{font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:3px;text-transform:uppercase;color:var(--gold);text-align:center;opacity:0.8;}
+
+/* ── HEADER ── */
+.bio-header{display:flex;flex-direction:column;align-items:center;text-align:center;gap:0.8rem;margin-bottom:2.5rem;}
+.kicker{font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:5px;color:var(--gold);text-transform:uppercase;}
+.portrait{width:190px;height:230px;object-fit:cover;border-radius:6px;border:2px solid rgba(226,128,63,0.5);
+  box-shadow:0 6px 26px rgba(58,32,16,0.4);filter:sepia(0.12);}
+.bio-name{font-family:'Cinzel',serif;font-size:2.6rem;font-weight:700;letter-spacing:2px;color:var(--ink);line-height:1.1;}
+.bio-dates{font-family:'Cinzel',serif;font-size:0.85rem;letter-spacing:3px;color:var(--ink-faded);text-transform:uppercase;}
+
+.ornament{display:flex;align-items:center;gap:0.6rem;margin:0.4rem auto 0;width:min(340px,80%);}
+.orn-line{flex:1;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent);}
+.orn-gem{color:var(--gold);font-size:0.8rem;}
+
+/* ── ARTICLE ── */
+.biography{font-size:1.12rem;line-height:1.9;color:var(--ink);}
+.biography h2{font-family:'Cinzel',serif;font-size:1.5rem;font-weight:600;letter-spacing:2px;color:var(--gold);
+  margin:2.4rem 0 0.9rem;padding-bottom:0.4rem;border-bottom:1px solid rgba(168,112,63,0.4);}
+.biography h3{font-family:'Cinzel',serif;font-size:1.05rem;font-weight:600;letter-spacing:2px;color:var(--ink);
+  text-transform:uppercase;margin:1.8rem 0 0.7rem;}
+.biography p{margin:0 0 1.1rem;text-align:justify;}
+.biography a{color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(192,73,31,0.35);}
+.biography a:hover{color:var(--gold-lt);border-bottom-color:var(--gold-lt);}
+.biography sup a{border-bottom:none;font-size:0.7em;padding:0 1px;}
+.biography em{font-style:italic;}
+
+.bibliography-list{list-style:none;columns:2;column-gap:2.5rem;margin:0.4rem 0 0.6rem;padding:0;}
+.bibliography-list li{font-size:1rem;line-height:1.7;padding:0.12rem 0 0.12rem 1rem;text-indent:-1rem;break-inside:avoid;}
+.bibliography-list li::before{content:'✦';color:var(--gold);font-size:0.7rem;margin-right:0.5rem;}
+.citation-note{font-size:0.85rem;color:var(--ink-faded);}
+
+/* ── SMALL FLIP-CARD COVERS (rails) — cover → hover/tap for synopsis ── */
+.grid-hint{font-size:0.82rem;font-style:italic;color:var(--ink-faded);margin:0.2rem 0 0;}
+.flip-card{perspective:900px;cursor:pointer;}
+.flip-inner{position:relative;width:100%;aspect-ratio:2/3;transition:transform 0.6s cubic-bezier(.2,.7,.2,1);transform-style:preserve-3d;}
+.flip-card:hover .flip-inner,.flip-card.flipped .flip-inner{transform:rotateY(180deg);}
+.flip-front,.flip-back{position:absolute;inset:0;border-radius:5px;overflow:hidden;
+  -webkit-backface-visibility:hidden;backface-visibility:hidden;box-shadow:0 5px 14px rgba(58,32,16,0.38);}
+.flip-front{border:1px solid rgba(168,112,63,0.5);}
+.flip-front img{width:100%;height:100%;object-fit:cover;display:block;}
+.cover-fallback{position:relative;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;gap:0.35rem;padding:0.7rem;background:linear-gradient(150deg,#3a2010 0%,#7a2f13 55%,#c0491f 100%);color:var(--parch);}
+.cover-fallback::before{content:'';position:absolute;left:5px;top:7px;bottom:7px;width:2px;background:rgba(244,236,214,0.22);border-radius:2px;}
+.cover-fallback .cf-title{font-family:'Cinzel',serif;font-size:0.72rem;font-weight:600;letter-spacing:0.4px;line-height:1.3;}
+.cover-fallback .cf-year{font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:2px;opacity:0.85;}
+.flip-back{transform:rotateY(180deg);background:var(--parch);border:1px solid var(--worn);
+  display:flex;flex-direction:column;padding:0.6rem 0.65rem;text-align:left;}
+.flip-back .back-title{font-family:'Cinzel',serif;font-size:0.72rem;font-weight:600;letter-spacing:0.3px;color:var(--gold);line-height:1.2;}
+.flip-back .back-year{font-family:'Cinzel',serif;font-size:0.55rem;letter-spacing:1.5px;color:var(--ink-faded);text-transform:uppercase;
+  margin:0.15rem 0 0.35rem;padding-bottom:0.3rem;border-bottom:1px solid rgba(168,112,63,0.4);}
+.flip-back .back-blurb{font-size:0.8rem;line-height:1.4;color:var(--ink);overflow:auto;}
+.flip-back .back-blurb.empty{font-style:italic;color:var(--ink-faded);}
+
+/* Collapse 3-column layout on narrow screens: text first, covers below */
+@media(max-width:820px){
+  .page-3col{grid-template-columns:1fr;gap:1.6rem;}
+  .biography{order:-1;}
+  .rail{flex-direction:row;flex-wrap:wrap;justify-content:center;gap:1rem;}
+  .rail .flip-card{width:118px;}
+}
+@media(max-width:520px){
+  .rail .flip-card{width:100px;}
+}
+
+.sources{margin-top:1rem;}
+.sources ol{margin:0.6rem 0 0;padding-left:1.4rem;}
+.sources li{font-size:0.92rem;line-height:1.7;color:var(--ink-faded);margin-bottom:0.7rem;}
+.sources li a{word-break:break-word;}
+
+@media(max-width:640px){
+  .bibliography-list{columns:1;}
+  .bio-name{font-size:2rem;}
+}
+</style>
+</head>
+<body>
+<div id="bg"></div>
+
+<a href="travellight.html" class="players-btn">🔥 Travel Light</a>
+<a href="../index.html" class="home-btn"><span class="home-btn-icon">🏠</span> Home</a>
+
+<div class="page-3col">
+  <header class="bio-header">
+    <div class="kicker">The Author</div>
+    <img class="portrait" src="mitchison.jpg" alt="Portrait of Naomi Mitchison">
+    <h1 class="bio-name">Naomi Mitchison</h1>
+    <div class="bio-dates">1897 – 1999</div>
+    <div class="ornament"><div class="orn-line"></div><div class="orn-gem">◆</div><div class="orn-line"></div></div>
+  </header>
+
+  <aside class="rail" id="railLeft" aria-label="Novels (left)"></aside>
+
+  <article class="biography">
+    <p>
+      Naomi Mitchison (born Naomi Margaret Haldane) was a Scottish novelist and
+      social activist. Born in Edinburgh and raised in Oxford, where her
+      physiologist father John Scott Haldane was a Fellow, she married the
+      barrister Gilbert "Dick" Mitchison — later a Labour MP — in 1916. Through
+      the 1920s and '30s their Hammersmith home was a hub for artists, writers
+      and politicians, from Aldous Huxley and W. H. Auden to E. M.
+      Forster.<sup><a href="#src1">[1]</a></sup>
+    </p>
+
+    <h2>Political life</h2>
+
+    <p>
+      Mitchison joined the Labour Party in 1930 and campaigned actively through
+      the decade — joining a 1932 Fabian expedition to the Soviet Union, and
+      standing (unsuccessfully) for the Scottish Universities in 1935. In 1939
+      she settled at Carradale and took part in the Scottish
+      renaissance.<sup><a href="#src1">[1]</a></sup>
+    </p>
+
+    <p>
+      Her most significant political trip was to Vienna in February 1934, after
+      the Fascist Dollfuss government crushed the Socialists in the Austrian
+      Civil War.<sup><a href="#src2">[2]</a></sup> She went to aid the
+      persecuted socialists,<sup><a href="#src1">[1]</a></sup><sup><a href="#src5">[5]</a></sup>
+      taking real personal risk — smuggling documents and left-wing refugees
+      out of the country.<sup><a href="#src3">[3]</a></sup> Her diary preserves
+      a first-hand account of the arrest, trial and execution of the socialist
+      leader Koloman Wallisch.<sup><a href="#src4">[4]</a></sup>
+    </p>
+
+    <p>
+      Her reach extended beyond Europe. In 1934 she introduced the Labour
+      politician Stafford Cripps to Jawaharlal Nehru, and after Indian
+      independence visited the subcontinent to see her daughter Sonia, teaching
+      in Pakistan. In the 1960s the Bakgatla people of Botswana adopted her as a
+      councillor and "mother," and she wrote extensively about
+      them.<sup><a href="#src1">[1]</a></sup>
+    </p>
+
+    <h2>Writing</h2>
+
+    <p>
+      Mitchison worked across an unusually wide range — historical fiction,
+      science fiction, fantasy, children's books, poetry and
+      memoir.<sup><a href="#src6">[6]</a></sup>
+    </p>
+
+    <h3>Historical fiction</h3>
+    <p>
+      She began with novels of the classical and pre-classical world.
+      <em>The Conquered</em> (1923) and <em>The Corn King and the Spring
+      Queen</em> (1931) were among her most successful — the latter often
+      ranked among the century's finest historical
+      novels.<sup><a href="#src10">[10]</a></sup>
+    </p>
+
+    <h3>Science fiction</h3>
+    <p>
+      Her best-known science fiction is <em>Memoirs of a Spacewoman</em>
+      (1962), the episodic memoir of Mary, a communications specialist who
+      explores alien life across space and time — taking up communication,
+      sexuality, reproduction and the ethics of first
+      contact.<sup><a href="#src11">[11]</a></sup> Widely seen as an early
+      landmark of feminist SF, it depicted women as professionals and took
+      alien sexuality — and a woman's right to choose the father of her
+      children — seriously, well ahead of its
+      time.<sup><a href="#src12">[12]</a></sup><sup><a href="#src13">[13]</a></sup>
+      Later came <em>Solution Three</em> (1975), on a future that answers
+      overpopulation and conflict with human
+      cloning.<sup><a href="#src14">[14]</a></sup>
+    </p>
+
+    <h3>Fantasy and children's writing</h3>
+    <p>
+      She also wrote for younger readers and in fantasy modes — the Arthurian
+      <em>To the Chapel Perilous</em> (1955)<sup><a href="#src9">[9]</a></sup>
+      and <em>Travel Light</em> (1952), a fairy tale of a girl raised by bears
+      and dragons.<sup><a href="#src18">[18]</a></sup> Her 1936 collection
+      <em>The Fourth Pig</em> gathers fairy tales, poems and
+      ballads.<sup><a href="#src8">[8]</a></sup>
+    </p>
+
+    <h3>Memoir and nonfiction</h3>
+    <p>
+      She wrote extensively about her own life and times: the <em>Vienna
+      Diary</em> (1934), the memoir <em>You May Well Ask</em> (1920–1940, pub.
+      1979), the wartime diary <em>Among You Taking Notes</em> (1939–1945, pub.
+      1985), and nonfiction such as <em>The Moral Basis of Politics</em>
+      (1938).<sup><a href="#src9">[9]</a></sup>
+    </p>
+
+    <h2>Selected bibliography</h2>
+
+    <p>
+      Extraordinarily prolific, Mitchison published more than 90 books over
+      seven decades. A few of her best-loved works flank this page; the rest
+      of her novels follow, with fuller listings in the sources
+      below.<sup><a href="#src6">[6]</a></sup><sup><a href="#src7">[7]</a></sup>
+    </p>
+
+    <h3>More novels</h3>
+    <ul class="bibliography-list">
+      <li>Cloud Cuckoo Land (1925)</li>
+      <li>Black Sparta (1928)</li>
+      <li>The Delicate Fire (1933)</li>
+      <li>The Big House (1950)</li>
+      <li>The Land the Ravens Found (1955)</li>
+      <li>Little Boxes (1956)</li>
+      <li>Behold Your King (1957)</li>
+      <li>Ketse and the Chief (1965)</li>
+      <li>When We Become Men (1965)</li>
+      <li>The Big Surprise (1967)</li>
+      <li>Don't Look Back (1969)</li>
+      <li>Family at Ditlabeng (1969)</li>
+      <li>Far Harbour (1969)</li>
+      <li>Sun and Moon (1970)</li>
+      <li>Cleopatra's People (1972)</li>
+      <li>Sunrise Tomorrow (1973)</li>
+      <li>Danish Teapot (1973)</li>
+      <li>Snake! (1976)</li>
+      <li>The Two Magicians (1979)</li>
+      <li>The Vegetable War (1980)</li>
+      <li>The Barbarian (1980)</li>
+      <li>Mucking Around (1981)</li>
+      <li>Images of Africa (1987)</li>
+      <li>The Oath-Takers / Sea-Green Ribbons (1991)</li>
+      <li>The Dark Twin (1998)</li>
+    </ul>
+
+    <h3>Selected nonfiction &amp; memoir</h3>
+    <ul class="bibliography-list">
+      <li>Naomi Mitchison's Vienna Diary (1934)</li>
+      <li>The Moral Basis of Politics (1938)</li>
+      <li>You May Well Ask: A Memoir 1920–1940 (1979)</li>
+      <li>Among You Taking Notes: The Wartime Diary of Naomi Mitchison, 1939–1945 (ed. Dorothy Sheridan, 1985)</li>
+    </ul>
+
+    <h3>Selected short fiction collections</h3>
+    <ul class="bibliography-list">
+      <li>Beyond This Limit (1935)</li>
+      <li>The Fourth Pig (1936)</li>
+      <li>Beyond This Limit: Selected Shorter Fiction of Naomi Mitchison (1986)</li>
+    </ul>
+
+    <h3>Selected poetry</h3>
+    <ul class="bibliography-list">
+      <li>The Laburnum Branch (1926)</li>
+      <li>The Delicate Fire — short stories &amp; poems (1933)</li>
+      <li>The Alban Goes Out (1939)</li>
+      <li>The Cleansing of the Knife and Other Poems (1978)</li>
+    </ul>
+
+    <h2 id="sources">Sources</h2>
+    <div class="sources">
+      <ol>
+        <li id="src1">
+          Open University, <em>Making Britain</em> project — Naomi Mitchison
+          biographical entry.
+          <a href="https://www5.open.ac.uk/research-projects/making-britain/node/722" target="_blank" rel="noopener">
+            www5.open.ac.uk/research-projects/making-britain/node/722
+          </a>
+        </li>
+        <li id="src2">
+          Orlando Project (Cambridge) — Engelbert Dollfuss / Naomi Mitchison entry.
+          <a href="https://orlando.cambridge.org/people/eeef42ec-d060-414a-9af6-16ccd8e22c84" target="_blank" rel="noopener">
+            orlando.cambridge.org/people/eeef42ec-d060-414a-9af6-16ccd8e22c84
+          </a>
+        </li>
+        <li id="src3">
+          Bookseller listing, <em>Naomi Mitchison's Vienna Diary</em> (1934), AbeBooks.
+          <a href="https://www.abebooks.co.uk/first-edition/Naomi-Mitchisons-Vienna-Diary-MITCHISON-Victor/32191031948/bd" target="_blank" rel="noopener">
+            abebooks.co.uk — Vienna Diary listing
+          </a>
+        </li>
+        <li id="src4">
+          Wikipedia, "Koloman Wallisch."
+          <a href="https://en.wikipedia.org/wiki/Koloman_Wallisch" target="_blank" rel="noopener">
+            en.wikipedia.org/wiki/Koloman_Wallisch
+          </a>
+        </li>
+        <li id="src5">
+          University of Southampton ePrints — thesis excerpt discussing Mitchison's
+          <em>Vienna Diary</em>.
+          <a href="https://eprints.soton.ac.uk/464877" target="_blank" rel="noopener">
+            eprints.soton.ac.uk/464877
+          </a>
+        </li>
+        <li id="src6">
+          Wikipedia, "Naomi Mitchison" — overview note on scope of output (90+ books).
+          <a href="https://en.wikipedia.org/wiki/Naomi_Mitchison" target="_blank" rel="noopener">
+            en.wikipedia.org/wiki/Naomi_Mitchison
+          </a>
+        </li>
+        <li id="src7">
+          "Naomi Mitchison Books In Order," AddALL — chronological novel listing.
+          <a href="https://www.addall.com/books-in-order/naomi-mitchison/" target="_blank" rel="noopener">
+            addall.com/books-in-order/naomi-mitchison
+          </a>
+        </li>
+        <li id="src8">
+          Internet Speculative Fiction Database (ISFDB), "Summary Bibliography: Naomi Mitchison."
+          <a href="https://isfdb.org/cgi-bin/ea.cgi?1735=" target="_blank" rel="noopener">
+            isfdb.org/cgi-bin/ea.cgi?1735=
+          </a>
+        </li>
+        <li id="src9">
+          Detailed Naomi Mitchison chronological bibliography (beccon.org).
+          <a href="https://beccon.org/NMM/chronology.html" target="_blank" rel="noopener">
+            beccon.org/NMM/chronology.html
+          </a>
+        </li>
+        <li id="src10">
+          "Naomi Mitchison — Books From Scotland" — overview of her most successful works.
+          <a href="https://booksfromscotland.com/bfs-author/maomi-mitchison/" target="_blank" rel="noopener">
+            booksfromscotland.com/bfs-author/maomi-mitchison
+          </a>
+        </li>
+        <li id="src11">
+          Wikipedia, "Memoirs of a Spacewoman."
+          <a href="https://en.wikipedia.org/wiki/Memoirs_of_a_Spacewoman" target="_blank" rel="noopener">
+            en.wikipedia.org/wiki/Memoirs_of_a_Spacewoman
+          </a>
+        </li>
+        <li id="src12">
+          Kate Macdonald, "Sex in space: Naomi Mitchison's Memoirs of a Spacewoman."
+          <a href="https://katemacdonald.net/2015/09/11/sex-in-space-naomi-mitchisons-memoirs-of-a-spacewoman-2/" target="_blank" rel="noopener">
+            katemacdonald.net — Sex in Space
+          </a>
+        </li>
+        <li id="src13">
+          Joachim Boaz, review of <em>Memoirs of a Spacewoman</em>, SF Mistressworks.
+          <a href="https://sfmistressworks.wordpress.com/tag/memoirs-of-a-spacewoman/" target="_blank" rel="noopener">
+            sfmistressworks.wordpress.com — Memoirs of a Spacewoman
+          </a>
+        </li>
+        <li id="src14">
+          Goodreads listing/summary, <em>Memoirs of a Spacewoman</em> (background note on Solution Three).
+          <a href="https://www.goodreads.com/book/show/124130981" target="_blank" rel="noopener">
+            goodreads.com/book/show/124130981
+          </a>
+        </li>
+        <li id="src18">
+          Cannonball Read review, "Travel Light."
+          <a href="https://cannonballread.com/2025/08/travel-light-fiat-luxury/" target="_blank" rel="noopener">
+            cannonballread.com — Travel Light
+          </a>
+        </li>
+      </ol>
+    </div>
+  </article>
+
+  <aside class="rail" id="railRight" aria-label="Novels (right)"></aside>
+</div>
+
+<script>
+/* ─────────────────────────────────────────────────────────────
+   NOVELS — flip-card data.
+   • cover : paste an image URL to show a real cover; leave "" for
+             the styled fallback cover (title + year).
+   • blurb : short synopsis shown on the back; leave "" for a
+             "Synopsis coming soon." placeholder.
+   ───────────────────────────────────────────────────────────── */
+(function(){
+  const NOVELS = [
+    {t:"Travel Light", y:1952, cover:"https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1758347236i/229165114.jpg", blurb:`Halla, saved from death as a baby, is raised by bears and dragons and wanders a gently Norse world of gods and monsters — a witty, subversive fairy tale for fans of Tolkien and Le Guin.`},
+    {t:"Memoirs of a Spacewoman", y:1962, cover:"https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1735627737i/827280.jpg", blurb:`Mary, a compassionate communications expert, explores alien life across distant galaxies — and her own sexuality — in an early landmark of feminist science fiction.`},
+    {t:"The Corn King and the Spring Queen", y:1931, cover:"https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1312027660i/827274.jpg", blurb:`Her acclaimed epic of the ancient world: Erif Der, a young witch forced to marry Tarrik the Corn King, weaves magic, love and dark ritual between Scythia, Sparta and Egypt.`},
+    {t:"The Conquered", y:1923, cover:"https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1408935626i/6982717.jpg", blurb:`Her acclaimed first novel: Caesar's Gallic Wars seen from the side of the defeated, through a young Gaul enslaved as Rome crushes his people.`},
+    {t:"The Bull Calves", y:1947, cover:"https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1214996038i/2446825.jpg", blurb:`Set in the Highlands in 1747, after the Jacobite rising — a deeply personal historical novel peopled with Mitchison's own ancestors and written as a wartime plea for peace.`},
+    {t:"Blood of the Martyrs", y:1948, cover:"https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1520597278i/827279.jpg", blurb:`Rome under Nero: citizens Flavius Crispus and his son Beric risk death to become Christians and treat their slaves as brothers — a story of faith and resistance.`},
+    {t:"Solution Three", y:1975, cover:"https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1354209244i/827277.jpg", blurb:`A future that has "solved" conflict and overpopulation through cloning and enforced homosexuality begins to show its cracks — sharp feminist science fiction.`},
+    {t:"The Fourth Pig", y:1936, cover:"https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1449284589i/21981640.jpg", blurb:`A wide-ranging collection of fairy tales, poems and ballads — droll, sad and subversive reworkings stamped with Mitchison's sharp wit and political conscience.`},
+    {t:"Not by Bread Alone", y:1983, cover:"https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1181417184i/1149975.jpg", blurb:`Written when Mitchison was 86: in a near future, a multinational's genetically engineered "Freefood" promises to feed the world — until the crops start to fail, and the scientists must learn from the people who refuse it.`},
+    {t:"We Have Been Warned", y:1935, cover:"https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1733897862i/157523906.jpg", blurb:`Appalled by the rise of fascism and disillusioned with the Soviet Union, Mitchison wrote this frank political novel to warn the world.`},
+    {t:"Vienna Diary", y:1934, cover:"https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1432427712i/25590355.jpg", blurb:`Her day-to-day diary of a 1934 visit to Vienna after the crushing of the Socialists — an eyewitness "human document" of a city in crisis, and a book of real historical importance.`},
+    {t:"All Change Here: Girlhood and Marriage", y:1975, cover:"https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1548765703i/4649463.jpg", blurb:`A volume of memoir recalling her Edwardian girlhood and early marriage in the years around the First World War.`},
+    {t:"To the Chapel Perilous", y:1955, cover:"https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1387348581i/2094097.jpg", blurb:`The Grail quest reported as breaking news — a witty, stylish retelling in which rival journalists chase the fall of the Round Table.`},
+    {t:"Among You Taking Notes…", y:1985, cover:"https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1178731245i/827273.jpg", blurb:`Her wartime diary, 1939–1945 — a vivid first-hand record of one Scottish household, from the invasion of Poland to Hiroshima.`},
+    {t:"Early in Orcadia", y:1987, cover:"https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1735887640i/4668285.jpg", blurb:`Five stories set thousands of years apart in one corner of Stone Age Orkney, woven together with Mitchison's own reflections on prehistory.`},
+    {t:"Travel Light with The Varangs' Saga", y:1990, cover:"https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1349122378i/6891642.jpg", blurb:`The Travel Light fairy tale paired with The Varangs' Saga — a playful 1926 tale of British families on a French holiday, told in the manner of an Old Norse saga.`},
+    {t:"When the Bough Breaks, and Other Stories", y:1924, cover:"https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1347984189i/4818626.jpg", blurb:`An early collection of short stories set in the ancient world — Rome, the Gauls and the clash of empires.`},
+    {t:"Small Talk", y:1973, cover:"https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1517792455i/5131903.jpg", blurb:`A memoir of her Edwardian childhood in Oxford in the years before the First World War.`},
+    {t:"Lobsters on the Agenda", y:1952, cover:"https://m.media-amazon.com/images/I/41OhXjZUeyL._SY445_SX342_FMwebp_.jpg", blurb:`A warm, closely observed novel of a single week in a West Highland fishing village — its meetings, loyalties and quarrels.`},
+    {t:"Graeme and the Dragon", y:1970, cover:"https://i0.wp.com/kleinletters.com/Blog/wp-content/uploads/2023/04/GraemeDragon1.jpg?resize=700%2C1008&ssl=1", blurb:`When Graeme found a baby dragon, things stopped being just everydayish. One day he came across a bear's skin airing on a tree while the bear was away being human — and then there were the tin soldiers who came to life!`},
+  ];
+
+  const railLeft = document.getElementById('railLeft');
+  const railRight = document.getElementById('railRight');
+  if(!railLeft || !railRight) return;
+  const esc = s => String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+  // Alternate books across the two rails so they read in pairs:
+  //   1 | 2      (book 1 left, book 2 right)
+  //   3 | 4      (book 3 left, book 4 right) …
+  NOVELS.forEach((b,i)=>{
+    const grid = i % 2 === 0 ? railLeft : railRight;
+    const fallback = `<div class="cover-fallback"><div class="cf-title">${esc(b.t)}</div><div class="cf-year">${esc(b.y)}</div></div>`;
+    const front = b.cover
+      ? `<img src="${esc(b.cover)}" alt="Cover of ${esc(b.t)}">`
+      : fallback;
+    const blurb = b.blurb
+      ? `<p class="back-blurb">${esc(b.blurb)}</p>`
+      : `<p class="back-blurb empty">Synopsis coming soon.</p>`;
+    const card = document.createElement('div');
+    card.className = 'flip-card';
+    card.innerHTML = `<div class="flip-inner">
+        <div class="flip-front">${front}</div>
+        <div class="flip-back"><div class="back-title">${esc(b.t)}</div><div class="back-year">${esc(b.y)}</div>${blurb}</div>
+      </div>`;
+    // If a supplied cover URL fails to load, gracefully fall back to the styled cover.
+    const img = card.querySelector('.flip-front img');
+    if(img) img.addEventListener('error', ()=>{ img.parentNode.innerHTML = fallback; });
+    // Tap to flip on touch devices (hover handles desktop).
+    card.addEventListener('click', ()=> card.classList.toggle('flipped'));
+    grid.appendChild(card);
+  });
+})();
+</script>
+</body>
+</html>
