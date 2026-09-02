@@ -5,6 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Bingo Book Club</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📖</text></svg>">
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#2a1230">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Bingo Book Club">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+
 <link rel="stylesheet" href="style.css">
 <style>
 
@@ -753,6 +763,17 @@ makeWanderer('hpfanfic',   () => window.location.href = 'secret/hpmor.html');
 makeWanderer('atla',   () => window.location.href = 'secret/atla.html');
 </script>
 <!-- ✦ end easter egg ✦ -->
+
+<!-- PWA: register the service worker -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('sw.js').catch(function (err) {
+      console.warn('Service worker registration failed:', err);
+    });
+  });
+}
+</script>
 
 </body>
 </html>

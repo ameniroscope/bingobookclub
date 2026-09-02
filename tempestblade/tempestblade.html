@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Twisted Throne</title>
+<title>The Tempest Blade</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👑</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -54,7 +54,7 @@ html,body{background:var(--purple-deep);color:var(--ink);font-family:var(--body-
 .map-wrap img{display:block;width:100%;border-radius:6px;border:3px solid var(--gold);
   box-shadow:0 0 0 1px var(--teal-deep),0 0 0 4px var(--purple-mid),0 12px 30px rgba(0,0,0,0.55),inset 0 0 24px rgba(0,0,0,0.35);
   background:var(--purple);min-height:220px;}
-.map-hint{font-family:var(--body-font);font-style:italic;font-size:0.95rem;color:var(--ink-faded);letter-spacing:0.3px;text-align:center;}
+.map-hint{max-width: 400px;font-family:var(--body-font);font-style:italic;font-size:0.95rem;color:var(--ink-faded);letter-spacing:0.3px;text-align:center;}
 .map-marker{position:absolute;transform:translate(-50%,-50%);font-size:1.4rem;line-height:1;z-index:5;
   filter:drop-shadow(0 1px 3px rgba(0,0,0,0.7));transition:left 0.25s ease,top 0.25s ease;
   cursor:grab;touch-action:none;}
@@ -139,10 +139,10 @@ body.map-modal-open{overflow:hidden;}
 <main class="home-layout">
   <section class="map-section">
     <div class="map-wrap" id="mapWrap">
-      <img src="twistedthrone_map.png" alt="The Twisted Throne chapter map">
+      <img src="tempestblade_map.png" alt="The Tempest Blade chapter map">
       <div class="map-tooltip" id="mapTooltip"></div>
     </div>
-    <div class="map-hint">Drag your emoji across the map to mark your progress</div>
+    <div class="map-hint">Drag your emoji across the map to mark your progress and if you see missing numbers, no you don't 👀</div>
   </section>
   <div class="crest-divider" aria-hidden="true"><div class="line"></div><div class="crown">👑</div><div class="line"></div></div>
   <section class="players-section">
@@ -180,32 +180,42 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 /* New collection so this book's progress doesn't collide with other books' data */
-const BINGO_COL = 'twistedthrone_bingo';
+const BINGO_COL = 'tempestblade_bingo';
 const PLAYERS = {
-  elana:  { emoji:"🐉",   color:"#d1a752", name:"Elana",  href:"twistedthrone_player.html?p=elana",  img:"../pdp_elana.png"  },
-  lena:   { emoji:"🌙",   color:"#2f9c8f", name:"Lena",   href:"twistedthrone_player.html?p=lena",   img:"../pdp_lena.png"   },
-  kathi:  { emoji:"🍄",   color:"#9d4fbd", name:"Kathi",  href:"twistedthrone_player.html?p=kathi",  img:"../pdp_kathi.png"  },
-  marine: { emoji:"🧜‍♀️", color:"#3f9fd6", name:"Marine", href:"twistedthrone_player.html?p=marine", img:"../pdp_marine.png" },
+  elana:  { emoji:"🐉",   color:"#d1a752", name:"Elana",  href:"tempestblade_player.html?p=elana",  img:"../pdp_elana.png"  },
+  lena:   { emoji:"🌙",   color:"#2f9c8f", name:"Lena",   href:"tempestblade_player.html?p=lena",   img:"../pdp_lena.png"   },
+  kathi:  { emoji:"🍄",   color:"#9d4fbd", name:"Kathi",  href:"tempestblade_player.html?p=kathi",  img:"../pdp_kathi.png"  },
+  marine: { emoji:"🧜‍♀️", color:"#3f9fd6", name:"Marine", href:"tempestblade_player.html?p=marine", img:"../pdp_marine.png" },
 };
 /* Everyone competes on the axes this time — Kathi's back in the game. */
 const RANKED_IDS = ['elana','lena','kathi','marine'];
 function hexA(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;}
-/* ── CHAPTER MAP MARKERS ── index 0 = Start, 1..55 = chapters, 56 = End.
-   Traced against the real twistedthrone_map.png art (serpentine path — each
-   row alternates direction). To re-trace: open the console, run
-   `findMapPosition()`, click each spot in order, and paste the printed
-   {left,top} values in here row by row. */
-const TOTAL_CHAPTERS = 55;
+/* ── CHAPTER MAP MARKERS ── index 0 = Start, 1..107 = chapters, 108 = End.
+   Traced against the real tempestblade_map.png art, read left-to-right,
+   top-to-bottom, one row per map row.
+   NOTE: chapters 80, 89 and 99 have no stone drawn on the map, so their entries
+   are placeholders sitting midway between their neighbours — index still equals
+   chapter number so the chat-room unlocks stay aligned. Nudge those three if you
+   want them elsewhere. To re-trace: run `findMapPosition()` in the console. */
+const TOTAL_CHAPTERS = 107;
 const CHAPTER_POS = [
-  {left:13.01,top:23.10}, {left:26.58,top:23.73}, {left:37.53,top:23.26}, {left:48.96,top:23.26}, {left:60.62,top:23.41}, {left:72.53,top:23.26}, {left:83.48,top:23.26}, // 0 Start, 1–6
-  {left:88.72,top:30.44}, {left:76.58,top:30.75}, {left:64.20,top:30.59}, {left:52.53,top:30.44}, {left:39.67,top:30.28}, {left:27.77,top:30.75}, {left:16.34,top:31.22}, // 7–13
-  {left:13.72,top:38.87}, {left:26.34,top:39.02}, {left:38.96,top:39.18}, {left:51.58,top:38.71}, {left:63.48,top:39.18}, {left:75.15,top:39.02}, {left:86.58,top:39.18}, // 14–20
-  {left:87.53,top:46.83}, {left:75.39,top:46.83}, {left:63.24,top:46.67}, {left:51.82,top:46.83}, {left:40.86,top:46.51}, {left:29.91,top:46.83}, {left:16.34,top:46.98}, // 21–27
-  {left:13.48,top:54.16}, {left:25.86,top:54.16}, {left:38.01,top:54.48}, {left:49.91,top:54.32}, {left:61.82,top:54.01}, {left:74.67,top:54.32}, {left:85.63,top:54.32}, // 28–34
-  {left:86.82,top:62.12}, {left:74.67,top:62.28}, {left:62.29,top:62.12}, {left:51.10,top:62.44}, {left:38.01,top:62.28}, {left:27.53,top:62.44}, {left:15.63,top:62.44}, // 35–41
-  {left:13.72,top:70.24}, {left:25.86,top:70.08}, {left:38.96,top:70.24}, {left:51.10,top:70.24}, {left:62.29,top:70.40}, {left:74.67,top:70.40}, {left:86.34,top:70.55}, // 42–48
-  {left:86.58,top:78.20}, {left:75.39,top:78.20}, {left:63.48,top:78.51}, {left:52.05,top:78.20}, {left:41.10,top:78.20}, {left:28.96,top:78.20}, {left:17.05,top:78.20}, // 49–55
-  {left:48.96,top:86.47}, // 56  End
+  {left:12.29,top:22.79}, {left:24.91,top:23.88}, {left:34.20,top:23.73}, {left:44.43,top:24.20}, {left:54.20,top:23.88}, {left:63.48,top:23.88}, {left:74.20,top:24.20}, {left:83.48,top:23.73}, // 0 Start, 1–7
+  {left:15.63,top:29.81}, {left:25.15,top:29.81}, {left:34.67,top:30.13}, {left:44.91,top:29.81}, {left:53.96,top:30.13}, {left:64.43,top:29.81}, {left:73.48,top:29.81}, {left:83.01,top:29.66}, // 8–15
+  {left:13.01,top:35.90}, {left:22.29,top:35.90}, {left:32.53,top:35.59}, {left:42.05,top:35.59}, {left:51.10,top:35.43}, {left:60.86,top:35.75}, {left:70.39,top:35.59}, {left:81.34,top:35.59}, {left:90.15,top:35.59}, // 16–24
+  {left:11.58,top:41.21}, {left:20.86,top:41.52}, {left:30.63,top:41.52}, {left:40.39,top:41.21}, {left:49.67,top:41.21}, {left:58.96,top:41.36}, {left:68.01,top:41.36}, {left:78.01,top:41.52}, {left:86.82,top:41.52}, // 25–33
+  {left:10.86,top:47.30}, {left:19.43,top:47.14}, {left:28.72,top:47.14}, {left:37.77,top:46.98}, {left:47.05,top:46.98}, {left:56.10,top:47.14}, {left:65.15,top:47.30}, {left:74.67,top:47.14}, {left:84.20,top:47.14}, {left:91.58,top:47.14}, // 34–43
+  {left:13.01,top:52.76}, {left:22.77,top:52.91}, {left:32.77,top:52.91}, {left:42.53,top:52.60}, {left:51.82,top:52.76}, {left:61.82,top:52.91}, {left:70.86,top:52.91}, {left:80.63,top:52.76}, {left:90.63,top:52.91}, // 44–52
+  {left:11.34,top:58.69}, {left:20.63,top:58.38}, {left:30.39,top:58.53}, {left:39.67,top:58.38}, {left:49.43,top:58.69}, {left:58.72,top:58.53}, {left:68.24,top:58.53}, {left:77.77,top:58.69}, {left:87.29,top:58.69}, // 53–61
+  {left:13.24,top:64.31}, {left:23.01,top:64.15}, {left:32.53,top:64.31}, {left:42.05,top:64.46}, {left:51.58,top:64.31}, {left:60.86,top:64.31}, {left:70.63,top:64.46}, {left:80.15,top:64.62}, {left:89.20,top:64.31}, // 62–70
+  {left:10.63,top:70.08}, {left:19.91,top:70.08}, {left:29.67,top:69.93}, {left:38.72,top:70.08}, {left:48.24,top:70.24}, {left:57.53,top:69.62}, {left:67.05,top:69.93}, {left:76.58,top:70.08}, {left:85.86,top:70.08}, // 71–79
+  {left:49.55,top:72.97}, // 80  (no stone on map — placeholder between 79 and 81)
+  {left:13.24,top:75.86}, {left:23.48,top:75.39}, {left:31.82,top:75.55}, {left:42.53,top:75.39}, {left:51.34,top:75.23}, {left:60.39,top:75.39}, {left:69.91,top:75.39}, {left:80.39,top:75.39}, // 81–88
+  {left:85.15,top:75.39}, // 89  (no stone on map — placeholder between 88 and 90)
+  {left:89.91,top:75.39}, // 90
+  {left:10.63,top:81.48}, {left:19.67,top:81.32}, {left:29.67,top:81.17}, {left:38.72,top:81.17}, {left:47.29,top:81.01}, {left:58.01,top:81.17}, {left:68.72,top:81.48}, {left:77.29,top:81.01}, // 91–98
+  {left:81.94,top:81.09}, // 99  (no stone on map — placeholder between 98 and 100)
+  {left:86.58,top:81.17}, // 100
+  {left:20.63,top:87.25}, {left:29.43,top:86.94}, {left:39.20,top:86.94}, {left:48.72,top:87.10}, {left:58.72,top:87.10}, {left:68.48,top:87.10}, {left:76.82,top:87.10}, {left:86.58,top:87.25}, // 101–107, End
 ];
 const MAP_END_IDX = CHAPTER_POS.length-1;
 const mapWrap=document.getElementById('mapWrap');
