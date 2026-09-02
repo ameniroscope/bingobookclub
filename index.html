@@ -46,6 +46,20 @@
 }
 .layout > div{min-width:0;}
 
+/* ════════ Throne ════════ */
+.fixed-throne {
+  position: fixed;
+  top: 50%;
+  left: 3%;
+  transform: translateY(-50%);
+  width: 90px;
+  z-index: 500;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,.35));
+  transition: transform .3s ease;
+}
+.fixed-throne:hover {
+  transform: translateY(-50%) scale(1.08);
+}	
 /* ════════ SCOREBOARD ════════ */
 .scoreboard{
   display:flex;
@@ -291,6 +305,10 @@
 <div class="page">
   <div class="layout">
 
+<a href="twistedthrone/twistedthrone.html" class="fixed-throne" title="The Twisted Throne">
+  <img src="twistedthrone/throne.png" alt="The Twisted Throne">
+</a>
+	  
     <!-- ════ COLUMN 1: scoreboard ════ -->
     <div class="scoreboard" id="scoreboard">
       <div class="scoreboard-title">✦ Scores ✦</div>
