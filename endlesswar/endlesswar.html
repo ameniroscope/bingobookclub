@@ -87,7 +87,8 @@ body.map-modal-open{overflow:hidden;}
 }
 /* ── OASIS CORNER ── Kathi and Lena both "read too fast" again, so instead of
    jail they're benched from the ranking quadrant and lounging together in an
-   oasis tucked into the bottom-right corner of the layout. ── */
+   oasis tucked into the bottom-right corner of the layout. One shared bubble,
+   two avatar "heads" underneath — same treatment as the player-select circles. ── */
 .oasis-section{display:flex;justify-content:center;padding:0 20px 6px;}
 .oasis-corner{width:min(340px,88vw);
   display:flex;flex-direction:column;align-items:center;gap:6px;}
@@ -95,31 +96,38 @@ body.map-modal-open{overflow:hidden;}
   .oasis-section{padding:0;}
   .oasis-corner{position:fixed;right:-34px;bottom:0;z-index:5;width:340px;}
 }
-/* Speech bubble — anchored above each figure, tail pointing down at them */
-.oasis-bubble{position:absolute;left:50%;bottom:calc(100% + 10px);transform:translateX(-50%);
-  width:150px;background:rgba(255,253,247,0.82);color:#0b4f48;
-  font-family:'Cormorant',Georgia,serif;font-weight:600;font-size:0.85rem;line-height:1.22;letter-spacing:0.2px;
-  text-align:center;padding:7px 11px;border:1px solid #0f6d63;border-radius:16px;
-  box-shadow:0 4px 12px rgba(11,79,72,0.22);z-index:6;}
-.oasis-bubble::before{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);
-  border-left:9px solid transparent;border-right:9px solid transparent;border-top:13px solid #0f6d63;}
-.oasis-bubble::after{content:'';position:absolute;top:calc(100% - 1px);left:50%;transform:translateX(-50%);
-  border-left:8px solid transparent;border-right:8px solid transparent;border-top:13px solid rgba(255,253,247,0.82);}
 .oasis-scene{position:relative;width:100%;}
 .oasis-scene .oasis-bg{display:block;width:100%;height:auto;border-top-left-radius:5px;
   box-shadow:-4px -4px 20px rgba(124,54,15,0.28);}
-.oasis-figure{position:absolute;display:flex;flex-direction:column;align-items:center;gap:3px;
-  text-decoration:none;transition:transform 0.25s ease;transform:translate(-50%,-50%);}
-.oasis-figure:hover{transform:translate(-50%,-50%) scale(1.06);z-index:7;}
-.oasis-figure-kathi{left:63%;top:70%;}
-.oasis-figure-lena{left:30%;top:66%;}
-.oasis-figure .photo{width:88px;height:88px;object-fit:cover;border-radius:50%;
-  border:3px solid #0f6d63;box-shadow:0 3px 10px rgba(0,0,0,0.35);}
-.oasis-name{font-family:'Hakan',serif;font-size:1.05rem;letter-spacing:1px;color:#0b4f48;
+.oasis-group{position:absolute;left:47%;top:66%;transform:translate(-50%,-50%);
+  display:flex;flex-direction:column;align-items:center;gap:10px;}
+.oasis-bubble{position:relative;width:190px;background:rgba(255,253,247,0.9);color:#0b4f48;
+  font-family:'Cormorant',Georgia,serif;font-weight:600;font-size:0.92rem;line-height:1.24;letter-spacing:0.2px;
+  text-align:center;padding:8px 14px;border:1px solid #0f6d63;border-radius:16px;
+  box-shadow:0 4px 12px rgba(11,79,72,0.22);}
+.oasis-bubble::before{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);
+  border-left:9px solid transparent;border-right:9px solid transparent;border-top:13px solid #0f6d63;}
+.oasis-bubble::after{content:'';position:absolute;top:calc(100% - 1px);left:50%;transform:translateX(-50%);
+  border-left:8px solid transparent;border-right:8px solid transparent;border-top:13px solid rgba(255,253,247,0.9);}
+.oasis-heads{display:flex;gap:22px;margin-top:6px;}
+.oasis-figure{display:flex;flex-direction:column;align-items:center;gap:0;text-decoration:none;
+  color:#0b4f48;font-family:'Hakan',serif;letter-spacing:1px;transition:transform 0.3s ease;}
+.oasis-figure:hover{transform:translateY(-4px);z-index:7;}
+.oasis-img-frame{position:relative;width:78px;height:78px;margin:0 auto;}
+.oasis-img-frame::before{content:'';position:absolute;inset:-7px;border-radius:50%;
+  background:conic-gradient(from 0deg,transparent 0%,rgba(15,109,99,0.25) 20%,#0b4f48 50%,rgba(15,109,99,0.25) 80%,transparent 100%);
+  animation:oasisspin 12s linear infinite;z-index:0;}
+.oasis-img-frame::after{content:'';position:absolute;inset:-3px;border-radius:50%;background:#fff5ec;z-index:1;}
+.oasis-img-frame .photo{position:relative;z-index:2;width:100%;height:100%;object-fit:cover;
+  border-radius:50%;border:2px solid rgba(15,109,99,0.55);}
+.oasis-figure:hover .photo{border-color:#0f6d63;box-shadow:0 0 16px rgba(11,79,72,0.5);}
+.oasis-name{display:block;margin-top:8px;font-size:0.95rem;letter-spacing:1.5px;color:#0b4f48;
   text-shadow:0 1px 2px rgba(255,255,255,0.65);}
+@keyframes oasisspin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
 @media(max-width:1100px){
   .oasis-corner{width:min(260px,80vw);}
-  .oasis-figure .photo{width:66px;height:66px;}
+  .oasis-bubble{width:160px;font-size:0.85rem;}
+  .oasis-img-frame{width:62px;height:62px;}
 }
 .footer-section{position:relative;z-index:2;text-align:center;padding:1.5rem 1rem 3rem;}
 .footer-section .footer{color:var(--accent-deep);}
@@ -164,16 +172,23 @@ body.map-modal-open{overflow:hidden;}
   <div class="oasis-corner">
     <div class="oasis-scene">
       <img class="oasis-bg" src="oasis.jpg" alt="Desert oasis">
-      <a class="oasis-figure oasis-figure-kathi" href="endlesswar_player.html?p=kathi" aria-label="Kathi in the oasis">
-        <div class="oasis-bubble">Finally, I've been waiting years for you girls!</div>
-        <img class="photo" src="../pdp_kathi.png" alt="Kathi">
-        <div class="oasis-name">Kathi</div>
-      </a>
-      <a class="oasis-figure oasis-figure-lena" href="endlesswar_player.html?p=lena" aria-label="Lena in the oasis">
-        <div class="oasis-bubble">Apparently I read too fast too now.</div>
-        <img class="photo" src="../pdp_lena.png" alt="Lena">
-        <div class="oasis-name">Lena</div>
-      </a>
+      <div class="oasis-group">
+        <div class="oasis-bubble">We've been waiting years for you girls!</div>
+        <div class="oasis-heads">
+          <a class="oasis-figure" href="endlesswar_player.html?p=kathi" aria-label="Kathi in the oasis">
+            <div class="oasis-img-frame">
+              <img class="photo" src="../pdp_kathi.png" alt="Kathi">
+            </div>
+            <span class="oasis-name">Kathi</span>
+          </a>
+          <a class="oasis-figure" href="endlesswar_player.html?p=lena" aria-label="Lena in the oasis">
+            <div class="oasis-img-frame">
+              <img class="photo" src="../pdp_lena.png" alt="Lena">
+            </div>
+            <span class="oasis-name">Lena</span>
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -333,4 +348,113 @@ async function endDrag(cx,cy){
   dragging=false;dragPid=null;
   mapTooltip.classList.remove('show');
   const m=document.getElementById('mapmarker-'+pid);
-  if(m){m.style.transition='';m.classList.remo
+  if(m){m.style.transition='';m.classList.remove('dragging');}
+  const idx=nearestIdx(cx,cy);
+  const tileChanged=curPos[pid]==null||Number(curPos[pid])!==Number(idx);
+  stats[pid].mapPos=idx;
+  curPos[pid]=idx;
+  if(tileChanged)arriveAt[pid]=Date.now();
+  renderMapMarkers();
+  render();
+  const progress=Math.min(idx,TOTAL_CHAPTERS);
+  const payload={mapPos:idx,chapterProgress:progress};
+  if(tileChanged)payload.mapPosAt=arriveAt[pid];
+  try{await setDoc(doc(db,BINGO_COL,pid),payload,{merge:true});}catch(err){console.error(err);}
+}
+window.addEventListener('mouseup',e=>endDrag(e.clientX,e.clientY));
+window.addEventListener('touchend',e=>endDrag(e.changedTouches[0].clientX,e.changedTouches[0].clientY));
+/* ── RANK GRID (best guesser / fastest reader) ── */
+const rankGrid=document.getElementById('rankGrid');
+const stats={};
+Object.keys(PLAYERS).forEach(p=>stats[p]={chapterProgress:0,points:0,mapPos:0});
+/* ── ARRIVAL ORDER: first reader to reach a tile ranks ahead as faster ── */
+const arriveAt={};   // pid -> timestamp they reached their current tile
+const curPos={};     // pid -> current tile
+function computeRanks(metric,tieMetric){
+  const ids=RANKED_IDS.slice();
+  ids.sort((a,b)=>{
+    if(stats[a][metric]!==stats[b][metric]) return stats[a][metric]-stats[b][metric];
+    if(metric==='chapterProgress'){                           // same tile → first to arrive is faster
+      const ta=arriveAt[a]??0,tb=arriveAt[b]??0;
+      if(ta!==tb) return tb-ta;                               // earlier arrival → higher rank
+    }
+    if(stats[a][tieMetric]!==stats[b][tieMetric]) return stats[a][tieMetric]-stats[b][tieMetric];
+    const ta=arriveAt[a]??0,tb=arriveAt[b]??0;return tb-ta;   // stable fallback: earlier arrival ahead
+  });
+  const ranks={};
+  ids.forEach((id,i)=>ranks[id]=i+1);
+  return ranks;
+}
+function render(){
+  const xRank=computeRanks('chapterProgress','points');
+  const yRank=computeRanks('points','chapterProgress');
+  RANKED_IDS.forEach(pid=>{
+    const p=PLAYERS[pid];
+    let a=document.getElementById('rank-'+pid);
+    if(!a){
+      a=document.createElement('a');
+      a.id='rank-'+pid;
+      a.className='rank-avatar';
+      a.href=p.href;
+      a.style.setProperty('--ring',hexA(p.color,0.25));
+      a.style.setProperty('--ring-bright',hexA(p.color,0.7));
+      a.style.setProperty('--pc',p.color);
+      a.style.setProperty('--pc-glow',p.color);
+      a.style.setProperty('--pc-glow-op',pid==='elana'?0.4:0.65);
+      a.innerHTML=`<div class="rank-img-frame"><img src="${p.img}" alt="${p.name}"><div class="rank-badge" id="badge-${pid}"></div></div><div class="rank-name">${p.name}</div>`;
+      rankGrid.appendChild(a);
+    }
+    const badge=document.getElementById('badge-'+pid);
+    if(badge) badge.textContent = stats[pid].points;
+    const col=xRank[pid];
+    const row=yRank[pid];
+    const leftPct=(col-0.5)/RANKED_IDS.length*100;
+    const topPct=(RANKED_IDS.length-row+0.5)/RANKED_IDS.length*100;
+    a.style.left=leftPct+'%';
+    a.style.top=topPct+'%';
+  });
+}
+onSnapshot(collection(db,BINGO_COL),snap=>{
+  snap.forEach(d=>{
+    if(!PLAYERS[d.id]) return;
+    const data=d.data();
+    const chapterProgress=Number(data.chapterProgress||0);
+    const mapPos=(data.mapPos!=null)?Number(data.mapPos):chapterProgress;
+    stats[d.id]={ chapterProgress, points:Number(data.points||0), mapPos };
+    if(!(dragging&&dragPid===d.id)){
+      curPos[d.id]=mapPos;
+      arriveAt[d.id]=(data.mapPosAt!=null)?Number(data.mapPosAt):0;
+    }
+  });
+  render();
+  renderMapMarkers();
+},err=>console.error(err));
+render();
+renderMapMarkers();
+/* ── AXIS ARROWS: size to actually match the rank-grid's rendered dimensions ── */
+const yArrow=document.querySelector('.y-arrow'), xArrow=document.querySelector('.x-arrow'),
+      xArrowWrap=document.getElementById('xArrowWrap');
+function sizeArrow(img,targetLong){
+  const ratio=(img.naturalWidth&&img.naturalHeight)?(img.naturalWidth/img.naturalHeight):0.34;
+  img.style.height=Math.round(targetLong)+'px';
+  img.style.width=Math.round(targetLong*ratio)+'px';
+  return Math.round(targetLong*ratio);
+}
+function syncAxisArrows(){
+  const r=rankGrid.getBoundingClientRect();
+  if(r.height>0)sizeArrow(yArrow,r.height*0.92);
+  if(r.width>0){
+    const thickness=sizeArrow(xArrow,r.width*0.92);
+    xArrowWrap.style.height=thickness+'px';
+  }
+}
+function syncAxisArrowsWhenReady(){
+  const ready=img=>img.complete?Promise.resolve():new Promise(res=>img.addEventListener('load',res,{once:true}));
+  Promise.all([ready(yArrow),ready(xArrow)]).then(syncAxisArrows);
+}
+syncAxisArrowsWhenReady();
+window.addEventListener('resize',syncAxisArrows);
+new ResizeObserver(syncAxisArrows).observe(rankGrid);
+</script>
+</body>
+</html>
