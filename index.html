@@ -47,22 +47,30 @@
 .layout > div{min-width:0;}
 
 /* ════════ Throne ════════ */
-/* Sits just left of the scoreboard column. The page container is centered
-   with a margin of max(48px, (100vw-1500px)/2) on either side (mirrors the
-   .page width/max-width rules above), so we derive the throne's left offset
-   from that same formula and always leave a 6px gap before the scoreboard —
-   it can never sit on top of it at this breakpoint. */
-.fixed-throne {
-  position: fixed;
+/* Sits in the page's side margin, just left of the scoreboard column.
+   .page keeps a constant 48px side margin (width:calc(100% - 6rem)) up
+   until the viewport is wide enough that max-width:1500px kicks in, so a
+   fixed 12px offset + a hard-capped 26px width always leaves a clear gap
+   before the scoreboard — it can never land on top of it. Both width and
+   the inner image size are pinned with !important so nothing in style.css
+   can stretch this back out. */
+a.fixed-throne {
+  position: fixed !important;
   top: 50%;
-  left: calc(max(48px, (100vw - 1500px) / 2) - 36px);
+  left: 12px;
   transform: translateY(-50%);
-  width: 30px;
+  width: 26px !important;
+  height: auto !important;
   z-index: 500;
   filter: drop-shadow(0 4px 8px rgba(0,0,0,.35));
   transition: transform .3s ease;
 }
-.fixed-throne:hover {
+a.fixed-throne img {
+  display: block;
+  width: 100% !important;
+  height: auto !important;
+}
+a.fixed-throne:hover {
   transform: translateY(-50%) scale(1.08);
 }
 
@@ -73,7 +81,8 @@
   display:none;
 }
 .btn-throne-mobile img{
-  width:32px;
+  width:32px !important;
+  height:auto !important;
   filter:drop-shadow(0 4px 8px rgba(0,0,0,.35));
   transition:transform .3s ease;
 }
