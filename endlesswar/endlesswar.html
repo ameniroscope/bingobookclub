@@ -7,7 +7,7 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗡️</text></svg>">
 <link rel="stylesheet" href="../style.css">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cinzel:wght@400;600&display=swap');
 @font-face{font-family:'Hakan';src:url('../fonts/Hakan.otf') format('opentype'),url('../fonts/Hakan.ttf') format('truetype');font-weight:400;font-display:swap;}
 :root{
   --accent:#b4531b;--accent-lt:#e0913f;--accent-deep:#7c360f;
@@ -17,7 +17,7 @@
 }
 html,body{background:var(--sand-lt);color:var(--ink);font-family:'Hakan',serif;overflow-x:hidden;}
 /* Script font — keep letters joined by removing the wide tracking used for serif type */
-.players-title,.map-hint,.y-label,.x-label,.rank-name,.footer{letter-spacing:normal!important;}
+.map-hint,.footer{letter-spacing:normal!important;}
 #bg-rune{position:fixed;inset:0;z-index:0;pointer-events:none;background:var(--sand-lt) url('background.png') center/cover no-repeat;}
 #bg-rune::after{content:'';position:absolute;inset:0;background:
   linear-gradient(180deg,rgba(243,228,198,0.30) 0%,rgba(243,228,198,0.05) 42%,rgba(217,184,119,0.16) 100%);}
@@ -45,46 +45,38 @@ body.map-modal-open{overflow:hidden;}
   .map-wrap.map-open{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:94vw;max-width:500px;height:auto;margin:0;z-index:1001;touch-action:none;}
   .map-wrap.map-open img{width:100%;height:auto;max-width:none;max-height:none;touch-action:none;}
 }
-/* ── PLAYERS / RANK GRID ── */
-.players-section{text-align:center;width:100%;}
-.players-title{font-family:var(--display);font-size:3.4rem;letter-spacing:1px;margin-top:0;margin-bottom:24px;color:var(--accent);
+/* ── RIGHT COLUMN: intro text + choose your reader ── */
+.right-col{display:flex;flex-direction:column;gap:1.75rem;text-align:center;}
+.kicker{font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:5px;color:var(--accent-deep);text-transform:uppercase;margin-bottom:0.35rem;}
+.big-title{font-family:var(--display);font-size:3.2rem;letter-spacing:1px;color:var(--accent);line-height:1.1;
   text-shadow:0 1px 2px rgba(255,247,230,0.65),0 2px 10px rgba(124,54,15,0.2);}
-.rank-frame{position:relative;display:grid;grid-template-columns:70px 1fr;grid-template-rows:auto 56px;gap:10px;max-width:620px;margin:0 auto;padding:8px;}
-.y-axis{grid-column:1;grid-row:1;position:relative;display:flex;align-items:center;justify-content:center;}
-.y-arrow{width:auto;height:300px;flex-shrink:0;filter:url(#tintArrow);}
-.y-label{position:absolute;top:50%;left:-15%;transform:translate(-50%,-50%) rotate(180deg);z-index:1;
-  font-family:'Hakan',serif;font-size:clamp(13px,1.8vw,20px);font-weight:400;letter-spacing:2px;
-  writing-mode:vertical-rl;color: var(--accent-deep);white-space:nowrap;pointer-events:none;text-shadow:0 1px 2px rgba(255,247,230,0.6);}
-.x-axis{grid-column:2;grid-row:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;}
-.x-arrow-wrap{position:relative;width:100%;}
-.x-arrow{position:absolute;top:50%;left:50%;filter:url(#tintArrow);transform:translate(-50%,-50%) rotate(90deg);}
-.x-label{font-family:'Hakan',serif;font-size:clamp(13px,1.8vw,20px);font-weight:400;letter-spacing:2px;
-  color: var(--accent-deep);white-space:nowrap;pointer-events:none;}
-.rank-grid{grid-column:2;grid-row:1;position:relative;aspect-ratio:1/1;width:100%;margin:10px;}
-.rank-avatar{position:absolute;text-decoration:none;color:var(--accent);font-family:'Hakan',serif;
-  display:flex;flex-direction:column;align-items:center;gap:4px;transform:translate(-50%,-50%);
-  transition:left 0.5s ease,top 0.5s ease,transform 0.3s ease;z-index:5;}
-.rank-avatar:hover{transform:translate(-50%,-50%) scale(1.08);z-index:6;}
-.rank-img-frame{position:relative;width:120px;height:120px;}
-.rank-img-frame::before{content:'';position:absolute;inset:-10px;border-radius:50%;
-  background:radial-gradient(circle,var(--pc-glow,var(--accent)) 0%,var(--pc-glow,var(--accent)) 40%,transparent 75%);
-  opacity:var(--pc-glow-op,0.4);filter:blur(8px);z-index:0;}
-.rank-img-frame::after{content:'';position:absolute;inset:-2px;border-radius:50%;background:var(--sand-lt);z-index:1;opacity:0;}
-.rank-img-frame img{position:relative;z-index:2;width:100%;height:100%;object-fit:cover;border-radius:50%;border:2px solid var(--accent);box-shadow:0 2px 10px rgba(124,54,15,0.3);}
-.rank-avatar:hover .rank-img-frame img{border-color:var(--pc,var(--accent));}
-.rank-badge{position:absolute;top:-4px;right:-4px;z-index:10;
+.ornament{display:flex;align-items:center;gap:0.6rem;margin:0 auto;max-width:500px;width:100%;}
+.orn-line{flex:1;height:1px;background:linear-gradient(to right,transparent,var(--accent-deep),transparent);}
+.orn-gem{color:var(--accent-deep);font-size:0.8rem;}
+.intro-text{font-family:'Cormorant',Georgia,serif;font-size:1.1rem;line-height:1.8;color:var(--ink-faded);max-width:500px;margin:0 auto;text-align:justify;}
+.intro-text p+p{margin-top:0.9rem;}
+.intro-bold{font-family:'Cinzel',serif;display:block;margin-top:10px;margin-bottom:10px;text-align:center;font-size:1.2rem;letter-spacing:1.5px;color:var(--ink);}
+
+.player-btns{display:flex;justify-content:center;gap:2.5rem;flex-wrap:wrap;}
+.player-btn{display:flex;flex-direction:column;align-items:center;gap:0;text-decoration:none;
+  color:var(--ink);font-family:var(--display);letter-spacing:1px;transition:transform 0.3s ease;}
+.player-btn:hover{transform:translateY(-5px);}
+.player-img-frame{position:relative;width:140px;height:140px;margin:0 auto;}
+.player-img-frame::before{content:'';position:absolute;inset:-8px;border-radius:50%;
+  background:conic-gradient(from 0deg,transparent 0%,rgba(224,145,63,0.25) 20%,var(--accent-deep) 50%,rgba(224,145,63,0.25) 80%,transparent 100%);
+  animation:spin 12s linear infinite;z-index:0;}
+.player-img-frame::after{content:'';position:absolute;inset:-4px;border-radius:50%;background:var(--sand-lt);z-index:1;}
+.player-img-frame .avatar{position:relative;z-index:2;width:100%;height:100%;object-fit:cover;
+  border-radius:50%;border:2px solid rgba(180,83,27,0.5);}
+.player-btn:hover .avatar{border-color:var(--accent);box-shadow:0 0 25px rgba(124,54,15,0.5);}
+.player-btn .pname{display:block;margin-top:14px;font-size:1.3rem;letter-spacing:1px;color:var(--accent);text-shadow:0 1px 2px rgba(255,247,230,0.6);}
+.player-badge{position:absolute;top:-3px;right:-3px;z-index:10;
   width:28px;height:28px;border-radius:50%;
   display:flex;align-items:center;justify-content:center;
-  background:#4a2410;border:2px solid var(--pc,var(--accent));
+  background:#4a2410;border:2px solid var(--accent-deep);
   font-family:'Hakan',serif;font-size:0.85rem;font-weight:700;
   color:#f3e4c6;text-shadow:0 0 6px rgba(0,0,0,0.6);filter:drop-shadow(0 1px 2px rgba(124,54,15,0.4));}
-.rank-name{font-size:1.5rem;letter-spacing:1px;color:var(--accent);text-shadow:0 1px 2px rgba(255,247,230,0.6);}
-@media(max-width:800px){
-  .players-title{font-size:1.6rem;margin-bottom:24px;}
-  .rank-img-frame{width:64px;height:64px;}
-  .rank-name{font-size:1.1rem;}
-  .rank-frame{grid-template-columns:46px 1fr;grid-template-rows:auto 44px;}
-}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
 /* ── OASIS CORNER ── Kathi and Lena both "read too fast" again, so instead of
    jail they're benched from the ranking quadrant and lounging together in an
    oasis tucked into the bottom-right corner of the layout. One shared bubble,
@@ -129,6 +121,11 @@ body.map-modal-open{overflow:hidden;}
   .oasis-bubble{width:160px;font-size:0.85rem;}
   .oasis-img-frame{width:62px;height:62px;}
 }
+@media(max-width:800px){
+  .big-title{font-size:1.8rem;}
+  .player-img-frame{width:100px;height:100px;}
+  .player-btn .pname{font-size:1.05rem;}
+}
 .footer-section{position:relative;z-index:2;text-align:center;padding:1.5rem 1rem 3rem;}
 .footer-section .footer{color:var(--accent-deep);}
 .rune-ornament{display:flex;align-items:center;gap:0.6rem;width:100%;max-width:18rem;margin:1rem auto;}
@@ -138,12 +135,6 @@ body.map-modal-open{overflow:hidden;}
 </head>
 <body>
 <div id="bg-rune"></div>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <filter id="tintArrow" color-interpolation-filters="sRGB">
-    <feFlood style="flood-color:var(--accent-deep)" result="flood"/>
-    <feComposite in="flood" in2="SourceGraphic" operator="in"/>
-  </filter>
-</svg>
 <main class="home-layout">
   <section class="map-section">
     <div class="map-wrap" id="mapWrap">
@@ -152,17 +143,43 @@ body.map-modal-open{overflow:hidden;}
     </div>
     <div class="map-hint">Drag your emoji across the map to mark your progress</div>
   </section>
-  <section class="players-section">
-    <h1 class="players-title">Choose Your Player</h1>
-    <div class="rank-frame">
-      <div class="y-axis">
-        <img class="y-arrow" src="arrow.png" alt="">
-        <span class="y-label">Best Guesser</span>
-      </div>
-      <div class="rank-grid" id="rankGrid"></div>
-      <div class="x-axis">
-        <div class="x-arrow-wrap" id="xArrowWrap"><img class="x-arrow" src="arrow.png" alt=""></div>
-        <span class="x-label">Fastest Reader</span>
+
+  <section class="right-col">
+    <div>
+      <div class="kicker">The Bingo Book Club</div>
+      <div class="big-title">Hey Readers,</div>
+    </div>
+
+    <!-- PLACEHOLDER TEXT — swap this in for your own intro copy -->
+    <div class="intro-text">
+      <p>Well this duology might as well have been air with how Lena and Kathi inhaled it ! Elana and Marine are still cruising, page by page through Zara and Kerris' story.</p>
+      <div class="intro-bold">Will they ever be ready to catch up ?</div>
+      <p>Like always, this is our spoiler-gated sanctuary for chaos, yearning, and deeply unhinged literary discussions we deserve.</p>
+    </div>
+
+    <div class="ornament">
+      <div class="orn-line"></div>
+      <div class="orn-gem">◈</div>
+      <div class="orn-line"></div>
+    </div>
+
+    <div>
+      <div class="kicker" style="margin-bottom:0.75rem;">Choose your reader</div>
+      <div class="player-btns">
+        <a class="player-btn" href="endlesswar_player.html?p=elana">
+          <div class="player-img-frame">
+            <img class="avatar" src="../pdp_elana.png" alt="Elana">
+            <div class="player-badge" id="badge-elana"></div>
+          </div>
+          <span class="pname">Elana</span>
+        </a>
+        <a class="player-btn" href="endlesswar_player.html?p=marine">
+          <div class="player-img-frame">
+            <img class="avatar" src="../pdp_marine.png" alt="Marine">
+            <div class="player-badge" id="badge-marine"></div>
+          </div>
+          <span class="pname">Marine</span>
+        </a>
       </div>
     </div>
   </section>
@@ -213,15 +230,14 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const BINGO_COL = 'endlesswar_bingo';
 const PLAYERS = {
-  elana:  { emoji:"🐉",   color:"#c9a84c", name:"Elana",  href:"endlesswar_player.html?p=elana",  img:"../pdp_elana.png"  },
-  lena:   { emoji:"🌙",   color:"#1f3a36", name:"Lena",   href:"endlesswar_player.html?p=lena",   img:"../pdp_lena.png"   },
-  kathi:  { emoji:"🍄",   color:"#24152b", name:"Kathi",  href:"endlesswar_player.html?p=kathi",  img:"../pdp_kathi.png"  },
-  marine: { emoji:"🧜‍♀️", color:"#172838", name:"Marine", href:"endlesswar_player.html?p=marine", img:"../pdp_marine.png" },
+  elana:  { emoji:"🐉",   name:"Elana",  img:"../pdp_elana.png"  },
+  lena:   { emoji:"🌙",   name:"Lena",   img:"../pdp_lena.png"   },
+  kathi:  { emoji:"🍄",   name:"Kathi",  img:"../pdp_kathi.png"  },
+  marine: { emoji:"🧜‍♀️", name:"Marine", img:"../pdp_marine.png" },
 };
-/* Kathi and Lena are disqualified from the ranking quadrant ("read too fast") —
-   they still show up on the chapter map, but only these two compete on the axes. */
+/* Elana and Marine get the "Choose your reader" avatars with point badges;
+   Kathi and Lena live in the oasis corner instead. */
 const RANKED_IDS = ['elana','marine'];
-function hexA(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;}
 /* ── CHAPTER MAP MARKERS ── index 0 = Start, 1..72 = chapters, 73 = End.
    Traced from endlesswar_map.png (8-per-row grid): row1 = ch1–8, row2 = ch9–16,
    … row9 = ch65–72. Row 1 traced exactly; rows 2–9 use each row's traced left
@@ -355,7 +371,6 @@ async function endDrag(cx,cy){
   curPos[pid]=idx;
   if(tileChanged)arriveAt[pid]=Date.now();
   renderMapMarkers();
-  render();
   const progress=Math.min(idx,TOTAL_CHAPTERS);
   const payload={mapPos:idx,chapterProgress:progress};
   if(tileChanged)payload.mapPosAt=arriveAt[pid];
@@ -363,55 +378,15 @@ async function endDrag(cx,cy){
 }
 window.addEventListener('mouseup',e=>endDrag(e.clientX,e.clientY));
 window.addEventListener('touchend',e=>endDrag(e.changedTouches[0].clientX,e.changedTouches[0].clientY));
-/* ── RANK GRID (best guesser / fastest reader) ── */
-const rankGrid=document.getElementById('rankGrid');
+/* ── CHOOSE YOUR READER — point badges for Elana and Marine ── */
 const stats={};
 Object.keys(PLAYERS).forEach(p=>stats[p]={chapterProgress:0,points:0,mapPos:0});
-/* ── ARRIVAL ORDER: first reader to reach a tile ranks ahead as faster ── */
 const arriveAt={};   // pid -> timestamp they reached their current tile
 const curPos={};     // pid -> current tile
-function computeRanks(metric,tieMetric){
-  const ids=RANKED_IDS.slice();
-  ids.sort((a,b)=>{
-    if(stats[a][metric]!==stats[b][metric]) return stats[a][metric]-stats[b][metric];
-    if(metric==='chapterProgress'){                           // same tile → first to arrive is faster
-      const ta=arriveAt[a]??0,tb=arriveAt[b]??0;
-      if(ta!==tb) return tb-ta;                               // earlier arrival → higher rank
-    }
-    if(stats[a][tieMetric]!==stats[b][tieMetric]) return stats[a][tieMetric]-stats[b][tieMetric];
-    const ta=arriveAt[a]??0,tb=arriveAt[b]??0;return tb-ta;   // stable fallback: earlier arrival ahead
-  });
-  const ranks={};
-  ids.forEach((id,i)=>ranks[id]=i+1);
-  return ranks;
-}
-function render(){
-  const xRank=computeRanks('chapterProgress','points');
-  const yRank=computeRanks('points','chapterProgress');
+function renderBadges(){
   RANKED_IDS.forEach(pid=>{
-    const p=PLAYERS[pid];
-    let a=document.getElementById('rank-'+pid);
-    if(!a){
-      a=document.createElement('a');
-      a.id='rank-'+pid;
-      a.className='rank-avatar';
-      a.href=p.href;
-      a.style.setProperty('--ring',hexA(p.color,0.25));
-      a.style.setProperty('--ring-bright',hexA(p.color,0.7));
-      a.style.setProperty('--pc',p.color);
-      a.style.setProperty('--pc-glow',p.color);
-      a.style.setProperty('--pc-glow-op',pid==='elana'?0.4:0.65);
-      a.innerHTML=`<div class="rank-img-frame"><img src="${p.img}" alt="${p.name}"><div class="rank-badge" id="badge-${pid}"></div></div><div class="rank-name">${p.name}</div>`;
-      rankGrid.appendChild(a);
-    }
     const badge=document.getElementById('badge-'+pid);
     if(badge) badge.textContent = stats[pid].points;
-    const col=xRank[pid];
-    const row=yRank[pid];
-    const leftPct=(col-0.5)/RANKED_IDS.length*100;
-    const topPct=(RANKED_IDS.length-row+0.5)/RANKED_IDS.length*100;
-    a.style.left=leftPct+'%';
-    a.style.top=topPct+'%';
   });
 }
 onSnapshot(collection(db,BINGO_COL),snap=>{
@@ -426,35 +401,11 @@ onSnapshot(collection(db,BINGO_COL),snap=>{
       arriveAt[d.id]=(data.mapPosAt!=null)?Number(data.mapPosAt):0;
     }
   });
-  render();
+  renderBadges();
   renderMapMarkers();
 },err=>console.error(err));
-render();
+renderBadges();
 renderMapMarkers();
-/* ── AXIS ARROWS: size to actually match the rank-grid's rendered dimensions ── */
-const yArrow=document.querySelector('.y-arrow'), xArrow=document.querySelector('.x-arrow'),
-      xArrowWrap=document.getElementById('xArrowWrap');
-function sizeArrow(img,targetLong){
-  const ratio=(img.naturalWidth&&img.naturalHeight)?(img.naturalWidth/img.naturalHeight):0.34;
-  img.style.height=Math.round(targetLong)+'px';
-  img.style.width=Math.round(targetLong*ratio)+'px';
-  return Math.round(targetLong*ratio);
-}
-function syncAxisArrows(){
-  const r=rankGrid.getBoundingClientRect();
-  if(r.height>0)sizeArrow(yArrow,r.height*0.92);
-  if(r.width>0){
-    const thickness=sizeArrow(xArrow,r.width*0.92);
-    xArrowWrap.style.height=thickness+'px';
-  }
-}
-function syncAxisArrowsWhenReady(){
-  const ready=img=>img.complete?Promise.resolve():new Promise(res=>img.addEventListener('load',res,{once:true}));
-  Promise.all([ready(yArrow),ready(xArrow)]).then(syncAxisArrows);
-}
-syncAxisArrowsWhenReady();
-window.addEventListener('resize',syncAxisArrows);
-new ResizeObserver(syncAxisArrows).observe(rankGrid);
 </script>
 </body>
 </html>
