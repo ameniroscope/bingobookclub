@@ -293,13 +293,13 @@ a.fixed-throne:hover img {
 
   /* The layout collapses to a single column here, so the throne no longer
      has its own track to sit in — swap to the inline version that sits
-     under the Archives button instead. */
+     under the CAWPILE button instead. */
   a.fixed-throne{display:none;}
   .btn-throne-mobile{
     display:flex;
     align-items:center;
     justify-content:center;
-    grid-column:2;
+    grid-column:3;
     grid-row:2;
     padding-top:0.2rem;
   }
@@ -340,7 +340,7 @@ a.fixed-throne:hover img {
   .buttons{grid-template-columns:1fr;}
   .current-books img{width:20vw;}
   /* single-column buttons grid — let the throne flow naturally after
-     Archives instead of forcing a row/column that no longer exists */
+     CAWPILE instead of forcing a row/column that no longer exists */
   .btn-throne-mobile{grid-column:auto;grid-row:auto;}
 }
 </style>
@@ -451,9 +451,6 @@ a.fixed-throne:hover img {
             <span class="btn-sub">Books conquered</span>
           </div>
         </a>
-        <a class="btn-throne-mobile" href="secret/interlude.html" title="Interlude">
-          <img src="twistedthrone/throne.png" alt="The Twisted Throne">
-        </a>
         <a class="btn btn-bingo" href="cawpile.html">
           <span class="notif-dot" id="dot-cawpile" title="Ratings still needed"></span>
           <span class="btn-icon">🏆</span>
@@ -461,6 +458,9 @@ a.fixed-throne:hover img {
             <span class="btn-label">CAWPILE</span>
             <span class="btn-sub">Rate the reads</span>
           </div>
+        </a>
+        <a class="btn-throne-mobile" href="secret/interlude.html" title="Interlude">
+          <img src="twistedthrone/throne.png" alt="The Twisted Throne">
         </a>
       </div>
     </div>
