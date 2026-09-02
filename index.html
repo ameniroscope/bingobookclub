@@ -39,39 +39,32 @@
 
 .layout{
   display:grid;
-  grid-template-columns:230px 1fr 230px;
+  grid-template-columns:100px 230px 1fr 230px;
   gap:2rem;
   align-items:center;
   justify-content:center;
 }
-.layout > div{min-width:0;}
+.layout > div, .layout > a{min-width:0;}
 
 /* ════════ Throne ════════ */
-/* Sits in the page's side margin, just left of the scoreboard column.
-   .page keeps a constant 48px side margin (width:calc(100% - 6rem)) up
-   until the viewport is wide enough that max-width:1500px kicks in, so a
-   fixed 12px offset + a hard-capped 26px width always leaves a clear gap
-   before the scoreboard — it can never land on top of it. Both width and
-   the inner image size are pinned with !important so nothing in style.css
-   can stretch this back out. */
+/* A real grid column now, sitting to the left of the scoreboard — it takes
+   up its own 100px track and pushes every other column over, so it can
+   never overlap the scoreboard. */
 a.fixed-throne {
-  position: fixed !important;
-  top: 50%;
-  left: 12px;
-  transform: translateY(-50%);
-  width: 26px !important;
-  height: auto !important;
-  z-index: 500;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,.35));
-  transition: transform .3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 a.fixed-throne img {
   display: block;
   width: 100% !important;
   height: auto !important;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,.35));
+  transition: transform .3s ease;
 }
-a.fixed-throne:hover {
-  transform: translateY(-50%) scale(1.08);
+a.fixed-throne:hover img {
+  transform: scale(1.06);
 }
 
 /* Mobile fallback throne (lives inside the buttons grid, under Archives).
@@ -288,9 +281,10 @@ a.fixed-throne:hover {
 
   .peeking-dog{width:50px;top:10px;right:16px;}
 
-  /* Not enough side margin for the fixed throne anymore — swap to the
-     inline version that sits under the Archives button instead. */
-  .fixed-throne{display:none;}
+  /* The layout collapses to a single column here, so the throne no longer
+     has its own track to sit in — swap to the inline version that sits
+     under the Archives button instead. */
+  a.fixed-throne{display:none;}
   .btn-throne-mobile{
     display:flex;
     align-items:center;
