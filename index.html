@@ -336,18 +336,6 @@ a.fixed-throne:hover img {
   .btn-sub{font-size:0.78rem;}
 }
 
-/* ════════ Install (PWA) button ════════ */
-.install-btn{
-  position:fixed;left:50%;bottom:18px;transform:translateX(-50%);
-  z-index:10000;display:inline-flex;align-items:center;gap:0.5rem;
-  padding:0.7rem 1.3rem;border:1px solid #c9a84c;border-radius:999px;
-  background:#2a1230;color:#f0e6c8;font-family:'Cinzel',serif;
-  font-size:0.95rem;letter-spacing:1px;cursor:pointer;
-  box-shadow:0 6px 22px rgba(0,0,0,.55);
-  transition:transform .2s ease, background .2s ease;
-}
-.install-btn:hover{background:#3a1840;transform:translateX(-50%) scale(1.04);}
-
 @media(max-width:400px){
   .buttons{grid-template-columns:1fr;}
   .current-books img{width:20vw;}
@@ -358,8 +346,6 @@ a.fixed-throne:hover img {
 </style>
 </head>
 <body>
-
-<button id="installBtn" class="install-btn" type="button" hidden>⬇ Install app</button>
 
 <a href="secret/badart.html"><img src="secret/sideeye3.png" alt="" class="peeking-dog" aria-hidden="true"></a>
 
@@ -787,39 +773,6 @@ if ('serviceWorker' in navigator) {
     });
   });
 }
-</script>
-
-<!-- PWA: visible "Install app" button (Android/desktop Chrome & Edge) -->
-<script>
-(function () {
-  var installBtn = document.getElementById('installBtn');
-  var deferredPrompt = null;
-
-  // Hide the button if the app is already installed / running standalone.
-  var isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
-                     window.navigator.standalone === true;
-
-  // Chrome fires this when the app meets the install criteria.
-  window.addEventListener('beforeinstallprompt', function (e) {
-    e.preventDefault();
-    deferredPrompt = e;
-    if (!isStandalone) installBtn.hidden = false;
-  });
-
-  installBtn.addEventListener('click', function () {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.finally(function () {
-      deferredPrompt = null;
-      installBtn.hidden = true;
-    });
-  });
-
-  window.addEventListener('appinstalled', function () {
-    installBtn.hidden = true;
-    deferredPrompt = null;
-  });
-})();
 </script>
 
 </body>
