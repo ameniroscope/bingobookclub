@@ -35,7 +35,7 @@ html,body{background:var(--purple-deep);color:var(--ink);font-family:var(--body-
 #bg-rune{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
   background:#22122c;}
 
-.home-layout{position:relative;z-index:2;min-height:100vh;display:grid;grid-template-columns:0.95fr 64px 1.1fr;gap:28px;align-items:center;justify-content:center;padding:40px 50px;max-width:1320px;margin:0 auto;}
+.home-layout{position:relative;z-index:2;min-height:100vh;display:grid;grid-template-columns:0.95fr 64px 1.1fr;gap:28px;align-items:center;justify-content:center;padding:40px 50px 0px 50px;max-width:1320px;margin:0 auto;}
 @media(max-width:900px){.home-layout{grid-template-columns:1fr;gap:12px;padding:35px 20px;}.crest-divider{width:100%;height:56px;}}
 
 /* ── CREST DIVIDER — stands where the jail used to sit; a small gilded
@@ -116,7 +116,7 @@ body.map-modal-open{overflow:hidden;}
   .rank-frame{grid-template-columns:42px 1fr;grid-template-rows:auto 40px;}
 }
 .footer-section{position:relative;z-index:2;text-align:center;padding:1.5rem 1rem 3rem;}
-.footer-section .footer{font-family:var(--display);letter-spacing:2px;font-size:0.95rem;color:var(--ink-faded);}
+.footer-section .footer{font-family:var(--display);letter-spacing:2px;font-size:0.8rem;color:var(--ink-faded);}
 .rune-ornament{display:flex;align-items:center;gap:0.6rem;width:100%;max-width:18rem;margin:1rem auto;}
 .rune-ornament .line{flex:1;height:1px;background:var(--gold-deep);opacity:0.55;}
 .rune-ornament .gem{color:var(--gold);font-size:0.7rem;}
@@ -161,7 +161,6 @@ body.map-modal-open{overflow:hidden;}
   </section>
 </main>
 <section class="footer-section">
-  <div class="rune-ornament"><div class="line"></div><div class="gem">◈</div><div class="line"></div></div>
   <a class="home-btn" href="../index.html"><span class="home-btn-icon">🏠</span> Home</a>
   <div class="footer">◈ &nbsp; The Bingo Book Club &nbsp; ◈</div>
 </section>
