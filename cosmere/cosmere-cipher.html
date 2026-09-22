@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Deliberately vague title/meta so the page doesn't give itself away if linked or indexed -->
+<title>???</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Crimson+Text:ital@0;1&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink: #07070c;
+    --ink-deep: #030305;
+    --panel: #12121c;
+    --panel-line: #2a2a3a;
+    --bronze: #b08a4e;
+    --bronze-dim: #6e5a37;
+    --starlight: #ece7da;
+    --spren: #7fe0d3;
+    --ember: #d4572e;
+    --ok: #7fbf6a;
+    --dim-text: #8d8878;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    min-height:100%; margin:0;
+    background: var(--ink);
+    color: var(--starlight);
+    font-family: 'Crimson Text', serif;
+  }
+  body{
+    position:relative;
+    min-height:100vh;
+    background-image:
+      radial-gradient(1px 1px at 12% 18%, rgba(236,231,218,.5) 0, transparent 50%),
+      radial-gradient(1px 1px at 78% 8%, rgba(236,231,218,.4) 0, transparent 50%),
+      radial-gradient(1.5px 1.5px at 34% 62%, rgba(236,231,218,.5) 0, transparent 50%),
+      radial-gradient(1px 1px at 91% 44%, rgba(236,231,218,.35) 0, transparent 50%),
+      radial-gradient(1px 1px at 6% 82%, rgba(236,231,218,.4) 0, transparent 50%),
+      radial-gradient(1.5px 1.5px at 58% 88%, rgba(236,231,218,.5) 0, transparent 50%),
+      radial-gradient(1px 1px at 68% 30%, rgba(236,231,218,.3) 0, transparent 50%),
+      radial-gradient(circle at 50% 25%, #0d0d16 0%, var(--ink-deep) 75%);
+  }
+
+  /* ---- scattered emoji field ---- */
+  #field{ position:absolute; inset:0; z-index:1; min-height: 100vh; pointer-events:none; }
+  .glyph{
+    position:absolute;
+    font-size: 1.6rem;
+    line-height:1;
+    cursor:pointer;
+    user-select:none;
+    filter: drop-shadow(0 0 6px rgba(0,0,0,.6));
+    transition: transform .35s ease, filter .35s ease, opacity .5s ease;
+    opacity:.85;
+    background:none; border:none; padding:0;
+    pointer-events:auto;
+  }
+  .glyph:hover, .glyph:focus-visible{ transform: scale(1.35); opacity:1; }
+  .glyph.book img{
+    width: 40px; height: 58px; object-fit:cover;
+    border-radius: 2px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.55), 0 0 0 1px rgba(176,138,78,.35);
+    display:block;
+  }
+  .glyph.key{
+    opacity:.28;
+    font-size: 1.3rem;
+    filter: drop-shadow(0 0 3px rgba(0,0,0,.4));
+  }
+  .glyph.key:hover, .glyph.key:focus-visible{ opacity: 1; filter: drop-shadow(0 0 9px var(--bronze)); }
+  .glyph.key.found{ opacity: .55; filter: none; }
+
+  /* ---- clue popover ---- */
+  #cluePop{
+    position:absolute;
+    background: var(--panel);
+    border: 1px solid var(--bronze-dim);
+    color: var(--starlight);
+    padding: .6rem .8rem;
+    font-size: .85rem;
+    border-radius: 3px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.6);
+    z-index: 6;
+    display:none;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: .04em;
+    white-space: nowrap;
+  }
+  #cluePop .plain{ color: var(--dim-text); font-size:.72rem; }
+  #cluePop .cipher{ color: var(--bronze); font-weight:600; }
+
+  /* ---- central puzzle card ---- */
+  main{
+    position:relative; z-index:2;
+    min-height:100vh;
+    display:flex; align-items:center; justify-content:center;
+    padding: 2.5rem 1.5rem;
+  }
+  #card{
+    width: min(520px, 94vw);
+    background: linear-gradient(180deg, var(--panel), #0d0d15);
+    border: 1px solid var(--panel-line);
+    border-radius: 6px;
+    padding: 2.1rem 2rem 1.8rem;
+    text-align:center;
+    box-shadow: 0 30px 70px rgba(0,0,0,.65), 0 0 0 1px rgba(176,138,78,.08);
+  }
+  #card h1{
+    font-family:'Cinzel', serif;
+    font-weight:700;
+    font-size: 1.15rem;
+    letter-spacing:.04em;
+    margin: 0 0 .3rem;
+    color: var(--starlight);
+  }
+  #card p.sub{
+    margin: 0 0 1.4rem;
+    font-size: .95rem;
+    font-style: italic;
+    color: var(--dim-text);
+  }
+
+  /* ---- key legend (fills in as clues are found) ---- */
+  #legend{
+    display:grid;
+    grid-template-columns: repeat(13, 1fr);
+    gap: 3px;
+    margin-bottom: 1.5rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .legend-cell{
+    border: 1px solid var(--panel-line);
+    border-radius: 2px;
+    padding: .25rem 0;
+    font-size: .7rem;
+  }
+  .legend-cell .p{ color: var(--dim-text); display:block; }
+  .legend-cell .c{ color: var(--bronze); display:block; font-weight:600; min-height: 1.1em; }
+  .legend-cell.on{ border-color: var(--bronze-dim); background: rgba(176,138,78,.06); }
+
+  /* ---- ciphered target ---- */
+  .tiles{ display:flex; gap:.4rem; justify-content:center; margin-bottom:1.6rem; flex-wrap:wrap; }
+  .tile{
+    width: 2.15rem; height: 2.55rem;
+    border: 1px solid var(--bronze-dim);
+    border-radius: 3px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 1.15rem;
+    color: var(--bronze);
+    background: rgba(176,138,78,.05);
+  }
+
+  form{ display:flex; gap:.5rem; }
+  #guess{
+    flex:1;
+    background: var(--ink-deep);
+    border: 1px solid var(--panel-line);
+    color: var(--starlight);
+    font-family:'Crimson Text', serif;
+    font-size: 1.05rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    padding: .6rem .7rem;
+    border-radius: 3px;
+    text-align:center;
+  }
+  #guess:focus{ outline: 1px solid var(--bronze); border-color: var(--bronze); }
+  button.submit{
+    background: var(--bronze-dim);
+    color: var(--starlight);
+    border: none;
+    border-radius: 3px;
+    padding: 0 1.1rem;
+    font-family:'Cinzel', serif;
+    font-size: .85rem;
+    cursor:pointer;
+    transition: background .2s ease;
+  }
+  button.submit:hover{ background: var(--bronze); color:#1a1408; }
+
+  #msg{ min-height: 1.4rem; margin-top: .9rem; font-size: .92rem; font-style: italic; }
+  #msg.err{ color: var(--ember); }
+  #msg.ok{ color: var(--ok); }
+
+  #unlockBox{
+    display:none;
+    margin-top: 1.4rem;
+    padding-top: 1.3rem;
+    border-top: 1px solid var(--panel-line);
+  }
+  #unlockBox a{
+    display:inline-block;
+    color: #1a1408;
+    background: var(--bronze);
+    font-family:'Cinzel', serif;
+    font-size: .88rem;
+    text-decoration:none;
+    padding: .65rem 1.3rem;
+    border-radius: 3px;
+    box-shadow: 0 0 22px rgba(176,138,78,.35);
+  }
+
+  @keyframes pulseUnlock{
+    0%{ box-shadow: 0 30px 70px rgba(0,0,0,.65), 0 0 0 1px rgba(176,138,78,.08); }
+    40%{ box-shadow: 0 30px 70px rgba(0,0,0,.65), 0 0 45px 4px rgba(176,138,78,.5); }
+    100%{ box-shadow: 0 30px 70px rgba(0,0,0,.65), 0 0 0 1px rgba(176,138,78,.08); }
+  }
+  #card.unlocked{ animation: pulseUnlock 1.4s ease; }
+
+  @media (max-width: 480px){
+    #legend{ grid-template-columns: repeat(7, 1fr); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .glyph, #card.unlocked{ animation:none!important; transition:none!important; }
+  }
+</style>
+</head>
+<body>
+
+<div id="field" aria-hidden="true"></div>
+<div id="cluePop"></div>
+
+<main>
+  <div id="card">
+    <h1>the cryptogram</h1>
+    <p class="sub">Every letter has been swapped for another. Find the keys — each one trades you a word of lore for its cipher.</p>
+
+    <div id="legend"></div>
+
+    <div class="tiles" id="tiles"></div>
+
+    <form id="guessForm" autocomplete="off">
+      <input id="guess" maxlength="10" placeholder="your answer" aria-label="Decoded word">
+      <button class="submit" type="submit">decode</button>
+    </form>
+    <div id="msg" role="status"></div>
+
+    <div id="unlockBox">
+      <a id="unlockLink" href="cosmere-podcast.html">enter the archive</a>
+    </div>
+  </div>
+</main>
+
+<script>
+(function(){
+  "use strict";
+
+  var ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
+
+  // full-alphabet substitution used throughout this puzzle
+  var MAPPING = {
+    A:"G", B:"Q", C:"M", D:"W", E:"J", F:"E", G:"I", H:"F", I:"N", J:"O",
+    K:"Z", L:"P", M:"V", N:"L", O:"B", P:"U", Q:"T", R:"X", S:"R", T:"S",
+    U:"A", V:"K", W:"C", X:"Y", Y:"H", Z:"D"
+  };
+
+  var ANSWER = "COSMERE";
+  var CIPHERED = "MBRVJXJ";
+
+  // classic Sanderson-lore clue words, each paired with its ciphered form.
+  // together they cover every letter needed to decode COSMERE.
+  var CLUES = [
+    { plain: "STORMLIGHT",   cipher: "RSBXVPNIFS"  },
+    { plain: "ALLOMANCY",    cipher: "GPPBVGLMH"   },
+    { plain: "SHARDBLADE",   cipher: "RFGXWQPGWJ"  },
+    { plain: "HEMALURGY",    cipher: "FJVGPAXIH"   },
+    { plain: "VOIDBRINGER",  cipher: "KBNWQXNLIJX" },
+    { plain: "INVESTITURE",  cipher: "NLKJRSNSAXJ" },
+    { plain: "KANDRA",       cipher: "ZGLWXG"      }
+  ];
+
+  var BOOKS = [
+    { title: "Mistborn: The Final Empire" },
+    { title: "The Way of Kings" },
+    { title: "Elantris Brandon Sanderson" },
+    { title: "Warbreaker Brandon Sanderson" },
+    { title: "Tress of the Emerald Sea" },
+    { title: "The Sunlit Man Brandon Sanderson" }
+  ];
+
+  // ---- legend grid ----
+  var legend = document.getElementById('legend');
+  var legendCells = {};
+  ALPHABET.forEach(function(letter){
+    var cell = document.createElement('div');
+    cell.className = 'legend-cell';
+    var p = document.createElement('span');
+    p.className = 'p';
+    p.textContent = letter;
+    var c = document.createElement('span');
+    c.className = 'c';
+    c.textContent = '';
+    cell.appendChild(p);
+    cell.appendChild(c);
+    legend.appendChild(cell);
+    legendCells[letter] = { cell: cell, c: c };
+  });
+
+  var foundClues = [];
+  try {
+    var saved = JSON.parse(localStorage.getItem('cosmere_clues_found') || '[]');
+    if (Array.isArray(saved)) foundClues = saved;
+  } catch(e){}
+
+  function revealClueInLegend(clue){
+    clue.plain.split('').forEach(function(letter){
+      var entry = legendCells[letter];
+      if (entry){
+        entry.c.textContent = MAPPING[letter];
+        entry.cell.classList.add('on');
+      }
+    });
+  }
+
+  function markClueFound(idx){
+    if (foundClues.indexOf(idx) === -1){
+      foundClues.push(idx);
+      try { localStorage.setItem('cosmere_clues_found', JSON.stringify(foundClues)); } catch(e){}
+    }
+    revealClueInLegend(CLUES[idx]);
+  }
+
+  // restore any previously found clues
+  foundClues.forEach(function(idx){
+    if (CLUES[idx]) revealClueInLegend(CLUES[idx]);
+  });
+
+  // ---- ciphered target tiles ----
+  var tiles = document.getElementById('tiles');
+  CIPHERED.split('').forEach(function(ch){
+    var d = document.createElement('div');
+    d.className = 'tile';
+    d.textContent = ch;
+    tiles.appendChild(d);
+  });
+
+  // ---- scattered field: keys (clues) + books (cover reveal) ----
+  var field = document.getElementById('field');
+  var coverCache = {};
+
+  function randomOuterPosition(){
+    var x, y, tries = 0;
+    do {
+      x = 3 + Math.random() * 94;
+      y = 4 + Math.random() * 90;
+      tries++;
+    } while (x > 18 && x < 82 && y > 20 && y < 80 && tries < 30);
+    return { x: x, y: y };
+  }
+
+  async function fetchCover(title){
+    if (coverCache[title]) return coverCache[title];
+    try {
+      var res = await fetch('https://www.googleapis.com/books/v1/volumes?q=' + encodeURIComponent(title) + '&maxResults=1');
+      var data = await res.json();
+      var link = data && data.items && data.items[0] && data.items[0].volumeInfo &&
+                 data.items[0].volumeInfo.imageLinks && data.items[0].volumeInfo.imageLinks.thumbnail;
+      if (link) { link = link.replace('http://', 'https://'); coverCache[title] = link; }
+      return link || null;
+    } catch (e) { return null; }
+  }
+
+  BOOKS.forEach(function(b){
+    var pos = randomOuterPosition();
+    var el = document.createElement('button');
+    el.type = 'button';
+    el.className = 'glyph book';
+    el.style.left = pos.x + '%';
+    el.style.top = pos.y + '%';
+    el.textContent = '📖';
+    el.setAttribute('aria-label', 'a book');
+    var swapped = false;
+    var swap = function(){
+      if (swapped) return;
+      swapped = true;
+      fetchCover(b.title).then(function(url){
+        if (!url) { swapped = false; return; }
+        el.innerHTML = '';
+        var img = document.createElement('img');
+        img.src = url; img.alt = '';
+        el.appendChild(img);
+      });
+    };
+    el.addEventListener('mouseenter', swap);
+    el.addEventListener('focus', swap);
+    field.appendChild(el);
+  });
+
+  var cluePop = document.getElementById('cluePop');
+
+  CLUES.forEach(function(clue, idx){
+    var pos = randomOuterPosition();
+    var el = document.createElement('button');
+    el.type = 'button';
+    el.className = 'glyph key' + (foundClues.indexOf(idx) !== -1 ? ' found' : '');
+    el.style.left = pos.x + '%';
+    el.style.top = pos.y + '%';
+    el.textContent = '🔑';
+    el.setAttribute('aria-label', 'a small key');
+
+    el.addEventListener('click', function(){
+      el.classList.add('found');
+      markClueFound(idx);
+
+      cluePop.innerHTML = '';
+      var p1 = document.createElement('div');
+      p1.className = 'plain';
+      p1.textContent = clue.plain;
+      var p2 = document.createElement('div');
+      p2.className = 'cipher';
+      p2.textContent = clue.cipher;
+      cluePop.appendChild(p1);
+      cluePop.appendChild(p2);
+      cluePop.style.left = Math.min(pos.x, 70) + '%';
+      cluePop.style.top = Math.max(pos.y - 8, 2) + '%';
+      cluePop.style.display = 'block';
+      setTimeout(function(){ cluePop.style.display = 'none'; }, 4500);
+    });
+
+    field.appendChild(el);
+  });
+
+  // ---- answer check ----
+  var form = document.getElementById('guessForm');
+  var input = document.getElementById('guess');
+  var msg = document.getElementById('msg');
+  var card = document.getElementById('card');
+  var unlockBox = document.getElementById('unlockBox');
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var val = (input.value || '').trim().toUpperCase();
+    if (val === ANSWER){
+      msg.textContent = 'The word holds.';
+      msg.className = 'ok';
+      card.classList.add('unlocked');
+      unlockBox.style.display = 'block';
+      try { localStorage.setItem('cosmere_unlocked', 'true'); } catch(e){}
+      form.querySelector('input').disabled = true;
+      form.querySelector('button').disabled = true;
+    } else {
+      msg.textContent = 'Not yet.';
+      msg.className = 'err';
+    }
+  });
+
+  try {
+    if (localStorage.getItem('cosmere_unlocked') === 'true'){
+      msg.textContent = 'Already decoded.';
+      msg.className = 'ok';
+      unlockBox.style.display = 'block';
+    }
+  } catch(e){}
+})();
+</script>
+</body>
+</html>
