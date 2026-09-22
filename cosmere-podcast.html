@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>the archive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Crimson+Text:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#07070c; --ink-deep:#030305; --panel:#12121c; --panel-line:#2a2a3a;
+    --bronze:#b08a4e; --bronze-dim:#6e5a37; --starlight:#ece7da; --ember:#d4572e;
+  }
+  *{box-sizing:border-box;}
+  html,body{ margin:0; min-height:100%; background:var(--ink); color:var(--starlight);
+    font-family:'Crimson Text', serif; }
+  body{
+    background-image:
+      radial-gradient(1px 1px at 15% 20%, rgba(236,231,218,.35) 0, transparent 50%),
+      radial-gradient(1px 1px at 80% 10%, rgba(236,231,218,.3) 0, transparent 50%),
+      radial-gradient(1.5px 1.5px at 40% 70%, rgba(236,231,218,.4) 0, transparent 50%),
+      radial-gradient(circle at 50% 0%, #0d0d16 0%, var(--ink-deep) 70%);
+    min-height:100vh;
+  }
+  header{ text-align:center; padding: 3.2rem 1.5rem 1.2rem; }
+  header h1{
+    font-family:'Cinzel', serif; font-weight:700; letter-spacing:.05em;
+    font-size: 1.6rem; margin:0 0 .5rem; color: var(--starlight);
+  }
+  header p{ margin:0; font-style:italic; color:#b9b4a6; }
+
+  main{ max-width: 640px; margin: 0 auto; padding: 1.5rem 1.5rem 4rem; }
+
+  .episode{
+    background: linear-gradient(180deg, var(--panel), #0d0d15);
+    border: 1px solid var(--panel-line);
+    border-radius: 6px;
+    padding: 1.3rem 1.4rem;
+    margin-bottom: 1.1rem;
+  }
+  .episode h2{
+    font-family:'Cinzel', serif; font-size: 1.05rem; font-weight:700;
+    margin: 0 0 .35rem; color: var(--bronze);
+  }
+  .episode .meta{ font-size:.85rem; color:#8d8878; margin-bottom:.6rem; font-style:italic; }
+  .episode p.desc{ margin: 0 0 .9rem; font-size: .98rem; line-height:1.5; color:#d6d1c4; }
+  audio{ width:100%; }
+
+  #locked{
+    max-width: 480px; margin: 4.5rem auto; text-align:center; padding: 0 1.5rem;
+  }
+  #locked p{ font-style:italic; color:#b9b4a6; }
+  #locked a{ color: var(--bronze); }
+</style>
+</head>
+<body>
+
+<div id="locked" style="display:none;">
+  <p>The archive is sealed. You'll need to find the key first.</p>
+  <p><a href="cosmere-cipher.html">back to the cipher</a></p>
+</div>
+
+<div id="content" style="display:none;">
+  <header>
+    <h1>the archive</h1>
+    <p>Recordings, for those who found their way in.</p>
+  </header>
+  <main id="episodeList"></main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var unlocked = false;
+  try { unlocked = localStorage.getItem('cosmere_unlocked') === 'true'; } catch(e){}
+
+  if (!unlocked){
+    document.getElementById('locked').style.display = 'block';
+    return;
+  }
+  document.getElementById('content').style.display = 'block';
+
+  // ---- edit this list to add/remove episodes ----
+  // `src` can be a relative path to a file you commit to the repo (e.g. "podcasts/ep01.mp3"),
+  // or any publicly reachable audio URL (Firebase Storage, etc.) — the <audio> tag just needs
+  // a direct link to the file itself, not a page.
+  var EPISODES = [
+    {
+      title: 'Episode 1',
+      meta: 'placeholder — replace with date / guest / runtime',
+      desc: 'Placeholder description. Replace with the real episode notes.',
+      src: 'podcasts/episode-01.mp3'
+    },
+    {
+      title: 'Episode 2',
+      meta: 'placeholder — replace with date / guest / runtime',
+      desc: 'Placeholder description. Replace with the real episode notes.',
+      src: 'podcasts/episode-02.mp3'
+    }
+  ];
+
+  var list = document.getElementById('episodeList');
+  EPISODES.forEach(function(ep){
+    var card = document.createElement('div');
+    card.className = 'episode';
+
+    var h2 = document.createElement('h2');
+    h2.textContent = ep.title;
+    card.appendChild(h2);
+
+    if (ep.meta){
+      var meta = document.createElement('div');
+      meta.className = 'meta';
+      meta.textContent = ep.meta;
+      card.appendChild(meta);
+    }
+
+    if (ep.desc){
+      var desc = document.createElement('p');
+      desc.className = 'desc';
+      desc.textContent = ep.desc;
+      card.appendChild(desc);
+    }
+
+    var audio = document.createElement('audio');
+    audio.controls = true;
+    audio.preload = 'none';
+    var src = document.createElement('source');
+    src.src = ep.src;
+    audio.appendChild(src);
+    audio.appendChild(document.createTextNode('Your browser does not support the audio element.'));
+    card.appendChild(audio);
+
+    list.appendChild(card);
+  });
+})();
+</script>
+</body>
+</html>
