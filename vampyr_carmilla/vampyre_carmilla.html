@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Vampyre &amp; Carmilla</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🦇</text></svg>">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+:root{
+  /* palette pulled directly from the cover: black / oxblood red / bone white */
+  --bg:#050303;--bg2:#0b0707;--panel:#0a0606;
+  --red:#560a0a;--red-lt:#7c1616;--red-dim:#2c0505;--red-line:#8a1c1c;
+  --ink:#f4f0e8;--ink-dim:rgba(244,240,232,0.6);
+  --display:'Cinzel',serif;
+  --read:'Crimson Text',Georgia,serif;
+  --sans:Arial,Helvetica,sans-serif;
+}
+*{box-sizing:border-box;}
+html,body{min-height:100vh;margin:0;font-family:var(--read);color:var(--ink);background:var(--bg);}
+#bg{position:fixed;inset:0;z-index:0;background:var(--bg);}
+#bg::before{content:'';position:absolute;inset:0;opacity:0.55;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cg fill='none' stroke='%232a0a0a' stroke-width='1.2'%3E%3Cpath d='M10 210 C 40 160 20 120 55 90 C 80 68 60 40 90 10'/%3E%3Cpath d='M120 220 C 150 180 130 150 165 120 C 190 98 175 60 210 30'/%3E%3Cpath d='M0 90 C 30 70 10 40 40 15'/%3E%3Cpath d='M150 5 C 130 40 160 60 140 95 C 125 122 150 150 130 190'/%3E%3C/g%3E%3C/svg%3E");
+  background-size:220px 220px;}
+#bg::after{content:'';position:absolute;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='4' height='4' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");}
+
+a.home-btn{position:fixed;top:1rem;left:1rem;z-index:20;background:var(--bg2);color:var(--ink);
+  border:1.5px solid var(--red-line);padding:0.5rem 0.9rem;text-decoration:none;font-family:var(--read);
+  font-size:0.9rem;}
+a.home-btn:hover{border-color:var(--ink);}
+
+/* torn/zigzag divider strip — cut-paper edge */
+.zigzag{height:11px;width:100%;
+  background-image:linear-gradient(-45deg,var(--red) 7px,transparent 0),linear-gradient(45deg,var(--red) 7px,transparent 0);
+  background-position:0 -3px;background-repeat:repeat-x;background-size:14px 14px;}
+.zigzag.flip{transform:scaleY(-1);}
+
+/* ── READER HEADER ── */
+.reader-zone{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:1rem;padding:2.4rem 1rem 0.4rem;}
+.reader-eyebrow{font-family:var(--sans);letter-spacing:5px;font-size:0.72rem;color:var(--ink-dim);text-transform:uppercase;}
+.avatar-row{display:flex;gap:1.2rem;flex-wrap:wrap;justify-content:center;}
+.avatar-pick{background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:0.5rem;
+  font-family:var(--read);color:var(--ink-dim);transition:transform 0.15s;}
+.avatar-pick:hover{transform:translateY(-3px);color:var(--ink);}
+.avatar-pick .av-frame{position:relative;width:64px;height:64px;}
+.avatar-pick .av-frame::before{content:'';position:absolute;inset:0;background:var(--red);transform:translate(4px,4px);}
+.avatar-pick img{position:relative;width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--ink);
+  display:block;}
+.avatar-pick span{font-size:0.85rem;}
+
+.current-reader{display:none;align-items:center;gap:0.8rem;background:var(--bg2);border:1.5px solid var(--red-line);
+  padding:0.4rem 1rem 0.4rem 0.4rem;}
+.current-reader.show{display:flex;}
+.current-reader img{width:42px;height:42px;border-radius:50%;object-fit:cover;border:2px solid var(--ink);}
+.current-reader .cr-name{font-family:var(--display);font-size:1.05rem;color:var(--ink);}
+.current-reader .switch-link{background:none;border:none;color:var(--ink-dim);font-family:var(--read);font-size:0.78rem;
+  text-decoration:underline;cursor:pointer;padding:0;}
+.current-reader .switch-link:hover{color:var(--ink);}
+
+/* ── LAYOUT ── */
+.wrap{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:1.5rem 2rem 4rem;
+  display:grid;grid-template-columns:1fr 0.85fr 1fr;gap:2.2rem;align-items:start;}
+@media(max-width:980px){
+  .wrap{grid-template-columns:1fr;padding:1.2rem 1.1rem 3rem;gap:1.8rem;}
+  .cover-col{order:-1;}
+}
+
+/* ── CENTER COVER COLUMN ── */
+.cover-col{display:flex;flex-direction:column;align-items:center;gap:0.9rem;position:sticky;top:1.2rem;}
+.cover-frame{position:relative;width:100%;max-width:300px;}
+.cover-frame::before{content:'';position:absolute;inset:0;background:var(--red);transform:translate(8px,8px);z-index:0;}
+.cover-frame img{position:relative;z-index:1;width:100%;display:block;border:2px solid var(--ink);}
+.cover-title{font-family:var(--display);font-size:1.25rem;letter-spacing:1px;color:var(--ink);text-align:center;}
+.cover-sub{font-family:var(--sans);letter-spacing:3px;text-transform:uppercase;font-size:0.72rem;color:var(--ink-dim);text-align:center;}
+@media(max-width:980px){.cover-col{position:static;}}
+
+/* ── CHAT PANEL ── */
+.chat-panel{position:relative;background:var(--panel);border:1.5px solid var(--red-line);
+  display:flex;flex-direction:column;height:min(70vh,640px);overflow:hidden;}
+.chat-panel::before{content:'';position:absolute;inset:0;background:var(--red-dim);transform:translate(6px,6px);z-index:-1;}
+.chat-panel-hdr{flex-shrink:0;padding:0.95rem 1.1rem 0.8rem;}
+.chat-panel-title{font-family:var(--display);font-size:1.3rem;color:var(--ink);letter-spacing:0.5px;}
+.chat-panel-author{font-family:var(--sans);letter-spacing:2px;text-transform:uppercase;font-size:0.7rem;color:var(--ink-dim);margin-top:3px;}
+.read-toggle{display:flex;align-items:center;gap:0.45rem;margin-top:0.7rem;font-family:var(--read);font-size:0.85rem;
+  color:var(--ink-dim);cursor:pointer;user-select:none;}
+.read-toggle input{accent-color:var(--red-lt);width:15px;height:15px;cursor:pointer;}
+.read-toggle.is-read{color:var(--ink);}
+
+.chat-locked{flex:1;position:relative;background-size:cover;background-position:center;background-color:var(--bg2);
+  display:flex;align-items:center;justify-content:center;}
+.chat-locked::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,3,3,0.4),rgba(5,3,3,0.88));}
+.chat-locked-msg{position:relative;z-index:1;text-align:center;padding:1.5rem;font-family:var(--read);
+  font-style:italic;color:var(--ink);font-size:1rem;}
+
+.chat-messages{flex:1;min-height:0;overflow-y:auto;padding:1rem 1.1rem;display:flex;flex-direction:column;gap:0.65rem;}
+.empty-msg,.write-note{font-family:var(--read);font-size:0.98rem;color:var(--ink-dim);font-style:italic;text-align:center;
+  margin:auto;line-height:1.7;}
+.write-note strong{display:block;font-family:var(--sans);letter-spacing:2px;text-transform:uppercase;font-size:0.72rem;
+  font-style:normal;margin-bottom:0.4rem;color:var(--ink);}
+.msg{display:flex;flex-direction:column;gap:0.15rem;align-items:flex-start;}
+.msg.mine{align-items:flex-end;}
+.msg-name{display:block;font-family:var(--sans);letter-spacing:0.5px;font-weight:700;font-size:0.76rem;margin-bottom:0.15rem;
+  text-transform:uppercase;}
+.msg-bubble{display:inline-block;max-width:min(88%,420px);padding:0.5rem 0.75rem;word-break:break-word;
+  border:1px solid var(--red-line);}
+.msg-text{display:block;font-family:var(--read);font-size:1rem;line-height:1.5;}
+.reply-quote{display:block;border-left:3px solid var(--ink-dim);background:rgba(0,0,0,0.25);
+  padding:0.25rem 0.5rem;margin-bottom:0.4rem;}
+.reply-quote-name{display:block;font-family:var(--sans);text-transform:uppercase;letter-spacing:0.5px;font-weight:700;font-size:0.72rem;color:var(--ink);}
+.reply-quote-text{display:block;font-family:var(--read);font-size:0.83rem;color:rgba(244,240,232,0.75);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px;}
+.msg-underbar{display:flex;align-items:center;gap:6px;margin-top:3px;flex-wrap:wrap;}
+.msg.mine .msg-underbar{flex-direction:row-reverse;}
+.msg-act{background:transparent;border:none;cursor:pointer;color:var(--ink-dim);font-size:0.9rem;line-height:1;
+  padding:2px 5px;opacity:0.55;transition:opacity .15s,background .15s,color .15s;}
+.msg-act:hover{opacity:1;color:var(--ink);background:rgba(86,10,10,0.3);}
+.msg:hover .msg-act{opacity:0.85;}
+.reactions{display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
+.reaction-pill{display:inline-flex;align-items:center;gap:3px;background:var(--bg2);border:1px solid var(--red-line);
+  padding:1px 7px;cursor:pointer;font-size:0.88rem;line-height:1.4;color:var(--ink);transition:all .15s;}
+.reaction-pill b{font-weight:700;font-size:0.72rem;color:var(--ink-dim);}
+.reaction-pill.mine{background:var(--red-dim);border-color:var(--red-lt);}
+.reaction-pill.mine b{color:var(--ink);}
+.reaction-pill:hover{border-color:var(--ink);}
+.react-bar{position:fixed;z-index:300;display:none;gap:2px;background:var(--bg2);border:1.5px solid var(--red-line);
+  padding:5px 8px;}
+.react-bar.open{display:flex;}
+.react-bar button{background:transparent;border:none;cursor:pointer;font-size:1.3rem;line-height:1;padding:3px 5px;
+  border-radius:50%;transition:transform .12s,background .12s;}
+.react-bar button:hover{transform:scale(1.25);background:rgba(86,10,10,0.35);}
+.reply-preview{display:flex;align-items:center;gap:0.6rem;flex-shrink:0;padding:0.5rem 1rem;border-top:1px solid var(--red-line);
+  background:var(--bg2);}
+.reply-preview[hidden]{display:none;}
+.reply-preview-body{flex:1;min-width:0;border-left:3px solid var(--red-lt);padding-left:0.55rem;}
+.reply-preview-name{display:block;font-family:var(--sans);text-transform:uppercase;letter-spacing:0.5px;font-size:0.72rem;font-weight:700;color:var(--ink);}
+.reply-preview-text{display:block;font-family:var(--read);font-size:0.83rem;color:var(--ink-dim);white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;}
+.reply-preview-cancel{background:none;border:none;color:var(--ink-dim);font-size:1.1rem;line-height:1;cursor:pointer;
+  flex-shrink:0;padding:0.1rem 0.3rem;}
+.reply-preview-cancel:hover{color:var(--ink);}
+.compose{flex-shrink:0;border-top:1px solid var(--red-line);padding:0.7rem 1rem;display:flex;gap:0.5rem;align-items:flex-end;}
+.compose textarea{flex:1;resize:none;min-height:42px;max-height:110px;background:var(--bg2);
+  border:1px solid var(--red-line);padding:0.5rem 0.7rem;font-family:var(--read);font-size:0.98rem;
+  color:var(--ink);line-height:1.45;}
+.compose textarea::placeholder{color:var(--ink-dim);font-style:italic;}
+.compose textarea:focus{outline:none;border-color:var(--ink);}
+.send-btn{position:relative;height:42px;padding:0 1.1rem;background:var(--red);border:1.5px solid var(--ink);
+  color:var(--ink);font-family:var(--sans);letter-spacing:1px;text-transform:uppercase;font-size:0.8rem;cursor:pointer;
+  transition:all 0.15s;white-space:nowrap;flex-shrink:0;}
+.send-btn:hover{background:var(--red-lt);}
+
+/* ── PASSWORD MODAL ── */
+.lock-modal-wrap{display:none;position:fixed;inset:0;z-index:400;background:var(--bg);
+  align-items:center;justify-content:center;flex-direction:column;padding:2rem;text-align:center;}
+.lock-modal-wrap.open{display:flex;}
+.lock-eyebrow{font-family:var(--sans);letter-spacing:4px;text-transform:uppercase;font-size:0.75rem;color:var(--ink-dim);margin-bottom:0.5rem;}
+.lock-title{font-family:var(--display);font-size:clamp(1.8rem,5vw,2.6rem);font-weight:600;color:var(--ink);
+  margin-bottom:1.8rem;}
+.lock-modal-wrap input{width:min(320px,90vw);height:52px;text-align:center;font-family:var(--read);font-size:1.15rem;
+  background:var(--bg2);border:1.5px solid var(--red-line);color:var(--ink);margin-bottom:1rem;}
+.lock-modal-wrap input:focus{outline:none;border-color:var(--ink);}
+.lock-modal-wrap button.lock-submit{position:relative;width:min(320px,90vw);height:52px;cursor:pointer;font-family:var(--sans);
+  letter-spacing:2px;text-transform:uppercase;font-size:0.9rem;background:var(--red);border:1.5px solid var(--ink);
+  color:var(--ink);transition:all 0.2s ease;}
+.lock-modal-wrap button.lock-submit:hover{background:var(--red-lt);}
+.lock-modal-wrap button.lock-back{margin-top:1.2rem;background:none;border:none;color:var(--ink-dim);
+  font-family:var(--read);font-size:0.85rem;text-decoration:underline;cursor:pointer;}
+.lock-error{color:#c4553f;font-size:1rem;min-height:1.2rem;margin-top:0.8rem;}
+
+@media(max-width:600px){
+  .chat-panel{height:60vh;}
+  .msg-text{max-width:90%;}
+}
+</style>
+</head>
+<body>
+<div id="bg"></div>
+<a href="../index.html" class="home-btn">🏠 Home</a>
+
+<!-- READER ZONE: avatar picker OR logged-in mini header -->
+<div class="reader-zone">
+  <div class="reader-eyebrow">Who's reading?</div>
+  <div class="avatar-row" id="avatarRow"></div>
+  <div class="current-reader" id="currentReader">
+    <img id="currentReaderPhoto" src="" alt="">
+    <span class="cr-name" id="currentReaderName"></span>
+    <button class="switch-link" id="switchReaderBtn" type="button">not you?</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <!-- LEFT: The Vampyre -->
+  <div class="chat-panel" data-book="vampyre">
+    <div class="chat-panel-hdr">
+      <div class="chat-panel-title">The Vampyre</div>
+      <div class="chat-panel-author">John Polidori</div>
+      <label class="read-toggle" id="readToggle-vampyre" style="display:none">
+        <input type="checkbox" id="readCheckbox-vampyre">
+        <span id="readLabel-vampyre">Mark as read — reveal everyone's thoughts</span>
+      </label>
+    </div>
+    <div class="zigzag"></div>
+    <div class="chat-locked" id="locked-vampyre" style="background-image:url('vampyre_locked.jpg')">
+      <div class="chat-locked-msg">🦇 The coven's thoughts stay veiled.<br>Choose your name above to join.</div>
+    </div>
+    <div class="chat-messages" id="messages-vampyre" style="display:none"></div>
+    <div class="reply-preview" id="replyPreview-vampyre" hidden>
+      <div class="reply-preview-body">
+        <span class="reply-preview-name" id="replyPreviewName-vampyre"></span>
+        <span class="reply-preview-text" id="replyPreviewText-vampyre"></span>
+      </div>
+      <button class="reply-preview-cancel" data-cancel="vampyre" type="button">✕</button>
+    </div>
+    <div class="compose" id="compose-vampyre" style="display:none">
+      <textarea id="ta-vampyre" rows="1" placeholder="Leave a thought…"></textarea>
+      <button class="send-btn" id="send-vampyre">Post</button>
+    </div>
+  </div>
+
+  <!-- CENTER: cover -->
+  <div class="cover-col">
+    <div class="cover-frame"><img src="vampyre_carmilla_cover.jpg" alt="The Vampyre / Carmilla"></div>
+    <div class="cover-title">Two Gothic Novellas</div>
+    <div class="cover-sub">Polidori &amp; Le Fanu</div>
+  </div>
+
+  <!-- RIGHT: Carmilla -->
+  <div class="chat-panel" data-book="carmilla">
+    <div class="chat-panel-hdr">
+      <div class="chat-panel-title">Carmilla</div>
+      <div class="chat-panel-author">Sheridan Le Fanu</div>
+      <label class="read-toggle" id="readToggle-carmilla" style="display:none">
+        <input type="checkbox" id="readCheckbox-carmilla">
+        <span id="readLabel-carmilla">Mark as read — reveal everyone's thoughts</span>
+      </label>
+    </div>
+    <div class="zigzag"></div>
+    <div class="chat-locked" id="locked-carmilla" style="background-image:url('carmilla_locked.jpg')">
+      <div class="chat-locked-msg">🩸 Her secrets wait behind the veil.<br>Choose your name above to join.</div>
+    </div>
+    <div class="chat-messages" id="messages-carmilla" style="display:none"></div>
+    <div class="reply-preview" id="replyPreview-carmilla" hidden>
+      <div class="reply-preview-body">
+        <span class="reply-preview-name" id="replyPreviewName-carmilla"></span>
+        <span class="reply-preview-text" id="replyPreviewText-carmilla"></span>
+      </div>
+      <button class="reply-preview-cancel" data-cancel="carmilla" type="button">✕</button>
+    </div>
+    <div class="compose" id="compose-carmilla" style="display:none">
+      <textarea id="ta-carmilla" rows="1" placeholder="Leave a thought…"></textarea>
+      <button class="send-btn" id="send-carmilla">Post</button>
+    </div>
+  </div>
+</div>
+
+<!-- PASSWORD MODAL -->
+<div class="lock-modal-wrap" id="lockModal">
+  <div class="lock-eyebrow">The Bingo Book Club</div>
+  <div class="lock-title" id="lockTitle">Enter Your Code</div>
+  <input type="text" id="passwordInput" placeholder="password" autocomplete="off">
+  <button class="lock-submit" id="unlockSubmit" type="button">Enter</button>
+  <button class="lock-back" id="lockBack" type="button">← never mind</button>
+  <div class="lock-error" id="lockError"></div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore, collection, getDocs, addDoc, onSnapshot, doc, setDoc, updateDoc, arrayUnion, arrayRemove, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+/* ── config ──
+   READ_COL is deliberately suffixed "_bingo" so it auto-matches your existing
+   Firestore rule for .*_bingo collections — no manual rule edit needed.
+   Rename to something honest like "shortstories_reads" if you'd rather add
+   one explicit rule line instead. */
+const READ_COL = 'shortstories_bingo';
+const BOOKS = [
+  { key:'vampyre',  msgCol:'vampyre_messages'  },
+  { key:'carmilla', msgCol:'carmilla_messages' },
+];
+const REACT_EMOJIS = ['❤️','😂','😮','😢','🦇','🩸'];
+
+const fb = initializeApp({
+  apiKey:"AIzaSyAIQTe-QGQmwqTVmIyJZZ_qlDNsD6GUskY",
+  authDomain:"bingobookclub-2144e.firebaseapp.com",
+  projectId:"bingobookclub-2144e",
+  storageBucket:"bingobookclub-2144e.firebasestorage.app",
+  messagingSenderId:"294177836341",
+  appId:"1:294177836341:web:6d5f11e64737fbe3aad07c"
+});
+const db = getFirestore(fb);
+
+/* ── load players ── */
+const PLAYERS = {};
+try{
+  const snap = await getDocs(collection(db,'accessCodes'));
+  snap.forEach(d => PLAYERS[d.id] = d.data());
+}catch(e){
+  console.error(e);
+  document.getElementById('lockError').textContent = 'Connection error — please refresh';
+}
+
+/* ── avatar row ── */
+const avatarRow = document.getElementById('avatarRow');
+Object.keys(PLAYERS).forEach(pid=>{
+  const p = PLAYERS[pid];
+  const btn = document.createElement('button');
+  btn.className='avatar-pick';btn.type='button';
+  btn.innerHTML = `<span class="av-frame"><img src="pdp_${pid}.png" alt="${esc(p.name)}"></span><span>${p.emoji||''} ${esc(p.name)}</span>`;
+  btn.addEventListener('click',()=>openLock(pid));
+  avatarRow.appendChild(btn);
+});
+
+/* ── password modal ── */
+const lockModal=document.getElementById('lockModal'),
+      lockTitle=document.getElementById('lockTitle'),
+      passwordInput=document.getElementById('passwordInput'),
+      unlockSubmit=document.getElementById('unlockSubmit'),
+      lockBack=document.getElementById('lockBack'),
+      lockError=document.getElementById('lockError');
+let pendingPID=null;
+
+function openLock(pid){
+  pendingPID=pid;
+  lockTitle.textContent=`Enter Your Code, ${PLAYERS[pid].name}`;
+  passwordInput.value='';lockError.textContent='';
+  lockModal.classList.add('open');
+  setTimeout(()=>passwordInput.focus(),50);
+}
+function closeLock(){lockModal.classList.remove('open');pendingPID=null;}
+function checkPassword(){
+  if(!pendingPID)return;
+  if(passwordInput.value.trim()===PLAYERS[pendingPID].password){
+    closeLock();
+    login(pendingPID);
+  }else{
+    lockError.textContent='Incorrect password';
+    passwordInput.value='';passwordInput.focus();
+  }
+}
+unlockSubmit.addEventListener('click',checkPassword);
+passwordInput.addEventListener('keydown',e=>{if(e.key==='Enter')checkPassword();});
+lockBack.addEventListener('click',closeLock);
+
+/* ── login / logout ── */
+let PID=null, PNAME=null, readStatusUnsub=null;
+let rawMsgs={vampyre:[],carmilla:[]}, readStatus={vampyre:false,carmilla:false};
+
+function login(pid){
+  PID=pid;PNAME=PLAYERS[pid].name;
+  document.getElementById('avatarRow').style.display='none';
+  document.querySelector('.reader-eyebrow').style.display='none';
+  const cr=document.getElementById('currentReader');
+  cr.classList.add('show');
+  document.getElementById('currentReaderPhoto').src=`pdp_${pid}.png`;
+  document.getElementById('currentReaderName').textContent=`${PLAYERS[pid].emoji||''} ${PLAYERS[pid].name}`;
+
+  BOOKS.forEach(b=>{
+    document.getElementById('locked-'+b.key).style.display='none';
+    document.getElementById('messages-'+b.key).style.display='flex';
+    document.getElementById('compose-'+b.key).style.display='flex';
+    document.getElementById('readToggle-'+b.key).style.display='flex';
+  });
+
+  if(readStatusUnsub)readStatusUnsub();
+  readStatusUnsub=onSnapshot(doc(db,READ_COL,PID),d=>{
+    const data=d.exists()?d.data():{};
+    readStatus.vampyre=!!data.vampyre;
+    readStatus.carmilla=!!data.carmilla;
+    syncReadCheckboxes();
+    BOOKS.forEach(b=>renderBookMessages(b.key));
+  },err=>console.error(err));
+}
+
+document.getElementById('switchReaderBtn').addEventListener('click',()=>{
+  PID=null;PNAME=null;
+  if(readStatusUnsub){readStatusUnsub();readStatusUnsub=null;}
+  document.getElementById('avatarRow').style.display='flex';
+  document.querySelector('.reader-eyebrow').style.display='block';
+  document.getElementById('currentReader').classList.remove('show');
+  BOOKS.forEach(b=>{
+    document.getElementById('locked-'+b.key).style.display='flex';
+    document.getElementById('messages-'+b.key).style.display='none';
+    document.getElementById('compose-'+b.key).style.display='none';
+    document.getElementById('readToggle-'+b.key).style.display='none';
+    cancelReply(b.key);
+  });
+});
+
+/* ── read checkboxes ── */
+function syncReadCheckboxes(){
+  BOOKS.forEach(b=>{
+    const cb=document.getElementById('readCheckbox-'+b.key);
+    const lbl=document.getElementById('readToggle-'+b.key);
+    cb.checked=!!readStatus[b.key];
+    lbl.classList.toggle('is-read',cb.checked);
+  });
+}
+BOOKS.forEach(b=>{
+  document.getElementById('readCheckbox-'+b.key).addEventListener('change',async e=>{
+    if(!PID)return;
+    try{
+      await setDoc(doc(db,READ_COL,PID),{[b.key]:e.target.checked},{merge:true});
+    }catch(err){console.error(err);}
+  });
+});
+
+/* ── message listeners (persistent, not PID-dependent) ── */
+BOOKS.forEach(b=>{
+  onSnapshot(collection(db,b.msgCol),snap=>{
+    rawMsgs[b.key]=snap.docs.map(d=>({...d.data(),_id:d.id}));
+    renderBookMessages(b.key);
+  },err=>{
+    document.getElementById('messages-'+b.key).innerHTML=`<span class="empty-msg">Could not load messages: ${esc(err.message)}</span>`;
+  });
+});
+
+/* ── reactions bar ── */
+const reactBar=document.createElement('div');
+reactBar.className='react-bar';
+let reactCtx=null;
+REACT_EMOJIS.forEach(em=>{
+  const btn=document.createElement('button');
+  btn.type='button';btn.textContent=em;
+  btn.addEventListener('click',ev=>{
+    ev.stopPropagation();
+    if(!reactCtx)return;
+    const arr=Array.isArray(reactCtx.reactions?.[em])?reactCtx.reactions[em]:[];
+    toggleReaction(reactCtx.book,reactCtx.msgId,em,arr.includes(PID));
+    closeReactBar();
+  });
+  reactBar.appendChild(btn);
+});
+document.body.appendChild(reactBar);
+function openReactBar(anchor,book,msgId,reactions){
+  if(!msgId)return;
+  reactCtx={book,msgId,reactions:reactions||{}};
+  reactBar.classList.add('open');
+  const r=anchor.getBoundingClientRect();
+  const bw=reactBar.offsetWidth,bh=reactBar.offsetHeight;
+  let left=r.left+r.width/2-bw/2;
+  left=Math.max(8,Math.min(left,window.innerWidth-bw-8));
+  let top=r.top-bh-8;
+  if(top<8)top=r.bottom+8;
+  reactBar.style.left=left+'px';reactBar.style.top=top+'px';
+}
+function closeReactBar(){reactBar.classList.remove('open');reactCtx=null;}
+document.addEventListener('click',()=>closeReactBar());
+document.addEventListener('keydown',ev=>{if(ev.key==='Escape')closeReactBar();});
+async function toggleReaction(bookKey,msgId,emoji,mine){
+  const b=BOOKS.find(x=>x.key===bookKey);
+  if(!b||!msgId)return;
+  try{
+    await updateDoc(doc(db,b.msgCol,msgId),{[`reactions.${emoji}`]:mine?arrayRemove(PID):arrayUnion(PID)});
+  }catch(err){console.error('Reaction update failed:',err);}
+}
+
+/* ── replies ── */
+const replyingTo={vampyre:null,carmilla:null};
+function startReply(bookKey,target){
+  replyingTo[bookKey]={name:String(target.name||''),text:String(target.text||'')};
+  document.getElementById('replyPreviewName-'+bookKey).textContent=replyingTo[bookKey].name;
+  document.getElementById('replyPreviewText-'+bookKey).textContent=replyingTo[bookKey].text;
+  document.getElementById('replyPreview-'+bookKey).hidden=false;
+  document.getElementById('ta-'+bookKey).focus();
+}
+function cancelReply(bookKey){
+  replyingTo[bookKey]=null;
+  document.getElementById('replyPreview-'+bookKey).hidden=true;
+}
+document.querySelectorAll('.reply-preview-cancel').forEach(btn=>{
+  btn.addEventListener('click',()=>cancelReply(btn.dataset.cancel));
+});
+
+/* ── render ── */
+function renderBookMessages(bookKey){
+  const msgDiv=document.getElementById('messages-'+bookKey);
+  const isRead=!!readStatus[bookKey];
+  let msgs=rawMsgs[bookKey].slice();
+  msgs.sort((a,b)=>(a.ts?.seconds||0)-(b.ts?.seconds||0));
+  if(!isRead) msgs=msgs.filter(m=>m.name===PNAME);
+
+  msgDiv.innerHTML='';
+  if(msgs.length===0){
+    msgDiv.innerHTML=(!isRead)
+      ?`<div class="write-note"><strong>Write mode</strong>Post freely — you'll see everyone else's thoughts once you tick "mark as read".</div>`
+      :`<span class="empty-msg">No thoughts yet. Be the first!</span>`;
+    return;
+  }
+  msgs.forEach(m=>{
+    const isMine=m.name===PNAME;
+    const pid=Object.keys(PLAYERS).find(k=>PLAYERS[k].name===m.name);
+    const info=pid?PLAYERS[pid]:null;
+    const emoji=info?info.emoji:'◈';
+    const name=info?info.name:String(m.name||'?');
+    const color=info?.color||'#7c1616';
+    const msgId=m._id;
+    const el=document.createElement('div');
+    el.className='msg'+(isMine?' mine':'');
+    const rt=m.replyTo;
+    const quoteHTML=(rt&&(rt.name||rt.text))
+      ?`<div class="reply-quote"><span class="reply-quote-name">${esc(rt.name||'')}</span><span class="reply-quote-text">${esc(String(rt.text||''))}</span></div>`
+      :'';
+    el.innerHTML=
+      `<span class="msg-name" style="color:${color}">${emoji} ${esc(name)}</span>`+
+      `<div class="msg-bubble" style="background:${hexA(color,isMine?0.55:0.3)};color:#f4f0e8">`+
+        quoteHTML+
+        `<span class="msg-text">${esc(String(m.text||''))}</span>`+
+      `</div>`+
+      `<div class="msg-underbar">`+
+        `<button class="msg-act react-act" type="button" title="React" aria-label="React">☺</button>`+
+        `<button class="msg-act reply-act" type="button" title="Reply" aria-label="Reply">↩</button>`+
+        `<span class="reactions"></span>`+
+      `</div>`;
+    const reactionsWrap=el.querySelector('.reactions');
+    const rx=m.reactions||{};
+    Object.keys(rx).forEach(em=>{
+      const arr=Array.isArray(rx[em])?rx[em]:[];
+      if(!arr.length)return;
+      const mineRx=arr.includes(PID);
+      const pill=document.createElement('button');
+      pill.type='button';
+      pill.className='reaction-pill'+(mineRx?' mine':'');
+      pill.innerHTML=`<span>${esc(em)}</span><b>${arr.length}</b>`;
+      pill.addEventListener('click',ev=>{ev.stopPropagation();toggleReaction(bookKey,msgId,em,mineRx);});
+      reactionsWrap.appendChild(pill);
+    });
+    el.querySelector('.react-act').addEventListener('click',ev=>{
+      ev.stopPropagation();openReactBar(ev.currentTarget,bookKey,msgId,m.reactions||{});
+    });
+    el.querySelector('.reply-act').addEventListener('click',ev=>{
+      ev.stopPropagation();startReply(bookKey,{name,text:String(m.text||'')});
+    });
+    msgDiv.appendChild(el);
+  });
+  msgDiv.scrollTop=msgDiv.scrollHeight;
+}
+
+/* ── compose ── */
+BOOKS.forEach(b=>{
+  const ta=document.getElementById('ta-'+b.key);
+  const sendBtn=document.getElementById('send-'+b.key);
+  ta.addEventListener('input',()=>{ta.style.height='auto';ta.style.height=ta.scrollHeight+'px';});
+  ta.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg(b.key);}});
+  sendBtn.addEventListener('click',()=>sendMsg(b.key));
+});
+async function sendMsg(bookKey){
+  const b=BOOKS.find(x=>x.key===bookKey);
+  const ta=document.getElementById('ta-'+bookKey);
+  const sendBtn=document.getElementById('send-'+bookKey);
+  const text=ta.value.trim();
+  if(!text||!PID)return;
+  sendBtn.disabled=true;ta.disabled=true;
+  try{
+    const payload={name:PNAME,text,ts:serverTimestamp()};
+    if(replyingTo[bookKey]){payload.replyTo={name:replyingTo[bookKey].name,text:String(replyingTo[bookKey].text||'').slice(0,140)};}
+    await addDoc(collection(db,b.msgCol),payload);
+    ta.value='';ta.style.height='auto';
+    cancelReply(bookKey);
+  }catch(e){console.error(e);}
+  finally{sendBtn.disabled=false;ta.disabled=false;ta.focus();}
+}
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
+function hexA(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;}
+</script>
+</body>
+</html>
