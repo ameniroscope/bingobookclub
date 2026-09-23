@@ -85,7 +85,7 @@ a.home-btn:hover{border-color:var(--ink);}
 
 /* ── CHAT PANEL ── */
 .chat-panel{position:relative;background:var(--cream);border:2px solid var(--bg);
-  display:flex;flex-direction:column;}
+  display:flex;flex-direction:column;width:fit-content;max-width:100%;min-width:300px;justify-self:center;}
 .chat-panel::before{content:'';position:absolute;inset:0;background:var(--red);transform:translate(8px,8px);z-index:-1;}
 .chat-panel-hdr{flex-shrink:0;padding:0.95rem 1.1rem 0.8rem;display:flex;align-items:flex-start;justify-content:space-between;gap:0.8rem;}
 .chat-panel-title{font-family:var(--display);font-size:1.3rem;color:var(--bg);letter-spacing:0.5px;}
@@ -100,8 +100,7 @@ a.home-btn:hover{border-color:var(--ink);}
 .read-switch input:checked ~ .read-switch-track .read-switch-thumb{transform:translateX(17px);background:var(--ink);}
 .read-toggle-state{font-family:var(--read);font-style:italic;font-size:0.7rem;color:rgba(5,3,3,0.65);white-space:nowrap;}
 
-.chat-locked{width:100%;height:230px;flex-shrink:0;background-size:contain;background-repeat:no-repeat;
-  background-position:center;background-color:var(--cream);}
+.chat-locked{display:block;width:auto;height:auto;max-width:100%;max-height:480px;margin:0 auto;flex-shrink:0;}
 
 .chat-messages{max-height:420px;overflow-y:auto;padding:1rem 1.1rem;display:flex;flex-direction:column;gap:0.65rem;}
 .empty-msg,.write-note{font-family:var(--read);font-size:0.98rem;color:rgba(5,3,3,0.6);font-style:italic;text-align:center;
@@ -166,7 +165,9 @@ a.home-btn:hover{border-color:var(--ink);}
 .resources-title{font-family:var(--display);font-size:1.5rem;letter-spacing:1px;color:var(--ink);margin-bottom:1rem;}
 .resources-placeholder{border:1.5px dashed var(--red-line);padding:2.6rem 1.5rem;font-family:var(--read);
   font-style:italic;color:var(--ink-dim);}
-.resources-list{list-style:none;margin:0;padding:0;border:1.5px solid var(--red-line);text-align:left;max-width:560px;margin:0 auto;}
+.resources-category{font-family:var(--sans);letter-spacing:3px;text-transform:uppercase;font-size:0.78rem;color:var(--ink-dim);
+  text-align:left;max-width:560px;margin:0 auto 0.5rem;}
+.resources-list{list-style:none;margin:0 auto;padding:0;border:1.5px solid var(--red-line);text-align:left;max-width:560px;}
 .resources-list li{border-bottom:1px solid var(--red-dim);}
 .resources-list li:last-child{border-bottom:none;}
 .resources-list a{display:flex;align-items:center;gap:0.7rem;padding:0.9rem 1.1rem;color:var(--ink);text-decoration:none;
@@ -241,7 +242,7 @@ a.home-btn:hover{border-color:var(--ink);}
       </div>
     </div>
     <div class="zigzag"></div>
-    <div class="chat-locked" id="locked-vampyre" style="background-image:url('vampyr.jpg')"></div>
+    <img class="chat-locked" id="locked-vampyre" src="vampyr.jpg" alt="The Vampyre">
     <div class="chat-messages" id="messages-vampyre" style="display:none"></div>
     <div class="reply-preview" id="replyPreview-vampyre" hidden>
       <div class="reply-preview-body">
@@ -286,7 +287,7 @@ a.home-btn:hover{border-color:var(--ink);}
       </div>
     </div>
     <div class="zigzag"></div>
-    <div class="chat-locked" id="locked-carmilla" style="background-image:url('carmilla.jpg')"></div>
+    <img class="chat-locked" id="locked-carmilla" src="carmilla.jpg" alt="Carmilla">
     <div class="chat-messages" id="messages-carmilla" style="display:none"></div>
     <div class="reply-preview" id="replyPreview-carmilla" hidden>
       <div class="reply-preview-body">
@@ -306,7 +307,11 @@ a.home-btn:hover{border-color:var(--ink);}
 
 <div class="resources-section">
   <div class="resources-title">Resources</div>
+  <div class="resources-category">Vampire in Media</div>
   <ul class="resources-list">
+    <li><a href="https://youtu.be/PfoPO022lVY?si=8X_lPATdmrcGDAgM" target="_blank" rel="noopener">
+      <span class="res-icon">🎥</span><span>Was Jesus a Vampire?</span>
+    </a></li>
     <li><a href="https://www.youtube.com/watch?v=w4dFI19I5II&t=3588s" target="_blank" rel="noopener">
       <span class="res-icon">🎥</span><span>Video resource — starts at 59:48 (edit this label with the real title)</span>
     </a></li>
