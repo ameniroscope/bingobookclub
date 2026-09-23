@@ -75,9 +75,9 @@ a.home-btn:hover{border-color:var(--ink);}
 .face-hotspot:hover{background:radial-gradient(circle,rgba(124,22,22,0.5) 0%,rgba(124,22,22,0.28) 40%,rgba(124,22,22,0.1) 65%,transparent 82%);}
 .face-hotspot:focus-visible{outline:none;background:radial-gradient(circle,rgba(244,240,232,0.4) 0%,rgba(244,240,232,0.22) 40%,transparent 78%);}
 
-.current-reader{display:none;align-items:center;gap:0.8rem;padding:0.4rem 0;}
+.current-reader{display:none;flex-direction:column;align-items:center;gap:0.35rem;padding:0.4rem 0;}
 .current-reader.show{display:flex;}
-.current-reader img{width:42px;height:42px;border-radius:50%;object-fit:cover;border:2px solid var(--ink);}
+.current-reader img{width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid var(--ink);}
 .current-reader .cr-name{font-family:var(--display);font-size:1.05rem;color:var(--ink);}
 .current-reader .switch-link{background:none;border:none;color:var(--ink-dim);font-family:var(--read);font-size:0.78rem;
   text-decoration:underline;cursor:pointer;padding:0;}
@@ -85,7 +85,7 @@ a.home-btn:hover{border-color:var(--ink);}
 
 /* ── CHAT PANEL ── */
 .chat-panel{position:relative;background:var(--cream);border:2px solid var(--bg);
-  display:flex;flex-direction:column;width:fit-content;max-width:100%;min-width:300px;justify-self:center;}
+  display:flex;flex-direction:column;width:380px;max-width:100%;height:min(70vh,500px);justify-self:center;}
 .chat-panel::before{content:'';position:absolute;inset:0;background:var(--red);transform:translate(8px,8px);z-index:-1;}
 .chat-panel-hdr{flex-shrink:0;padding:0.95rem 1.1rem 0.8rem;display:flex;align-items:flex-start;justify-content:space-between;gap:0.8rem;}
 .chat-panel-title{font-family:var(--display);font-size:1.3rem;color:var(--bg);letter-spacing:0.5px;}
@@ -100,9 +100,11 @@ a.home-btn:hover{border-color:var(--ink);}
 .read-switch input:checked ~ .read-switch-track .read-switch-thumb{transform:translateX(17px);background:var(--ink);}
 .read-toggle-state{font-family:var(--read);font-style:italic;font-size:0.7rem;color:rgba(5,3,3,0.65);white-space:nowrap;}
 
-.chat-locked{display:block;width:auto;height:auto;max-width:100%;max-height:480px;margin:0 auto;flex-shrink:0;}
+.chat-locked-wrap{position:relative;flex:1;min-height:0;overflow:hidden;}
+.chat-locked{display:block;position:absolute;inset:0;width:100%;height:100%;margin:0;padding:0;object-fit:cover;background:var(--cream);}
+.zigzag-cut{position:absolute;top:14px;left:0;z-index:2;filter:drop-shadow(0 1px 1px rgba(0,0,0,0.5));}
 
-.chat-messages{max-height:420px;overflow-y:auto;padding:1rem 1.1rem;display:flex;flex-direction:column;gap:0.65rem;}
+.chat-messages{flex:1;min-height:0;overflow-y:auto;padding:1rem 1.1rem;display:flex;flex-direction:column;gap:0.65rem;}
 .empty-msg,.write-note{font-family:var(--read);font-size:0.98rem;color:rgba(5,3,3,0.6);font-style:italic;text-align:center;
   margin:auto;line-height:1.7;}
 .write-note strong{display:block;font-family:var(--sans);letter-spacing:2px;text-transform:uppercase;font-size:0.72rem;
@@ -195,6 +197,7 @@ a.home-btn:hover{border-color:var(--ink);}
 .lock-error{color:#c4553f;font-size:1rem;min-height:1.2rem;margin-top:0.8rem;}
 
 @media(max-width:600px){
+  .chat-panel{height:min(65vh,500px);}
   .msg-text{max-width:90%;}
 }
 </style>
@@ -241,8 +244,10 @@ a.home-btn:hover{border-color:var(--ink);}
         <span class="read-toggle-state" id="readLabel-vampyre">Spoiler free chat</span>
       </div>
     </div>
-    <div class="zigzag"></div>
-    <img class="chat-locked" id="locked-vampyre" src="vampyr.jpg" alt="The Vampyre">
+    <div class="chat-locked-wrap">
+      <img class="chat-locked" id="locked-vampyre" src="vampyr.jpg" alt="The Vampyre">
+      <div class="zigzag zigzag-cut"></div>
+    </div>
     <div class="chat-messages" id="messages-vampyre" style="display:none"></div>
     <div class="reply-preview" id="replyPreview-vampyre" hidden>
       <div class="reply-preview-body">
@@ -286,8 +291,10 @@ a.home-btn:hover{border-color:var(--ink);}
         <span class="read-toggle-state" id="readLabel-carmilla">Spoiler free chat</span>
       </div>
     </div>
-    <div class="zigzag"></div>
-    <img class="chat-locked" id="locked-carmilla" src="carmilla.jpg" alt="Carmilla">
+    <div class="chat-locked-wrap">
+      <img class="chat-locked" id="locked-carmilla" src="carmilla.jpg" alt="Carmilla">
+      <div class="zigzag zigzag-cut"></div>
+    </div>
     <div class="chat-messages" id="messages-carmilla" style="display:none"></div>
     <div class="reply-preview" id="replyPreview-carmilla" hidden>
       <div class="reply-preview-body">
