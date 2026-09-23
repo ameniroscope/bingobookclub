@@ -89,18 +89,18 @@ a.home-btn:hover{border-color:var(--ink);}
 .chat-panel-hdr{flex-shrink:0;padding:0.95rem 1.1rem 0.8rem;display:flex;align-items:flex-start;justify-content:space-between;gap:0.8rem;}
 .chat-panel-title{font-family:var(--display);font-size:1.3rem;color:var(--ink);letter-spacing:0.5px;}
 .chat-panel-author{font-family:var(--sans);letter-spacing:2px;text-transform:uppercase;font-size:0.7rem;color:var(--ink-dim);margin-top:3px;}
-.read-toggle{display:flex;flex-direction:column;align-items:center;gap:0.3rem;flex-shrink:0;}
+.read-toggle{display:flex;flex-direction:column;align-items:center;gap:0.3rem;flex-shrink:0;width:150px;}
 .read-toggle-label{font-family:var(--sans);letter-spacing:2px;text-transform:uppercase;font-size:0.62rem;color:var(--ink-dim);}
 .read-switch{position:relative;display:inline-block;width:38px;height:21px;cursor:pointer;}
 .read-switch input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer;}
-.read-switch-track{position:absolute;top:0;left:0;right:0;bottom:0;background:var(--bg2);border:1.5px solid var(--red-line);transition:background .2s,border-color .2s;}
-.read-switch-thumb{position:absolute;top:2px;left:2px;width:13px;height:13px;background:var(--ink-dim);transition:transform .2s,background .2s;}
+.read-switch-track{position:absolute;top:0;left:0;right:0;bottom:0;background:var(--bg2);border:1.5px solid var(--red-line);border-radius:999px;transition:background .2s,border-color .2s;}
+.read-switch-thumb{position:absolute;top:2px;left:2px;width:13px;height:13px;border-radius:50%;background:var(--ink-dim);transition:transform .2s,background .2s;}
 .read-switch input:checked ~ .read-switch-track{background:var(--red-dim);border-color:var(--red-lt);}
 .read-switch input:checked ~ .read-switch-track .read-switch-thumb{transform:translateX(17px);background:var(--ink);}
 .read-toggle-state{font-family:var(--read);font-style:italic;font-size:0.7rem;color:var(--ink-dim);white-space:nowrap;}
 .read-toggle-state.is-read{color:var(--ink);}
 
-.chat-locked{width:100%;height:230px;flex-shrink:0;background-size:cover;background-repeat:no-repeat;
+.chat-locked{width:100%;height:230px;flex-shrink:0;background-size:contain;background-repeat:no-repeat;
   background-position:center;background-color:var(--bg2);}
 .chat-locked-msg{display:flex;align-items:center;justify-content:center;text-align:center;padding:1.8rem 1.5rem;
   font-family:var(--read);font-style:italic;color:var(--ink);font-size:1rem;}
@@ -115,12 +115,13 @@ a.home-btn:hover{border-color:var(--ink);}
 .msg-name{display:block;font-family:var(--sans);letter-spacing:0.5px;font-weight:700;font-size:0.76rem;margin-bottom:0.15rem;
   text-transform:uppercase;}
 .msg-bubble{display:inline-block;max-width:min(88%,420px);padding:0.5rem 0.75rem;word-break:break-word;
-  border:1px solid var(--red-line);}
+  border:1px solid var(--red-line);background:var(--ink);color:var(--bg);}
+.msg.mine .msg-bubble{background:#e7d9b8;}
 .msg-text{display:block;font-family:var(--read);font-size:1rem;line-height:1.5;}
-.reply-quote{display:block;border-left:3px solid var(--ink-dim);background:rgba(0,0,0,0.25);
+.reply-quote{display:block;border-left:3px solid var(--red-lt);background:rgba(5,3,3,0.85);
   padding:0.25rem 0.5rem;margin-bottom:0.4rem;}
 .reply-quote-name{display:block;font-family:var(--sans);text-transform:uppercase;letter-spacing:0.5px;font-weight:700;font-size:0.72rem;color:var(--ink);}
-.reply-quote-text{display:block;font-family:var(--read);font-size:0.83rem;color:rgba(244,240,232,0.75);
+.reply-quote-text{display:block;font-family:var(--read);font-size:0.83rem;color:rgba(244,240,232,0.8);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px;}
 .msg-underbar{display:flex;align-items:center;gap:6px;margin-top:3px;flex-wrap:wrap;}
 .msg.mine .msg-underbar{flex-direction:row-reverse;}
@@ -586,7 +587,7 @@ function renderBookMessages(bookKey){
       :'';
     el.innerHTML=
       `<span class="msg-name" style="color:${color}">${emoji} ${esc(name)}</span>`+
-      `<div class="msg-bubble" style="background:${hexA(color,isMine?0.55:0.3)};color:#f4f0e8">`+
+      `<div class="msg-bubble">`+
         quoteHTML+
         `<span class="msg-text">${esc(String(m.text||''))}</span>`+
       `</div>`+
