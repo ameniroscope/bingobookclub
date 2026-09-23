@@ -9,7 +9,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
 
 :root{
-  /* palette pulled directly from the cover: black / oxblood red / bone white */
   --bg:#050303;--bg2:#0b0707;--panel:#0a0606;
   --red:#560a0a;--red-lt:#7c1616;--red-dim:#2c0505;--red-line:#8a1c1c;
   --ink:#f4f0e8;--ink-dim:rgba(244,240,232,0.6);
@@ -36,11 +35,39 @@ a.home-btn:hover{border-color:var(--ink);}
   background-image:linear-gradient(-45deg,var(--red) 7px,transparent 0),linear-gradient(45deg,var(--red) 7px,transparent 0);
   background-position:0 -3px;background-repeat:repeat-x;background-size:14px 14px;}
 .zigzag.flip{transform:scaleY(-1);}
+.section-divider{max-width:1280px;margin:0 auto;padding:0 2rem;position:relative;z-index:1;}
+@media(max-width:980px){.section-divider{padding:0 1.1rem;}}
 
-/* ── READER HEADER ── */
-.reader-zone{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:1rem;padding:2.4rem 1rem 0.4rem;}
+/* ── PAGE TITLE ── */
+.page-title-wrap{position:relative;z-index:1;text-align:center;padding:2.4rem 1rem 1.6rem;}
+.page-title{font-family:var(--display);font-size:clamp(2rem,5vw,3.1rem);letter-spacing:1px;color:var(--ink);}
+.page-subtitle{font-family:var(--sans);letter-spacing:3px;text-transform:uppercase;font-size:0.75rem;color:var(--ink-dim);margin-top:0.5rem;}
+
+/* ── ORIGIN ROW ── */
+.origin-row{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:1.8rem 2rem;
+  display:grid;grid-template-columns:1fr 0.85fr 1fr;gap:2.4rem;align-items:center;}
+.origin-text h3{font-family:var(--display);font-size:1.15rem;color:var(--ink);margin:0 0 0.6rem;letter-spacing:0.5px;}
+.origin-text p{font-family:var(--read);font-size:0.98rem;line-height:1.75;color:var(--ink-dim);margin:0;}
+.cover-frame{position:relative;width:100%;max-width:280px;margin:0 auto;}
+.cover-frame::before{content:'';position:absolute;inset:0;background:var(--red);transform:translate(8px,8px);z-index:0;}
+.cover-frame img{position:relative;z-index:1;width:100%;display:block;border:2px solid var(--ink);}
+@media(max-width:980px){
+  .origin-row{grid-template-columns:1fr;gap:1.6rem;padding:1.4rem 1.1rem;text-align:center;}
+  .cover-frame{order:-1;}
+}
+
+/* ── CHAT ROW ── */
+.chat-row{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:1.8rem 2rem 2.2rem;
+  display:grid;grid-template-columns:1fr 0.85fr 1fr;gap:2.4rem;align-items:start;}
+@media(max-width:980px){
+  .chat-row{grid-template-columns:1fr;gap:1.8rem;padding:1.4rem 1.1rem 2rem;}
+  .login-col{order:-1;}
+}
+
+/* ── LOGIN COLUMN (center of chat row) ── */
+.login-col{display:flex;flex-direction:column;align-items:center;gap:0.9rem;}
 .reader-eyebrow{font-family:var(--sans);letter-spacing:5px;font-size:0.72rem;color:var(--ink-dim);text-transform:uppercase;}
-.face-login-wrap{position:relative;width:100%;max-width:640px;margin:0 auto;}
+.face-login-wrap{position:relative;width:100%;max-width:420px;margin:0 auto;}
 .face-login-wrap::before{content:'';position:absolute;inset:0;background:var(--red);transform:translate(8px,8px);z-index:-1;}
 .face-login-wrap img{position:relative;width:100%;display:block;border:2px solid var(--ink);}
 .face-hotspot{position:absolute;transform:translate(-50%,-50%);border:none;background:transparent;border-radius:50%;
@@ -57,23 +84,6 @@ a.home-btn:hover{border-color:var(--ink);}
   text-decoration:underline;cursor:pointer;padding:0;}
 .current-reader .switch-link:hover{color:var(--ink);}
 
-/* ── LAYOUT ── */
-.wrap{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:1.5rem 2rem 4rem;
-  display:grid;grid-template-columns:1fr 0.85fr 1fr;gap:2.2rem;align-items:start;}
-@media(max-width:980px){
-  .wrap{grid-template-columns:1fr;padding:1.2rem 1.1rem 3rem;gap:1.8rem;}
-  .cover-col{order:-1;}
-}
-
-/* ── CENTER COVER COLUMN ── */
-.cover-col{display:flex;flex-direction:column;align-items:center;gap:0.9rem;position:sticky;top:1.2rem;}
-.cover-frame{position:relative;width:100%;max-width:300px;}
-.cover-frame::before{content:'';position:absolute;inset:0;background:var(--red);transform:translate(8px,8px);z-index:0;}
-.cover-frame img{position:relative;z-index:1;width:100%;display:block;border:2px solid var(--ink);}
-.cover-title{font-family:var(--display);font-size:1.25rem;letter-spacing:1px;color:var(--ink);text-align:center;}
-.cover-sub{font-family:var(--sans);letter-spacing:3px;text-transform:uppercase;font-size:0.72rem;color:var(--ink-dim);text-align:center;}
-@media(max-width:980px){.cover-col{position:static;}}
-
 /* ── CHAT PANEL ── */
 .chat-panel{position:relative;background:var(--panel);border:1.5px solid var(--red-line);
   display:flex;flex-direction:column;height:min(70vh,640px);overflow:hidden;}
@@ -86,11 +96,9 @@ a.home-btn:hover{border-color:var(--ink);}
 .read-toggle input{accent-color:var(--red-lt);width:15px;height:15px;cursor:pointer;}
 .read-toggle.is-read{color:var(--ink);}
 
-.chat-locked{flex:1;position:relative;background-size:cover;background-position:center;background-color:var(--bg2);
-  display:flex;align-items:center;justify-content:center;}
-.chat-locked::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,3,3,0.4),rgba(5,3,3,0.88));}
-.chat-locked-msg{position:relative;z-index:1;text-align:center;padding:1.5rem;font-family:var(--read);
-  font-style:italic;color:var(--ink);font-size:1rem;}
+.chat-locked{width:100%;aspect-ratio:16/9;flex-shrink:0;background-size:cover;background-position:center;background-color:var(--bg2);}
+.chat-locked-msg{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;padding:1.5rem;
+  font-family:var(--read);font-style:italic;color:var(--ink);font-size:1rem;}
 
 .chat-messages{flex:1;min-height:0;overflow-y:auto;padding:1rem 1.1rem;display:flex;flex-direction:column;gap:0.65rem;}
 .empty-msg,.write-note{font-family:var(--read);font-size:0.98rem;color:var(--ink-dim);font-style:italic;text-align:center;
@@ -149,6 +157,13 @@ a.home-btn:hover{border-color:var(--ink);}
   transition:all 0.15s;white-space:nowrap;flex-shrink:0;}
 .send-btn:hover{background:var(--red-lt);}
 
+/* ── RESOURCES SECTION (placeholder for later) ── */
+.resources-section{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:2.2rem 2rem 4rem;text-align:center;}
+.resources-title{font-family:var(--display);font-size:1.5rem;letter-spacing:1px;color:var(--ink);margin-bottom:1rem;}
+.resources-placeholder{border:1.5px dashed var(--red-line);padding:2.6rem 1.5rem;font-family:var(--read);
+  font-style:italic;color:var(--ink-dim);}
+@media(max-width:980px){.resources-section{padding:1.8rem 1.1rem 3rem;}}
+
 /* ── PASSWORD MODAL ── */
 .lock-modal-wrap{display:none;position:fixed;inset:0;z-index:400;background:var(--bg);
   align-items:center;justify-content:center;flex-direction:column;padding:2rem;text-align:center;}
@@ -177,20 +192,28 @@ a.home-btn:hover{border-color:var(--ink);}
 <div id="bg"></div>
 <a href="../index.html" class="home-btn">🏠 Home</a>
 
-<!-- READER ZONE: avatar picker OR logged-in mini header -->
-<div class="reader-zone">
-  <div class="reader-eyebrow">Who's reading?</div>
-  <div class="face-login-wrap" id="faceLoginWrap">
-    <img src="spooky_BingoPicture.png" alt="Choose your reader">
+<div class="page-title-wrap">
+  <div class="page-title">The Vampyre &amp; Carmilla</div>
+  <div class="page-subtitle">Two Gothic Novellas · Polidori &amp; Le Fanu</div>
+</div>
+
+<div class="origin-row">
+  <div class="origin-text">
+    <h3>The Vampyre</h3>
+    <p>Born from a single stormy night at the Villa Diodati in 1816, when Lord Byron challenged his companions — among them Mary Shelley, soon to write <em>Frankenstein</em> — to each write a ghost story. Polidori, Byron's personal physician, took a fragment of Byron's own idea and turned it into <em>The Vampyre</em>: the story that gave literature its first aristocratic, seductive vampire, Lord Ruthven, modeled pointedly on Byron himself. Published in 1819, it predates <em>Dracula</em> by nearly eighty years and effectively invented the vampire as we still picture him today.</p>
   </div>
-  <div class="current-reader" id="currentReader">
-    <img id="currentReaderPhoto" src="" alt="">
-    <span class="cr-name" id="currentReaderName"></span>
-    <button class="switch-link" id="switchReaderBtn" type="button">not you?</button>
+
+  <div class="cover-frame"><img src="vampyre_carmilla_cover.jpg" alt="The Vampyre / Carmilla"></div>
+
+  <div class="origin-text">
+    <h3>Carmilla</h3>
+    <p>Serialized in 1871–72, a full quarter-century before <em>Dracula</em> — and a clear influence on it. Le Fanu's story follows the lonely Laura and the strange, magnetic girl who comes to stay in her family's crumbling Styrian schloss. Told with a slow, dreamlike dread, it's remembered too for the frank, romantic charge between Laura and Carmilla, making it one of the earliest openly queer narratives in gothic fiction.</p>
   </div>
 </div>
 
-<div class="wrap">
+<div class="section-divider"><div class="zigzag"></div></div>
+
+<div class="chat-row">
   <!-- LEFT: The Vampyre -->
   <div class="chat-panel" data-book="vampyre">
     <div class="chat-panel-hdr">
@@ -202,9 +225,8 @@ a.home-btn:hover{border-color:var(--ink);}
       </label>
     </div>
     <div class="zigzag"></div>
-    <div class="chat-locked" id="locked-vampyre" style="background-image:url('vampyr.jpg')">
-      <div class="chat-locked-msg">🦇 The coven's thoughts stay veiled.<br>Choose your name above to join.</div>
-    </div>
+    <div class="chat-locked" id="locked-vampyre" style="background-image:url('vampyr.jpg')"></div>
+    <div class="chat-locked-msg" id="lockedMsg-vampyre">🦇 The coven's thoughts stay veiled.<br>Choose your name below to join.</div>
     <div class="chat-messages" id="messages-vampyre" style="display:none"></div>
     <div class="reply-preview" id="replyPreview-vampyre" hidden>
       <div class="reply-preview-body">
@@ -219,11 +241,17 @@ a.home-btn:hover{border-color:var(--ink);}
     </div>
   </div>
 
-  <!-- CENTER: cover -->
-  <div class="cover-col">
-    <div class="cover-frame"><img src="vampyre_carmilla_cover.jpg" alt="The Vampyre / Carmilla"></div>
-    <div class="cover-title">Two Gothic Novellas</div>
-    <div class="cover-sub">Polidori &amp; Le Fanu</div>
+  <!-- CENTER: login -->
+  <div class="login-col">
+    <div class="reader-eyebrow">Who's reading?</div>
+    <div class="face-login-wrap" id="faceLoginWrap">
+      <img src="spooky_BingoPicture.png" alt="Choose your reader">
+    </div>
+    <div class="current-reader" id="currentReader">
+      <img id="currentReaderPhoto" src="" alt="">
+      <span class="cr-name" id="currentReaderName"></span>
+      <button class="switch-link" id="switchReaderBtn" type="button">not you?</button>
+    </div>
   </div>
 
   <!-- RIGHT: Carmilla -->
@@ -237,9 +265,8 @@ a.home-btn:hover{border-color:var(--ink);}
       </label>
     </div>
     <div class="zigzag"></div>
-    <div class="chat-locked" id="locked-carmilla" style="background-image:url('carmilla.jpg')">
-      <div class="chat-locked-msg">🩸 Her secrets wait behind the veil.<br>Choose your name above to join.</div>
-    </div>
+    <div class="chat-locked" id="locked-carmilla" style="background-image:url('carmilla.jpg')"></div>
+    <div class="chat-locked-msg" id="lockedMsg-carmilla">🩸 Her secrets wait behind the veil.<br>Choose your name below to join.</div>
     <div class="chat-messages" id="messages-carmilla" style="display:none"></div>
     <div class="reply-preview" id="replyPreview-carmilla" hidden>
       <div class="reply-preview-body">
@@ -253,6 +280,13 @@ a.home-btn:hover{border-color:var(--ink);}
       <button class="send-btn" id="send-carmilla">Post</button>
     </div>
   </div>
+</div>
+
+<div class="section-divider"><div class="zigzag flip"></div></div>
+
+<div class="resources-section">
+  <div class="resources-title">Resources</div>
+  <div class="resources-placeholder">More coming soon…</div>
 </div>
 
 <!-- PASSWORD MODAL -->
@@ -313,7 +347,7 @@ const FACES = [
   { x:59.6, y:40.4 },
   { x:75.6, y:40.2 },
 ];
-const FACE_ORDER = ['FILL_ME_1','FILL_ME_2','FILL_ME_3','FILL_ME_4']; // <- left to right, your player ids
+const FACE_ORDER = ['kathi','elana','lena','marine']; // left to right — assumes these match your accessCodes doc ids exactly
 
 const faceLoginWrap = document.getElementById('faceLoginWrap');
 FACES.forEach((f,i)=>{
@@ -375,6 +409,7 @@ function login(pid){
 
   BOOKS.forEach(b=>{
     document.getElementById('locked-'+b.key).style.display='none';
+    document.getElementById('lockedMsg-'+b.key).style.display='none';
     document.getElementById('messages-'+b.key).style.display='flex';
     document.getElementById('compose-'+b.key).style.display='flex';
     document.getElementById('readToggle-'+b.key).style.display='flex';
@@ -397,7 +432,8 @@ document.getElementById('switchReaderBtn').addEventListener('click',()=>{
   document.querySelector('.reader-eyebrow').style.display='block';
   document.getElementById('currentReader').classList.remove('show');
   BOOKS.forEach(b=>{
-    document.getElementById('locked-'+b.key).style.display='flex';
+    document.getElementById('locked-'+b.key).style.display='block';
+    document.getElementById('lockedMsg-'+b.key).style.display='flex';
     document.getElementById('messages-'+b.key).style.display='none';
     document.getElementById('compose-'+b.key).style.display='none';
     document.getElementById('readToggle-'+b.key).style.display='none';
