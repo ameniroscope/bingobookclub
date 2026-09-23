@@ -39,10 +39,12 @@
   header h1 .show-name{ color: var(--bronze); font-size: 2rem;}
   header p{ margin:0; font-style:italic; color:var(--dim-text); }
 
-  main{ flex:1; max-width: 480px; margin: 0 auto; padding: 1rem 1.5rem 3rem; width:100%; }
+  main{ flex:1; max-width: 720px; margin: 0 auto; padding: 1rem 1.5rem 3rem; width:100%; }
+  /* episodes sit side by side, wrapping to a stack on narrow screens */
+  #episodeList{ display:flex; flex-wrap:wrap; justify-content:center; align-items:flex-start; gap: 2rem 2.2rem; }
 
   /* ---- single episode slot: straight polaroid, title on top, player on the bottom strip ---- */
-  .episode{ text-align:center; margin-bottom: 2.2rem; }
+  .episode{ text-align:center; flex: 0 1 300px; max-width: 300px; }
   .polaroid{
     display:inline-block;
     width: 100%;
@@ -70,6 +72,59 @@
   }
   .polaroid audio{ width:100%; display:block; margin-top:.75rem; }
   .episode .meta{ font-size:.85rem; color:var(--dim-text); margin: .6rem 0 0; font-style:italic; }
+
+  /* ---- pannable wide cover: drag horizontally to explore the square ---- */
+  .episode-art.pannable{
+    display:block; position:relative;   /* holds the scroll track + fixed arrows/hint */
+  }
+  .pan-track{
+    width:100%; height:100%; overflow-x:auto; overflow-y:hidden;
+    cursor:grab; touch-action:pan-x; scrollbar-width:none;
+  }
+  .pan-track::-webkit-scrollbar{ display:none; }
+  .pan-track.dragging{ cursor:grabbing; }
+  .pan-track img{
+    height:100%; width:auto; max-width:none;   /* image taller than wide-cropped -> overflow to pan */
+    transform:none; object-fit:cover; display:block;
+    user-select:none; -webkit-user-drag:none;
+  }
+  /* little arrows that stay pinned to the edges (they don't scroll with the image) */
+  .pan-arrow{
+    position:absolute; top:50%; transform:translateY(-50%); z-index:2;
+    width:30px; height:30px; padding:0; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(7,7,12,.5); color:#f4efe0; border:1px solid rgba(244,239,224,.3);
+    font-size:1.25rem; line-height:1; cursor:pointer; user-select:none;
+    transition:opacity .3s ease, background .2s ease; opacity:.9;
+    animation: arrow-nudge 1.8s ease-in-out infinite;
+  }
+  .pan-arrow:hover{ background:rgba(7,7,12,.82); }
+  .pan-arrow.left{ left:7px; }
+  .pan-arrow.right{ right:7px; }
+  .pan-arrow.gone{ opacity:0; pointer-events:none; animation:none; }
+  @keyframes arrow-nudge{
+    0%,100%{ transform:translateY(-50%) translateX(0); }
+    50%    { transform:translateY(-50%) translateX(var(--nudge,0)); }
+  }
+  .pan-arrow.left{ --nudge:-3px; }
+  .pan-arrow.right{ --nudge:3px; }
+  .pan-hint{
+    position:absolute; left:50%; bottom:8px; transform:translateX(-50%); z-index:2;
+    font-family:'Cinzel', serif; font-size:.6rem; letter-spacing:.09em;
+    color:#f4efe0; background:rgba(7,7,12,.62); padding:.25rem .6rem; border-radius:999px;
+    pointer-events:none; transition:opacity .45s ease; white-space:nowrap;
+  }
+  .episode-art.panned .pan-hint{ opacity:0; }
+  @media (prefers-reduced-motion:reduce){ .pan-arrow{ animation:none; } }
+
+  /* ---- "recording coming soon" strip in place of the player ---- */
+  .coming-soon{
+    margin-top:.75rem; padding:.6rem .5rem; text-align:center;
+    font-family:'Cinzel', serif; font-size:.78rem; letter-spacing:.03em;
+    color:var(--bronze); border:1px dashed var(--bronze-dim); border-radius:4px;
+    background:rgba(176,138,78,.05);
+  }
+  .art-credit{ font-size:.68rem; color:var(--dim-text); margin:.45rem 0 0; font-style:italic; }
 
   /* ---- links footer ---- */
   footer{
@@ -164,6 +219,14 @@
       title: 'Episode 1 : First little step',
       art: 'https://media.wired.com/photos/6418c4b05842f211652a9fbf/2:3/w_1200,h_1800,c_limit/Sanderson-DSCF2575.jpg',
       src: 'cosmere_episode1.mp3'
+    },
+    {
+      title: 'Episode 2 : Warbreaker',
+      art: 'cosmere_episode2.webp',
+      // `pan:true` makes the wide cover draggable inside the square frame.
+      pan: true,
+      src: 'cosmere_episode2.mp3',
+      credit: 'Art by Dan dos Santos'
     }
   ];
 
@@ -181,12 +244,36 @@
     polaroid.appendChild(h2);
 
     var art = document.createElement('div');
-    art.className = 'episode-art';
+    art.className = 'episode-art' + (ep.pan ? ' pannable' : '');
     if (ep.art){
       var img = document.createElement('img');
       img.src = ep.art;
       img.alt = ep.title;
-      art.appendChild(img);
+      img.draggable = false;
+      if (ep.pan){
+        // scroll track holds the wide image; arrows/hint sit outside it so they stay put
+        var track = document.createElement('div');
+        track.className = 'pan-track';
+        track.appendChild(img);
+        art.appendChild(track);
+
+        var aL = document.createElement('button');
+        aL.type = 'button'; aL.className = 'pan-arrow left';
+        aL.setAttribute('aria-label', 'Slide left'); aL.innerHTML = '‹';
+        var aR = document.createElement('button');
+        aR.type = 'button'; aR.className = 'pan-arrow right';
+        aR.setAttribute('aria-label', 'Slide right'); aR.innerHTML = '›';
+        art.appendChild(aL); art.appendChild(aR);
+
+        var hint = document.createElement('div');
+        hint.className = 'pan-hint';
+        hint.textContent = '⇆ drag to explore';
+        art.appendChild(hint);
+
+        enablePan(art, track, img, aL, aR);
+      } else {
+        art.appendChild(img);
+      }
     } else {
       var ph = document.createElement('div');
       ph.className = 'placeholder';
@@ -195,16 +282,30 @@
     }
     polaroid.appendChild(art);
 
-    var audio = document.createElement('audio');
-    audio.controls = true;
-    audio.preload = 'none';
-    var src = document.createElement('source');
-    src.src = ep.src;
-    audio.appendChild(src);
-    audio.appendChild(document.createTextNode('Your browser does not support the audio element.'));
-    polaroid.appendChild(audio);
+    if (ep.src && !ep.comingSoon){
+      var audio = document.createElement('audio');
+      audio.controls = true;
+      audio.preload = 'metadata';   // load just the duration so it shows instead of 0:00
+      var src = document.createElement('source');
+      src.src = ep.src;
+      audio.appendChild(src);
+      audio.appendChild(document.createTextNode('Your browser does not support the audio element.'));
+      polaroid.appendChild(audio);
+    } else {
+      var cs = document.createElement('div');
+      cs.className = 'coming-soon';
+      cs.textContent = ep.comingSoonText || '🎙️ Recording coming soon';
+      polaroid.appendChild(cs);
+    }
 
     card.appendChild(polaroid);
+
+    if (ep.credit){
+      var cr = document.createElement('div');
+      cr.className = 'art-credit';
+      cr.textContent = ep.credit;
+      card.appendChild(cr);
+    }
 
     if (ep.meta){
       var meta = document.createElement('div');
@@ -215,6 +316,64 @@
 
     list.appendChild(card);
   });
+
+  // Drag / swipe to pan a wide cover inside its square frame (mouse, touch, trackpad),
+  // with little arrows on each edge that also nudge it along.
+  function enablePan(box, track, img, aL, aR){
+    function maxScroll(){ return track.scrollWidth - track.clientWidth; }
+    function updateArrows(){
+      var m = maxScroll();
+      aL.classList.toggle('gone', track.scrollLeft <= 2);
+      aR.classList.toggle('gone', track.scrollLeft >= m - 2);
+    }
+    function center(){
+      if (maxScroll() > 0) track.scrollLeft = maxScroll() / 2;
+      updateArrows();
+    }
+    img.addEventListener('load', center);
+    // wait for layout (and cached images that never fire 'load') before centering
+    setTimeout(center, 80);
+
+    // arrow buttons nudge the image; they sit outside the track so they don't start a drag.
+    // Timer-driven tween (not scrollBy 'smooth') so it works in every browser, and we update
+    // the arrows on each frame so they hide at the edges without relying on the scroll event.
+    function animateScrollTo(to, dur){
+      to = Math.max(0, Math.min(to, maxScroll()));
+      var from = track.scrollLeft, t0 = Date.now();
+      (function step(){
+        var p = Math.min(1, (Date.now() - t0) / dur);
+        var e = p < 0.5 ? 2*p*p : 1 - Math.pow(-2*p + 2, 2) / 2;   // easeInOutQuad
+        track.scrollLeft = from + (to - from) * e;
+        updateArrows();
+        if (p < 1) setTimeout(step, 16);
+      })();
+    }
+    function nudge(dir){ animateScrollTo(track.scrollLeft + dir * Math.round(track.clientWidth * 0.6), 260); }
+    aL.addEventListener('click', function(){ nudge(-1); box.classList.add('panned'); });
+    aR.addEventListener('click', function(){ nudge(1);  box.classList.add('panned'); });
+
+    var down = false, startX = 0, startScroll = 0;
+    track.addEventListener('pointerdown', function(e){
+      down = true; startX = e.clientX; startScroll = track.scrollLeft;
+      track.classList.add('dragging');
+      try { track.setPointerCapture(e.pointerId); } catch(_){}
+    });
+    track.addEventListener('pointermove', function(e){
+      if (!down) return;
+      track.scrollLeft = startScroll - (e.clientX - startX);
+      box.classList.add('panned');
+      updateArrows();
+    });
+    function end(e){
+      if (!down) return;
+      down = false; track.classList.remove('dragging');
+      try { track.releasePointerCapture(e.pointerId); } catch(_){}
+    }
+    track.addEventListener('pointerup', end);
+    track.addEventListener('pointercancel', end);
+    track.addEventListener('scroll', function(){ box.classList.add('panned'); updateArrows(); }, { passive:true });
+    window.addEventListener('resize', updateArrows);
+  }
 })();
 </script>
 </body>
