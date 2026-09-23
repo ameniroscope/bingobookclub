@@ -168,14 +168,14 @@ a.home-btn:hover{border-color:var(--ink);}
 .resources-placeholder{border:1.5px dashed var(--red-line);padding:2.6rem 1.5rem;font-family:var(--read);
   font-style:italic;color:var(--ink-dim);}
 .resources-category{font-family:var(--sans);letter-spacing:3px;text-transform:uppercase;font-size:0.78rem;color:var(--ink-dim);
-  text-align:left;max-width:560px;margin:0 auto 0.5rem;}
-.resources-list{list-style:none;margin:0 auto;padding:0;border:1.5px solid var(--red-line);text-align:left;max-width:560px;}
-.resources-list li{border-bottom:1px solid var(--red-dim);}
-.resources-list li:last-child{border-bottom:none;}
-.resources-list a{display:flex;align-items:center;gap:0.7rem;padding:0.9rem 1.1rem;color:var(--ink);text-decoration:none;
-  font-family:var(--read);font-size:1rem;transition:background .15s;}
-.resources-list a:hover{background:var(--red-dim);}
-.resources-list .res-icon{font-size:1.1rem;flex-shrink:0;}
+  text-align:center;margin-bottom:1rem;}
+.resources-list{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:1rem;}
+.resources-list li{margin:0;}
+.resources-list a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.6rem;
+  width:150px;height:130px;padding:1rem;border:1.5px solid var(--red-line);background:var(--bg2);color:var(--ink);
+  text-decoration:none;font-family:var(--read);font-size:0.88rem;line-height:1.3;transition:background .15s,border-color .15s;}
+.resources-list a:hover{background:var(--red-dim);border-color:var(--ink);}
+.resources-list .res-icon{flex-shrink:0;width:34px;height:34px;}
 @media(max-width:980px){.resources-section{padding:1.8rem 1.1rem 3rem;}}
 
 /* ── PASSWORD MODAL ── */
@@ -314,13 +314,14 @@ a.home-btn:hover{border-color:var(--ink);}
 
 <div class="resources-section">
   <div class="resources-title">Resources</div>
-  <div class="resources-category">Vampire in Media</div>
   <ul class="resources-list">
     <li><a href="https://youtu.be/PfoPO022lVY?si=8X_lPATdmrcGDAgM" target="_blank" rel="noopener">
-      <span class="res-icon">🎥</span><span>Was Jesus a Vampire?</span>
+      <svg class="res-icon" viewBox="0 0 48 34" xmlns="http://www.w3.org/2000/svg"><path fill="#FF0000" d="M47 5.3A6 6 0 0 0 42.7 1C39 0 24 0 24 0S9 0 5.3 1A6 6 0 0 0 1 5.3 62 62 0 0 0 0 17a62 62 0 0 0 1 11.7A6 6 0 0 0 5.3 33C9 34 24 34 24 34s15 0 18.7-1a6 6 0 0 0 4.3-4.3A62 62 0 0 0 48 17a62 62 0 0 0-1-11.7z"/><path fill="#fff" d="M19 24.3 32 17 19 9.7v14.6z"/></svg>
+      <span>Was Jesus a Vampire?</span>
     </a></li>
-    <li><a href="https://www.youtube.com/watch?v=w4dFI19I5II&t=3588s" target="_blank" rel="noopener">
-      <span class="res-icon">🎥</span><span>Video resource — starts at 59:48 (edit this label with the real title)</span>
+    <li><a href="https://www.youtube.com/watch?v=w4dFI19I5II" target="_blank" rel="noopener">
+      <svg class="res-icon" viewBox="0 0 48 34" xmlns="http://www.w3.org/2000/svg"><path fill="#FF0000" d="M47 5.3A6 6 0 0 0 42.7 1C39 0 24 0 24 0S9 0 5.3 1A6 6 0 0 0 1 5.3 62 62 0 0 0 0 17a62 62 0 0 0 1 11.7A6 6 0 0 0 5.3 33C9 34 24 34 24 34s15 0 18.7-1a6 6 0 0 0 4.3-4.3A62 62 0 0 0 48 17a62 62 0 0 0-1-11.7z"/><path fill="#fff" d="M19 24.3 32 17 19 9.7v14.6z"/></svg>
+      <span>VVampires in Media</span>
     </a></li>
   </ul>
 </div>
