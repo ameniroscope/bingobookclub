@@ -40,15 +40,13 @@ a.home-btn:hover{border-color:var(--ink);}
 /* ── READER HEADER ── */
 .reader-zone{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:1rem;padding:2.4rem 1rem 0.4rem;}
 .reader-eyebrow{font-family:var(--sans);letter-spacing:5px;font-size:0.72rem;color:var(--ink-dim);text-transform:uppercase;}
-.avatar-row{display:flex;gap:1.2rem;flex-wrap:wrap;justify-content:center;}
-.avatar-pick{background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:0.5rem;
-  font-family:var(--read);color:var(--ink-dim);transition:transform 0.15s;}
-.avatar-pick:hover{transform:translateY(-3px);color:var(--ink);}
-.avatar-pick .av-frame{position:relative;width:64px;height:64px;}
-.avatar-pick .av-frame::before{content:'';position:absolute;inset:0;background:var(--red);transform:translate(4px,4px);}
-.avatar-pick img{position:relative;width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--ink);
-  display:block;}
-.avatar-pick span{font-size:0.85rem;}
+.face-login-wrap{position:relative;width:100%;max-width:640px;margin:0 auto;}
+.face-login-wrap::before{content:'';position:absolute;inset:0;background:var(--red);transform:translate(8px,8px);z-index:-1;}
+.face-login-wrap img{position:relative;width:100%;display:block;border:2px solid var(--ink);}
+.face-hotspot{position:absolute;transform:translate(-50%,-50%);border:none;background:transparent;border-radius:50%;
+  cursor:pointer;transition:box-shadow .2s,background .2s;}
+.face-hotspot:hover{background:rgba(86,10,10,0.3);box-shadow:0 0 0 3px var(--red-lt);}
+.face-hotspot:focus-visible{box-shadow:0 0 0 3px var(--ink);}
 
 .current-reader{display:none;align-items:center;gap:0.8rem;background:var(--bg2);border:1.5px solid var(--red-line);
   padding:0.4rem 1rem 0.4rem 0.4rem;}
@@ -182,7 +180,9 @@ a.home-btn:hover{border-color:var(--ink);}
 <!-- READER ZONE: avatar picker OR logged-in mini header -->
 <div class="reader-zone">
   <div class="reader-eyebrow">Who's reading?</div>
-  <div class="avatar-row" id="avatarRow"></div>
+  <div class="face-login-wrap" id="faceLoginWrap">
+    <img src="spooky_BingoPicture.png" alt="Choose your reader">
+  </div>
   <div class="current-reader" id="currentReader">
     <img id="currentReaderPhoto" src="" alt="">
     <span class="cr-name" id="currentReaderName"></span>
@@ -202,7 +202,7 @@ a.home-btn:hover{border-color:var(--ink);}
       </label>
     </div>
     <div class="zigzag"></div>
-    <div class="chat-locked" id="locked-vampyre" style="background-image:url('vampyre_locked.jpg')">
+    <div class="chat-locked" id="locked-vampyre" style="background-image:url('vampyr.jpg')">
       <div class="chat-locked-msg">🦇 The coven's thoughts stay veiled.<br>Choose your name above to join.</div>
     </div>
     <div class="chat-messages" id="messages-vampyre" style="display:none"></div>
@@ -237,7 +237,7 @@ a.home-btn:hover{border-color:var(--ink);}
       </label>
     </div>
     <div class="zigzag"></div>
-    <div class="chat-locked" id="locked-carmilla" style="background-image:url('carmilla_locked.jpg')">
+    <div class="chat-locked" id="locked-carmilla" style="background-image:url('carmilla.jpg')">
       <div class="chat-locked-msg">🩸 Her secrets wait behind the veil.<br>Choose your name above to join.</div>
     </div>
     <div class="chat-messages" id="messages-carmilla" style="display:none"></div>
@@ -302,15 +302,31 @@ try{
   document.getElementById('lockError').textContent = 'Connection error — please refresh';
 }
 
-/* ── avatar row ── */
-const avatarRow = document.getElementById('avatarRow');
-Object.keys(PLAYERS).forEach(pid=>{
-  const p = PLAYERS[pid];
-  const btn = document.createElement('button');
-  btn.className='avatar-pick';btn.type='button';
-  btn.innerHTML = `<span class="av-frame"><img src="pdp_${pid}.png" alt="${esc(p.name)}"></span><span>${p.emoji||''} ${esc(p.name)}</span>`;
-  btn.addEventListener('click',()=>openLock(pid));
-  avatarRow.appendChild(btn);
+/* ── face hotspots over the group photo ──
+   Coordinates measured directly from spooky_BingoPicture.png (skin-tone
+   clustering), left to right. FACE_ORDER maps each position to a player id
+   from your accessCodes collection — fill in the 4 ids in the same left-to-
+   right order as the faces in the picture. */
+const FACES = [
+  { x:25.8, y:39.9 },
+  { x:43.8, y:39.9 },
+  { x:59.6, y:40.4 },
+  { x:75.6, y:40.2 },
+];
+const FACE_ORDER = ['FILL_ME_1','FILL_ME_2','FILL_ME_3','FILL_ME_4']; // <- left to right, your player ids
+
+const faceLoginWrap = document.getElementById('faceLoginWrap');
+FACES.forEach((f,i)=>{
+  const btn=document.createElement('button');
+  btn.className='face-hotspot';btn.type='button';
+  btn.style.left=f.x+'%';btn.style.top=f.y+'%';btn.style.width='15%';btn.style.height='17%';
+  const pid=FACE_ORDER[i];
+  btn.title = (PLAYERS[pid]&&PLAYERS[pid].name) ? PLAYERS[pid].name : 'not wired up yet';
+  btn.addEventListener('click',()=>{
+    if(PLAYERS[pid]) openLock(pid);
+    else alert('This face isn\'t wired to a player yet — edit FACE_ORDER in the script.');
+  });
+  faceLoginWrap.appendChild(btn);
 });
 
 /* ── password modal ── */
@@ -350,7 +366,7 @@ let rawMsgs={vampyre:[],carmilla:[]}, readStatus={vampyre:false,carmilla:false};
 
 function login(pid){
   PID=pid;PNAME=PLAYERS[pid].name;
-  document.getElementById('avatarRow').style.display='none';
+  document.getElementById('faceLoginWrap').style.display='none';
   document.querySelector('.reader-eyebrow').style.display='none';
   const cr=document.getElementById('currentReader');
   cr.classList.add('show');
@@ -377,7 +393,7 @@ function login(pid){
 document.getElementById('switchReaderBtn').addEventListener('click',()=>{
   PID=null;PNAME=null;
   if(readStatusUnsub){readStatusUnsub();readStatusUnsub=null;}
-  document.getElementById('avatarRow').style.display='flex';
+  document.getElementById('faceLoginWrap').style.display='block';
   document.querySelector('.reader-eyebrow').style.display='block';
   document.getElementById('currentReader').classList.remove('show');
   BOOKS.forEach(b=>{
