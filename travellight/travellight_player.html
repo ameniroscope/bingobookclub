@@ -71,10 +71,10 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
     width: 82.8%;
     height: 58%;
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
 }
-.bingo-cell{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-size:clamp(7px,1.3vw,11px);
+.bingo-cell{display:flex;align-items:center;justify-content:center;font-size:clamp(7px,1.3vw,11px);
   line-height:1.2;text-align:center;padding:2px;overflow:hidden;cursor:pointer;transition:background 0.15s;border-radius:3px;}
 .bingo-cell.marked{background:var(--player-glow);box-shadow:inset 0 0 0 1px var(--player);}
 .bingo-cell.free{font-weight:600;color:var(--gold);cursor:default;}
@@ -366,7 +366,7 @@ const ROOMS = [
 ];
 const MAX_CH = 19;
 
-const GRID_SIZE = 25;
+const GRID_SIZE = 16;   // 4×4 — no free square
 
 /* ── PASSWORD GATE ── */
 const initialLockModal = document.getElementById('initialLockModal');
@@ -391,7 +391,7 @@ initialPasswordInput.addEventListener('keydown', e => { if (e.key === 'Enter') c
 
 /* ── BINGO ── */
 let cells = Array(GRID_SIZE).fill('');
-let markedSet = new Set([12]);
+let markedSet = new Set();
 let isEditMode = false, isSaving = false;
 
 const bingoGrid = document.getElementById('bingoGrid'),
@@ -409,20 +409,17 @@ editBtn.addEventListener('click', () => {
 
 function countLines(){
   let lines=0;
-  for(let r=0;r<5;r++)if([0,1,2,3,4].every(c=>markedSet.has(r*5+c)))lines++;
-  for(let c=0;c<5;c++)if([0,1,2,3,4].every(r=>markedSet.has(r*5+c)))lines++;
-  if([0,1,2,3,4].every(i=>markedSet.has(i*5+i)))lines++;
-  if([0,1,2,3,4].every(i=>markedSet.has(i*5+(4-i))))lines++;
+  for(let r=0;r<4;r++)if([0,1,2,3].every(c=>markedSet.has(r*4+c)))lines++;
+  for(let c=0;c<4;c++)if([0,1,2,3].every(r=>markedSet.has(r*4+c)))lines++;
+  if([0,1,2,3].every(i=>markedSet.has(i*4+i)))lines++;
+  if([0,1,2,3].every(i=>markedSet.has(i*4+(3-i))))lines++;
   return lines;
 }
 function calcPoints(){
-  let cellCount=0;
-  markedSet.forEach(i=>{if(i!==12)cellCount++;});
-  return cellCount*POINTS_PER_CELL+countLines()*POINTS_PER_LINE;
+  return markedSet.size*POINTS_PER_CELL+countLines()*POINTS_PER_LINE;
 }
 function renderPoints(){
-  let cellCount=0;
-  markedSet.forEach(i=>{if(i!==12)cellCount++;});
+  const cellCount=markedSet.size;
   const lines=countLines();
   document.getElementById('ptsTotal').textContent=calcPoints();
   document.getElementById('ptsBreak').textContent=
@@ -432,12 +429,9 @@ function renderPoints(){
 function renderBingo() {
   bingoGrid.innerHTML = '';
   for (let i = 0; i < GRID_SIZE; i++) {
-    const isFree = i === 12;
     const cell = document.createElement('div');
-    cell.className = 'bingo-cell' + (isFree ? ' free' : markedSet.has(i) ? ' marked' : '');
-    if (isFree) {
-      cell.style.cursor = 'default';
-    } else if (isEditMode) {
+    cell.className = 'bingo-cell' + (markedSet.has(i) ? ' marked' : '');
+    if (isEditMode) {
       const ta = document.createElement('textarea');
       ta.value = cells[i];
       ta.addEventListener('input', e => { cells[i] = e.target.value; });
@@ -486,8 +480,7 @@ async function loadBingo() {
       const data = d.data();
       if (Array.isArray(data.cells))  cells = data.cells;
       if (Array.isArray(data.marked)) {
-        markedSet = new Set(data.marked.filter(v=>typeof v==='number'&&Number.isInteger(v)&&v>=0&&v<=24));
-        markedSet.add(12);
+        markedSet = new Set(data.marked.filter(v=>typeof v==='number'&&Number.isInteger(v)&&v>=0&&v<=15));
       }
     }
   } catch(e) { console.error(e); }
