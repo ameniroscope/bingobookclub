@@ -190,6 +190,8 @@ const BOOKS = [
     bingoCollection: "yesteryear_bingo", messagesCollection: "yesteryear_messages", messagesField: "chapter", chapterRangeSize: 8, maxChapter: 57 },
   { title: "A Fate Inked in Blood", file: "archive_fateinkedinblood.json", bingo: "fateinkedinblood_bingo.png", cover: "fateinkedinblood_cover.jpg", gridTop: 26.5, gridWidth: 82, cellColor: "#f2e8d0",
     bingoCollection: "fateinkedinblood_bingo", messagesCollection: "fateinkedinblood_messages", messagesField: "chapter", chapterRangeSize: 7, maxChapter: 35 },
+  { title: "The Inadequate Heir", file: "archive_inadequateheir.json", cover: "../inadequateheir/inadequateheir_cover.jpg", messagesOnly: true,
+    messagesCollection: "inadequateheir_messages", messagesField: "chapter", chapterRangeSize: 8, maxChapter: 81 },
 	
 ];
 
@@ -351,6 +353,7 @@ function renderContent(){
 
 function renderCards(){
   const wrap = document.getElementById('cardsWrap');
+  if(activeBook?.messagesOnly){ wrap.innerHTML = ''; return; }
   const bingo = getCollection(archiveData, activeBook.bingoCollection || 'shouty_bingo');
   const bgStyle = activeBook && activeBook.bingo
     ? ` style="background-image:url('${esc(activeBook.bingo)}')"` : '';

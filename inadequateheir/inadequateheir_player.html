@@ -698,31 +698,6 @@ async function sendMsg(){
 
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
 function hexA(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;}
-
-// ── TEMPORARY EXPORT BUTTON ──────────────────────────────────────────────────
-document.body.insertAdjacentHTML('beforeend',`
-  <button id="tempExportBtn" style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;
-    padding:0.6rem 1.2rem;background:#2b1d0e;color:#f2e8d0;border:1px solid #8b6914;
-    border-radius:8px;font-size:0.9rem;cursor:pointer;opacity:0.85;">
-    Export Archive JSON
-  </button>`);
-document.getElementById('tempExportBtn').addEventListener('click', async () => {
-  const output = {};
-  for (const colName of ['inadequateheir_bingo', 'inadequateheir_messages']) {
-    const snap = await getDocs(collection(db, colName));
-    const colData = {};
-    snap.forEach(d => {
-      const data = d.data();
-      if (data.ts && typeof data.ts.toDate === 'function') data.ts = { seconds: data.ts.seconds, nanoseconds: data.ts.nanoseconds };
-      colData[d.id] = data;
-    });
-    output[colName] = colData;
-  }
-  const blob = new Blob([JSON.stringify(output, null, 2)], { type: 'application/json' });
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'archive_inadequateheir.json'; a.click();
-});
-// ── END TEMPORARY EXPORT BUTTON ──────────────────────────────────────────────
 </script>
 </body>
 </html>
