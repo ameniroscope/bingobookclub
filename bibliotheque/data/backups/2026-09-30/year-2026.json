@@ -1,0 +1,134 @@
+{
+ "months": [
+  [
+   "January",
+   5,
+   1,
+   1,
+   0,
+   70
+  ],
+  [
+   "February",
+   12,
+   3,
+   1,
+   0,
+   54.7
+  ],
+  [
+   "March",
+   3,
+   4,
+   0,
+   0,
+   27
+  ],
+  [
+   "April",
+   7,
+   6,
+   0,
+   1,
+   72.77
+  ],
+  [
+   "May",
+   4,
+   6,
+   0,
+   0,
+   53.98
+  ],
+  [
+   "June",
+   16,
+   7,
+   3,
+   0,
+   132.47
+  ],
+  [
+   "July",
+   5,
+   6,
+   0,
+   2,
+   80.88
+  ],
+  [
+   "August",
+   2,
+   5,
+   1,
+   1,
+   37.43
+  ],
+  [
+   "September",
+   8,
+   5,
+   0,
+   0,
+   157.16
+  ]
+ ],
+ "month_columns": [
+  "month",
+  "new",
+  "tbr_read",
+  "gifts",
+  "older",
+  "spent"
+ ],
+ "unhauled": [
+  [
+   "La Fin des Temps",
+   "DNF at 48%"
+  ],
+  [
+   "Kafka sur le rivage",
+   "DNF at 10%"
+  ],
+  [
+   "Murder before Evensong",
+   "Gifted"
+  ]
+ ],
+ "borrowed": [
+  [
+   "Neuromancien",
+   "Augustin"
+  ],
+  [
+   "Le destin de Linus Hope",
+   "Augustin"
+  ],
+  [
+   "Gregor 2",
+   "Kathi"
+  ],
+  [
+   "Gregor 3",
+   "Kathi"
+  ],
+  [
+   "Frontiers",
+   "Augustin"
+  ]
+ ],
+ "wishlist": [
+  [
+   "Le cœur des Nagas",
+   "Lee Young-do"
+  ],
+  [
+   "Le Dernier Soleil",
+   "K.D. Edwards"
+  ],
+  [
+   "ISBN 9780143139003",
+   "Pre-order for Kathi, Elana and Lena"
+  ]
+ ]
+}

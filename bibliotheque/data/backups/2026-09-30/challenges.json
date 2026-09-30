@@ -1,0 +1,141 @@
+[
+ {
+  "id": "vellum",
+  "name": "Vellum House",
+  "sub": "Manoir Lockwell, du 27 septembre au 22 octobre",
+  "style": "manor",
+  "total_rooms": 21,
+  "rooms": [
+   {
+    "name": "La Salle à manger",
+    "prompt": "Un livre sur les liens familiaux",
+    "book": "Fishbone Cinderella",
+    "done": false,
+    "num": "1",
+    "riddle": ""
+   },
+   {
+    "name": "Les Bains",
+    "prompt": "Un livre où l’eau traverse le récit",
+    "book": "Et puis les eaux primordiales…",
+    "done": true,
+    "num": "19",
+    "riddle": ""
+   },
+   {
+    "name": "La Cave",
+    "prompt": "Un récit d’horreur ou d’épouvante",
+    "book": "What Moves the Dead",
+    "done": false,
+    "num": "13",
+    "riddle": ""
+   },
+   {
+    "name": "La Galerie de portraits",
+    "prompt": "Art",
+    "book": "Le Regard Féminin",
+    "done": false,
+    "num": "",
+    "riddle": ""
+   },
+   {
+    "name": "La Chapelle",
+    "prompt": "Démons, créatures",
+    "book": "Boniface ou le refus de la gloire",
+    "done": false,
+    "num": "",
+    "riddle": ""
+   },
+   {
+    "name": "L’Office",
+    "prompt": "Novella",
+    "book": "Lilith, l’amazone maculée",
+    "done": false,
+    "num": "",
+    "riddle": ""
+   },
+   {
+    "name": "Le Salon de thé",
+    "prompt": "Folklore chinois",
+    "book": "",
+    "done": false,
+    "num": "",
+    "riddle": ""
+   },
+   {
+    "name": "L’Atelier d’alchimie",
+    "prompt": "Sorcellerie",
+    "book": "La Passeuse d’Ombres",
+    "done": false,
+    "num": "",
+    "riddle": ""
+   },
+   {
+    "name": "La Salle de jeux",
+    "prompt": "Fin de l’enfance",
+    "book": "",
+    "done": false,
+    "num": "",
+    "riddle": ""
+   },
+   {
+    "name": "Le Fumoir",
+    "prompt": "Enquête, mystère",
+    "book": "",
+    "done": false,
+    "num": "",
+    "riddle": ""
+   }
+  ]
+ },
+ {
+  "id": "orilium",
+  "name": "Orilium",
+  "sub": "Reading challenge",
+  "style": "plain",
+  "rooms": [
+   {
+    "name": "Demonology (O)",
+    "prompt": "The word “shadow”",
+    "book": "",
+    "done": false
+   },
+   {
+    "name": "Demonology (Q)",
+    "prompt": "The word “death” or “birth”",
+    "book": "",
+    "done": false
+   },
+   {
+    "name": "Demonology (D)",
+    "prompt": "Possession",
+    "book": "",
+    "done": false
+   },
+   {
+    "name": "Spells & Incantations (O)",
+    "prompt": "Added to your TBR last month",
+    "book": "",
+    "done": true
+   },
+   {
+    "name": "Spells & Incantations (Q)",
+    "prompt": "7th book you touch, eyes closed",
+    "book": "",
+    "done": true
+   },
+   {
+    "name": "Elemental Studies (O)",
+    "prompt": "Forest on the cover or in the title",
+    "book": "",
+    "done": true
+   },
+   {
+    "name": "Conjuration (O)",
+    "prompt": "Fog on the cover or in the title",
+    "book": "",
+    "done": false
+   }
+  ]
+ }
+]
