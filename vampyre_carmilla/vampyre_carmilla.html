@@ -26,7 +26,7 @@ html,body{min-height:100vh;margin:0;font-family:var(--read);color:var(--ink);bac
 #bg::after{content:'';position:absolute;inset:0;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='4' height='4' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");}
 
-a.home-btn{position:fixed;top:1rem;left:1rem;z-index:20;background:var(--bg2);color:var(--ink);
+a.home-btn{position:fixed;bottom:1.2rem;left:1.2rem;z-index:20;background:var(--bg2);color:var(--ink);
   border:1.5px solid var(--red-line);padding:0.5rem 0.9rem;text-decoration:none;font-family:var(--read);
   font-size:0.9rem;}
 a.home-btn:hover{border-color:var(--ink);}
@@ -46,10 +46,10 @@ a.home-btn:hover{border-color:var(--ink);}
 
 /* ── ORIGIN ROW ── */
 .origin-row{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:1.8rem 2rem;
-  display:grid;grid-template-columns:1fr 0.85fr 1fr;gap:2.4rem;align-items:center;}
+  display:grid;grid-template-columns:1fr 0.85fr 1fr;gap:2.4rem;align-items:start;}
 .origin-text h3{font-family:var(--display);font-size:1.15rem;color:var(--ink);margin:0 0 0.6rem;letter-spacing:0.5px;}
 .origin-text p{font-family:var(--read);font-size:0.98rem;line-height:1.75;color:var(--ink-dim);margin:0;}
-.cover-frame{position:relative;width:100%;max-width:280px;margin:0 auto;}
+.cover-frame{align-self:center;position:relative;width:100%;max-width:280px;margin:0 auto;}
 .cover-frame::before{content:'';position:absolute;inset:0;background:var(--red);transform:translate(8px,8px);z-index:0;}
 .cover-frame img{position:relative;z-index:1;width:100%;display:block;border:2px solid var(--ink);}
 @media(max-width:980px){
@@ -178,13 +178,13 @@ a.home-btn:hover{border-color:var(--ink);}
   font-style:italic;color:var(--ink-dim);}
 .resources-category{font-family:var(--sans);letter-spacing:3px;text-transform:uppercase;font-size:0.78rem;color:var(--ink-dim);
   text-align:center;margin-bottom:1rem;}
-.resources-list{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:1rem;}
-.resources-list li{margin:0;}
-.resources-list a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.6rem;
-  width:150px;height:130px;padding:1rem;border:1.5px solid var(--red-line);background:var(--bg2);color:var(--ink);
-  text-decoration:none;font-family:var(--read);font-size:0.88rem;line-height:1.3;transition:background .15s,border-color .15s;}
-.resources-list a:hover{background:var(--red-dim);border-color:var(--ink);}
-.resources-list .res-icon{flex-shrink:0;width:34px;height:34px;}
+.video-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;}
+.video-card{background:var(--bg2);border:1.5px solid var(--red-line);overflow:hidden;}
+.video-embed{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;}
+.video-embed iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0;}
+.video-label{padding:0.6rem 1rem 0.75rem;font-family:var(--read);font-size:0.9rem;color:var(--ink);text-align:center;}
+@media(max-width:980px){.video-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.video-grid{grid-template-columns:1fr;}}
 @media(max-width:980px){.resources-section{padding:1.8rem 1.1rem 3rem;}}
 
 /* ── PASSWORD MODAL ── */
@@ -323,16 +323,24 @@ a.home-btn:hover{border-color:var(--ink);}
 
 <div class="resources-section">
   <div class="resources-title">Resources</div>
-  <ul class="resources-list">
-    <li><a href="https://youtu.be/PfoPO022lVY?si=8X_lPATdmrcGDAgM" target="_blank" rel="noopener">
-      <svg class="res-icon" viewBox="0 0 48 34" xmlns="http://www.w3.org/2000/svg"><path fill="#FF0000" d="M47 5.3A6 6 0 0 0 42.7 1C39 0 24 0 24 0S9 0 5.3 1A6 6 0 0 0 1 5.3 62 62 0 0 0 0 17a62 62 0 0 0 1 11.7A6 6 0 0 0 5.3 33C9 34 24 34 24 34s15 0 18.7-1a6 6 0 0 0 4.3-4.3A62 62 0 0 0 48 17a62 62 0 0 0-1-11.7z"/><path fill="#fff" d="M19 24.3 32 17 19 9.7v14.6z"/></svg>
-      <span>Was Jesus a Vampire?</span>
-    </a></li>
-    <li><a href="https://www.youtube.com/watch?v=w4dFI19I5II" target="_blank" rel="noopener">
-      <svg class="res-icon" viewBox="0 0 48 34" xmlns="http://www.w3.org/2000/svg"><path fill="#FF0000" d="M47 5.3A6 6 0 0 0 42.7 1C39 0 24 0 24 0S9 0 5.3 1A6 6 0 0 0 1 5.3 62 62 0 0 0 0 17a62 62 0 0 0 1 11.7A6 6 0 0 0 5.3 33C9 34 24 34 24 34s15 0 18.7-1a6 6 0 0 0 4.3-4.3A62 62 0 0 0 48 17a62 62 0 0 0-1-11.7z"/><path fill="#fff" d="M19 24.3 32 17 19 9.7v14.6z"/></svg>
-      <span>Vampires in Media</span>
-    </a></li>
-  </ul>
+  <div class="video-grid">
+    <div class="video-card">
+      <div class="video-embed"><iframe src="https://www.youtube.com/embed/PfoPO022lVY" title="Was Jesus a Vampire?" allowfullscreen loading="lazy"></iframe></div>
+      <div class="video-label">Was Jesus a Vampire?</div>
+    </div>
+    <div class="video-card">
+      <div class="video-embed"><iframe src="https://www.youtube.com/embed/w4dFI19I5II" title="A 3h deep dive on vampires" allowfullscreen loading="lazy"></iframe></div>
+      <div class="video-label">A 3h deep dive on vampires</div>
+    </div>
+    <div class="video-card">
+      <div class="video-embed"><iframe src="https://www.youtube.com/embed/ktitzVSfV2w" title="They were (not) fake ?" allowfullscreen loading="lazy"></iframe></div>
+      <div class="video-label">They were (not) fake ?</div>
+    </div>
+    <div class="video-card">
+      <div class="video-embed"><iframe src="https://www.youtube.com/embed/HlRaJuJC5AM" title="Why do we love monsters ?" allowfullscreen loading="lazy"></iframe></div>
+      <div class="video-label">Why do we love monsters ?</div>
+    </div>
+  </div>
 </div>
 
 <!-- PASSWORD MODAL -->

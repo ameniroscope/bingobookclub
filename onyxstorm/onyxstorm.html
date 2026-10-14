@@ -26,15 +26,20 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
     z-index: 1;
     min-height: 100vh;
     width: 100%;
-    max-width: 1200px;
+    max-width: 1500px;
     margin: 0 auto;
     padding: 2rem 1.5rem;
     display: grid;
     gap: 3rem;
     align-items: center;
     justify-content: center;
-    grid-template-columns:420px 1fr
+    grid-template-columns:400px 1fr 360px
 }
+
+.quiz-col{display:flex;flex-direction:column;align-items:center;gap:0.75rem;}
+.quiz-link{display:block;width:100%;max-width:360px;transition:transform 0.3s ease,filter 0.3s ease;}
+.quiz-link img{display:block;width:100%;height:auto;}
+.quiz-link:hover{transform:translateY(-5px);filter:drop-shadow(0 0 18px rgba(255,214,150,0.55));}
 
 .map-col{position:sticky;top:3rem;display:flex;flex-direction:column;align-items:center;gap:0.75rem;}
 .map-wrap{position:relative;width:100%;max-width:460px;overflow:hidden;
@@ -109,6 +114,7 @@ body.map-modal-open{overflow:hidden;}
 @media(max-width:860px){
   .wrap{grid-template-columns:1fr;min-width:unset;padding:1.5rem 1rem;}
   .map-col{position:static;max-width:460px;width:100%;margin:0 auto;}
+  .quiz-col{max-width:380px;width:100%;margin:0 auto;}
   .big-title{font-size:2.2rem;}
   .intro-text{font-size:1rem;}
   .player-btns{grid-template-columns:1fr 1fr 1fr;gap:1rem;}
@@ -177,6 +183,12 @@ body.map-modal-open{overflow:hidden;}
       </div>
     </div>
   </div>
+
+  <aside class="quiz-col">
+    <a class="quiz-link" href="https://dragonkind.com/" target="_blank" rel="noopener">
+      <img src="riders_quadrant.png" alt="Dare to enter the Rider's Quadrant? Take the Dragonkind test">
+    </a>
+  </aside>
 </div>
 
 <script type="module">
