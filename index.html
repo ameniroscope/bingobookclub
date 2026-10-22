@@ -370,6 +370,35 @@ a.fixed-throne:hover img {
      CAWPILE instead of forcing a row/column that no longer exists */
   .btn-throne-mobile{grid-column:auto;grid-row:auto;}
 }
+	
+/* ════════ FLYING BAT (links to Carmilla) ════════ */
+.flying-bat {
+  position: fixed;
+  top: 140px;
+  left: 28px;
+  z-index: 9998;
+  display: block;
+  transition: transform .3s ease;
+}
+.flying-bat:hover {
+  transform: scale(1.15);
+}
+.flying-bat img {
+  display: block;
+  width: 64px;
+  height: auto;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,.35));
+  animation: bat-bob 3s ease-in-out infinite;
+}
+@keyframes bat-bob {
+  0%, 100% { transform: translate(0, 0) rotate(-4deg); }
+  50%      { transform: translate(6px, -10px) rotate(4deg); }
+}
+@media(max-width:1000px){
+  .flying-bat { top: auto; left: auto; bottom: 12px; right: 12px; }
+  .flying-bat img { width: 44px; }
+}
+	
 </style>
 </head>
 <body>
@@ -377,6 +406,7 @@ a.fixed-throne:hover img {
 <a href="secret/badart.html"><img src="secret/sideeye3.png" alt="" class="peeking-dog" aria-hidden="true"></a>
 
 <a href="cosmere/cosmere-cipher.html" title="psst… into the Cosmere"><img src="cosmere/brandosando.png" alt="BrandoSando" class="peeking-brando"></a>
+<a href="vampyre_carmilla/vampyre_carmilla.html" class="flying-bat" title="Carmilla"><img src="vampyre_carmilla/bat.webp" alt="Vampyre Carmilla bat"></a>
 
 <div class="stars" id="stars"></div>
 
