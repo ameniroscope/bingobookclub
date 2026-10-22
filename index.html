@@ -371,31 +371,32 @@ a.fixed-throne:hover img {
   .btn-throne-mobile{grid-column:auto;grid-row:auto;}
 }
 	
-/* ════════ FLYING BAT (links to Carmilla) ════════ */
+/* ════════ BAT (sits beside the title, scrolls with the content) ════════ */
+.hero{ position: relative; }
 .flying-bat {
-  position: fixed;
-  top: 220px;
-  right: 550px;
-  z-index: 9998;
+  position: absolute;
+  top: 0;
+  right: -70px;
+  z-index: 2;
   display: block;
-  transition: transform .3s ease;
-}
-.flying-bat:hover {
-  transform: scale(1.15);
 }
 .flying-bat img {
   display: block;
-  width: 100px;
+  width: 64px;
   height: auto;
   filter: drop-shadow(0 4px 8px rgba(0,0,0,.35));
-  animation: bat-bob 3s ease-in-out infinite;
+  animation: bat-flap 2.4s ease-in-out infinite alternate;
+  transition: transform .3s ease;
 }
-@keyframes bat-bob {
-  0%, 100% { transform: translate(0, 0) rotate(-4deg); }
-  50%      { transform: translate(6px, -10px) rotate(4deg); }
+.flying-bat:hover img {
+  transform: scale(1.15);
+}
+@keyframes bat-flap {
+  from { transform: translateY(0) rotate(-5deg); }
+  to   { transform: translateY(-8px) rotate(5deg); }
 }
 @media(max-width:1000px){
-  .flying-bat { top: auto; left: auto; bottom: 12px; right: 20px; }
+  .flying-bat { top: -18px; right: 0; }
   .flying-bat img { width: 44px; }
 }
 	
@@ -406,8 +407,7 @@ a.fixed-throne:hover img {
 <a href="secret/badart.html"><img src="secret/sideeye3.png" alt="" class="peeking-dog" aria-hidden="true"></a>
 
 <a href="cosmere/cosmere-cipher.html" title="psst… into the Cosmere"><img src="cosmere/brandosando.png" alt="BrandoSando" class="peeking-brando"></a>
-<a href="vampyre_carmilla/vampyre_carmilla.html" class="flying-bat" title="Carmilla"><img src="vampyre_carmilla/bat.webp" alt="Vampyre Carmilla bat"></a>
-
+	
 <div class="stars" id="stars"></div>
 
 <div class="page">
@@ -484,6 +484,7 @@ a.fixed-throne:hover img {
           <div class="title-rule">
             <div class="line"></div><div class="gem">✦</div><div class="line"></div>
           </div>
+		  <a href="vampyre_carmilla/vampyre_carmilla.html" class="flying-bat" title="Carmilla"><img src="vampyre_carmilla/bat.webp" alt="Vampyre Carmilla bat"></a>
         </div>
       </div>
 
