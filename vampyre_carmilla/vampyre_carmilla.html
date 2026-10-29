@@ -90,7 +90,8 @@ a.home-btn:hover{border-color:var(--ink);}
 .chat-panel-hdr{flex-shrink:0;padding:0.95rem 1.1rem 0;display:flex;align-items:flex-start;justify-content:space-between;gap:0.8rem;}
 .chat-panel-title{font-family:var(--display);font-size:1.3rem;color:var(--bg);letter-spacing:0.5px;}
 .chat-panel-author{font-family:var(--sans);letter-spacing:2px;text-transform:uppercase;font-size:0.7rem;color:rgba(5,3,3,0.65);margin-top:3px;}
-.read-by{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;min-height:1.3rem;}
+.chat-panel-hdr-right{display:flex;flex-direction:column;align-items:flex-end;gap:0.4rem;flex-shrink:0;}
+.read-by{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px;max-width:150px;min-height:1.3rem;}
 .read-by span{font-size:1.05rem;line-height:1.3;cursor:default;}
 .read-toggle{display:flex;flex-direction:column;align-items:center;gap:0.3rem;flex-shrink:0;width:150px;}
 .read-toggle-label{font-family:var(--sans);letter-spacing:2px;text-transform:uppercase;font-size:0.62rem;color:rgba(5,3,3,0.65);}
@@ -245,15 +246,17 @@ a.home-btn:hover{border-color:var(--ink);}
       <div>
         <div class="chat-panel-title">The Vampyre</div>
         <div class="chat-panel-author">John Polidori</div>
-        <div class="read-by" id="readBy-vampyre"></div>
       </div>
-      <div class="read-toggle" id="readToggle-vampyre" style="display:none">
-        <span class="read-toggle-label">Read?</span>
-        <label class="read-switch">
-          <input type="checkbox" id="readCheckbox-vampyre">
-          <span class="read-switch-track"><span class="read-switch-thumb"></span></span>
-        </label>
-        <span class="read-toggle-state" id="readLabel-vampyre">Spoiler free chat</span>
+      <div class="chat-panel-hdr-right">
+        <div class="read-by" id="readBy-vampyre"></div>
+        <div class="read-toggle" id="readToggle-vampyre" style="display:none">
+          <span class="read-toggle-label">Read?</span>
+          <label class="read-switch">
+            <input type="checkbox" id="readCheckbox-vampyre">
+            <span class="read-switch-track"><span class="read-switch-thumb"></span></span>
+          </label>
+          <span class="read-toggle-state" id="readLabel-vampyre">Spoiler free chat</span>
+        </div>
       </div>
     </div>
     <div class="chat-locked-wrap">
@@ -293,15 +296,17 @@ a.home-btn:hover{border-color:var(--ink);}
       <div>
         <div class="chat-panel-title">Carmilla</div>
         <div class="chat-panel-author">Sheridan Le Fanu</div>
-        <div class="read-by" id="readBy-carmilla"></div>
       </div>
-      <div class="read-toggle" id="readToggle-carmilla" style="display:none">
-        <span class="read-toggle-label">Read?</span>
-        <label class="read-switch">
-          <input type="checkbox" id="readCheckbox-carmilla">
-          <span class="read-switch-track"><span class="read-switch-thumb"></span></span>
-        </label>
-        <span class="read-toggle-state" id="readLabel-carmilla">Spoiler free chat</span>
+      <div class="chat-panel-hdr-right">
+        <div class="read-by" id="readBy-carmilla"></div>
+        <div class="read-toggle" id="readToggle-carmilla" style="display:none">
+          <span class="read-toggle-label">Read?</span>
+          <label class="read-switch">
+            <input type="checkbox" id="readCheckbox-carmilla">
+            <span class="read-switch-track"><span class="read-switch-thumb"></span></span>
+          </label>
+          <span class="read-toggle-state" id="readLabel-carmilla">Spoiler free chat</span>
+        </div>
       </div>
     </div>
     <div class="chat-locked-wrap">
