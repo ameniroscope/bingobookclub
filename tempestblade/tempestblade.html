@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Tempest Blade</title>
+<title>The Twisted Throne</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👑</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -54,7 +54,7 @@ html,body{background:var(--purple-deep);color:var(--ink);font-family:var(--body-
 .map-wrap img{display:block;width:100%;border-radius:6px;border:3px solid var(--gold);
   box-shadow:0 0 0 1px var(--teal-deep),0 0 0 4px var(--purple-mid),0 12px 30px rgba(0,0,0,0.55),inset 0 0 24px rgba(0,0,0,0.35);
   background:var(--purple);min-height:220px;}
-.map-hint{max-width: 400px;font-family:var(--body-font);font-style:italic;font-size:0.95rem;color:var(--ink-faded);letter-spacing:0.3px;text-align:center;}
+.map-hint{font-family:var(--body-font);font-style:italic;font-size:0.95rem;color:var(--ink-faded);letter-spacing:0.3px;text-align:center;}
 .map-marker{position:absolute;transform:translate(-50%,-50%);font-size:1.4rem;line-height:1;z-index:5;
   filter:drop-shadow(0 1px 3px rgba(0,0,0,0.7));transition:left 0.25s ease,top 0.25s ease;
   cursor:grab;touch-action:none;}
@@ -79,7 +79,11 @@ body.map-modal-open{overflow:hidden;}
 .title-ornament .gem{color:var(--gold);font-size:0.7rem;}
 .players-title{font-family:var(--display-hero);font-weight:700;font-size:3.4rem;letter-spacing:1px;margin-top:0;margin-bottom:24px;color:var(--gold);
   text-shadow:0 2px 3px rgba(0,0,0,0.6),0 0 22px rgba(205,164,52,0.28);}
-.rank-frame{position:relative;display:grid;grid-template-columns:70px 1fr;grid-template-rows:auto 56px;gap:10px;max-width:620px;margin:0 auto;padding:8px;}
+
+/* Grid and queen sit side by side */
+.players-row{display:flex;align-items:center;justify-content:center;gap:22px;width:100%;}
+
+.rank-frame{position:relative;display:grid;grid-template-columns:70px 1fr;grid-template-rows:auto 56px;gap:10px;width:100%;max-width:460px;margin:0;padding:8px;}
 .y-axis{grid-column:1;grid-row:1;position:relative;display:flex;align-items:center;justify-content:center;}
 .y-arrow{width:auto;height:300px;flex-shrink:0;filter:url(#tintArrowTeal);}
 .y-label{position:absolute;top:50%;left:-15%;transform:translate(-50%,-50%) rotate(180deg);z-index:1;
@@ -90,12 +94,13 @@ body.map-modal-open{overflow:hidden;}
 .x-arrow{position:absolute;top:50%;left:50%;filter:url(#tintArrowTeal);transform:translate(-50%,-50%) rotate(90deg);}
 .x-label{font-family:var(--display);font-size:clamp(13px,1.8vw,20px);font-weight:400;letter-spacing:3px;
   color:var(--gold);white-space:nowrap;pointer-events:none;text-shadow:0 1px 3px rgba(0,0,0,0.6);}
+/* 3 x 3 grid: nine positions, no drawn lines */
 .rank-grid{grid-column:2;grid-row:1;position:relative;aspect-ratio:1/1;width:100%;margin:10px;}
 .rank-avatar{position:absolute;text-decoration:none;color:var(--gold);font-family:var(--display);
   display:flex;flex-direction:column;align-items:center;gap:4px;transform:translate(-50%,-50%);
   transition:left 0.5s ease,top 0.5s ease,transform 0.3s ease;z-index:5;}
 .rank-avatar:hover{transform:translate(-50%,-50%) scale(1.08);z-index:6;}
-.rank-img-frame{position:relative;width:110px;height:110px;}
+.rank-img-frame{position:relative;width:100px;height:100px;}
 .rank-img-frame::before{content:'';position:absolute;inset:8px;border-radius:50%;
   background:var(--pc-glow,var(--gold));opacity:var(--pc-glow-op,0.45);
   box-shadow:0 0 18px 10px var(--pc-glow,var(--gold));filter:blur(9px);z-index:0;}
@@ -109,11 +114,25 @@ body.map-modal-open{overflow:hidden;}
   font-family:var(--display);font-size:0.85rem;font-weight:700;
   color:var(--gold-lt);text-shadow:0 0 6px rgba(0,0,0,0.7);filter:drop-shadow(0 1px 3px rgba(0,0,0,0.5));}
 .rank-name{font-family:var(--display-hero);font-size:1.35rem;letter-spacing:normal;color:var(--gold);text-shadow:0 1px 3px rgba(0,0,0,0.6);}
+
+/* ── QUEEN: Kathi beside the grid, crowned, with her title below ── */
+.queen-side{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:8px;}
+.queen-figure{position:relative;padding-top:34px;}
+.queen-crown{position:absolute;top:0;left:50%;transform:translateX(-50%);z-index:3;
+  font-size:2rem;line-height:1;filter:drop-shadow(0 0 6px rgba(205,164,52,0.7));pointer-events:none;}
+.queen-avatar{display:block;text-decoration:none;}
+.queen-avatar img{display:block;width:110px;height:110px;border-radius:50%;object-fit:cover;
+  border:3px solid var(--gold);box-shadow:0 0 18px 6px rgba(157,79,189,0.45),0 3px 12px rgba(0,0,0,0.55);}
+.queen-title{font-family:var(--display);font-size:clamp(12px,1.5vw,16px);letter-spacing:1.5px;color:var(--gold);
+  text-align:center;max-width:160px;line-height:1.3;text-shadow:0 1px 3px rgba(0,0,0,0.6);}
+
 @media(max-width:800px){
   .players-title{font-size:2rem;margin-bottom:20px;letter-spacing:0.5px;}
+  .players-row{flex-direction:column;gap:14px;}
   .rank-img-frame{width:60px;height:60px;}
   .rank-name{font-size:1rem;}
   .rank-frame{grid-template-columns:42px 1fr;grid-template-rows:auto 40px;}
+  .queen-img-size{width:80px;height:80px;}
 }
 .footer-section{position:relative;z-index:2;text-align:center;padding:1.5rem 1rem 3rem;}
 .footer-section .footer{font-family:var(--display);letter-spacing:2px;font-size:0.8rem;color:var(--ink-faded);}
@@ -139,24 +158,35 @@ body.map-modal-open{overflow:hidden;}
 <main class="home-layout">
   <section class="map-section">
     <div class="map-wrap" id="mapWrap">
-      <img src="tempestblade_map.png" alt="The Tempest Blade chapter map">
+      <img src="twistedthrone_map.png" alt="The Twisted Throne chapter map">
       <div class="map-tooltip" id="mapTooltip"></div>
     </div>
-    <div class="map-hint">Drag your emoji across the map to mark your progress and if you see missing numbers, no you don't 👀</div>
+    <div class="map-hint">Drag your emoji across the map to mark your progress</div>
   </section>
-  <div class="crest-divider" aria-hidden="true"><div class="line"></div><div class="crown">👑</div><div class="line"></div></div>
+  <div class="crest-divider" aria-hidden="true"><div class="crown">👑</div></div>
   <section class="players-section">
     <h1 class="players-title">Choose Your Player</h1>
-    <div class="rank-frame">
-      <div class="y-axis">
-        <img class="y-arrow" src="arrowY.png" alt="">
-        <span class="y-label">Best Guesser</span>
+    <div class="players-row">
+      <div class="rank-frame">
+        <div class="y-axis">
+          <img class="y-arrow" src="arrowY.png" alt="">
+          <span class="y-label">Best Guesser</span>
+        </div>
+        <div class="rank-grid" id="rankGrid"></div>
+        <div class="x-axis">
+          <div class="x-arrow-wrap" id="xArrowWrap"><img class="x-arrow" src="arrowX.png" alt=""></div>
+          <span class="x-label">Fastest Reader</span>
+        </div>
       </div>
-      <div class="rank-grid" id="rankGrid"></div>
-      <div class="x-axis">
-        <div class="x-arrow-wrap" id="xArrowWrap"><img class="x-arrow" src="arrowX.png" alt=""></div>
-        <span class="x-label">Fastest Reader</span>
-      </div>
+      <aside class="queen-side">
+        <div class="queen-figure">
+          <div class="queen-crown" aria-hidden="true">👑</div>
+          <a class="queen-avatar" href="twistedthrone_player.html?p=kathi">
+            <img src="../pdp_kathi.png" alt="Kathi">
+          </a>
+        </div>
+        <div class="queen-title">Queen Reader of the Bridge</div>
+      </aside>
     </div>
   </section>
 </main>
@@ -179,42 +209,32 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 /* New collection so this book's progress doesn't collide with other books' data */
-const BINGO_COL = 'tempestblade_bingo';
+const BINGO_COL = 'twistedthrone_bingo';
 const PLAYERS = {
-  elana:  { emoji:"🐉",   color:"#d1a752", name:"Elana",  href:"tempestblade_player.html?p=elana",  img:"../pdp_elana.png"  },
-  lena:   { emoji:"🌙",   color:"#2f9c8f", name:"Lena",   href:"tempestblade_player.html?p=lena",   img:"../pdp_lena.png"   },
-  kathi:  { emoji:"🍄",   color:"#9d4fbd", name:"Kathi",  href:"tempestblade_player.html?p=kathi",  img:"../pdp_kathi.png"  },
-  marine: { emoji:"🧜‍♀️", color:"#3f9fd6", name:"Marine", href:"tempestblade_player.html?p=marine", img:"../pdp_marine.png" },
+  elana:  { emoji:"🐉",   color:"#d1a752", name:"Elana",  href:"twistedthrone_player.html?p=elana",  img:"../pdp_elana.png"  },
+  lena:   { emoji:"🌙",   color:"#2f9c8f", name:"Lena",   href:"twistedthrone_player.html?p=lena",   img:"../pdp_lena.png"   },
+  kathi:  { emoji:"🍄",   color:"#9d4fbd", name:"Kathi",  href:"twistedthrone_player.html?p=kathi",  img:"../pdp_kathi.png"  },
+  marine: { emoji:"🧜‍♀️", color:"#3f9fd6", name:"Marine", href:"twistedthrone_player.html?p=marine", img:"../pdp_marine.png" },
 };
-/* Everyone competes on the axes this time — Kathi's back in the game. */
-const RANKED_IDS = ['elana','lena','kathi','marine'];
+/* Kathi is the Queen Reader, shown beside the grid, so the 3x3 grid ranks the other three. */
+const RANKED_IDS = ['elana','lena','marine'];
 function hexA(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;}
-/* ── CHAPTER MAP MARKERS ── index 0 = Start, 1..107 = chapters, 108 = End.
-   Traced against the real tempestblade_map.png art, read left-to-right,
-   top-to-bottom, one row per map row.
-   NOTE: chapters 80, 89 and 99 have no stone drawn on the map, so their entries
-   are placeholders sitting midway between their neighbours — index still equals
-   chapter number so the chat-room unlocks stay aligned. Nudge those three if you
-   want them elsewhere. To re-trace: run `findMapPosition()` in the console. */
-const TOTAL_CHAPTERS = 107;
+/* ── CHAPTER MAP MARKERS ── index 0 = Start, 1..55 = chapters, 56 = End.
+   Traced against the real twistedthrone_map.png art (serpentine path — each
+   row alternates direction). To re-trace: open the console, run
+   `findMapPosition()`, click each spot in order, and paste the printed
+   {left,top} values in here row by row. */
+const TOTAL_CHAPTERS = 55;
 const CHAPTER_POS = [
-  {left:12.29,top:22.79}, {left:24.91,top:23.88}, {left:34.20,top:23.73}, {left:44.43,top:24.20}, {left:54.20,top:23.88}, {left:63.48,top:23.88}, {left:74.20,top:24.20}, {left:83.48,top:23.73}, // 0 Start, 1–7
-  {left:15.63,top:29.81}, {left:25.15,top:29.81}, {left:34.67,top:30.13}, {left:44.91,top:29.81}, {left:53.96,top:30.13}, {left:64.43,top:29.81}, {left:73.48,top:29.81}, {left:83.01,top:29.66}, // 8–15
-  {left:13.01,top:35.90}, {left:22.29,top:35.90}, {left:32.53,top:35.59}, {left:42.05,top:35.59}, {left:51.10,top:35.43}, {left:60.86,top:35.75}, {left:70.39,top:35.59}, {left:81.34,top:35.59}, {left:90.15,top:35.59}, // 16–24
-  {left:11.58,top:41.21}, {left:20.86,top:41.52}, {left:30.63,top:41.52}, {left:40.39,top:41.21}, {left:49.67,top:41.21}, {left:58.96,top:41.36}, {left:68.01,top:41.36}, {left:78.01,top:41.52}, {left:86.82,top:41.52}, // 25–33
-  {left:10.86,top:47.30}, {left:19.43,top:47.14}, {left:28.72,top:47.14}, {left:37.77,top:46.98}, {left:47.05,top:46.98}, {left:56.10,top:47.14}, {left:65.15,top:47.30}, {left:74.67,top:47.14}, {left:84.20,top:47.14}, {left:91.58,top:47.14}, // 34–43
-  {left:13.01,top:52.76}, {left:22.77,top:52.91}, {left:32.77,top:52.91}, {left:42.53,top:52.60}, {left:51.82,top:52.76}, {left:61.82,top:52.91}, {left:70.86,top:52.91}, {left:80.63,top:52.76}, {left:90.63,top:52.91}, // 44–52
-  {left:11.34,top:58.69}, {left:20.63,top:58.38}, {left:30.39,top:58.53}, {left:39.67,top:58.38}, {left:49.43,top:58.69}, {left:58.72,top:58.53}, {left:68.24,top:58.53}, {left:77.77,top:58.69}, {left:87.29,top:58.69}, // 53–61
-  {left:13.24,top:64.31}, {left:23.01,top:64.15}, {left:32.53,top:64.31}, {left:42.05,top:64.46}, {left:51.58,top:64.31}, {left:60.86,top:64.31}, {left:70.63,top:64.46}, {left:80.15,top:64.62}, {left:89.20,top:64.31}, // 62–70
-  {left:10.63,top:70.08}, {left:19.91,top:70.08}, {left:29.67,top:69.93}, {left:38.72,top:70.08}, {left:48.24,top:70.24}, {left:57.53,top:69.62}, {left:67.05,top:69.93}, {left:76.58,top:70.08}, {left:85.86,top:70.08}, // 71–79
-  {left:49.55,top:72.97}, // 80  (no stone on map — placeholder between 79 and 81)
-  {left:13.24,top:75.86}, {left:23.48,top:75.39}, {left:31.82,top:75.55}, {left:42.53,top:75.39}, {left:51.34,top:75.23}, {left:60.39,top:75.39}, {left:69.91,top:75.39}, {left:80.39,top:75.39}, // 81–88
-  {left:85.15,top:75.39}, // 89  (no stone on map — placeholder between 88 and 90)
-  {left:89.91,top:75.39}, // 90
-  {left:10.63,top:81.48}, {left:19.67,top:81.32}, {left:29.67,top:81.17}, {left:38.72,top:81.17}, {left:47.29,top:81.01}, {left:58.01,top:81.17}, {left:68.72,top:81.48}, {left:77.29,top:81.01}, // 91–98
-  {left:81.94,top:81.09}, // 99  (no stone on map — placeholder between 98 and 100)
-  {left:86.58,top:81.17}, // 100
-  {left:20.63,top:87.25}, {left:29.43,top:86.94}, {left:39.20,top:86.94}, {left:48.72,top:87.10}, {left:58.72,top:87.10}, {left:68.48,top:87.10}, {left:76.82,top:87.10}, {left:86.58,top:87.25}, // 101–107, End
+  {left:13.01,top:23.10}, {left:26.58,top:23.73}, {left:37.53,top:23.26}, {left:48.96,top:23.26}, {left:60.62,top:23.41}, {left:72.53,top:23.26}, {left:83.48,top:23.26}, // 0 Start, 1–6
+  {left:88.72,top:30.44}, {left:76.58,top:30.75}, {left:64.20,top:30.59}, {left:52.53,top:30.44}, {left:39.67,top:30.28}, {left:27.77,top:30.75}, {left:16.34,top:31.22}, // 7–13
+  {left:13.72,top:38.87}, {left:26.34,top:39.02}, {left:38.96,top:39.18}, {left:51.58,top:38.71}, {left:63.48,top:39.18}, {left:75.15,top:39.02}, {left:86.58,top:39.18}, // 14–20
+  {left:87.53,top:46.83}, {left:75.39,top:46.83}, {left:63.24,top:46.67}, {left:51.82,top:46.83}, {left:40.86,top:46.51}, {left:29.91,top:46.83}, {left:16.34,top:46.98}, // 21–27
+  {left:13.48,top:54.16}, {left:25.86,top:54.16}, {left:38.01,top:54.48}, {left:49.91,top:54.32}, {left:61.82,top:54.01}, {left:74.67,top:54.32}, {left:85.63,top:54.32}, // 28–34
+  {left:86.82,top:62.12}, {left:74.67,top:62.28}, {left:62.29,top:62.12}, {left:51.10,top:62.44}, {left:38.01,top:62.28}, {left:27.53,top:62.44}, {left:15.63,top:62.44}, // 35–41
+  {left:13.72,top:70.24}, {left:25.86,top:70.08}, {left:38.96,top:70.24}, {left:51.10,top:70.24}, {left:62.29,top:70.40}, {left:74.67,top:70.40}, {left:86.34,top:70.55}, // 42–48
+  {left:86.58,top:78.20}, {left:75.39,top:78.20}, {left:63.48,top:78.51}, {left:52.05,top:78.20}, {left:41.10,top:78.20}, {left:28.96,top:78.20}, {left:17.05,top:78.20}, // 49–55
+  {left:48.96,top:86.47}, // 56  End
 ];
 const MAP_END_IDX = CHAPTER_POS.length-1;
 const mapWrap=document.getElementById('mapWrap');
@@ -354,6 +374,7 @@ function computeRanks(metric,tieMetric){
 function render(){
   const xRank=computeRanks('chapterProgress','points');
   const yRank=computeRanks('points','chapterProgress');
+  const N=RANKED_IDS.length;
   RANKED_IDS.forEach(pid=>{
     const p=PLAYERS[pid];
     let a=document.getElementById('rank-'+pid);
@@ -374,8 +395,8 @@ function render(){
     if(badge) badge.textContent = stats[pid].points;
     const col=xRank[pid];
     const row=yRank[pid];
-    const leftPct=(col-0.5)/RANKED_IDS.length*100;
-    const topPct=(RANKED_IDS.length-row+0.5)/RANKED_IDS.length*100;
+    const leftPct=(col-0.5)/N*100;
+    const topPct=(N-row+0.5)/N*100;
     a.style.left=leftPct+'%';
     a.style.top=topPct+'%';
   });
