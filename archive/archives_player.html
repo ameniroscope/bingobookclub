@@ -51,22 +51,30 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 
 .gold-divider{border:none;border-top:1px solid var(--gold);opacity:0.35;margin:0 0 2.2rem;}
 
-/* ── book section: bingo card on the left, cover on the right ── */
-.book-section{display:grid;grid-template-columns:minmax(0,1fr) clamp(100px,28%,160px);gap:1.4rem;align-items:start;width:100%;min-width:0;}
-.book-section.bingo-only{grid-template-columns:minmax(0,1fr);}
-.card-stack{position:relative;min-width:0;width:100%;max-width:440px;}
-.book-side{min-width:0;margin:0;}
-.book-cover{display:block;width:100%;height:auto;aspect-ratio:2/3;object-fit:cover;border-radius:4px;box-shadow:0 4px 14px rgba(0,0,0,0.28);}
-.book-cover-placeholder{width:100%;aspect-ratio:2/3;display:flex;align-items:center;justify-content:center;font-size:2rem;background:var(--parch-dark);border:1px solid var(--worn);border-radius:4px;box-shadow:0 4px 14px rgba(0,0,0,0.2);}
-.book-caption{margin-top:0.45rem;font-size:0.78rem;font-style:italic;color:var(--ink-faded);text-align:center;line-height:1.25;}
-.nobingo-note{margin-top:0.8rem;font-style:italic;color:var(--ink-faded);font-size:0.9rem;}
-#books-container{display:grid;grid-template-columns:1fr;gap:2.6rem 2.4rem;max-width:1300px;align-items:start;}
-@media (min-width:960px){
+/* ── layout: bingo cards (3 per row) with a covers column on the right ── */
+.layout{display:flex;align-items:flex-start;gap:2.2rem;max-width:1640px;margin:0 auto;}
+#books-container{flex:1 1 auto;min-width:0;display:grid;grid-template-columns:1fr;gap:2.5rem 2rem;align-items:start;}
+@media (min-width:700px){
   #books-container{grid-template-columns:1fr 1fr;}
 }
+@media (min-width:1300px){
+  #books-container{grid-template-columns:1fr 1fr 1fr;}
+}
+.covers{flex:0 0 170px;display:flex;flex-direction:column;gap:1.4rem;}
+.covers:empty{display:none;}
+.cover-item{margin:0;}
+.cover-item img,.cover-placeholder{display:block;width:100%;aspect-ratio:2/3;object-fit:cover;border-radius:4px;box-shadow:0 4px 14px rgba(0,0,0,0.28);}
+.cover-placeholder{display:flex;align-items:center;justify-content:center;font-size:2rem;background:var(--parch-dark);border:1px solid var(--worn);}
+.cover-item figcaption{margin-top:0.45rem;font-size:0.8rem;font-style:italic;color:var(--ink-faded);text-align:center;line-height:1.25;}
+.cover-item figcaption span{display:block;font-size:0.68rem;letter-spacing:1px;text-transform:uppercase;font-style:normal;color:var(--gold);}
+@media (max-width:1100px){
+  .layout{flex-direction:column;align-items:stretch;}
+  .covers{flex:none;flex-direction:row;flex-wrap:wrap;justify-content:center;gap:1.2rem;}
+  .covers .cover-item{width:150px;}
+}
 
-/* ── score (sits above the bingo card) ── */
-.pts-display{display:inline-block;margin-bottom:0.6rem;position:relative;z-index:5;
+/* ── score (overlaid on top of the bingo card) ── */
+.pts-display{position:absolute;left:6%;transform:translateX(-50%);z-index:5;
   font-family:'Cinzel',serif;color:#3f220a;background:rgba(242,232,208,0.95);
   border:1px solid var(--gold);border-radius:8px;padding:0.3rem 1rem;text-align:center;
   box-shadow:0 4px 14px rgba(0,0,0,0.25);}
@@ -74,10 +82,14 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 .pts-display .pts-label{font-size:0.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--ink-faded);}
 .pts-display .pts-breakdown{font-size:0.68rem;color:var(--ink-faded);font-style:italic;margin-top:0.1rem;white-space:nowrap;}
 
+/* ── book section (bingo card) ── */
+.book-section{width:100%;display:flex;flex-direction:column;align-items:center;}
+.card-stack{position:relative;width:100%;max-width:460px;}
+
 /* ── bingo card ── */
-.bingo-card-wrap{position:relative;width:100%;
+.bingo-card-wrap{position:relative;width:100%;max-width:460px;margin-top:26px;
   aspect-ratio:1024/1536;background-size:100% 100%;background-repeat:no-repeat;
-  border-radius:6px;box-shadow:0 4px 20px rgba(0,0,0,0.3);border:2px solid var(--gold);overflow:hidden;}
+  border-radius:6px;box-shadow:0 4px 20px rgba(0,0,0,0.3);border:2px solid var(--gold);}
 .bingo-grid{position:absolute;left:50%;top:35.8%;width:73%;aspect-ratio:1/1;
   transform:translateX(-50%);display:grid;
   grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(5,1fr);}
@@ -139,6 +151,7 @@ const PLAYERS = {
   marine: { name:'Marine', emoji:'🧜‍♀️', color:'#172838', photo:'../pdp_marine.png', pid:'marine', marked:'rgb(23 40 56 / 50%)'}
 };
 
+// Books with a bingo board (shown in the 3-column grid)
 const BOOKS = [
   { title:'Iron Flame',    file:'archive_ironflame.json',    image:'ironflame_bingo.png',    year:'2026', collection:'shouty_bingo', gridTop:35.8, gridWidth:73 },
   { title:'Witchslayer',   file:'archive_witchslayer.json',  image:'witchslayer_bingo.png',  year:'2026', collection:'shouty_bingo', gridTop:34.8, gridWidth:73 },
@@ -149,8 +162,7 @@ const BOOKS = [
   { title:'Endless War',file:'archive_endlesswar.json',image:'endlesswar_bingo.png',year:'2026', collection:'endlesswar_bingo', gridTop:34.7, gridWidth:73 },
 ];
 
-// Books read WITHOUT bingo. Shown with the cover on the right and no card.
-// pids = which players read it, e.g. { title:'Some Book', year:'2026', pids:['kathi','marine'] }
+// Books read WITHOUT a bingo board (shown in the covers column on the right)
 const NO_BINGO = [
   { title:'The Endless War', year:'2026', pids:['elana','kathi','lena','marine'] },
   { title:'The Inadequate Heir', year:'2026', pids:['elana','kathi','lena','marine'] },
@@ -178,11 +190,8 @@ function calcPoints(marked){
 
 function extractPlayerData(json, collectionName, pid){
   try{
-    // New format: json.collections.shouty_bingo[pid]
     let raw = json.collections?.[collectionName]?.[pid];
-    // Old format (Bridge Kingdom): json.first_bingo[pid]
     if(!raw) raw = json.first_bingo?.[pid];
-    // Generic format (Traitor Queen): collection name is a top-level key
     if(!raw) raw = json[collectionName]?.[pid];
     if(!raw) return null;
     const data = raw._data || raw;
@@ -233,22 +242,11 @@ function renderBingoCard(cells, marked, bgImage, gridTop, gridWidth, gridHeight,
   </div>`;
 }
 
-function renderCoverSide(title, year, coverUrl){
-  const img = coverUrl
-    ? `<img class="book-cover" src="${esc(coverUrl)}" alt="${esc(title)}">`
-    : `<div class="book-cover-placeholder">📖</div>`;
-  return `<figure class="book-side" style="margin:0">
-    ${img}
-    <figcaption class="book-caption">${esc(title)}${year ? ` · ${esc(year)}` : ''}</figcaption>
-  </figure>`;
-}
-
-// Bingo book: card on the left, cover on the right
+// Bingo book: the board only, in the grid
 function renderBookSection(book, playerData){
   const { cells, marked } = playerData;
   const pts = calcPoints(marked);
-  // Books with a bingo board show the board only; covers are for books read without bingo.
-  return `<div class="book-section bingo-only">
+  return `<div class="book-section">
     <div class="card-stack">
       <div class="pts-display">
         <div><span class="pts-big">${pts.total}</span> <span class="pts-label">pts</span></div>
@@ -259,14 +257,12 @@ function renderBookSection(book, playerData){
   </div>`;
 }
 
-// Book read without bingo: cover on the right, no card
-function renderNoBingoSection(book, coverUrl){
-  return `<div class="book-section">
-    <div class="card-stack">
-      <div class="nobingo-note">Read without bingo.</div>
-    </div>
-    ${renderCoverSide(book.title, book.year, coverUrl)}
-  </div>`;
+// Book read without bingo: a cover in the right-hand column
+function renderCoverItem(title, year, coverUrl){
+  const img = coverUrl
+    ? `<img src="${esc(coverUrl)}" alt="${esc(title)}" loading="lazy">`
+    : `<div class="cover-placeholder">📖</div>`;
+  return `<figure class="cover-item">${img}<figcaption>${esc(title)}${year ? ` · ${esc(year)}` : ''}<span>Read without bingo</span></figcaption></figure>`;
 }
 
 async function init(){
@@ -309,13 +305,16 @@ async function init(){
       <div class="recap-card" id="recapCard"></div>
     </div>
     <hr class="gold-divider">
-    <div id="books-container"><div class="loading-state"><span class="spinner"></span>Loading bingo history…</div></div>`;
+    <div class="layout">
+      <div id="books-container"><div class="loading-state"><span class="spinner"></span>Loading bingo history…</div></div>
+      <aside class="covers" id="covers"></aside>
+    </div>`;
 
   const container = document.getElementById('books-container');
-  let hasAnyBook = false;
+  const coversEl  = document.getElementById('covers');
   let totalPoints = 0, totalLines = 0, totalBooks = 0, bingoBooks = 0;
 
-  // Books with a bingo card
+  // Bingo boards
   const bingoSections = await Promise.all(BOOKS.map(async (book)=>{
     try{
       const res = await fetch(book.file);
@@ -323,7 +322,6 @@ async function init(){
       const json = await res.json();
       const data = extractPlayerData(json, book.collection, player.pid);
       if(!data) return '';
-      hasAnyBook = true;
       totalBooks++;
       bingoBooks++;
       const pts = calcPoints(data.marked);
@@ -336,15 +334,13 @@ async function init(){
     }
   }));
 
-  // Books read without bingo, for this player only
-  const noBingoSections = await Promise.all(
-    NO_BINGO.filter(b => (b.pids||[]).includes(player.pid)).map(async (book)=>{
-      const coverUrl = await fetchCover(book.title);
-      hasAnyBook = true;
-      totalBooks++;
-      return renderNoBingoSection(book, coverUrl);
-    })
-  );
+  // Books read without bingo: covers on the right
+  const noBingo = NO_BINGO.filter(b => (b.pids||[]).includes(player.pid));
+  const coverItems = await Promise.all(noBingo.map(async (book)=>{
+    const coverUrl = await fetchCover(book.title);
+    totalBooks++;
+    return renderCoverItem(book.title, book.year, coverUrl);
+  }));
 
   const avgPoints = bingoBooks ? Math.round((totalPoints/bingoBooks)*10)/10 : 0;
   document.getElementById('recapCard').innerHTML = `
@@ -353,13 +349,15 @@ async function init(){
     <div class="recap-stat"><span class="recap-num">${avgPoints}</span><span class="recap-label">Avg / Book</span></div>
     <div class="recap-stat"><span class="recap-num">${totalLines}</span><span class="recap-label">Lines</span></div>`;
 
-  if(!hasAnyBook){
+  coversEl.innerHTML = coverItems.join('');
+
+  if(!bingoBooks && !coverItems.length){
     container.innerHTML = `<div class="empty-state">
       <span class="empty-icon">✨</span>
       No books archived yet for ${esc(player.name)}.<br>Check back after finishing a read together!
     </div>`;
   } else {
-    container.innerHTML = [...bingoSections, ...noBingoSections].join('');
+    container.innerHTML = bingoSections.join('');
   }
 }
 
