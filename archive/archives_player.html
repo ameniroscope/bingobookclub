@@ -265,7 +265,7 @@ function renderCoverItem(title, year, coverUrl){
   const img = coverUrl
     ? `<img src="${esc(coverUrl)}" alt="${esc(title)}" loading="lazy">`
     : `<div class="cover-placeholder">📖</div>`;
-  return `<figure class="cover-item">${img}<figcaption>${esc(title)}${year ? ` · ${esc(year)}` : ''}<span>Read without bingo</span></figcaption></figure>`;
+  return `<figure class="cover-item">${img}<figcaption>${esc(title)}${year ? ` · ${esc(year)}` : ''}</figcaption></figure>`;
 }
 
 async function init(){
