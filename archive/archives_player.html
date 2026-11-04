@@ -62,6 +62,7 @@ html,body{min-height:100vh;font-family:'IM Fell English',Georgia,serif;color:var
 }
 .covers{flex:0 0 170px;display:flex;flex-direction:column;gap:1.4rem;}
 .covers:empty{display:none;}
+.covers-title{font-family:'Cinzel',serif;font-size:0.85rem;font-weight:600;letter-spacing:3px;color:var(--gold);text-align:center;line-height:1.3;width:100%;border-bottom:1px solid var(--gold);padding-bottom:0.5rem;}
 .cover-item{margin:0;}
 .cover-item img,.cover-placeholder{display:block;width:100%;aspect-ratio:2/3;object-fit:cover;border-radius:4px;box-shadow:0 4px 14px rgba(0,0,0,0.28);}
 .cover-placeholder{display:flex;align-items:center;justify-content:center;font-size:2rem;background:var(--parch-dark);border:1px solid var(--worn);}
@@ -163,9 +164,10 @@ const BOOKS = [
 ];
 
 // Books read WITHOUT a bingo board (shown in the covers column on the right)
+// cover paths match the Archive page's BOOKS entries
 const NO_BINGO = [
-  { title:'The Endless War', year:'2026', pids:['elana','kathi','lena','marine'] },
-  { title:'The Inadequate Heir', year:'2026', pids:['elana','kathi','lena','marine'] },
+  { title:'The Endless War', year:'2026', cover:'../endlesswar/endlesswar_cover.jpg', pids:['elana','kathi','lena','marine'] },
+  { title:'The Inadequate Heir', year:'2026', cover:'../inadequateheir/inadequateheir_cover.jpg', pids:['elana','kathi','lena','marine'] },
 ];
 
 const GRID_SIZE = 25;
@@ -336,11 +338,10 @@ async function init(){
 
   // Books read without bingo: covers on the right
   const noBingo = NO_BINGO.filter(b => (b.pids||[]).includes(player.pid));
-  const coverItems = await Promise.all(noBingo.map(async (book)=>{
-    const coverUrl = await fetchCover(book.title);
+  const coverItems = noBingo.map(book => {
     totalBooks++;
-    return renderCoverItem(book.title, book.year, coverUrl);
-  }));
+    return renderCoverItem(book.title, book.year, book.cover);
+  });
 
   const avgPoints = bingoBooks ? Math.round((totalPoints/bingoBooks)*10)/10 : 0;
   document.getElementById('recapCard').innerHTML = `
@@ -349,7 +350,9 @@ async function init(){
     <div class="recap-stat"><span class="recap-num">${avgPoints}</span><span class="recap-label">Avg / Book</span></div>
     <div class="recap-stat"><span class="recap-num">${totalLines}</span><span class="recap-label">Lines</span></div>`;
 
-  coversEl.innerHTML = coverItems.join('');
+  coversEl.innerHTML = coverItems.length
+    ? `<div class="covers-title">READ WITHOUT BINGO</div>${coverItems.join('')}`
+    : '';
 
   if(!bingoBooks && !coverItems.length){
     container.innerHTML = `<div class="empty-state">
